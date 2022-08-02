@@ -1,0 +1,14 @@
+{
+  "hash": "40c095ae1d8b037097bd006b2f1ee561",
+  "result": {
+    "markdown": "---\ntitle: \"Causal Inference Methods\"\nauthor: \"Ryan Batten\"\ndate: \"2022-07-30\"\ncategories: [code, analysis]\nimage: \"cause-and-effect.jpeg\"\nbibliography: causal_inference_references.bib\nlink-citations: yes\n---\n\n\n# Causal Inference\n\n## Background\n\nI was first introduced to causal inference by @RN509, in the summer of 2021 prior to starting my PhD. This book was tremendous and changed my thinking about \"correlation doesn't equal causation\".\\\n\\\nFrom introductory science, as scientists, we are taught that correlation doesn't equal causation. I had never questioned this until I was in my MSc program and started thinking about the association between lung cancer and smokers. A paper by @RN816 reported an odds ratio of 40.4 (95% CI: 21.8-79.6).\n\nNow there are two ways to interpret this. One one hand, if we were a tobacco company we could argue that the 95% CI is pretty wide, indicating that the estimate is not that precise and the statistical method used must be wrong, etc (by etc, I mean whatever excuses you want to use). On the other hand, even at the lower limit an odds ratio of 21.8 is pretty damn high. In my opinion, this would require at the very least more investigation to determine \"does smoking cause lung cancer?\"\n\n## Confound it!\n\nIn order to get to the bottom of \"does X cause Y?\" we need to outlined some key methodological concepts. First, we need to outline what confounding is and clearly define what we mean.\n\nDifferent disciplines used different terminology, however confounding in clinical epidemiology refers to a variable that impacts both the exposure (i.e., smoking) and outcome (i.e., lung cancer). A useful way to visualize this is using directed acyclic graphs (DAGs). I'll defer to @RN509 for more detail about DAGs. However, the below illustrates what confounding is\n\n``` r\nlibrary(ggdag)\n\nlung_cancer_smoking <- ggdag::dagify(\n  lung_cancer ~ smokers, \n  coffee ~ lung_cancer + smokers,\n  exposure = \"smokers\", \n  outcome = \"lung_cancer\",\n  labels = c(\n    \"lung_cancer\" = \"Lung Cancer\", \n    \"smokers\" = \"Smoking\",\n    \"coffee\" = \"Coffee\"\n  )\n)\n```\n\n## Starting with RCTs\n\nRandomized controlled trials are considered the gold standard in research, and rightfully so. However, sometimes people forget why they are considered the gold standard. There are of course numerous reasons but I will touch on a few here.\\\n\\\nExchangeability:\n\n## Observational Data\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

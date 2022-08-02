@@ -1,0 +1,14 @@
+---
+title: "Welcome To My Blog"
+author: "Ryan Batten"
+date: "2022-07-27"
+image: "blogging.jpeg"
+---
+
+# Overview
+
+This is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to elaborate on methods I've come across while reading and hopefully be able to teach one person something new, or in a more intuitive way. A huge credit to the Count Bayesie blog (\@willkurt on twitter). Reading his blog posts encouraged me to do the same.
+
+Please note: we are all human. Sometimes due to a lack of sleep, caffeine, or being distracted everyone makes mistakes (myself included). If you notice a mistake on this blog, please reach out to me so I can correct it.
+
+# 

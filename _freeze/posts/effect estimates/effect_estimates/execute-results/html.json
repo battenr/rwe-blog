@@ -1,0 +1,14 @@
+{
+  "hash": "cbfb4577dfc787facfe4505b6be0ee39",
+  "result": {
+    "markdown": "---\ntitle: \"Effect Estimates\"\nauthor: \"Ryan Batten\"\ndate: \"2022-07-30\"\ncategories: [effect estimates, OR, RR, HR]\nimage: \"affect-vs-effect.jpeg\"\n---\n\n\n# Effect Estimates\n\n## Probability\n\nLet's start with probability because that's probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that my favorite show will come on TV today? Or how likely is it that it will rain today? Based upon these probabilities you can make informed decisions. The neat thing about probability, is that you can incorporate it into different measures when conducting scientific research. An example of this is the odds that something will happen, similar to how a betting line works when gambling.\\\n\\\nTo convert from probability to odds, the formula is the probability of something happening divided by the probability of that something not happening. In mathematical terms:\n\n\n$$\nodds = p/(1-p)\n$$\n\n\nAn example always helps to contextualize the principles. What are the odds that my favorite candy will be available at the movie theatre tonight? Well, if the probability (p) is 0.70 that it will be there tonight, then the odds are:\\\n\n$$\nodds = (0.70) / (1-0.70) = 0.70/0.30 = 2.33\n$$\n\n\nThis means that the odds are 2.33:1 that my candy will be there tonight. Hooray!\n\nOdds are useful, however often times in research we want to know how the ratio of these two odds can be compared. For example, are women with a heart condition more likely to have a heart attack than men without a heart condition? To answer this, we turn to odds ratios (OR).\n\n## Odds Ratios\n\nOdds ratios are\n\nTransportability, which is basically the equivalent of \"cool effect for your sample. What about mine?\" is important to touch on here. Remember that odds ratios are increased odds of something happening? That means you can have as high as you like in theory.\n\n## Relative Risks\n\n## Hazard Ratios\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

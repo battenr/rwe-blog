@@ -1,0 +1,72 @@
+---
+title: "OR/RR/HR: What's the Difference?"
+author: "Ryan Batten"
+date: "2022-07-31"
+categories: [OR, RR, HR]
+image: "affect-vs-effect.jpeg"
+bibliography: or-rr-hr-ref.bib
+---
+
+## Probability
+
+Let's start with probability because that's probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that my favorite show will come on TV today? Or how likely is it that it will rain today? Based upon these probabilities you can make informed decisions. The neat thing about probability, is that you can incorporate it into different measures when conducting scientific research. An example of this is the odds that something will happen, similar to how a betting line works when gambling.\
+\
+To convert from probability to odds, the formula is the probability of something happening divided by the probability of that something not happening. In mathematical terms:
+
+$$
+odds = p/(1-p)
+$$
+
+An example always helps to contextualize the principles. What are the odds that my favorite candy will be available at the movie theatre tonight? Well, if the probability (p) is 0.70 that it will be there tonight, then the odds are:\
+$$
+odds = (0.70) / (1-0.70) = 0.70/0.30 = 2.33
+$$
+
+This means that the odds are 2.33:1 that my candy will be there tonight. Hooray!
+
+Odds are useful, however often times in research we want to know how the ratio of these two odds can be compared. For example, are women more likely to have a heart attack than men? To answer this, we turn to odds ratios (OR).
+
+## Odds Ratios
+
+Odds ratios essentially take two different odds, as explained above, and compared them to each other. For example, we have the below table (note: these numbers were simulated, not from an actual study). So the odds of men with a heart condition is 87/176 = 0.49, compared to women with a heart condition. If we do the same for the subgroup of patients with no heart condition: 101/147 = 0.69.\
+\
+Now, these odds are great but really we want to know, how do men and women compare? Well, we take the ratio of these two values. 0.49/0.69 = 0.71 and...*dramatic pause...* now you have an odds ratio!
+
+|                     |         |           |           |
+|---------------------|---------|-----------|-----------|
+|                     | **Men** | **Women** | **Total** |
+| **Heart Attack**    | 87      | 176       | **263**   |
+| **No Heart Attack** | 101     | 147       | **248**   |
+| **Total**           | **188** | **323**   | **511**   |
+
+: Contingency Table for Heart Attack by Sex {#tbl-con}
+
+The interpretation for this would be that men have a decreased odds of having a heart attack than women. If this is hard to interpret, personally I find it easier to contextualize ORs \> 1 to other people, you can take the reciprocal of the OR and flip what is called the reference group. So women have increased odds, 1.41, of having a heart attack (1 / 0.71 = 1.41).
+
+## Relative Risks
+
+Relative risks (RR) are similar to odds ratios, however the way they are calculated are different. Using the above example, @tbl-con, we can calculate the relative risk. The formula for relative risk is
+
+$$
+RR = (87/263) / (101/248) = 0.33/0.407 = 0.81
+$$
+
+Again, this means that men with a heart condition have a decreased risk compared to women. It is important to note here that the relative risk is specific to the study that was conducted. In our example, RR = 0.81 for the 511 people included in our study.\
+\
+This is a very important distinction to make because people have varying degrees of baseline risk. As such, sometimes ORs and RRs are used interchangeably however they are distinctly different. In an upcoming post, I will elaborate on transportability.
+
+## Hazard Ratios
+
+Hazard ratios are typically reported from time-to-event analyses, whereas odds ratios and relative risks are calculated from binary events: yes/no. Due to this, hazards cannot be explained quite as simple using a table, however that isn't a problem.
+
+A hazard is the probability that an individual has an event at that time *t* @clark2003survival. Alternatively, it represents the instantaneous event rate for an individual. This is commonly used in survival analyses, which we will touch on in a later post, however it doesn't have to be for survival (sometimes a common misconception). The hazard is for the *event*. Since it is a time-to-event measure, it could be used to determine the probability that my socks will instantaneously fall off. The typical notation for a hazard is $h(t)$ or $\lambda(t)$
+
+As with the previous two ratios, it is a ratio. So if we use the same heart attack example, @tbl-con, except this time we are analyzing the time-to-heart attack then we can calculate a hazard for each group. Unfortunately, the math is not quite as straightforward so I'll save you the pain. Using an appropriate model, a subsequent post will touch on models for time-to-event analysis but a common methods you may have heard of is Cox Proportional Hazards Model (note: if proportional hazards assumption is held, then hazard is cumulative @clark2003survival.
+
+Using this imaginary model, we calculated the hazard for men $h(men)$ as 0.20 and the hazard for women $h(women)$ as 0.369. Now, we take the ratio of these two hazards and....\*I'll pause while you roll your eyes\*....bingo! We have a hazard ratio (HR):
+
+$$
+HR = h(men)/h(women) = 0.20/0.369 = 0.542. 
+$$
+
+The interpretation for this is that men, yet again, have a lower probability of having an instantaneous heart attack than women (HR = 0.542).

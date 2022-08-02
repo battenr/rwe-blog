@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "posts/welcome/welcome.html",
+    "href": "posts/welcome/welcome.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to elaborate on methods I’ve come across while reading and hopefully be able to teach one person something new, or in a more intuitive way. A huge credit to the Count Bayesie blog (@willkurt on twitter). Reading his blog posts encouraged me to do the same.\nPlease note: we are all human. Sometimes due to a lack of sleep, caffeine, or being distracted everyone makes mistakes (myself included). If you notice a mistake on this blog, please reach out to me so I can correct it."
+  },
+  {
+    "objectID": "posts/or_rr_hr/or_rr_hr.html",
+    "href": "posts/or_rr_hr/or_rr_hr.html",
+    "title": "OR/RR/HR: What’s the Difference?",
+    "section": "",
+    "text": "Let’s start with probability because that’s probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that my favorite show will come on TV today? Or how likely is it that it will rain today? Based upon these probabilities you can make informed decisions. The neat thing about probability, is that you can incorporate it into different measures when conducting scientific research. An example of this is the odds that something will happen, similar to how a betting line works when gambling.\n\nTo convert from probability to odds, the formula is the probability of something happening divided by the probability of that something not happening. In mathematical terms:\n\\[\nodds = p/(1-p)\n\\]\nAn example always helps to contextualize the principles. What are the odds that my favorite candy will be available at the movie theatre tonight? Well, if the probability (p) is 0.70 that it will be there tonight, then the odds are:\n\n\\[\nodds = (0.70) / (1-0.70) = 0.70/0.30 = 2.33\n\\]\nThis means that the odds are 2.33:1 that my candy will be there tonight. Hooray!\nOdds are useful, however often times in research we want to know how the ratio of these two odds can be compared. For example, are women more likely to have a heart attack than men? To answer this, we turn to odds ratios (OR)."
+  },
+  {
+    "objectID": "posts/or_rr_hr/or_rr_hr.html#odds-ratios",
+    "href": "posts/or_rr_hr/or_rr_hr.html#odds-ratios",
+    "title": "OR/RR/HR: What’s the Difference?",
+    "section": "Odds Ratios",
+    "text": "Odds Ratios\nOdds ratios essentially take two different odds, as explained above, and compared them to each other. For example, we have the below table (note: these numbers were simulated, not from an actual study). So the odds of men with a heart condition is 87/176 = 0.49, compared to women with a heart condition. If we do the same for the subgroup of patients with no heart condition: 101/147 = 0.69.\n\nNow, these odds are great but really we want to know, how do men and women compare? Well, we take the ratio of these two values. 0.49/0.69 = 0.71 and…dramatic pause… now you have an odds ratio!\n\n\nTable 1: Contingency Table for Heart Attack by Sex\n\n\n\nMen\nWomen\nTotal\n\n\nHeart Attack\n87\n176\n263\n\n\nNo Heart Attack\n101\n147\n248\n\n\nTotal\n188\n323\n511\n\n\n\n\nThe interpretation for this would be that men have a decreased odds of having a heart attack than women. If this is hard to interpret, personally I find it easier to contextualize ORs > 1 to other people, you can take the reciprocal of the OR and flip what is called the reference group. So women have increased odds, 1.41, of having a heart attack (1 / 0.71 = 1.41)."
+  },
+  {
+    "objectID": "posts/or_rr_hr/or_rr_hr.html#relative-risks",
+    "href": "posts/or_rr_hr/or_rr_hr.html#relative-risks",
+    "title": "OR/RR/HR: What’s the Difference?",
+    "section": "Relative Risks",
+    "text": "Relative Risks\nRelative risks (RR) are similar to odds ratios, however the way they are calculated are different. Using the above example, Table 1, we can calculate the relative risk. The formula for relative risk is\n\\[\nRR = (87/263) / (101/248) = 0.33/0.407 = 0.81\n\\]\nAgain, this means that men with a heart condition have a decreased risk compared to women. It is important to note here that the relative risk is specific to the study that was conducted. In our example, RR = 0.81 for the 511 people included in our study.\n\nThis is a very important distinction to make because people have varying degrees of baseline risk. As such, sometimes ORs and RRs are used interchangeably however they are distinctly different. In an upcoming post, I will elaborate on transportability."
+  },
+  {
+    "objectID": "posts/or_rr_hr/or_rr_hr.html#hazard-ratios",
+    "href": "posts/or_rr_hr/or_rr_hr.html#hazard-ratios",
+    "title": "OR/RR/HR: What’s the Difference?",
+    "section": "Hazard Ratios",
+    "text": "Hazard Ratios\nHazard ratios are typically reported from time-to-event analyses, whereas odds ratios and relative risks are calculated from binary events: yes/no. Due to this, hazards cannot be explained quite as simple using a table, however that isn’t a problem.\nA hazard is the probability that an individual has an event at that time t Clark et al. (2003). Alternatively, it represents the instantaneous event rate for an individual. This is commonly used in survival analyses, which we will touch on in a later post, however it doesn’t have to be for survival (sometimes a common misconception). The hazard is for the event. Since it is a time-to-event measure, it could be used to determine the probability that my socks will instantaneously fall off. The typical notation for a hazard is \\(h(t)\\) or \\(\\lambda(t)\\)\nAs with the previous two ratios, it is a ratio. So if we use the same heart attack example, Table 1, except this time we are analyzing the time-to-heart attack then we can calculate a hazard for each group. Unfortunately, the math is not quite as straightforward so I’ll save you the pain. Using an appropriate model, a subsequent post will touch on models for time-to-event analysis but a common methods you may have heard of is Cox Proportional Hazards Model (note: if proportional hazards assumption is held, then hazard is cumulative Clark et al. (2003).\nUsing this imaginary model, we calculated the hazard for men \\(h(men)\\) as 0.20 and the hazard for women \\(h(women)\\) as 0.369. Now, we take the ratio of these two hazards and….*I’ll pause while you roll your eyes*….bingo! We have a hazard ratio (HR):\n\\[\nHR = h(men)/h(women) = 0.20/0.369 = 0.542.\n\\]\nThe interpretation for this is that men, yet again, have a lower probability of having an instantaneous heart attack than women (HR = 0.542)."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "RWE Blog",
+    "section": "",
+    "text": "OR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About Me",
+    "section": "",
+    "text": "A few different work experiences later, I’ve been able to apply my clinical epidemiology training + LOVE of statistics + passion for math/big data to everyday life. As a result, I started my PhD in January 2021 in clinical epidemiology focusing on causal inference and real-world evidence.\n\nExperience\nI’ve had a lot of different jobs relevant to research and not so relevant to research. There has been a wide range of jobs, varying from working as an engineering student, to as an estimator, to at a Canadian hardware store chain. Research relevant experience? I’ve worked as a student, consultant, on grants, for the Public Health Agency of Canada and most recently at EVERSANA.\n\nIn my recent role, as a Biostatistician II I’ve been able to do what I love. Diving into various statistical methodologies, while working with talented people. More importantly, working with caring/nice people.\n\n\nPersonal\nOkay so you made it this far, I’m impressed! I probably wouldn’t have read it this far to be honest so props to you. I LOVE statistics, figured I’d mention it again in case you didn’t know that yet, but have outside work interests as well.\n\nI’m an avid sports fan. A Buffalo Sabres fan, which has been rough as of late and a Kansas City Chiefs fan (also kinda of rough as of late? Although recency bias is a real thing).\nI am currently living in Halifax, Nova Scotia with my wife and daughter, and appreciate a good cider. While I live in Nova Scotia, I’m originally from Newfoundland (highly recommend people visit when the weather is nice, key is when)."
+  }
+]

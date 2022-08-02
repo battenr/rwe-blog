@@ -1,0 +1,13 @@
+---
+ttitle: "Marginal vs Conditional Effects"
+author: "Ryan Batten"
+date: "2022-08-01"
+categories: [Marginal, Conditional]
+image: "regression.jpeg"
+bibliography: marginal_vs_conditional.bib
+draft: true
+---
+
+## Marginal Mean: What do you mean?
+
+## OverviewModelling
