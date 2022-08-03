@@ -1,7 +1,7 @@
 ---
 title: "Intro to Causal Inference"
 author: "Ryan Batten"
-date: "2022-07-30"
+date: "2022-08-03"
 categories: [Causal Inference, RCT, Observational Data]
 image: "cause-and-effect.jpeg"
 bibliography: causal_inference_references.bib
@@ -24,7 +24,7 @@ Prior to diving straight into the world of causal inference, we first need to se
 Keep in mind causal inference is a broad field and will be the subject of many subsequent posts, this is just an introductory post or wetting your beak if you will.
 :::
 
-### Confound It!  {#sec-confound}
+### Confound It! {#sec-confound}
 
 In order to get to the bottom of "does X cause Y?" we need to outlined some key methodological concepts. First, we need to outline what confounding is and clearly define what we mean.
 
@@ -67,12 +67,10 @@ ggdag::dagify(
 
 Randomized controlled trials are typically considered the gold standard in research. However, sometimes people forget why they are considered the gold standard. There are of course numerous reasons but I will touch on a few here. Firstly, an RCT is randomized meaning that patient's are *randomly* assigned to one of the treatment arms. In *theory,* this is to ensure that characteristics are balanced between the treatment arms. By balancing characteristics, in theory, both observed and unobserved confounders are equal between the groups, making them exchangeable (aka similar).
 
-:::{.callout-note}
-
+::: callout-note
 Random is important to note here. There are different methods which are truly random, such as a random number generator, while there are others that are not.
 
 For example, if you were picking players for a baseball team and wanted to assign people to two teams, team A & team B, how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.
-
 :::
 
 Another key strength of RCTs, is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants and that all participants will receive the same treatment. Furthermore, one participant receiving a treatment won't affect the other participant receiving treatment.
@@ -95,10 +93,8 @@ Real-life is very complicated. For any method or analysis, such as designing a h
 
 -   No interference
 
-:::{.callout-note}
-
+::: callout-note
 Collectively, consistency, no versions of treatment and no interference have been referred to as the stable-unit-treatment-value assumption (SUTVA) [@hernan2012beyond].
-
 :::
 
 Let's break down these assumptions down one by one.
@@ -107,10 +103,8 @@ Let's break down these assumptions down one by one.
 
 Remember confounding from earlier? Well that pesky bias is back again to haunt us.
 
-:::{.callout-note}
-
+::: callout-note
 Recommend to pause here and re-read @sec-confound if needed
-
 :::
 
 The goal, although not always, of a lot of research is to compare two different exposures. An exposure could be a treatment, for example drug A to placebo, or to compare purple Popsicle eaters with water drinkers. An example always helps.
@@ -146,15 +140,15 @@ sex.water.drink %>% count(sex)
 
 ```
 
-+----------------------+-------------------------+-----------------------+
-| Demographic Variable | Purple Popsicle Eaters  | Water Drinkers        |
-|                      |                         |                       |
-|                      | (n = 250)               | (n = 341)             |
-+:====================:+:=======================:+:=====================:+
-| Age, mean (SD)       | 9.18 (3.39)             | 42.58 (22.03)         |
-+----------------------+-------------------------+-----------------------+
-| Female, n (%)        | 190 (76.0%)             | 145 (42.5%)           |
-+----------------------+-------------------------+-----------------------+
++----------------------+------------------------+-----------------------+
+| Demographic Variable | Purple Popsicle Eaters | Water Drinkers        |
+|                      |                        |                       |
+|                      | (n = 250)              | (n = 341)             |
++:====================:+:======================:+:=====================:+
+| Age, mean (SD)       | 9.18 (3.39)            | 42.58 (22.03)         |
++----------------------+------------------------+-----------------------+
+| Female, n (%)        | 190 (76.0%)            | 145 (42.5%)           |
++----------------------+------------------------+-----------------------+
 
 : Purple Popsicle Eaters vs Water Drinkers: Demographic Characteristics {#tbl-demo}
 
@@ -162,22 +156,36 @@ sex.water.drink %>% count(sex)
 
 Your inclination was right. These two groups are quite different and may vary in more ways than what is shown. This lack of similarity could be reworded as a lack of exchangeability. Luckily, there are fancy stats methods to fix this, which will be the topic of other posts.
 
-:::{.callout-important}
-
+::: callout-important
 While we can adjust for observed confounding, it is not possible to adjust for unobserved confounding. We simply don't know about it, for example how many people in each group enjoy the taste of grape crush.
-
 :::
 
 ### Positivity
 
-Positivity refers to the condition that
+Positivity refers to the condition that every individual has a greater than 0 probability of being assigned to each of the treatment levels (@RN509, pp. 30). Logically, this makes sense because if we think about our purple Popsicle eaters and water drinks, if someone in that group had a less than 0 probability they couldn't possibly be in that group!
 
-### Consistency
+### Consistency  {sec-consistency=""}
+
+Consistency means that the observed outcome for every treated individual equals her outcome if she received treatment and that the observed outcome for every untreated individual equals her outcome if she had remained untreated, that is $Y^a = Y$ for every individual with $A = a$ (@RN509, pp. 31).
+
+On the surface, this seems intuitive but lets dive a little deeper. There are two components to consistency:
+
+1.  A precise definition of the counterfactual outcome $Y^a$ via a detailed specification of the superscript $a$
+
+2.  Linkage of the counterfactual outcomes to the observed outcomes
+
+The first bullet point is we essentially want to have a well defined intervention. If we think back to our purple Popsicles, we want to make sure that it is the same size, shape, brand that each participant receives. Doing this allows us to make sure that each participant is getting the same treatment.
+
+For the second bullet point, remember we are using observational data for our purple Popsicle eaters. We have to make sure that for the analysis, we only treat people receiving our intervention (purple Popsicle eaters) as treated, or as popsicle eaters, and the others as not popsicle eaters.
 
 ### No Versions of Treatment
 
+As discussed in @sec-consistency, we cannot have multiple versions of the same treatment. This would muddy our findings if we were giving different people different popsicles. Plus, this would make it hard to determine the effect of purple Popsicles on hunger. Imagine, you gave some people a much bigger Popsicle than others. Of course they'd be less hungry!
+
 ### No Interference
+
+Interference here refers to the interference of the exposure. Exposure could be treatment, infectious disease or Popsicles. For our example, and most examples in this blog, the condition of no interference will be assumed to be met. Examples where this is not met is infectious disease studies (@RN509).
 
 ## When to use Cause
 
-If these assumptions hold, then we can use the term cause!
+Finally, all we wanted to do was get to use the word cause! Why? Be**cause** it's important to use. If the above conditions hold, three main ones: exchangeability, positivity and consistency, then you can use the term cause. Besides, wouldn't you want to know if Popsicles caused hunger?
