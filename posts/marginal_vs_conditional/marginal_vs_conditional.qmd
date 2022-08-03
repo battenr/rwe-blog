@@ -10,4 +10,20 @@ draft: true
 
 ## Marginal Mean: What do you mean?
 
-## OverviewModelling
+## 2x2 Table
+
+First, lets start with a 2x2 table. It could be of anything really, but let's imagine we have two groups of people
+
+```{r, include = FALSE}
+
+set.seed(2022)
+
+n.bg <- runif()
+
+```
+
+|              | Bubble Gum Chewers | Tobacco Chewers |
+|--------------|--------------------|-----------------|
+| Sore Jaw     |                    |                 |
+| Not Sore Jaw |                    |                 |
+|              |                    |                 |

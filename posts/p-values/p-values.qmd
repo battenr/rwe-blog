@@ -10,8 +10,25 @@ draft: true
 
 ## P-Values Explained
 
-P-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted.
+P-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted. The p in p-value stands for probability, as a lot of statistics begins with. What exactly does it tell us? Let's find out
 
 ## Normal Distribution
 
-##  
+To begin, we need to start with some data. Who doesn't love data right?
+
+```{r}
+
+library(tidyverse)
+
+df <- rnorm(1000, mean = 30, sd = 10) %>% as.data.frame()
+
+df$x <- df$.
+
+ggplot(data = df, mapping = aes(x = x) ) + 
+  geom_density() +
+  theme_minimal() + 
+  
+
+```
+
+## 

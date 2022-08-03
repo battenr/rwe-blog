@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/causal_inference_post/causal_inference.html",
       "/posts/or_rr_hr/or_rr_hr.html",
       "/posts/welcome/welcome.html"
     ]

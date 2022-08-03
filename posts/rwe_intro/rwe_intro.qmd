@@ -1,8 +1,8 @@
 ---
-title: "Intro to Causal Inference"
+title: "Intro to Real-World Evidence"
 author: "Ryan Batten"
 date: "2022-08-03"
-categories: [Causal Inference, RCT, Observational Data]
+categories: [RWE, Observational Data]
 image: "cause-and-effect.jpeg"
 bibliography: causal_inference_references.bib
 draft: true
@@ -73,15 +73,15 @@ Random is important to note here. There are different methods which are truly ra
 For example, if you were picking players for a baseball team and wanted to assign people to two teams, team A & team B, how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.
 :::
 
-Another key strength of RCTs, is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants and that all participants will receive the same treatment. Furthermore, one participant receiving a treatment won't affect the other participant receiving treatment.
+Another key strength of RCTs is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants and that all participants will receive the same treatment. Furthermore, one participant receiving a treatment won't affect the other participant receiving treatment. It is also worth noting here that all participants in a RCT will receive some form of exposure (typically either treatment or placebo).
 
 ### Observational Data
 
-Observational data in research often gets a bad wrap. The gold standard is randomized controlled trials (RCTs), however often times people forget why this is. RCTs provide
+Observational data in research often gets a bad wrap. Since the gold standard is a RCT, people often view observational data as second-tier compared to an RCT. However, it all depends on how well the study is conducted. If the study is conducted rigorously, which is subjective but we will elaborate more below, then a study using observational data can be almost as good as an RCT.
 
 ## Conditions Required for Causal Inference
 
-Real-life is very complicated. For any method or analysis, such as designing a house, assumptions are required. This is is no different for causal inference. Key assumptions for causal inference include:
+Real-life is very complicated. For any method or analysis, such as designing a house, assumptions are required. This is is no different for causal inference. Key assumptions for causal inference include [@hernan2012beyond]:
 
 -   Exchangeability
 
@@ -109,7 +109,7 @@ Recommend to pause here and re-read @sec-confound if needed
 
 The goal, although not always, of a lot of research is to compare two different exposures. An exposure could be a treatment, for example drug A to placebo, or to compare purple Popsicle eaters with water drinkers. An example always helps.
 
-Let's pretend we want to compare popsicle eaters with water drinkers, to see if there is a difference in who is hungrier. Using an existing database of hungry people, we decide we want to compare these two groups of people. In the database, there are `r 250+341` people who have reported hunger.
+Let's pretend we want to compare purple Popsicle eaters with water drinkers, to see if there is a difference in who is hungrier. Using an existing database of hungry people, we decide we want to compare these two groups of people. In the database, there are `r 250+341` people who have reported hunger.
 
 ```{r, include = FALSE}
 
@@ -152,7 +152,7 @@ sex.water.drink %>% count(sex)
 
 : Purple Popsicle Eaters vs Water Drinkers: Demographic Characteristics {#tbl-demo}
 
-@tbl-demo shows the average age and proportion of females in each of the two groups. Now, after looking at these two groups, you may think to yourself "Wait a minute...water drinks on average are 42 while purple popsicle eaters are an average age of 9? These can't possible be compared".
+@tbl-demo shows the average age and proportion of females in each of the two groups. Now, after looking at these two groups, you may think to yourself "Wait a minute...water drinks on average are 42 while purple Popsicle eaters are an average age of 9? These can't possibly be compared!".
 
 Your inclination was right. These two groups are quite different and may vary in more ways than what is shown. This lack of similarity could be reworded as a lack of exchangeability. Luckily, there are fancy stats methods to fix this, which will be the topic of other posts.
 
@@ -164,23 +164,23 @@ While we can adjust for observed confounding, it is not possible to adjust for u
 
 Positivity refers to the condition that every individual has a greater than 0 probability of being assigned to each of the treatment levels (@RN509, pp. 30). Logically, this makes sense because if we think about our purple Popsicle eaters and water drinks, if someone in that group had a less than 0 probability they couldn't possibly be in that group!
 
-### Consistency  {sec-consistency=""}
+### Consistency {#sec-consis}
 
 Consistency means that the observed outcome for every treated individual equals her outcome if she received treatment and that the observed outcome for every untreated individual equals her outcome if she had remained untreated, that is $Y^a = Y$ for every individual with $A = a$ (@RN509, pp. 31).
 
 On the surface, this seems intuitive but lets dive a little deeper. There are two components to consistency:
 
-1.  A precise definition of the counterfactual outcome $Y^a$ via a detailed specification of the superscript $a$
+1.  A precise definition of the counterfactual outcome $Y^a$ via a detailed specification of the superscript $a$ ( @RN509
 
-2.  Linkage of the counterfactual outcomes to the observed outcomes
+2.  Linkage of the counterfactual outcomes to the observed outcomes ( @RN509)
 
-The first bullet point is we essentially want to have a well defined intervention. If we think back to our purple Popsicles, we want to make sure that it is the same size, shape, brand that each participant receives. Doing this allows us to make sure that each participant is getting the same treatment.
+The first bullet point is we essentially want to have a well defined intervention. If we think back to our purple Popsicles, we want to make sure that it is the same size, shape and brand that each participant receives. Doing this allows us to make sure that each participant is getting the same treatment.
 
-For the second bullet point, remember we are using observational data for our purple Popsicle eaters. We have to make sure that for the analysis, we only treat people receiving our intervention (purple Popsicle eaters) as treated, or as popsicle eaters, and the others as not popsicle eaters.
+For the second bullet point, remember we are using observational data for our purple Popsicle eaters. We have to make sure that for the analysis, we only treat people receiving our intervention (purple Popsicle eaters) as treated, or as Popsicle eaters, and the others as not Popsicle eaters.
 
 ### No Versions of Treatment
 
-As discussed in @sec-consistency, we cannot have multiple versions of the same treatment. This would muddy our findings if we were giving different people different popsicles. Plus, this would make it hard to determine the effect of purple Popsicles on hunger. Imagine, you gave some people a much bigger Popsicle than others. Of course they'd be less hungry!
+As discussed in @sec-consis, we cannot have multiple versions of the same treatment. This would muddy our findings if we were giving different people different Popsicle. Plus, this would make it hard to determine the effect of purple Popsicles on hunger. Imagine, you gave some people a much bigger Popsicle than others. Of course they'd be less hungry!
 
 ### No Interference
 

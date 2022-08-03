@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-07-30">
+<meta name="dcterms.date" content="2022-08-03">
 
 <title>Ryan’s Real-World Experience - Intro to Causal Inference</title>
 <style>
@@ -139,7 +139,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 30, 2022</p>
+        <p class="date">August 3, 2022</p>
       </div>
     </div>
       
@@ -212,16 +212,16 @@ Note
 <p>For example, if you were picking players for a baseball team and wanted to assign people to two teams, team A &amp; team B, how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.</p>
 </div>
 </div>
-<p>Another key strength of RCTs, is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants and that all participants will receive the same treatment. Furthermore, one participant receiving a treatment won’t affect the other participant receiving treatment.</p>
+<p>Another key strength of RCTs is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants and that all participants will receive the same treatment. Furthermore, one participant receiving a treatment won’t affect the other participant receiving treatment. It is also worth noting here that all participants in a RCT will receive some form of exposure (typically either treatment or placebo).</p>
 </section>
 <section id="observational-data" class="level3">
 <h3 class="anchored" data-anchor-id="observational-data">Observational Data</h3>
-<p>Observational data in research often gets a bad wrap. The gold standard is randomized controlled trials (RCTs), however often times people forget why this is. RCTs provide</p>
+<p>Observational data in research often gets a bad wrap. Since the gold standard is a RCT, people often view observational data as second-tier compared to an RCT. However, it all depends on how well the study is conducted. If the study is conducted rigorously, which is subjective but we will elaborate more below, then a study using observational data can be almost as good as an RCT.</p>
 </section>
 </section>
 <section id="conditions-required-for-causal-inference" class="level2">
 <h2 class="anchored" data-anchor-id="conditions-required-for-causal-inference">Conditions Required for Causal Inference</h2>
-<p>Real-life is very complicated. For any method or analysis, such as designing a house, assumptions are required. This is is no different for causal inference. Key assumptions for causal inference include:</p>
+<p>Real-life is very complicated. For any method or analysis, such as designing a house, assumptions are required. This is is no different for causal inference. Key assumptions for causal inference include <span class="citation" data-cites="hernan2012beyond">(<a href="#ref-hernan2012beyond" role="doc-biblioref">Hernán 2012</a>)</span>:</p>
 <ul>
 <li><p>Exchangeability</p></li>
 <li><p>Positivity</p></li>
@@ -260,7 +260,7 @@ Note
 </div>
 </div>
 <p>The goal, although not always, of a lot of research is to compare two different exposures. An exposure could be a treatment, for example drug A to placebo, or to compare purple Popsicle eaters with water drinkers. An example always helps.</p>
-<p>Let’s pretend we want to compare popsicle eaters with water drinkers, to see if there is a difference in who is hungrier. Using an existing database of hungry people, we decide we want to compare these two groups of people. In the database, there are 591 people who have reported hunger.</p>
+<p>Let’s pretend we want to compare purple Popsicle eaters with water drinkers, to see if there is a difference in who is hungrier. Using an existing database of hungry people, we decide we want to compare these two groups of people. In the database, there are 591 people who have reported hunger.</p>
 <div id="tbl-demo" class="anchored">
 <table class="table">
 <caption>Table 1: Purple Popsicle Eaters vs Water Drinkers: Demographic Characteristics</caption>
@@ -292,7 +292,7 @@ Note
 </tbody>
 </table>
 </div>
-<p><a href="#tbl-demo">Table&nbsp;1</a> shows the average age and proportion of females in each of the two groups. Now, after looking at these two groups, you may think to yourself “Wait a minute…water drinks on average are 42 while purple popsicle eaters are an average age of 9? These can’t possible be compared”.</p>
+<p><a href="#tbl-demo">Table&nbsp;1</a> shows the average age and proportion of females in each of the two groups. Now, after looking at these two groups, you may think to yourself “Wait a minute…water drinks on average are 42 while purple Popsicle eaters are an average age of 9? These can’t possibly be compared!”.</p>
 <p>Your inclination was right. These two groups are quite different and may vary in more ways than what is shown. This lack of similarity could be reworded as a lack of exchangeability. Luckily, there are fancy stats methods to fix this, which will be the topic of other posts.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -312,29 +312,29 @@ Important
 <h3 class="anchored" data-anchor-id="positivity">Positivity</h3>
 <p>Positivity refers to the condition that every individual has a greater than 0 probability of being assigned to each of the treatment levels (<span class="citation" data-cites="RN509">Hernan and Robins (<a href="#ref-RN509" role="doc-biblioref">2021</a>)</span>, pp.&nbsp;30). Logically, this makes sense because if we think about our purple Popsicle eaters and water drinks, if someone in that group had a less than 0 probability they couldn’t possibly be in that group!</p>
 </section>
-<section id="consistency" class="level3" data-sec-consistency="">
-<h3 data-sec-consistency="" class="anchored" data-anchor-id="consistency">Consistency</h3>
+<section id="sec-consis" class="level3">
+<h3 class="anchored" data-anchor-id="sec-consis">Consistency</h3>
 <p>Consistency means that the observed outcome for every treated individual equals her outcome if she received treatment and that the observed outcome for every untreated individual equals her outcome if she had remained untreated, that is <span class="math inline">\(Y^a = Y\)</span> for every individual with <span class="math inline">\(A = a\)</span> (<span class="citation" data-cites="RN509">Hernan and Robins (<a href="#ref-RN509" role="doc-biblioref">2021</a>)</span>, pp.&nbsp;31).</p>
 <p>On the surface, this seems intuitive but lets dive a little deeper. There are two components to consistency:</p>
 <ol type="1">
-<li><p>A precise definition of the counterfactual outcome <span class="math inline">\(Y^a\)</span> via a detailed specification of the superscript <span class="math inline">\(a\)</span></p></li>
-<li><p>Linkage of the counterfactual outcomes to the observed outcomes</p></li>
+<li><p>A precise definition of the counterfactual outcome <span class="math inline">\(Y^a\)</span> via a detailed specification of the superscript <span class="math inline">\(a\)</span> ( <span class="citation" data-cites="RN509">Hernan and Robins (<a href="#ref-RN509" role="doc-biblioref">2021</a>)</span></p></li>
+<li><p>Linkage of the counterfactual outcomes to the observed outcomes ( <span class="citation" data-cites="RN509">Hernan and Robins (<a href="#ref-RN509" role="doc-biblioref">2021</a>)</span>)</p></li>
 </ol>
-<p>The first bullet point is we essentially want to have a well defined intervention. If we think back to our purple Popsicles, we want to make sure that it is the same size, shape, brand that each participant receives. Doing this allows us to make sure that each participant is getting the same treatment.</p>
-<p>For the second bullet point, remember we are using observational data for our purple Popsicle eaters. We have to make sure that for the analysis, we only treat people receiving our intervention (purple Popsicle eaters) as treated, or as popsicle eaters, and the others as not popsicle eaters.</p>
+<p>The first bullet point is we essentially want to have a well defined intervention. If we think back to our purple Popsicles, we want to make sure that it is the same size, shape and brand that each participant receives. Doing this allows us to make sure that each participant is getting the same treatment.</p>
+<p>For the second bullet point, remember we are using observational data for our purple Popsicle eaters. We have to make sure that for the analysis, we only treat people receiving our intervention (purple Popsicle eaters) as treated, or as Popsicle eaters, and the others as not Popsicle eaters.</p>
 </section>
 <section id="no-versions-of-treatment" class="level3">
 <h3 class="anchored" data-anchor-id="no-versions-of-treatment">No Versions of Treatment</h3>
-<p>As discussed in <strong>?@sec-consistency</strong>, we cannot have multiple versions of the same treatment. This would muddy our findings if we were giving different people different popsicles. Plus, this would make it hard to determine the effect of purple Popsicles on hunger. Imagine, you gave some people a much bigger Popsicle than others. Of course they’d be less hungry!</p>
+<p>As discussed in <a href="#sec-consis">Section&nbsp;3.3</a>, we cannot have multiple versions of the same treatment. This would muddy our findings if we were giving different people different Popsicle. Plus, this would make it hard to determine the effect of purple Popsicles on hunger. Imagine, you gave some people a much bigger Popsicle than others. Of course they’d be less hungry!</p>
 </section>
 <section id="no-interference" class="level3">
 <h3 class="anchored" data-anchor-id="no-interference">No Interference</h3>
-<p>Interference here refers to the</p>
+<p>Interference here refers to the interference of the exposure. Exposure could be treatment, infectious disease or Popsicles. For our example, and most examples in this blog, the condition of no interference will be assumed to be met. Examples where this is not met is infectious disease studies (<span class="citation" data-cites="RN509">Hernan and Robins (<a href="#ref-RN509" role="doc-biblioref">2021</a>)</span>).</p>
 </section>
 </section>
 <section id="when-to-use-cause" class="level2">
 <h2 class="anchored" data-anchor-id="when-to-use-cause">When to use Cause</h2>
-<p>If these assumptions hold, then we can use the term cause!</p>
+<p>Finally, all we wanted to do was get to use the word cause! Why? Be<strong>cause</strong> it’s important to use. If the above conditions hold, three main ones: exchangeability, positivity and consistency, then you can use the term cause. Besides, wouldn’t you want to know if Popsicles caused hunger?</p>
 
 
 
