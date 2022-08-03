@@ -17,69 +17,6 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
@@ -182,7 +119,8 @@ div.csl-indent {
       <h1 class="title">Intro to Causal Inference</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Causal Inference</div>
-                <div class="quarto-category">DAG</div>
+                <div class="quarto-category">RCT</div>
+                <div class="quarto-category">Observational Data</div>
               </div>
                   </div>
   </div>
@@ -226,7 +164,7 @@ From introductory science, as scientists, we are taught that correlation doesn�
 </section>
 <section id="common-ground" class="level2">
 <h2 class="anchored" data-anchor-id="common-ground">Common Ground</h2>
-<p>Prior to diving straight into the world of causal inference, we first need to set some common ground rules. Think of these rules as common terminology so we can all get on the same page.</p>
+<p>Prior to diving straight into the world of causal inference, we first need to set some common ground rules.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -240,21 +178,40 @@ Note
 <p>Keep in mind causal inference is a broad field and will be the subject of many subsequent posts, this is just an introductory post or wetting your beak if you will.</p>
 </div>
 </div>
-<section id="confound-it" class="level3">
-<h3 class="anchored" data-anchor-id="confound-it">Confound It!</h3>
+<section id="sec-confound" class="level3">
+<h3 class="anchored" data-anchor-id="sec-confound">Confound It!</h3>
 <p>In order to get to the bottom of “does X cause Y?” we need to outlined some key methodological concepts. First, we need to outline what confounding is and clearly define what we mean.</p>
 <p>Different disciplines used different terminology, however confounding in clinical epidemiology refers to a variable that impacts both the exposure (i.e., smoking) and outcome (i.e., lung cancer). A useful way to visualize this is using directed acyclic graphs (DAGs). I’ll defer to <span class="citation" data-cites="RN509">Hernan and Robins (<a href="#ref-RN509" role="doc-biblioref">2021</a>)</span> for more detail about DAGs. However, the below illustrates what confounding is.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="causal_inference_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<div id="fig-confound" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="causal_inference_files/figure-html/fig-confound-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure 1: Coffee Drinkers, Smoking and Lung Cancer.</figcaption><p></p>
+</figure>
 </div>
 </div>
+</div>
+<p><a href="#fig-confound">Figure&nbsp;1</a> shows that coffee drinkers are associated with smoking. Logically, this makes sense because many smokers enjoy a cup of coffee with their cigarette. In fact, a lot of people enjoy coffee. A group of these people who are coffee lovers may also develop lung cancer. Based on this, you could say that people who drink coffee develop lung cancer. The question is, is this true? Or is it just that a lot of people like drinking coffee? Confounding bias, makes it difficult to tease out what coffee actually causes.</p>
 </section>
 <section id="randomized-controlled-trials-rcts" class="level3">
 <h3 class="anchored" data-anchor-id="randomized-controlled-trials-rcts">Randomized Controlled Trials (RCTs)</h3>
-<p>Randomized controlled trials are considered the gold standard in research, and rightfully so. However, sometimes people forget why they are considered the gold standard. There are of course numerous reasons but I will touch on a few here</p>
-<p>Firstly, an RCT is randomized meaning that patient’s are <code>randomly</code> assigned to one of the treatment arms. For example, if you were picking players for a baseball team and wanted to people to two teams, team A &amp; team B how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.</p>
-<p>The key for <code>randomly</code></p>
+<p>Randomized controlled trials are typically considered the gold standard in research. However, sometimes people forget why they are considered the gold standard. There are of course numerous reasons but I will touch on a few here. Firstly, an RCT is randomized meaning that patient’s are <em>randomly</em> assigned to one of the treatment arms. In <em>theory,</em> this is to ensure that characteristics are balanced between the treatment arms. By balancing characteristics, in theory, both observed and unobserved confounders are equal between the groups, making them exchangeable (aka equal).</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Random is important to note here. There are different methods which are truly random, such as a random number generator, while there are others that are not.</p>
+<p>For example, if you were picking players for a baseball team and wanted to assign people to two teams, team A &amp; team B, how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.</p>
+</div>
+</div>
+<p>Another key strength of RCTs, is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants.</p>
 </section>
 <section id="observational-data" class="level3">
 <h3 class="anchored" data-anchor-id="observational-data">Observational Data</h3>
@@ -263,27 +220,103 @@ Note
 </section>
 <section id="assumptions-required-for-causal-inference" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-required-for-causal-inference">Assumptions Required for Causal Inference</h2>
-<p>There are three key assumptions required for causal inference: exchangeability,</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<p>Real-life is very complicated. For any method or analysis, such as designing a house, assumptions are required. This is is no different for causal inference. Key assumptions for causal inference include:</p>
+<ul>
+<li><p>Exchangeability</p></li>
+<li><p>Positivity</p></li>
+<li><p>Consistency</p></li>
+<li><p>No versions of treatment</p></li>
+<li><p>No interference</p></li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>Collectively, consistency, no versions of treatment and no interference have been referred to as the stable-unit-treatment-value assumption (SUTVA) <span class="citation" data-cites="hernan2012beyond">(<a href="#ref-hernan2012beyond" role="doc-biblioref">Hernán 2012</a>)</span>.</p>
+</div>
+</div>
+<p>Let’s break down these assumptions down one by one.</p>
+<section id="exchangeability" class="level3">
+<h3 class="anchored" data-anchor-id="exchangeability">Exchangeability</h3>
+<p>Remember confounding from earlier? Well that pesky bias is back again to haunt us.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recommend to pause here and re-read <a href="#sec-confound">Section&nbsp;2.1</a> if needed</p>
+</div>
+</div>
+<p>The goal, although not always, of a lot of RCTs is to compare two treatments, for example drug A to placebo or to compare purple Popsicle eaters with water drinkers. An example always helps.</p>
+<p>Let’s pretend we want to compare popsicle eaters with water drinkers, to see if there is a difference in who is hungrier. Conducting our very own RCT, we enroll 591</p>
+<table class="table">
+<caption>Purple Popsicle Eaters vs Water Drinkers: Demographic Characteristics</caption>
+<colgroup>
+<col style="width: 30%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Demographic Variable</th>
+<th style="text-align: center;"><p>Purple Popsicle Eaters</p>
+(n = 250)</th>
+<th style="text-align: center;"><p>Water Drinkers</p>
+(n = 341)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Age, mean (SD)</td>
+<td style="text-align: center;">9.18 (3.39)</td>
+<td style="text-align: center;">42.58 (22.03)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Female, n (%)</td>
+<td style="text-align: center;">190 (76.0%)</td>
+<td style="text-align: center;">145 (42.5%)</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="assumptions-required" class="level2">
-<h2 class="anchored" data-anchor-id="assumptions-required">Assumptions Required</h2>
+<section id="positivity" class="level3">
+<h3 class="anchored" data-anchor-id="positivity">Positivity</h3>
 </section>
-<section id="assumptions-for-causal-inference" class="level1">
-
+<section id="consistency" class="level3">
+<h3 class="anchored" data-anchor-id="consistency">Consistency</h3>
+</section>
+<section id="no-versions-of-treatment" class="level3">
+<h3 class="anchored" data-anchor-id="no-versions-of-treatment">No Versions of Treatment</h3>
+</section>
+<section id="no-interference" class="level3">
+<h3 class="anchored" data-anchor-id="no-interference">No Interference</h3>
+</section>
+</section>
+<section id="when-to-use-cause" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-cause">When to use Cause</h2>
+<p>If these assumptions hold, then we can use the term cause!</p>
 
 
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">Assumptions for Causal Inference</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-RN509" class="csl-entry" role="doc-biblioentry">
 Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
+</div>
+<div id="ref-hernan2012beyond" class="csl-entry" role="doc-biblioentry">
+Hernán, Miguel A. 2012. <span>“Beyond Exchangeability: The Other Conditions for Causal Inference in Medical Research.”</span> <em>Statistical Methods in Medical Research</em>. Sage Publications Sage UK: London, England.
 </div>
 <div id="ref-RN816" class="csl-entry" role="doc-biblioentry">
 Stellman, S. D., T. Takezaki, L. Wang, Y. Chen, M. L. Citron, M. V. Djordjevic, S. Harlap, et al. 2001. <span>“Smoking and Lung Cancer Risk in American and Japanese Men: An International Case-Control Study.”</span> Journal Article. <em>Cancer Epidemiol Biomarkers Prev</em> 10 (11): 1193–99. <a href="https://www.ncbi.nlm.nih.gov/pubmed/11700268">https://www.ncbi.nlm.nih.gov/pubmed/11700268</a>.

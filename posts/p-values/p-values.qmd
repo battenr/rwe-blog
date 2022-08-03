@@ -1,0 +1,17 @@
+---
+ttitle: "P-Values Explained"
+author: "Ryan Batten"
+date: "2022-08-02"
+categories: [P-Values, Hypothesis Tests]
+image: "regression.jpeg"
+bibliography: p-value_references.bib
+draft: true
+---
+
+## P-Values Explained
+
+P-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted.
+
+## Normal Distribution
+
+##  

@@ -2,7 +2,7 @@
 title: "Intro to Causal Inference"
 author: "Ryan Batten"
 date: "2022-07-30"
-categories: [Causal Inference, DAG]
+categories: [Causal Inference, RCT, Observational Data]
 image: "cause-and-effect.jpeg"
 bibliography: causal_inference_references.bib
 draft: true
@@ -18,32 +18,37 @@ Now there are two ways to interpret this. On one hand, if we were a tobacco comp
 
 ## Common Ground
 
-Prior to diving straight into the world of causal inference, we first need to set some common ground rules. Think of these rules as common terminology so we can all get on the same page.
+Prior to diving straight into the world of causal inference, we first need to set some common ground rules.
 
 ::: callout-note
 Keep in mind causal inference is a broad field and will be the subject of many subsequent posts, this is just an introductory post or wetting your beak if you will.
 :::
 
-### Confound It!
+### Confound It!  {#sec-confound}
 
 In order to get to the bottom of "does X cause Y?" we need to outlined some key methodological concepts. First, we need to outline what confounding is and clearly define what we mean.
 
 Different disciplines used different terminology, however confounding in clinical epidemiology refers to a variable that impacts both the exposure (i.e., smoking) and outcome (i.e., lung cancer). A useful way to visualize this is using directed acyclic graphs (DAGs). I'll defer to @RN509 for more detail about DAGs. However, the below illustrates what confounding is.
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
+#| label: fig-confound
+#| fig-cap: Coffee Drinkers, Smoking and Lung Cancer.
+#| warning: false
 
 library(ggdag)
 library(tidyverse)
 
 ggdag::dagify(
-  coffee ~ lung_cancer,
-  lung_cancer ~ smokers, 
   smokers ~ coffee,
-  lung_cancer ~ coffee,
+  lungcancer ~ coffee,
   exposure = "smokers", 
-  outcome = "lung_cancer"
+  outcome = "lungcancer",
+  labels = c("lungcancer" = "Lung\n Cancer",
+             "smokers" = "Smoking",
+             "coffee" = "Coffee\nDrinkers"
+  )
 ) %>% 
-  ggdag::ggdag(layout = "circle") +
+  ggdag::ggdag(text = FALSE, use_labels = "label", layout = "circle") +
   theme_minimal() +
   theme(
     text = element_text(size = 25),
@@ -53,28 +58,126 @@ ggdag::dagify(
     panel.grid.minor = element_blank()
   )
 
+
 ```
+
+@fig-confound shows that coffee drinkers are associated with smoking. Logically, this makes sense because many smokers enjoy a cup of coffee with their cigarette. In fact, a lot of people enjoy coffee. A group of these people who are coffee lovers may also develop lung cancer. Based on this, you could say that people who drink coffee develop lung cancer. The question is, is this true? Or is it just that a lot of people like drinking coffee? Confounding bias, makes it difficult to tease out what coffee actually causes.
 
 ### Randomized Controlled Trials (RCTs)
 
-Randomized controlled trials are considered the gold standard in research, and rightfully so. However, sometimes people forget why they are considered the gold standard. There are of course numerous reasons but I will touch on a few here
+Randomized controlled trials are typically considered the gold standard in research. However, sometimes people forget why they are considered the gold standard. There are of course numerous reasons but I will touch on a few here. Firstly, an RCT is randomized meaning that patient's are *randomly* assigned to one of the treatment arms. In *theory,* this is to ensure that characteristics are balanced between the treatment arms. By balancing characteristics, in theory, both observed and unobserved confounders are equal between the groups, making them exchangeable (aka similar).
 
-Firstly, an RCT is randomized meaning that patient's are `randomly` assigned to one of the treatment arms. For example, if you were picking players for a baseball team and wanted to people to two teams, team A & team B how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.
+:::{.callout-note}
 
-The key for `randomly`
+Random is important to note here. There are different methods which are truly random, such as a random number generator, while there are others that are not.
+
+For example, if you were picking players for a baseball team and wanted to assign people to two teams, team A & team B, how would you do it? Based on the color shirt they are wearing, hair color, eye color? None of those methods would be random.
+
+:::
+
+Another key strength of RCTs, is the nature of the intervention. For example, a well designed RCT will be very clear about what treatment is received by the participants and that all participants will receive the same treatment. Furthermore, one participant receiving a treatment won't affect the other participant receiving treatment.
 
 ### Observational Data
 
 Observational data in research often gets a bad wrap. The gold standard is randomized controlled trials (RCTs), however often times people forget why this is. RCTs provide
 
-## Assumptions Required for Causal Inference
+## Conditions Required for Causal Inference
 
-There are three key assumptions required for causal inference: exchangeability,
+Real-life is very complicated. For any method or analysis, such as designing a house, assumptions are required. This is is no different for causal inference. Key assumptions for causal inference include:
 
-```{r}
-1 + 1
+-   Exchangeability
+
+-   Positivity
+
+-   Consistency
+
+-   No versions of treatment
+
+-   No interference
+
+:::{.callout-note}
+
+Collectively, consistency, no versions of treatment and no interference have been referred to as the stable-unit-treatment-value assumption (SUTVA) [@hernan2012beyond].
+
+:::
+
+Let's break down these assumptions down one by one.
+
+### Exchangeability
+
+Remember confounding from earlier? Well that pesky bias is back again to haunt us.
+
+:::{.callout-note}
+
+Recommend to pause here and re-read @sec-confound if needed
+
+:::
+
+The goal, although not always, of a lot of research is to compare two different exposures. An exposure could be a treatment, for example drug A to placebo, or to compare purple Popsicle eaters with water drinkers. An example always helps.
+
+Let's pretend we want to compare popsicle eaters with water drinkers, to see if there is a difference in who is hungrier. Using an existing database of hungry people, we decide we want to compare these two groups of people. In the database, there are `r 250+341` people who have reported hunger.
+
+```{r, include = FALSE}
+
+set.seed(2022) # setting seed for reproducibility
+
+n.purple.pop <- runif(1, min = 30, max = 300) # determining n for pp group
+n.water.drinks <- runif(1, min = 50, max = 500) # determining n for wd group
+
+age.purple.pop <- runif(n = 250, min = 3, max = 15) # simulating age for pp group
+age.water.drinks <- runif(n = 341, min = 5, max = 80) # simulating age for wd group
+
+# mean & age for each of the groups
+
+cbind(mean(age.purple.pop), sd(age.purple.pop))
+cbind(mean(age.water.drinks), sd(age.water.drinks))
+
+# Sex for each of the groups. Using 0 as female, 1 as male
+
+sex.purple.pop <- rbinom(n = 250, size = 1, prob = 0.30) %>% as.data.frame()
+sex.purple.pop$sex <- sex.purple.pop$.
+
+sex.purple.pop %>% count(sex)
+
+sex.water.drink <- rbinom(n = 341, size = 1, prob = 0.56) %>% as.data.frame()
+sex.water.drink$sex <- sex.water.drink$.
+
+sex.water.drink %>% count(sex)
+
 ```
 
-## Assumptions Required
++----------------------+-------------------------+-----------------------+
+| Demographic Variable | Purple Popsicle Eaters  | Water Drinkers        |
+|                      |                         |                       |
+|                      | (n = 250)               | (n = 341)             |
++:====================:+:=======================:+:=====================:+
+| Age, mean (SD)       | 9.18 (3.39)             | 42.58 (22.03)         |
++----------------------+-------------------------+-----------------------+
+| Female, n (%)        | 190 (76.0%)             | 145 (42.5%)           |
++----------------------+-------------------------+-----------------------+
 
-# Assumptions for Causal Inference
+: Purple Popsicle Eaters vs Water Drinkers: Demographic Characteristics {#tbl-demo}
+
+@tbl-demo shows the average age and proportion of females in each of the two groups. Now, after looking at these two groups, you may think to yourself "Wait a minute...water drinks on average are 42 while purple popsicle eaters are an average age of 9? These can't possible be compared".
+
+Your inclination was right. These two groups are quite different and may vary in more ways than what is shown. This lack of similarity could be reworded as a lack of exchangeability. Luckily, there are fancy stats methods to fix this, which will be the topic of other posts.
+
+:::{.callout-important}
+
+While we can adjust for observed confounding, it is not possible to adjust for unobserved confounding. We simply don't know about it, for example how many people in each group enjoy the taste of grape crush.
+
+:::
+
+### Positivity
+
+Positivity refers to the condition that
+
+### Consistency
+
+### No Versions of Treatment
+
+### No Interference
+
+## When to use Cause
+
+If these assumptions hold, then we can use the term cause!
