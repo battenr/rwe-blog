@@ -12,17 +12,23 @@ P-values are a term commonly heard in scientific literature, however often they 
 
 ## Formal Definitions 
 
+### Hypotheses
+
+Hypotheses are the best place to start for any science experiment or project.
+
+### Type I and II Errors
+
+A type I error, sometimes referred to as $\alpha$ error, is the error of saying something happened when it did not. For example, the error of me assuming you bought a balloon **when you did not**. A type II error, sometimes referred to as $\beta$ error, is the error of saying something did not happen **when you did**. Using our balloon example, me assuming you didn't buy a balloon when you did.
+
+### Power
+
+The power of a statistical test is the probability that it correctly rejects the null hypothesis [@gelman2014beyond]. \$1-$\beta$ or the pwoer of
+
 ### P-Value
 
 The probability of such an extreme value of the test statistic occuring if the null hypothesis were true is often called the **P Value @bland2015introduction.** Similarly, the significance level
 
 ### Significance Level
-
-## Type I and II Errors
-
-A type I error, sometimes referred to as $\alpha$ error, is the error of saying something happened when it did not. For example, the error of me assuming you bought a balloon **when you did not**. A type II error, sometimes referred to as $\beta$ error, is the error of saying something did not happen **when you did**. Using our balloon example, me assuming you didn't buy a balloon when you did.
-
-In clinical epidemiology, two values for
 
 ## Normal Distribution
 
@@ -49,4 +55,6 @@ P-values are typically over emphasized. They are a piece of the puzzle, however 
 
 ### Type M & Type S Error
 
-Often type I and type II errors are highlighted however type M and type S errors are important to note as well.
+Often type I and type II errors are highlighted however type M and type S errors are important to note as well. A type S error is the probability of an estimate being in the wrong direction [@gelman2014beyond]. A type M error is the factor by which the magnitude of an effect might be overestimated [@gelman2014beyond].
+
+Definitions are always great but an example helps to better understand. Without any further
