@@ -1,22 +1,34 @@
 ---
-ttitle: "P-Values Explained"
+ttitle: "Power, Precision and P-Values: Please Explain"
 author: "Ryan Batten"
 date: "2022-08-02"
 categories: [P-Values, Hypothesis Tests]
-image: "regression.jpeg"
+image: "p-value.jpeg"
 bibliography: p-value_references.bib
 draft: true
 ---
 
-## P-Values Explained
-
 P-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted. The p in p-value stands for probability, as a lot of statistics begins with. What exactly does it tell us? Let's find out
+
+## Formal Definitions 
+
+### P-Value
+
+The probability of such an extreme value of the test statistic occuring if the null hypothesis were true is often called the **P Value @bland2015introduction.** Similarly, the significance level
+
+### Significance Level
+
+## Type I and II Errors
+
+A type I error, sometimes referred to as $\alpha$ error, is the error of saying something happened when it did not. For example, the error of me assuming you bought a balloon **when you did not**. A type II error, sometimes referred to as $\beta$ error, is the error of saying something did not happen **when you did**. Using our balloon example, me assuming you didn't buy a balloon when you did.
+
+In clinical epidemiology, two values for
 
 ## Normal Distribution
 
 To begin, we need to start with some data. Who doesn't love data right?
 
-```{r}
+```{r, warning = FALSE, message = FALSE, echo = FALSE}
 
 library(tidyverse)
 
@@ -26,9 +38,15 @@ df$x <- df$.
 
 ggplot(data = df, mapping = aes(x = x) ) + 
   geom_density() +
-  theme_minimal() + 
+  theme_minimal() 
   
 
 ```
 
-## 
+## Issues with the P-Value
+
+P-values are typically over emphasized. They are a piece of the puzzle, however they are not the whole puzzle.
+
+### Type M & Type S Error
+
+Often type I and type II errors are highlighted however type M and type S errors are important to note as well.

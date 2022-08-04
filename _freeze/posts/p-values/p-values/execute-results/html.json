@@ -1,0 +1,16 @@
+{
+  "hash": "7b9c7460bbc7a53ca5f58d760fc05a17",
+  "result": {
+    "markdown": "---\nttitle: \"P-Values Explained\"\nauthor: \"Ryan Batten\"\ndate: \"2022-08-02\"\ncategories: [P-Values, Hypothesis Tests]\nimage: \"p-value.jpeg\"\nbibliography: p-value_references.bib\ndraft: true\n---\n\n\n## P-Values Explained\n\nP-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted. The p in p-value stands for probability, as a lot of statistics begins with. What exactly does it tell us? Let's find out\n\n## Normal Distribution\n\nTo begin, we need to start with some data. Who doesn't love data right?\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](p-values_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\n## \n",
+    "supporting": [
+      "p-values_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

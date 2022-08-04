@@ -3,8 +3,8 @@ title: "Intro to Real-World Evidence"
 author: "Ryan Batten"
 date: "2022-08-03"
 categories: [RWE, Observational Data]
-image: "cause-and-effect.jpeg"
-bibliography: causal_inference_references.bib
+image: "real-world.jpeg"
+bibliography: rwe_intro_references.bib
 draft: true
 ---
 
