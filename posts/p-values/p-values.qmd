@@ -54,17 +54,15 @@ Remember our lollipop example? For that it would be the probability that we can 
 
 ### Test Statistic
 
-Alright, I know at this point I'm boring you. One last definition and then we can get to the good stuff. A test statistic is exactly what it sounds like. A statistic used for tests! What kind of tests you may ask? Hypothesis tests like we have above. Now, the test statistic in itself may follow
+Alright, I know at this point I'm boring you. One last definition and then we can get to the good stuff. A test statistic is exactly what it sounds like. A statistic used for tests! What kind of tests you may ask? Hypothesis tests like we have above. Now, the test statistic in itself may follow a variety of distributions depending on the test. I'll leave distributions to another post.
 
 Common test statistics include:
 
--   T-t
+-   Z statistic
 
--   sadf
+-   T statistic
 
--   asf
-
--   For regression coefficients: $\beta_1 / SE(\beta_1)$
+-   F statistic
 
 ### P-Value
 
@@ -74,11 +72,13 @@ The probability of such an extreme value of the test statistic occuring if the n
 
 Remember $\alpha$ from before? The type I error is sometimes referred to as the significance level. The number that is picked for the type I error is usually 0.05, however it is completely arbitrary to pick 0.05. It could be 0.20 or 0.02.
 
-:::{callout-important}
-
+::: callout-important
 There is no such thing as more significant. It is either significant at the level that was pre-specified before the analysis or not. For example: a p-value of 0.01 is not **more** significant than a p-value of 0.05
-
 :::
+
+### Back to our Problem
+
+We want to use regression to solve question of are people who are LL vs. NLL different in age? Well to answer this, we need to create a regression model.
 
 ## Normal Distribution
 
