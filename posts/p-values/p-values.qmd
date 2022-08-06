@@ -16,17 +16,17 @@ P-values are a term commonly heard in scientific literature, however often they 
 
 ### Hypotheses
 
-Hypotheses are the best place to start for any science experiment or project. A hypothesis is what you are wanting to know. First you need to start with your research question. For example, are people who love lollipops older than people who do not? To do this, formally in statistics, we need a *null hypothesis* ($H_0$) and an *alternative hypothesis* ($H_A$). We will use two abbreviations here: LL for lollipop lickers and NLL for not lollipop lickers. We want to know "Are lollipop lickers older than not lollipop lickers?"
+Hypotheses are the best place to start for any science experiment or project. A hypothesis is what you are wanting to know. First you need to start with your research question. For example, are people who love lollipops older than people who do not? To do this, formally in statistics, we need a *null hypothesis* ($H_0$) and an *alternative hypothesis* ($H_A$). We will use two abbreviations here: LL for lollipop lickers and NLL for not lollipop lickers. We want to know "Do lollipop lickers have more sore tongues than those who do not lick lollipops?"
 
-Re-phrasing this in statistically terms, \$H_0\$, is that there is no difference in age between the two. How do we measure age? For this example, we will use the mean age. So our $H_0$ is no difference in age, how about our alternative hypothesis? Well this can be one of three options:
+Re-phrasing this in statistically terms, $H_0$ is that people do not have more sore tongues if they lick lollipops compared to if they do. The questions now is what is our alternative hypothesis? Well there are three options to choose from:
 
-1.  We think LL are older than NLL
+1.  We think LL have more sore tongues than NLL
 
-2.  We think LL are younger than NLL
+2.  We think LL have less sore tongues than NLL
 
 3.  We don't know, but we don't think they are the same!
 
-1 and 2 are what are called *one-sided* hypothesis. A one-sided hypothesis, means you are assuming the difference is bigger or smaller. A two-sided hypothesis means, we don't know!
+1 and 2 are what are called *one-sided* hypothesis. A one-sided hypothesis, means you are assuming the difference is bigger or smaller. A two-sided hypothesis means we simply don't know!
 
 $$
 H_0: \mu_{LL} = \mu_{NLL}
@@ -80,13 +80,15 @@ There is no such thing as more significant. It is either significant at the leve
 
 We want to use regression to solve question of are people who are LL vs. NLL different in age? Well to answer this, we need to create a regression model.
 
-## Normal Distribution
+## Normal-Distribution
 
 To begin, we need to start with some data. Who doesn't love data right?
 
 ```{r, warning = FALSE, message = FALSE, echo = FALSE}
 
 library(tidyverse)
+
+
 
 df <- rnorm(1000, mean = 30, sd = 10) %>% as.data.frame()
 
