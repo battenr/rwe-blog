@@ -3,6 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/causal_inference_intro/causal_inference.html",
+      "/posts/p-values/p-values.html",
       "/posts/or_rr_hr/or_rr_hr.html",
       "/posts/welcome/welcome.html"
     ]
