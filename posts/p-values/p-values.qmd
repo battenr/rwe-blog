@@ -26,14 +26,14 @@ Re-phrasing this in statistically terms, $H_0$ is that people do not have more s
 
 3.  We don't know, but we don't think they are the same!
 
-1 and 2 are what are called *one-sided* hypothesis. A one-sided hypothesis, means you are assuming the difference is bigger or smaller. A two-sided hypothesis means we simply don't know!
+1 and 2 are what are called *one-sided* hypothesis. A one-sided hypothesis, means you are assuming the difference is bigger or smaller. A two-sided hypothesis means we simply don't know! We will assume we don't know and use $p$ to denote the proportion of lollipop sore tongues.
 
 $$
-H_0: \mu_{LL} = \mu_{NLL}
+H_0: p_{LL-ST} = p_{NLL-ST}
 $$
 
 $$
-H_A: \mu_{LL} \neq \mu_{NLL}
+H_A: p_{LL-ST} \neq p_{NLL-ST}
 $$
 
 Now, before we continue we need to review how okay we are with being wrong. Being wrong is okay, but there are two different types of being wrong.
@@ -76,9 +76,91 @@ Remember $\alpha$ from before? The type I error is sometimes referred to as the 
 There is no such thing as more significant. It is either significant at the level that was pre-specified before the analysis or not. For example: a p-value of 0.01 is not **more** significant than a p-value of 0.05
 :::
 
-### Back to our Problem
+## Back to our Problem  {sec-prob=""}
 
-We want to use regression to solve question of are people who are LL vs. NLL different in age? Well to answer this, we need to create a regression model.
+Finally, after all those boring definitions we are back to where we started. How are we going to determine whether people who are lollipop lickers have more sore tongues? This requires us to do a bit more thinking to determine the right statistical tool for the toolbox.
+
+Let's think about this question a bit more first. Lollipop lickers tend to be younger right? Do boys like lollipops more than girls? Let's assume that both of those things are true. We will want to *control* for both of those variables. Control in this sense, means adding the variable in the equation like below.
+
+$$
+ST = LL + age + sex
+$$
+
+Now, the type of regression we will use is a *generalized linear model (GLM)*. Generalized here just means that you can apply to almost any situation, hence general. Another post will cover the differences between GLMs and regular old regression (*OLS*).
+
+## Data on Lollipop Lickers and Sore Tongues
+
+Now we know our question, have our tool and want to find out the answer. What are we missing.....the most important thing of all! Data! Luckily, there is a database that collects such data. It has data on 422 people. Below are the summary statistics for our groups
+
+```{r, include = FALSE}
+set.seed(2022)
+
+n.total = runif(1, min = 100, max = 500) # resulted in 422
+n.st = runif(1, min = 0, max = 422) # 249
+n.nst = 422-249
+
+df.st = data.frame( # 181 sore tongues
+  age = runif(n = 181, min = 5, max = 30), 
+  sex = rbinom(n = 181, size = 1 , prob = 0.61), 
+  ll = rbinom(n = 181, size = 1, prob = 0.80),
+  group = 1
+)
+
+mean(df.st$age)
+sd(df.st$age)
+
+df.st %>% count(ll)
+df.st %>% count(sex)
+
+df.nst = data.frame( # 241
+  age = runif(n = 241, min = 20, max = 80), 
+  sex = rbinom(n = 241, size = 1 , prob = 0.23), 
+  ll = rbinom(n = 241, size = 1, prob = 0.20),
+  group = 0
+)
+
+mean(df.nst$age)
+sd(df.nst$age)
+
+df.nst %>% count(ll)
+df.nst %>% count(sex)
+
+df = rbind(df.st, df.nst)
+```
+
++-----------------------------+---------------------+-------------------+
+|                             | Sore Tongues        | Not Sore Tongues  |
+|                             |                     |                   |
+|                             | (n = 181)           | (n = 241)         |
++=============================+:===================:+:=================:+
+| **Lollipop Lickers, n (%)** | 146 (80.7%)         | 60 (24.9%)        |
++-----------------------------+---------------------+-------------------+
+| **Age, mean (SD)**          | 17.9 (7.30)         | 48.0 (17.8)       |
++-----------------------------+---------------------+-------------------+
+| **Female, n (%)**           | 107 (59.1%)         | 52 (21.6%)        |
++-----------------------------+---------------------+-------------------+
+
+## Analysis Time! 
+
+Using our handy dandy formula from above @sec-prob, and our tool from our toolbox (GLM). Below are the results.
+
+```{r, echo = FALSE}
+
+library(tidyverse)
+library(broom)
+
+mod <- glm(
+  formula = group ~ ll + age + sex, 
+  family = binomial(link = "logit"),
+  data = df
+)
+
+broom::tidy(mod)
+```
+
+## Now for the Interpretation of the P-Value
+
+The test statistic for regression is defined by $\beta / SE(\beta)$. Beta here is the coefficient. For example, the test statistic for age is
 
 ## Normal-Distribution
 
