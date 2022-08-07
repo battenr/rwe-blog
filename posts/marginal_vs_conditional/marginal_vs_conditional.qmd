@@ -3,50 +3,49 @@ ttitle: "Marginal vs Conditional Effects"
 author: "Ryan Batten"
 date: "2022-08-01"
 categories: [Marginal, Conditional]
-image: "regression.jpeg"
+image: "marginal-vs-conditional.jpeg"
 bibliography: marginal_vs_conditional.bib
 draft: true
 ---
 
 ## Marginally Important
 
-This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what is meant by these terms. To do that, can you guess what we are going to start with? Yup! Probability again
+This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what is meant by these terms. To do that, can you guess what we are going to start with? Yup! Probability again.
 
 ## Conditional vs Unconditional Probability
 
-First things first. Let's review some basic probability terms.
+First things first. Let's review some basic probability terms. Unconditional probability, denoted as $P(A)$, is the probability that something will happen. Unconditional probability sounds like a mouthful, so we will use marginal instead. For example, let's assume in a made-up world that the probability of you getting a visit from the toothfairy is 0.30 on any given night. In mathematical terms:
 
-## 
+$$
+P(\text{toothfairy visit}) = 0.30
+$$
 
-## 2x2 Table
+Now, the toothfairy randomly visiting you seems a bit bizarre doesn't it? She'd just drop by any night for no reason at all? Seems unlikely. She'd probably visit after you had a tooth fall out. That can be worded as "the probability that the toothfairy will visit, given that a tooth fell out". Using mathematical notation again:
 
-First, lets start with a 2x2 table. It could be of anything really, but let's imagine we have two groups of people
+$$
+P(\text{toothfairy visit} | \text{lost a tooth}) 
+$$
 
-```{r, include = FALSE}
+Now, how do we calculate that? Well, the below formula
 
-set.seed(2022)
+$$
+P(A|B) = P(\text{A and B}) / P(A)
+$$
 
-n.bg <- runif(1, min = 100, max = 500)
-n.tc <- runif(1, min = 100, max = 500)
+Note: $P(\text{A and B}) = P(A)*P(B)$
 
-n.bg.sj <- runif(1, min = 0, max = 426) # Bubble Gum & Sore Jaw
-n.bg.nsj <- 426 - 78
+$$
+P(\text{toothfairy visit | lost a tooth}) = P(\text{toothfairy visit and lost a tooth}) / P(\text{toothfairy visit})
+$$
 
-n.tc.sj <- runif(1, min = 0, max = 359)
-n.tc.nsj = 359-228
+This same logic goes for when we are conducting studies. The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either ***marginal*** or ***conditional*** effects. Stratification/restriction and matching can only be used to compute ***conditional*** effects in certain subsets of the population [@hernanwhatif, pp.51]
 
-```
+Let's break down each of these methods one by one.
 
-+------------------+--------------------+-----------------+---------+
-|                  | Bubble Gum Chewers | Tobacco Chewers | Total   |
-|                  |                    |                 |         |
-|                  | (n = 426)          | ( n = 359)      |         |
-+:================:+:==================:+:===============:+:=======:+
-| **Sore Jaw**     | 78                 | 228             | 306     |
-+------------------+--------------------+-----------------+---------+
-| **Not Sore Jaw** | 348                | 131             | 479     |
-+------------------+--------------------+-----------------+---------+
-|                  | 426                | 359             | **785** |
-+------------------+--------------------+-----------------+---------+
+## Standardization
 
-: Bubble Gum Chewers vs Tobacco Chewers {#tbl-bgtc}
+## IP Weighting
+
+## Stratification/Restriction
+
+## Matching

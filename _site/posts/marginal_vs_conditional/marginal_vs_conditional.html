@@ -56,6 +56,7 @@ ul.task-list{list-style: none;}
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -103,18 +104,35 @@ ul.task-list{list-style: none;}
 
 
 
-<section id="marginal-mean-what-do-you-mean" class="level2">
-<h2 class="anchored" data-anchor-id="marginal-mean-what-do-you-mean">Marginal Mean: What do you mean?</h2>
+<section id="marginally-important" class="level2">
+<h2 class="anchored" data-anchor-id="marginally-important">Marginally Important</h2>
+<p>This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what is meant by these terms. To do that, can you guess what we are going to start with? Yup! Probability again.</p>
+</section>
+<section id="conditional-vs-unconditional-probability" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-vs-unconditional-probability">Conditional vs Unconditional Probability</h2>
+<p>First things first. Let’s review some basic probability terms. Unconditional probability, denoted as <span class="math inline">\(P(A)\)</span>, is the probability that something will happen. Unconditional probability sounds like a mouthful, so we will use marginal instead. For example, let’s assume in a made-up world that the probability of you getting a visit from the toothfairy is 0.30 on any given night. In mathematical terms:</p>
+<p><span class="math display">\[
+P(toothfairy) = 0.30
+\]</span></p>
+<p>Now, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Seems unlikely. She’d probably visit after you had a tooth fall out. That can be worded as “the probability that the toothfairy will visit, given that a tooth fell out”. Using mathematical notation again:</p>
+<p><span class="math display">\[
+P
+\]</span></p>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
 </section>
 <section id="x2-table" class="level2">
 <h2 class="anchored" data-anchor-id="x2-table">2x2 Table</h2>
 <p>First, lets start with a 2x2 table. It could be of anything really, but let’s imagine we have two groups of people</p>
+<div id="tbl-bgtc" class="anchored">
 <table class="table">
+<caption>Table 1: Bubble Gum Chewers vs Tobacco Chewers</caption>
 <colgroup>
-<col style="width: 26%">
-<col style="width: 29%">
 <col style="width: 25%">
-<col style="width: 13%">
+<col style="width: 27%">
+<col style="width: 23%">
+<col style="width: 23%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -147,6 +165,7 @@ ul.task-list{list-style: none;}
 </tr>
 </tbody>
 </table>
+</div>
 
 
 </section>
