@@ -1,10 +1,11 @@
 ---
 ttitle: "P-Values and Power: Please Explain"
 author: "Ryan Batten"
-date: "2022-08-02"
+date: "2022-08-07"
 categories: [P-Values, Hypothesis Tests]
 image: "p-value.jpeg"
 bibliography: p-value_references.bib
+draft: true
 format: 
   html:
     code-fold: true
@@ -188,7 +189,7 @@ Using the normal distribution, since our sample size is bigger than 30 (a wonder
 2*pnorm(-6.358)
 ```
 
-Ta-da! We have our p-value of 2.04e-10. This is less than our pre-specified value of 0.05. We can therefore use significant in our interpretation however there are some strong caveats we need to go over first.
+Ta-da! We have our p-value of 2.04e-10. This is less than our pre-specified value of 0.05. What does it mean though? From earlier, it is the probability of such an extreme value of the test statistic (-6.35) occurring if the null hypothesis were true. Finally, we can use significant in our interpretation right? Technically yes, however there are some strong caveats we need to go over first
 
 ## Issues with the P-Value
 
@@ -220,6 +221,6 @@ retrodesign(-0.31703, 0.04986)
 
 The type S error is 0.99, while the type M error is -0.997. This means that there is a 99% probability that the estimate is the wrong sign, and that the value is slightly underestimated (0.997 of what it should be). Doesn't sound good right?
 
-## So are p-values garbage?
+## So are P-values garbage?
 
 P-values have a place in science, however they should be interpreted with caution and as a piece to the puzzle. Other pieces include the effect size, study design, sample that was studied and a myriad of other components.

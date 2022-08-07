@@ -367,7 +367,7 @@ ST = LL + age + sex
 <pre><code>[1] 2.043975e-10</code></pre>
 </div>
 </div>
-<p>Ta-da! We have our p-value of 2.04e-10. This is less than our pre-specified value of 0.05. We can therefore use significant in our interpretation however there are some strong caveats we need to go over first.</p>
+<p>Ta-da! We have our p-value of 2.04e-10. This is less than our pre-specified value of 0.05. What does it mean though? From earlier, it is the probability of such an extreme value of the test statistic (-6.35) occurring if the null hypothesis were true. Finally, we can use significant in our interpretation right? Technically yes, however there are some strong caveats we need to go over first</p>
 </section>
 <section id="issues-with-the-p-value" class="level2">
 <h2 class="anchored" data-anchor-id="issues-with-the-p-value">Issues with the P-Value</h2>
@@ -391,24 +391,14 @@ ST = LL + age + sex
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">power=</span>power, <span class="at">typeS=</span>typeS, <span class="at">exaggeration=</span>exaggeration))</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">retrodesign</span>(<span class="sc">-</span><span class="fl">0.0339</span>, <span class="fl">0.0543545</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">retrodesign</span>(<span class="sc">-</span><span class="fl">0.31703</span>, <span class="fl">0.04986</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>$power
-[1] 0.09561688
-
-$typeS
-[1] 0.9488784
-
-$exaggeration
-[1] -3.898453</code></pre>
 </div>
-</div>
-<p>The type S error is 0.948, while the type M error is -3.81our type S error would be 0.949 and type M error of 3.87. This means that there is a 94.9% probability that the estimate is the wrong sign, and that the value is overestimated by 3.87 times. Doesn’t sound good right?</p>
+<p>The type S error is 0.99, while the type M error is -0.997. This means that there is a 99% probability that the estimate is the wrong sign, and that the value is slightly underestimated (0.997 of what it should be). Doesn’t sound good right?</p>
 </section>
 </section>
 <section id="so-are-p-values-garbage" class="level2">
-<h2 class="anchored" data-anchor-id="so-are-p-values-garbage">So are p-values garbage?</h2>
+<h2 class="anchored" data-anchor-id="so-are-p-values-garbage">So are P-values garbage?</h2>
 <p>P-values have a place in science, however they should be interpreted with caution and as a piece to the puzzle. Other pieces include the effect size, study design, sample that was studied and a myriad of other components.</p>
 
 

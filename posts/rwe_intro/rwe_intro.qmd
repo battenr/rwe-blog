@@ -3,15 +3,19 @@ title: "Real-World Evidence: What's all the hype?"
 author: "Ryan Batten"
 date: "2022-08-07"
 categories: [RWE, Observational Data]
-image: "real-world.jpeg"
+# image: "real-world.jpeg", need to make my own image first
 bibliography: rwe_intro_references.bib
 draft: true
 ---
 
 You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential to be useful to answer important research questions, however what is RWE? The principles are nothing new, however it is being increasingly common. First, we need to start with observational studies in general.
 
+## Hierarchy of Research
+
+Historically, the hierarchy of research has been as follows
+
 ## Observational Studies
 
-Typically in the hierarchy of research, at the top is
+Typically in the hierarchy of research, at the top is a meta-analysis followed by a randomized controlled trial then the obs
 
 ## Real-World Data

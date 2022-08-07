@@ -3,7 +3,7 @@ title: "OR/RR/HR: What's the Difference?"
 author: "Ryan Batten"
 date: "2022-07-31"
 categories: [OR, RR, HR]
-image: "affect-vs-effect.jpeg"
+image: "confused.jpeg"
 bibliography: or-rr-hr-ref.bib
 ---
 
