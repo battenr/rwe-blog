@@ -5,6 +5,9 @@ date: "2022-08-02"
 categories: [P-Values, Hypothesis Tests]
 image: "p-value.jpeg"
 bibliography: p-value_references.bib
+format: 
+  html:
+    code-fold: true
 ---
 
 # Overview
@@ -57,7 +60,7 @@ Alright, I know at this point I'm boring you. One last definition and then we ca
 
 ### P-Value
 
-The probability of such an extreme value of the test statistic occurring if the null hypothesis were true is often called the **P-Value @bland2015introduction.**
+The probability of such an extreme value of the test statistic occurring if the null hypothesis were true is often called the P-Value [@bland2015introduction]**.**
 
 ### Significance Level
 
@@ -67,7 +70,7 @@ Remember $\alpha$ from before? The type I error is sometimes referred to as the 
 There is no such thing as ***more*** significant. It is either significant at the level that was pre-specified before the analysis or not. For example: a p-value of 0.01 is not **more** significant than a p-value of 0.05
 :::
 
-## Back to our Problem  {#sec-problem}
+## Back to our Problem {#sec-problem}
 
 Finally, after all those boring definitions we are back to where we started. How are we going to determine whether people who are lollipop lickers have more sore tongues? This requires us to do a bit more thinking to determine the right statistical tool for the toolbox.
 
@@ -122,23 +125,23 @@ df.nst %>% count(sex)
 df = rbind(df.st, df.nst)
 ```
 
-+-----------------------------+---------------------+-------------------+
-|                             | Sore Tongues        | Not Sore Tongues  |
-|                             |                     |                   |
-|                             | (n = 181)           | (n = 241)         |
-+=============================+:===================:+:=================:+
-| **Lollipop Lickers, n (%)** | 146 (80.7%)         | 60 (24.9%)        |
-+-----------------------------+---------------------+-------------------+
-| **Age, mean (SD)**          | 17.9 (7.30)         | 48.0 (17.8)       |
-+-----------------------------+---------------------+-------------------+
-| **Female, n (%)**           | 107 (59.1%)         | 52 (21.6%)        |
-+-----------------------------+---------------------+-------------------+
++-----------------------------+---------------+------------------+
+|                             | Sore Tongues  | Not Sore Tongues |
+|                             |               |                  |
+|                             | (n = 181)     | (n = 241)        |
++=============================+:=============:+:================:+
+| **Lollipop Lickers, n (%)** | 146 (80.7%)   | 60 (24.9%)       |
++-----------------------------+---------------+------------------+
+| **Age, mean (SD)**          | 17.9 (7.30)   | 48.0 (17.8)      |
++-----------------------------+---------------+------------------+
+| **Female, n (%)**           | 107 (59.1%)   | 52 (21.6%)       |
++-----------------------------+---------------+------------------+
 
-## Analysis Time! 
+## Analysis Time!
 
 Using our handy dandy formula from above, and our tool from our toolbox (GLM). Below are the results.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, include = FALSE}
 
 library(tidyverse)
 library(broom)
@@ -152,30 +155,44 @@ mod <- glm(
 broom::tidy(mod)
 ```
 
++-------------+--------------+--------+---------------+-----------------+
+| **Term**    | **Estimate** | **SE** | **Statistic** | **Pr(\>\|z\|)** |
+|             |              |        |               |                 |
+|             |              |        | (Z-Value)     | (P-Value)       |
++:===========:+:============:+:======:+:=============:+:===============:+
+| (Intercept) | 6.31         | 1.20   | 5.25          | 1.53e-7         |
++-------------+--------------+--------+---------------+-----------------+
+| LL          | 2.77         | 0.484  | 5.73          | 1.00e-8         |
++-------------+--------------+--------+---------------+-----------------+
+| Age         | -0.317       | 0.0499 | -6.36         | 2.04e-10        |
++-------------+--------------+--------+---------------+-----------------+
+| Sex         | 2.15         | 0.493  | 4.36          | 1.32e-5         |
++-------------+--------------+--------+---------------+-----------------+
+
 ## Now for the Interpretation of the P-Value
 
-The test statistic for regression is defined by $\beta / SE(\beta)$. Beta here is the coefficient. For example, the test statistic for age is
+The test statistic for regression is defined by $\beta / SE(\beta)$. Beta here is the coefficient. For example, the test statistic for age is (note, close to -6.36. We will chalk up the difference to a rounding error):
 
 $$
--0.3393494/0.0543545 = -6.243
+-0.317/0.0499 = -6.35
 $$
 
 Now, this number on it's own is pretty useless. We want to know, what is our p-value?! Well, to do that we turn to the normal distribution.
 
 ## Normal Distribution
 
-Using the normal distribution, since our sample size is bigger than 30 (a wonderfully random number, that I have no idea why it's 30), we can determine our almighty p-value.
+Using the normal distribution, since our sample size is bigger than 30 (a wonderfully random number. Honestly, I have no idea why 30 is the cutoff), we can determine our almighty p-value.
 
 ```{r, warning = FALSE, message = FALSE}
 
-2*pnorm(-6.243)
+2*pnorm(-6.358)
 ```
 
-Ta-da! We have our p-value of 4.29e-10. This is less than our pre-specified value of 0.05. We can therefore use significant in our interpretation however there are some strong caveats we need to go over first.
+Ta-da! We have our p-value of 2.04e-10. This is less than our pre-specified value of 0.05. We can therefore use significant in our interpretation however there are some strong caveats we need to go over first.
 
 ## Issues with the P-Value
 
-P-values are typically over emphasized. They are a piece of the puzzle, however they are not the whole puzzle. Arguably, a more important piece of the puzzle is the effect size. For our example, lollipop lickers have increased odds of a sore tongue compared to non-lollipop lickers (OR = 5.87, 95% CI: 2.53 to 13.87). The effect, in this case OR, should be another piece of the puzzle that is considered. Finally, there are two other errors we should go over that highlight how not confident we can be in the p-value.
+P-values are typically over emphasized. They are a piece of the puzzle, however they are not the whole puzzle. Arguably, a more important piece of the puzzle is the effect size. For our example, lollipop lickers have increased odds of a sore tongue compared to non-lollipop lickers (OR = 5.87, 95% CI: 2.53 to 13.87). The effect, in this case OR, should be another piece of the puzzle that is considered. Finally, there are two other errors we should go over that highlight how ***not*** confident we can be in the p-value.
 
 ### Type M & Type S Error
 
@@ -183,7 +200,7 @@ Often type I and type II errors are highlighted however type M and type S errors
 
 Using our example from before, and the function outlined in @gelman2014beyond:
 
-```{r, message = FALSE}
+```{r, message = FALSE, results = FALSE}
 
 retrodesign <- function(A, s, alpha=.05, df=Inf, n.sims=10000){
   z <- qt(1-alpha/2, df)
@@ -197,12 +214,12 @@ retrodesign <- function(A, s, alpha=.05, df=Inf, n.sims=10000){
   return(list(power=power, typeS=typeS, exaggeration=exaggeration))
 }
 
-retrodesign(-0.0339, 0.0543545)
+retrodesign(-0.31703, 0.04986)
 
 ```
 
-The type S error is 0.948, while the type M error is -3.81our type S error would be 0.949 and type M error of 3.87. This means that there is a 94.9% probability that the estimate is the wrong sign, and that the value is overestimated by 3.87 times. Doesn't sound good right?
+The type S error is 0.99, while the type M error is -0.997. This means that there is a 99% probability that the estimate is the wrong sign, and that the value is slightly underestimated (0.997 of what it should be). Doesn't sound good right?
 
-## So are p-values garbage? 
+## So are p-values garbage?
 
 P-values have a place in science, however they should be interpreted with caution and as a piece to the puzzle. Other pieces include the effect size, study design, sample that was studied and a myriad of other components.

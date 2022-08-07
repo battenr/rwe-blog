@@ -227,7 +227,7 @@ Power = 1 - \beta
 </section>
 <section id="p-value" class="level3">
 <h3 class="anchored" data-anchor-id="p-value">P-Value</h3>
-<p>The probability of such an extreme value of the test statistic occurring if the null hypothesis were true is often called the <strong>P-Value <span class="citation" data-cites="bland2015introduction">Bland (<a href="#ref-bland2015introduction" role="doc-biblioref">2015</a>)</span>.</strong></p>
+<p>The probability of such an extreme value of the test statistic occurring if the null hypothesis were true is often called the P-Value <span class="citation" data-cites="bland2015introduction">(<a href="#ref-bland2015introduction" role="doc-biblioref">Bland 2015</a>)</span><strong>.</strong></p>
 </section>
 <section id="significance-level" class="level3">
 <h3 class="anchored" data-anchor-id="significance-level">Significance Level</h3>
@@ -261,9 +261,9 @@ ST = LL + age + sex
 <p>Now we know our question, have our tool and want to find out the answer. What are we missing…..the most important thing of all! Data! Luckily, there is a database that collects such data. It has data on 422 people. Below are the summary statistics for our groups</p>
 <table class="table">
 <colgroup>
-<col style="width: 40%">
-<col style="width: 29%">
-<col style="width: 29%">
+<col style="width: 41%">
+<col style="width: 22%">
+<col style="width: 26%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -296,58 +296,103 @@ ST = LL + age + sex
 <section id="analysis-time" class="level2">
 <h2 class="anchored" data-anchor-id="analysis-time">Analysis Time!</h2>
 <p>Using our handy dandy formula from above, and our tool from our toolbox (GLM). Below are the results.</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  term        estimate std.error statistic  p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)    6.31     1.20        5.25 1.53e- 7
-2 ll             2.77     0.484       5.73 1.00e- 8
-3 age           -0.317    0.0499     -6.36 2.04e-10
-4 sex            2.15     0.493       4.36 1.32e- 5</code></pre>
-</div>
-</div>
+<table class="table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 12%">
+<col style="width: 22%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Term</strong></th>
+<th style="text-align: center;"><strong>Estimate</strong></th>
+<th style="text-align: center;"><strong>SE</strong></th>
+<th style="text-align: center;"><p><strong>Statistic</strong></p>
+(Z-Value)</th>
+<th style="text-align: center;"><p><strong>Pr(&gt;|z|)</strong></p>
+(P-Value)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">(Intercept)</td>
+<td style="text-align: center;">6.31</td>
+<td style="text-align: center;">1.20</td>
+<td style="text-align: center;">5.25</td>
+<td style="text-align: center;">1.53e-7</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">LL</td>
+<td style="text-align: center;">2.77</td>
+<td style="text-align: center;">0.484</td>
+<td style="text-align: center;">5.73</td>
+<td style="text-align: center;">1.00e-8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Age</td>
+<td style="text-align: center;">-0.317</td>
+<td style="text-align: center;">0.0499</td>
+<td style="text-align: center;">-6.36</td>
+<td style="text-align: center;">2.04e-10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Sex</td>
+<td style="text-align: center;">2.15</td>
+<td style="text-align: center;">0.493</td>
+<td style="text-align: center;">4.36</td>
+<td style="text-align: center;">1.32e-5</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="now-for-the-interpretation-of-the-p-value" class="level2">
 <h2 class="anchored" data-anchor-id="now-for-the-interpretation-of-the-p-value">Now for the Interpretation of the P-Value</h2>
-<p>The test statistic for regression is defined by <span class="math inline">\(\beta / SE(\beta)\)</span>. Beta here is the coefficient. For example, the test statistic for age is</p>
+<p>The test statistic for regression is defined by <span class="math inline">\(\beta / SE(\beta)\)</span>. Beta here is the coefficient. For example, the test statistic for age is (note, close to -6.36. We will chalk up the difference to a rounding error):</p>
 <p><span class="math display">\[
--0.3393494/0.0543545 = -6.243
+-0.317/0.0499 = -6.35
 \]</span></p>
 <p>Now, this number on it’s own is pretty useless. We want to know, what is our p-value?! Well, to do that we turn to the normal distribution.</p>
 </section>
 <section id="normal-distribution" class="level2">
 <h2 class="anchored" data-anchor-id="normal-distribution">Normal Distribution</h2>
-<p>Using the normal distribution, since our sample size is bigger than 30 (a wonderfully random number, that I have no idea why it’s 30), we can determine our almighty p-value.</p>
+<p>Using the normal distribution, since our sample size is bigger than 30 (a wonderfully random number. Honestly, I have no idea why 30 is the cutoff), we can determine our almighty p-value.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span><span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">6.243</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span><span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">6.358</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.292569e-10</code></pre>
+<pre><code>[1] 2.043975e-10</code></pre>
 </div>
 </div>
-<p>Ta-da! We have our p-value of 4.29e-10. This is less than our pre-specified value of 0.05. We can therefore use significant in our interpretation however there are some strong caveats we need to go over first.</p>
+<p>Ta-da! We have our p-value of 2.04e-10. This is less than our pre-specified value of 0.05. We can therefore use significant in our interpretation however there are some strong caveats we need to go over first.</p>
 </section>
 <section id="issues-with-the-p-value" class="level2">
 <h2 class="anchored" data-anchor-id="issues-with-the-p-value">Issues with the P-Value</h2>
-<p>P-values are typically over emphasized. They are a piece of the puzzle, however they are not the whole puzzle. Arguably, a more important piece of the puzzle is the effect size. For our example, lollipop lickers have increased odds of a sore tongue compared to non-lollipop lickers (OR = 5.87, 95% CI: 2.53 to 13.87). The effect, in this case OR, should be another piece of the puzzle that is considered. Finally, there are two other errors we should go over that highlight how not confident we can be in the p-value.</p>
+<p>P-values are typically over emphasized. They are a piece of the puzzle, however they are not the whole puzzle. Arguably, a more important piece of the puzzle is the effect size. For our example, lollipop lickers have increased odds of a sore tongue compared to non-lollipop lickers (OR = 5.87, 95% CI: 2.53 to 13.87). The effect, in this case OR, should be another piece of the puzzle that is considered. Finally, there are two other errors we should go over that highlight how <strong><em>not</em></strong> confident we can be in the p-value.</p>
 <section id="type-m-type-s-error" class="level3">
 <h3 class="anchored" data-anchor-id="type-m-type-s-error">Type M &amp; Type S Error</h3>
 <p>Often type I and type II errors are highlighted however type M and type S errors are important to note as well. A type S error is the probability of an estimate being in the wrong direction <span class="citation" data-cites="gelman2014beyond">(<a href="#ref-gelman2014beyond" role="doc-biblioref">Gelman and Carlin 2014</a>)</span>. A type M error is the factor by which the magnitude of an effect might be overestimated <span class="citation" data-cites="gelman2014beyond">(<a href="#ref-gelman2014beyond" role="doc-biblioref">Gelman and Carlin 2014</a>)</span>. Definitions are always great but an example helps to better understand.</p>
 <p>Using our example from before, and the function outlined in <span class="citation" data-cites="gelman2014beyond">Gelman and Carlin (<a href="#ref-gelman2014beyond" role="doc-biblioref">2014</a>)</span>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>retrodesign <span class="ot">&lt;-</span> <span class="cf">function</span>(A, s, <span class="at">alpha=</span>.<span class="dv">05</span>, <span class="at">df=</span><span class="cn">Inf</span>, <span class="at">n.sims=</span><span class="dv">10000</span>){</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>, df)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  p.hi <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(z<span class="sc">-</span>A<span class="sc">/</span>s, df)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  p.lo <span class="ot">&lt;-</span> <span class="fu">pt</span>(<span class="sc">-</span>z<span class="sc">-</span>A<span class="sc">/</span>s, df)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  power <span class="ot">&lt;-</span> p.hi <span class="sc">+</span> p.lo</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  typeS <span class="ot">&lt;-</span> p.lo<span class="sc">/</span>power</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> A <span class="sc">+</span> s<span class="sc">*</span><span class="fu">rt</span>(n.sims,df)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  significant <span class="ot">&lt;-</span> <span class="fu">abs</span>(estimate) <span class="sc">&gt;</span> s<span class="sc">*</span>z</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  exaggeration <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(estimate)[significant])<span class="sc">/</span>A</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">power=</span>power, <span class="at">typeS=</span>typeS, <span class="at">exaggeration=</span>exaggeration))</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">retrodesign</span>(<span class="sc">-</span><span class="fl">0.0339</span>, <span class="fl">0.0543545</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>retrodesign <span class="ot">&lt;-</span> <span class="cf">function</span>(A, s, <span class="at">alpha=</span>.<span class="dv">05</span>, <span class="at">df=</span><span class="cn">Inf</span>, <span class="at">n.sims=</span><span class="dv">10000</span>){</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>, df)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  p.hi <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(z<span class="sc">-</span>A<span class="sc">/</span>s, df)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  p.lo <span class="ot">&lt;-</span> <span class="fu">pt</span>(<span class="sc">-</span>z<span class="sc">-</span>A<span class="sc">/</span>s, df)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  power <span class="ot">&lt;-</span> p.hi <span class="sc">+</span> p.lo</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  typeS <span class="ot">&lt;-</span> p.lo<span class="sc">/</span>power</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> A <span class="sc">+</span> s<span class="sc">*</span><span class="fu">rt</span>(n.sims,df)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  significant <span class="ot">&lt;-</span> <span class="fu">abs</span>(estimate) <span class="sc">&gt;</span> s<span class="sc">*</span>z</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  exaggeration <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(estimate)[significant])<span class="sc">/</span>A</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">power=</span>power, <span class="at">typeS=</span>typeS, <span class="at">exaggeration=</span>exaggeration))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">retrodesign</span>(<span class="sc">-</span><span class="fl">0.0339</span>, <span class="fl">0.0543545</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$power
 [1] 0.09561688

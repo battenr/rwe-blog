@@ -163,7 +163,7 @@ While we can adjust for observed confounding, it is not possible to adjust for u
 
 Positivity refers to the condition that every individual has a greater than 0 probability of being assigned to each of the treatment levels (@RN509, pp. 30). Logically, this makes sense because if we think about our purple Popsicle eaters and water drinks, if someone in that group had a less than 0 probability they couldn't possibly be in that group!
 
-### Consistency  {#sec-consis}
+### Consistency {#sec-consis}
 
 Consistency means that the observed outcome for every treated individual equals her outcome if she received treatment and that the observed outcome for every untreated individual equals her outcome if she had remained untreated, that is $Y^a = Y$ for every individual with $A = a$ (@RN509, pp. 31).
 

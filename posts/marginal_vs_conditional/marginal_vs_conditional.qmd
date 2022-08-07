@@ -8,7 +8,15 @@ bibliography: marginal_vs_conditional.bib
 draft: true
 ---
 
-## Marginal Mean: What do you mean?
+## Marginally Important
+
+This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what is meant by these terms. To do that, can you guess what we are going to start with? Yup! Probability again
+
+## Conditional vs Unconditional Probability
+
+First things first. Let's review some basic probability terms.
+
+## 
 
 ## 2x2 Table
 
