@@ -10,7 +10,7 @@ draft: true
 
 ## Marginally Important
 
-This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what is meant by these terms. To do that, can you guess what we are going to start with? Yup! Probability again.
+This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.
 
 ## Conditional vs Unconditional Probability
 
@@ -20,32 +20,72 @@ $$
 P(\text{toothfairy visit}) = 0.30
 $$
 
-Now, the toothfairy randomly visiting you seems a bit bizarre doesn't it? She'd just drop by any night for no reason at all? Seems unlikely. She'd probably visit after you had a tooth fall out. That can be worded as "the probability that the toothfairy will visit, given that a tooth fell out". Using mathematical notation again:
+Now, the toothfairy randomly visiting you seems a bit bizarre doesn't it? She'd just drop by any night for no reason at all? Maybe if you wore your favorite pink pyjamas to bed she'd visit. This can be worded as "the probability that the toothfairy will visit, given that you are wearing pink pyjamas to bed". Using mathematical notation again:
 
 $$
-P(\text{toothfairy visit} | \text{lost a tooth}) 
+P(\text{toothfairy visit} | \text{wearing pink pyjamas}) 
 $$
 
-Now, how do we calculate that? Well, the below formula
+Now, how do we calculate that? Well, the below formula [@wassertheil2004biostatistics]
 
 $$
-P(A|B) = P(\text{A and B}) / P(A)
+P(A|B) = \frac{P(\text{A and B})}{P(B)}
 $$
 
-Note: $P(\text{A and B}) = P(A)*P(B)$
-
 $$
-P(\text{toothfairy visit | lost a tooth}) = P(\text{toothfairy visit and lost a tooth}) / P(\text{toothfairy visit})
+P(\text{toothfairy visit | wearing pink pyjamas}) = \frac{P(\text{toothfairy visit and wearing pink pyjamas})}{P(\text{wearing pink pyjamas})} 
 $$
 
-This same logic goes for when we are conducting studies. The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either ***marginal*** or ***conditional*** effects. Stratification/restriction and matching can only be used to compute ***conditional*** effects in certain subsets of the population [@hernanwhatif, pp.51]
+This same logic goes for when we are conducting studies.
 
-Let's break down each of these methods one by one.
+## Conditional Mean
 
-## Standardization
+### Parametric Estimators of the Conditional Mean
 
-## IP Weighting
+The point of a model is to estimate value $E$ of some parameter. The parameter could be the mean or some other measure. Let's assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be
 
-## Stratification/Restriction
+$$
+E[\text{Toothfairy visits} | \text {Pink pyjamas}] 
+$$
 
-## Matching
+To figure this out, we need a model.
+
+$$
+E[\text{Toothfairy visits} | \text {Pink pyjamas}] = \theta_0 + \theta_1*\text{pink pyjamas}
+$$
+
+The equation above is called a **parametric conditional mean model**, because it describes the conditional mean function in terms of a finite number of parameters (note: $\theta_0$ and $\theta_1$ are referred to as parameters).
+
+Once we've fitted some data to the model, we can determine the predicted value for each individual. The notation typically used is
+
+$$
+\hat{E}[\text{Toothfairy visits} | \text{pink pyjamas = yes}] = \hat{\theta_0} + \hat{\theta_1}*Yes
+$$
+
+### Nonparametric Estimators of the Conditional Mean
+
+## Effect Modification
+
+The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either ***marginal*** or ***conditional*** effects. Stratification/restriction and matching can only be used to compute ***conditional*** effects in certain subsets of the population [@hernanwhatif, pp.51]. Let's break down each of these methods one by one.
+
+### Standardization
+
+### IP Weighting
+
+::: callout-note
+This section draws heavily from Chapter 12 of What If [@hernanwhatif]
+:::
+
+#### Propensity Score
+
+The propensity score is the conditional probability of receiving treatment [@hernanwhatif], or in mathematical notation:
+
+$$
+Pr[A = 1| L = l]
+$$
+
+Where A is treatment and L is covariates.
+
+### Stratification/Restriction
+
+### Matching

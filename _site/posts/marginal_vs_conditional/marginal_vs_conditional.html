@@ -125,7 +125,7 @@ div.csl-indent {
 
 <section id="marginally-important" class="level2">
 <h2 class="anchored" data-anchor-id="marginally-important">Marginally Important</h2>
-<p>This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what is meant by these terms. To do that, can you guess what we are going to start with? Yup! Probability again.</p>
+<p>This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.</p>
 </section>
 <section id="conditional-vs-unconditional-probability" class="level2">
 <h2 class="anchored" data-anchor-id="conditional-vs-unconditional-probability">Conditional vs Unconditional Probability</h2>
@@ -133,40 +133,80 @@ div.csl-indent {
 <p><span class="math display">\[
 P(\text{toothfairy visit}) = 0.30
 \]</span></p>
-<p>Now, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Seems unlikely. She’d probably visit after you had a tooth fall out. That can be worded as “the probability that the toothfairy will visit, given that a tooth fell out”. Using mathematical notation again:</p>
+<p>Now, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Maybe if you wore your favorite pink pyjamas to bed she’d visit. This can be worded as “the probability that the toothfairy will visit, given that you are wearing pink pyjamas to bed”. Using mathematical notation again:</p>
 <p><span class="math display">\[
-P(\text{toothfairy visit} | \text{lost a tooth})
+P(\text{toothfairy visit} | \text{wearing pink pyjamas})
 \]</span></p>
-<p>Now, how do we calculate that? Well, the below formula</p>
+<p>Now, how do we calculate that? Well, the below formula <span class="citation" data-cites="wassertheil2004biostatistics">(<a href="#ref-wassertheil2004biostatistics" role="doc-biblioref">Wassertheil-Smoller and Smoller 2004</a>)</span></p>
 <p><span class="math display">\[
-P(A|B) = P(\text{A and B}) / P(A)
+P(A|B) = \frac{P(\text{A and B})}{P(B)}
 \]</span></p>
-<p>Note: <span class="math inline">\(P(\text{A and B}) = P(A)*P(B)\)</span></p>
 <p><span class="math display">\[
-P(\text{toothfairy visit | lost a tooth}) = P(\text{toothfairy visit and lost a tooth}) / P(\text{toothfairy visit})
+P(\text{toothfairy visit | wearing pink pyjamas}) = \frac{P(\text{toothfairy visit and wearing pink pyjamas})}{P(\text{wearing pink pyjamas})}
 \]</span></p>
-<p>This same logic goes for when we are conducting studies. The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> effects. Stratification/restriction and matching can only be used to compute <strong><em>conditional</em></strong> effects in certain subsets of the population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 51</a>)</span></p>
-<p>Let’s break down each of these methods one by one.</p>
+<p>This same logic goes for when we are conducting studies.</p>
 </section>
-<section id="standardization" class="level2">
-<h2 class="anchored" data-anchor-id="standardization">Standardization</h2>
+<section id="conditional-mean" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-mean">Conditional Mean</h2>
+<section id="parametric-estimators-of-the-conditional-mean" class="level3">
+<h3 class="anchored" data-anchor-id="parametric-estimators-of-the-conditional-mean">Parametric Estimators of the Conditional Mean</h3>
+<p>The point of a model is to estimate value <span class="math inline">\(E\)</span> of some parameter. The parameter could be the mean or some other measure. Let’s assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be</p>
+<p><span class="math display">\[
+E[\text{Toothfairy visits} | \text {Pink pyjamas}]
+\]</span></p>
+<p>To figure this out, we need a model.</p>
+<p><span class="math display">\[
+E[\text{Toothfairy visits} | \text {Pink pyjamas}] = \theta_0 + \theta_1*\text{pink pyjamas}
+\]</span></p>
+<p>The equation above is called a <strong>parametric conditional mean model</strong>, because it describes the conditional mean function in terms of a finite number of parameters (note: <span class="math inline">\(\theta_0\)</span> and <span class="math inline">\(\theta_1\)</span> are referred to as parameters).</p>
+<p>Once we’ve fitted some data to the model, we can determine the predicted value for each individual. The notation typically used is</p>
+<p><span class="math display">\[
+\hat{E}[\text{Toothfairy visits} | \text{pink pyjamas = yes}] = \hat{\theta_0} + \hat{\theta_1}*Yes
+\]</span></p>
 </section>
-<section id="ip-weighting" class="level2">
-<h2 class="anchored" data-anchor-id="ip-weighting">IP Weighting</h2>
+<section id="nonparametric-estimators-of-the-conditional-mean" class="level3">
+<h3 class="anchored" data-anchor-id="nonparametric-estimators-of-the-conditional-mean">Nonparametric Estimators of the Conditional Mean</h3>
 </section>
-<section id="stratificationrestriction" class="level2">
-<h2 class="anchored" data-anchor-id="stratificationrestriction">Stratification/Restriction</h2>
 </section>
-<section id="matching" class="level2">
+<section id="effect-modification" class="level2">
+<h2 class="anchored" data-anchor-id="effect-modification">Effect Modification</h2>
+<p>The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> effects. Stratification/restriction and matching can only be used to compute <strong><em>conditional</em></strong> effects in certain subsets of the population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 51</a>)</span>. Let’s break down each of these methods one by one.</p>
+<section id="standardization" class="level3">
+<h3 class="anchored" data-anchor-id="standardization">Standardization</h3>
+</section>
+<section id="ip-weighting" class="level3">
+<h3 class="anchored" data-anchor-id="ip-weighting">IP Weighting</h3>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This section draws heavily from Chapter 12 of What If <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021</a>)</span></p>
+</div>
+</div>
+</section>
+<section id="stratificationrestriction" class="level3">
+<h3 class="anchored" data-anchor-id="stratificationrestriction">Stratification/Restriction</h3>
+</section>
+<section id="matching" class="level3">
 
 
 
 
+</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">Matching</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
 Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
+</div>
+<div id="ref-wassertheil2004biostatistics" class="csl-entry" role="doc-biblioentry">
+Wassertheil-Smoller, Sylvia, and Jordan Smoller. 2004. <em>Biostatistics and Epidemiology: A Primer for Health and Biomedical Professionals</em>. Springer.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
