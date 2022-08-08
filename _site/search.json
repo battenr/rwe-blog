@@ -35,6 +35,13 @@
     "text": "Hazard Ratios\nHazard ratios are typically reported from time-to-event analyses, whereas odds ratios and relative risks are calculated from binary events: yes/no. Due to this, hazards cannot be explained quite as simple using a table, however that isn’t a problem.\nA hazard is the probability that an individual has an event at that time t Clark et al. (2003). Alternatively, it represents the instantaneous event rate for an individual. This is commonly used in survival analyses, which we will touch on in a later post, however it doesn’t have to be for survival (sometimes a common misconception). The hazard is for the event. Since it is a time-to-event measure, it could be used to determine the probability that my socks will instantaneously fall off. The typical notation for a hazard is \\(h(t)\\) or \\(\\lambda(t)\\)\nAs with the previous two ratios, it is a ratio. So if we use the same heart attack example, Table 1, except this time we are analyzing the time-to-heart attack then we can calculate a hazard for each group. Unfortunately, the math is not quite as straightforward so I’ll save you the pain. Using an appropriate model, a subsequent post will touch on models for time-to-event analysis but a common methods you may have heard of is Cox Proportional Hazards Model (note: if proportional hazards assumption is held, then hazard is cumulative Clark et al. (2003).\nUsing this imaginary model, we calculated the hazard for men \\(h(men)\\) as 0.20 and the hazard for women \\(h(women)\\) as 0.369. Now, we take the ratio of these two hazards and….*I’ll pause while you roll your eyes*….bingo! We have a hazard ratio (HR):\n\\[\nHR = h(men)/h(women) = 0.20/0.369 = 0.542.\n\\]\nThe interpretation for this is that men, yet again, have a lower probability of having an instantaneous heart attack than women (HR = 0.542)."
   },
   {
+    "objectID": "posts/p-value-power/p-value-power.html",
+    "href": "posts/p-value-power/p-value-power.html",
+    "title": "P-Values and Power: Please Explain",
+    "section": "",
+    "text": "References\n\nBland, Martin. 2015. An Introduction to Medical Statistics. Oxford university press.\n\n\nGelman, Andrew, and John Carlin. 2014. “Beyond Power Calculations: Assessing Type s (Sign) and Type m (Magnitude) Errors.” Perspectives on Psychological Science 9 (6): 641–51."
+  },
+  {
     "objectID": "posts/causal_inference_intro/causal_inference.html",
     "href": "posts/causal_inference_intro/causal_inference.html",
     "title": "Intro to Causal Inference",
@@ -67,7 +74,7 @@
     "href": "index.html",
     "title": "RWE Blog",
     "section": "",
-    "text": "Causal Inference\n\n\nRCT\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nOR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
+    "text": "P-Values\n\n\nHypothesis Tests\n\n\n\n\n\n\n\n\n\n\n\nAug 8, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nCausal Inference\n\n\nRCT\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nOR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",

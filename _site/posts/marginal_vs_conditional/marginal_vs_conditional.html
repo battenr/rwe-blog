@@ -17,6 +17,25 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -112,65 +131,44 @@ ul.task-list{list-style: none;}
 <h2 class="anchored" data-anchor-id="conditional-vs-unconditional-probability">Conditional vs Unconditional Probability</h2>
 <p>First things first. Let’s review some basic probability terms. Unconditional probability, denoted as <span class="math inline">\(P(A)\)</span>, is the probability that something will happen. Unconditional probability sounds like a mouthful, so we will use marginal instead. For example, let’s assume in a made-up world that the probability of you getting a visit from the toothfairy is 0.30 on any given night. In mathematical terms:</p>
 <p><span class="math display">\[
-P(toothfairy) = 0.30
+P(\text{toothfairy visit}) = 0.30
 \]</span></p>
 <p>Now, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Seems unlikely. She’d probably visit after you had a tooth fall out. That can be worded as “the probability that the toothfairy will visit, given that a tooth fell out”. Using mathematical notation again:</p>
 <p><span class="math display">\[
-P
+P(\text{toothfairy visit} | \text{lost a tooth})
 \]</span></p>
+<p>Now, how do we calculate that? Well, the below formula</p>
+<p><span class="math display">\[
+P(A|B) = P(\text{A and B}) / P(A)
+\]</span></p>
+<p>Note: <span class="math inline">\(P(\text{A and B}) = P(A)*P(B)\)</span></p>
+<p><span class="math display">\[
+P(\text{toothfairy visit | lost a tooth}) = P(\text{toothfairy visit and lost a tooth}) / P(\text{toothfairy visit})
+\]</span></p>
+<p>This same logic goes for when we are conducting studies. The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> effects. Stratification/restriction and matching can only be used to compute <strong><em>conditional</em></strong> effects in certain subsets of the population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 51</a>)</span></p>
+<p>Let’s break down each of these methods one by one.</p>
 </section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"></h2>
+<section id="standardization" class="level2">
+<h2 class="anchored" data-anchor-id="standardization">Standardization</h2>
 </section>
-<section id="x2-table" class="level2">
-<h2 class="anchored" data-anchor-id="x2-table">2x2 Table</h2>
-<p>First, lets start with a 2x2 table. It could be of anything really, but let’s imagine we have two groups of people</p>
-<div id="tbl-bgtc" class="anchored">
-<table class="table">
-<caption>Table 1: Bubble Gum Chewers vs Tobacco Chewers</caption>
-<colgroup>
-<col style="width: 25%">
-<col style="width: 27%">
-<col style="width: 23%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;"></th>
-<th style="text-align: center;"><p>Bubble Gum Chewers</p>
-(n = 426)</th>
-<th style="text-align: center;"><p>Tobacco Chewers</p>
-( n = 359)</th>
-<th style="text-align: center;">Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Sore Jaw</strong></td>
-<td style="text-align: center;">78</td>
-<td style="text-align: center;">228</td>
-<td style="text-align: center;">306</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>Not Sore Jaw</strong></td>
-<td style="text-align: center;">348</td>
-<td style="text-align: center;">131</td>
-<td style="text-align: center;">479</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"></td>
-<td style="text-align: center;">426</td>
-<td style="text-align: center;">359</td>
-<td style="text-align: center;"><strong>785</strong></td>
-</tr>
-</tbody>
-</table>
+<section id="ip-weighting" class="level2">
+<h2 class="anchored" data-anchor-id="ip-weighting">IP Weighting</h2>
+</section>
+<section id="stratificationrestriction" class="level2">
+<h2 class="anchored" data-anchor-id="stratificationrestriction">Stratification/Restriction</h2>
+</section>
+<section id="matching" class="level2">
+
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">Matching</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
+Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
 </div>
-
-
-</section>
-
-</main> <!-- /main -->
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
