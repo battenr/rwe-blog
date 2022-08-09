@@ -1,0 +1,57 @@
+---
+ttitle: "Inverse Probability Weighting"
+author: "Ryan Batten"
+date: "2022-08-09"
+categories: [IPW, IPTW]
+image: "iptw.jpeg"
+bibliography: ip_weighting.bib
+draft: true
+---
+
+## Reweighting
+
+This post is going to be about reweighing, specifically inverse probability of treatment weighting (IPTW) technique.
+
+::: callout-note
+This post will draw heavily from Chapter 12 of What If [@hernanwhatif]
+:::
+
+## Propensity Score
+
+The propensity score is the conditional probability of receiving treatment [@hernanwhatif], or in mathematical notation:
+
+$$
+Pr[A = 1| L = l]
+$$
+
+Where A is treatment and L is covariates.
+
+## Pseudo-Population
+
+The goal of reweighing is to make a pseudo-population where exchangeability holds. To do this, we fit a logistic regression where the outcome is treatment.
+
+## General Formula for IP Weighting
+
+The below formula is from [@hernanwhatif, pp.153].
+
+$$
+W^a = \frac{p}{f[A|L]}
+$$
+
+where $p$ is the unconditional probability of treatment. Note: $0< p \leq 1$, whereas $f[A|L]$ is the probability of treatment based on covariates L. A common choice is to use $Pr[A = 1]$ for $p$ in the treated and $Pr[A=0]$ for $p$ in the untreated. $Pr$ in this case means the proportion. More compactly:
+
+$$
+\frac{f(A)}{f[A|L]}
+$$
+
+## Stabilized Weight
+
+$$
+SW^a = \frac{f(A)}{f[A|L]}
+$$
+
+Mean of the stabilized weights should be 1. This is important to check when conducting an analysis using stabilized weights.
+
+## Stabilized or Nonstabilized? 
+
+At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights results in narrower 95% CIs.

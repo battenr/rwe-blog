@@ -67,25 +67,3 @@ $$
 ## Effect Modification
 
 The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either ***marginal*** or ***conditional*** effects. Stratification/restriction and matching can only be used to compute ***conditional*** effects in certain subsets of the population [@hernanwhatif, pp.51]. Let's break down each of these methods one by one.
-
-### Standardization
-
-### IP Weighting
-
-::: callout-note
-This section draws heavily from Chapter 12 of What If [@hernanwhatif]
-:::
-
-#### Propensity Score
-
-The propensity score is the conditional probability of receiving treatment [@hernanwhatif], or in mathematical notation:
-
-$$
-Pr[A = 1| L = l]
-$$
-
-Where A is treatment and L is covariates.
-
-### Stratification/Restriction
-
-### Matching
