@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-01">
+<meta name="dcterms.date" content="2022-08-09">
 
-<title>Ryan's Real-World Experience – marginal_vs_conditional</title>
+<title>Ryan's Real-World Experience – ip_weighting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -17,6 +17,69 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
@@ -123,54 +186,94 @@ div.csl-indent {
 
 
 
-<section id="marginally-important" class="level2">
-<h2 class="anchored" data-anchor-id="marginally-important">Marginally Important</h2>
-<p>This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.</p>
+<section id="reweighting" class="level2">
+<h2 class="anchored" data-anchor-id="reweighting">Reweighting</h2>
+<p>This post is going to be about reweighing, specifically inverse probability of treatment weighting (IPTW) technique.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This post will draw heavily from Chapter 12 of What If <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021</a>)</span></p>
+</div>
+</div>
 </section>
-<section id="conditional-vs-unconditional-probability" class="level2">
-<h2 class="anchored" data-anchor-id="conditional-vs-unconditional-probability">Conditional vs Unconditional Probability</h2>
-<p>First things first. Let’s review some basic probability terms. Unconditional probability, denoted as <span class="math inline">\(P(A)\)</span>, is the probability that something will happen. Unconditional probability sounds like a mouthful, so we will use marginal instead. For example, let’s assume in a made-up world that the probability of you getting a visit from the toothfairy is 0.30 on any given night. In mathematical terms:</p>
+<section id="propensity-score" class="level2">
+<h2 class="anchored" data-anchor-id="propensity-score">Propensity Score</h2>
+<p>The propensity score is the conditional probability of receiving treatment <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021</a>)</span>, or in mathematical notation:</p>
 <p><span class="math display">\[
-P(\text{toothfairy visit}) = 0.30
+Pr[A = 1| L = l]
 \]</span></p>
-<p>Now, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Maybe if you wore your favorite pink pyjamas to bed she’d visit. This can be worded as “the probability that the toothfairy will visit, given that you are wearing pink pyjamas to bed”. Using mathematical notation again:</p>
-<p><span class="math display">\[
-P(\text{toothfairy visit} | \text{wearing pink pyjamas})
-\]</span></p>
-<p>Now, how do we calculate that? Well, the below formula <span class="citation" data-cites="wassertheil2004biostatistics">(<a href="#ref-wassertheil2004biostatistics" role="doc-biblioref">Wassertheil-Smoller and Smoller 2004</a>)</span></p>
-<p><span class="math display">\[
-P(A|B) = \frac{P(\text{A and B})}{P(B)}
-\]</span></p>
-<p><span class="math display">\[
-P(\text{toothfairy visit | wearing pink pyjamas}) = \frac{P(\text{toothfairy visit and wearing pink pyjamas})}{P(\text{wearing pink pyjamas})}
-\]</span></p>
-<p>This same logic goes for when we are conducting studies.</p>
+<p>Where A is treatment and L is covariates.</p>
 </section>
-<section id="conditional-mean" class="level2">
-<h2 class="anchored" data-anchor-id="conditional-mean">Conditional Mean</h2>
-<section id="parametric-estimators-of-the-conditional-mean" class="level3">
-<h3 class="anchored" data-anchor-id="parametric-estimators-of-the-conditional-mean">Parametric Estimators of the Conditional Mean</h3>
-<p>The point of a model is to estimate value <span class="math inline">\(E\)</span> of some parameter. The parameter could be the mean or some other measure. Let’s assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be</p>
+<section id="pseudo-population" class="level2">
+<h2 class="anchored" data-anchor-id="pseudo-population">Pseudo-Population</h2>
+<p>The goal of reweighing is to make a pseudo-population where exchangeability holds. To do this, we fit a logistic regression where the outcome is treatment.</p>
+</section>
+<section id="general-formula-for-ip-weighting" class="level2">
+<h2 class="anchored" data-anchor-id="general-formula-for-ip-weighting">General Formula for IP Weighting</h2>
+<p>The below formula is from <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>.</p>
 <p><span class="math display">\[
-E[\text{Toothfairy visits} | \text {Pink pyjamas}]
+W^a = \frac{p}{f[A|L]}
 \]</span></p>
-<p>To figure this out, we need a model.</p>
+<p>where <span class="math inline">\(p\)</span> is the unconditional probability of treatment. Note: <span class="math inline">\(0&lt; p \leq 1\)</span>, whereas <span class="math inline">\(f[A|L]\)</span> is the probability of treatment based on covariates L. A common choice is to use <span class="math inline">\(Pr[A = 1]\)</span> for <span class="math inline">\(p\)</span> in the treated and <span class="math inline">\(Pr[A=0]\)</span> for <span class="math inline">\(p\)</span> in the untreated. <span class="math inline">\(Pr\)</span> in this case means the proportion. More compactly:</p>
 <p><span class="math display">\[
-E[\text{Toothfairy visits} | \text {Pink pyjamas}] = \theta_0 + \theta_1*\text{pink pyjamas}
-\]</span></p>
-<p>The equation above is called a <strong>parametric conditional mean model</strong>, because it describes the conditional mean function in terms of a finite number of parameters (note: <span class="math inline">\(\theta_0\)</span> and <span class="math inline">\(\theta_1\)</span> are referred to as parameters).</p>
-<p>Once we’ve fitted some data to the model, we can determine the predicted value for each individual. The notation typically used is</p>
-<p><span class="math display">\[
-\hat{E}[\text{Toothfairy visits} | \text{pink pyjamas = yes}] = \hat{\theta_0} + \hat{\theta_1}*Yes
+\frac{f(A)}{f[A|L]}
 \]</span></p>
 </section>
-<section id="nonparametric-estimators-of-the-conditional-mean" class="level3">
-<h3 class="anchored" data-anchor-id="nonparametric-estimators-of-the-conditional-mean">Nonparametric Estimators of the Conditional Mean</h3>
+<section id="stabilized-weight" class="level2">
+<h2 class="anchored" data-anchor-id="stabilized-weight">Stabilized Weight</h2>
+<p><span class="math display">\[
+SW^a = \frac{f(A)}{f[A|L]}
+\]</span></p>
+<p>Mean of the stabilized weights should be 1. This is important to check when conducting an analysis using stabilized weights.</p>
 </section>
+<section id="stabilized-or-nonstabilized" class="level2">
+<h2 class="anchored" data-anchor-id="stabilized-or-nonstabilized">Stabilized or Nonstabilized?</h2>
+<p>At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights results in narrower 95% CIs.</p>
 </section>
-<section id="effect-modification" class="level2">
-<h2 class="anchored" data-anchor-id="effect-modification">Effect Modification</h2>
-<p>The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> effects. Stratification/restriction and matching can only be used to compute <strong><em>conditional</em></strong> effects in certain subsets of the population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 51</a>)</span>. Let’s break down each of these methods one by one.</p>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<p>An example always helps. Let’s jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters.</p>
+<table class="table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variables</th>
+<th><p>Disney Lover</p>
+(n = )</th>
+<th>Not a Disney Fan</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Age</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Female, n (%)</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df<span class="sc">$</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 
@@ -179,9 +282,6 @@ E[\text{Toothfairy visits} | \text {Pink pyjamas}] = \theta_0 + \theta_1*\text{p
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
 Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
-</div>
-<div id="ref-wassertheil2004biostatistics" class="csl-entry" role="doc-biblioentry">
-Wassertheil-Smoller, Sylvia, and Jordan Smoller. 2004. <em>Biostatistics and Epidemiology: A Primer for Health and Biomedical Professionals</em>. Springer.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

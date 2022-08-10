@@ -55,3 +55,74 @@ Mean of the stabilized weights should be 1. This is important to check when cond
 ## Stabilized or Nonstabilized? 
 
 At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights results in narrower 95% CIs.
+
+## Example
+
+An example always helps. Let's jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters. Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of
+
+```{r, cache = TRUE, include = FALSE, message = FALSE, echo - FALSE}
+
+library(tidyverse)
+
+set.seed(202208)
+
+df.disney.lover <- data.frame(
+  sex = rbinom(577, size = 1, prob = 0.19), # 1 = female
+  age = runif(577, min = 5, max = 60),
+  disney_lover = 1,
+  sunglasses = rbinom(577, size = 1, prob = 0.37),
+  ice_cream = rbinom(577, size = 1, prob = 0.22)
+)
+
+df.disney.hater <- data.frame(
+  sex = rbinom(206, size = 1, prob = 0.61), # 1 = female
+  age = runif(206, min = 25, max = 80),
+  disney_lover = 0,
+  sunglasses = rbinom(206, size = 1, prob = 0.50),
+  ice_cream = rbinom(206, size = 1, prob = 0.22)
+)
+
+# Age
+
+cbind(mean(df.disney.lover$age), sd(df.disney.lover$age))
+cbind(mean(df.disney.hater$age), sd(df.disney.hater$age))
+
+# Sex
+
+n.female.dl = df.disney.lover %>% dplyr::filter(sex == 1) %>%  count()
+cbind(n.female.dl, round(n.female.dl/577, 3)*100)
+
+n.female.ndl = df.disney.hater %>% dplyr::filter(sex == 1) %>%  count()
+cbind(n.female.ndl, round(n.female.ndl/206, 3)*100)
+
+# Sunglasses
+
+n.sg.dl = df.disney.lover %>% dplyr::filter(sunglasses == 1) %>%  count()
+cbind(n.sg.dl, round(n.sg.dl/577, 3)*100)
+
+n.sg.ndl = df.disney.hater %>% dplyr::filter(sunglasses == 1) %>%  count()
+cbind(n.sg.ndl, round(n.sg.ndl/206, 3)*100)
+
+# Ice Cream Lovers
+
+n.ic.dl = df.disney.lover %>% dplyr::filter(ice_cream == 1) %>%  count()
+cbind(n.ic.dl, round(n.ic.dl/577, 3)*100)
+
+n.ic.ndl = df.disney.hater %>% dplyr::filter(ice_cream == 1) %>%  count()
+cbind(n.ic.ndl, round(n.ic.ndl/206, 3)*100)
+
+```
+
++--------------------------+---------------------+---------------------+
+| Variables                | Disney Lover        | Not a Disney Fan    |
+|                          |                     |                     |
+|                          | (n = 577)           | ( n = 206)          |
++:========================:+:===================:+:===================:+
+| Age, mean (SD)           | 31.8 (16.3)         | 54.1 (16.0)         |
++--------------------------+---------------------+---------------------+
+| Female, n (%)            | 110 (19.1%)         | 119, (57.8)         |
++--------------------------+---------------------+---------------------+
+| Sunglasses, n (%)        | 209 (36.2%)         | 98 (47.6%)          |
++--------------------------+---------------------+---------------------+
+| Ice Cream Lovers, n (%)  | 126 (21.8%)         | 51 (24.8%)          |
++--------------------------+---------------------+---------------------+
