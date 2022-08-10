@@ -52,9 +52,9 @@ $$
 
 Mean of the stabilized weights should be 1. This is important to check when conducting an analysis using stabilized weights.
 
-## Stabilized or Nonstabilized? 
+## Stabilized or Nonstabilized?
 
-At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights results in narrower 95% CIs.
+At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs. You should use stabilized weights when your model is not saturated (i.e., there are the same amount of unknowns on both sides of the equations)
 
 ## Example
 
@@ -113,16 +113,16 @@ cbind(n.ic.ndl, round(n.ic.ndl/206, 3)*100)
 
 ```
 
-+--------------------------+---------------------+---------------------+
-| Variables                | Disney Lover        | Not a Disney Fan    |
-|                          |                     |                     |
-|                          | (n = 577)           | ( n = 206)          |
-+:========================:+:===================:+:===================:+
-| Age, mean (SD)           | 31.8 (16.3)         | 54.1 (16.0)         |
-+--------------------------+---------------------+---------------------+
-| Female, n (%)            | 110 (19.1%)         | 119, (57.8)         |
-+--------------------------+---------------------+---------------------+
-| Sunglasses, n (%)        | 209 (36.2%)         | 98 (47.6%)          |
-+--------------------------+---------------------+---------------------+
-| Ice Cream Lovers, n (%)  | 126 (21.8%)         | 51 (24.8%)          |
-+--------------------------+---------------------+---------------------+
++-------------------------+--------------------+--------------------+
+| Variables               | Disney Lover       | Not a Disney Fan   |
+|                         |                    |                    |
+|                         | (n = 577)          | ( n = 206)         |
++:=======================:+:==================:+:==================:+
+| Age, mean (SD)          | 31.8 (16.3)        | 54.1 (16.0)        |
++-------------------------+--------------------+--------------------+
+| Female, n (%)           | 110 (19.1%)        | 119, (57.8)        |
++-------------------------+--------------------+--------------------+
+| Sunglasses, n (%)       | 209 (36.2%)        | 98 (47.6%)         |
++-------------------------+--------------------+--------------------+
+| Ice Cream Lovers, n (%) | 126 (21.8%)        | 51 (24.8%)         |
++-------------------------+--------------------+--------------------+

@@ -10,7 +10,7 @@ draft: true
 
 ## Marginally Important
 
-This post is going to be about marginally compared to conditional effects in clinical epidemiology. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.
+This post is going to be about marginal compared to conditional effects. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.
 
 ## Conditional vs Unconditional Probability
 
@@ -42,7 +42,7 @@ This same logic goes for when we are conducting studies.
 
 ### Parametric Estimators of the Conditional Mean
 
-The point of a model is to estimate value $E$ of some parameter. The parameter could be the mean or some other measure. Let's assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be
+The point of a model is to estimate the value $E$ of some parameter. The parameter could be the mean or some other measure. Let's assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be
 
 $$
 E[\text{Toothfairy visits} | \text {Pink pyjamas}] 
