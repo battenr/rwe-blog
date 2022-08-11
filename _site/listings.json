@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/rwe-whats-the-hype/rwe_intro.html",
       "/posts/p-value-power/p-value-power.html",
       "/posts/causal_inference_intro/causal_inference.html",
       "/posts/or_rr_hr/or_rr_hr.html",

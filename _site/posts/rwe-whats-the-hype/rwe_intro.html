@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-01">
+<meta name="dcterms.date" content="2022-08-10">
 
-<title>Ryan's Real-World Experience – marginal_vs_conditional</title>
+<title>Ryan’s Real-World Experience - Real-World Evidence: What’s all the hype?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +75,6 @@ div.csl-indent {
   }
 }</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -114,7 +113,38 @@ div.csl-indent {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Real-World Evidence: What’s all the hype?</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">RWE</div>
+                <div class="quarto-category">Observational Data</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ryan Batten </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 10, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
@@ -123,65 +153,53 @@ div.csl-indent {
 
 
 
-<section id="marginally-important" class="level2">
-<h2 class="anchored" data-anchor-id="marginally-important">Marginally Important</h2>
-<p>This post is going to be about marginal compared to conditional effects. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.</p>
+
+<section id="what-is-rwe" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-rwe">What is RWE?</h2>
+<p>You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential for answering important research questions, however what exactly is RWE? RWE is evidence generated from real-world data (RWD). RWD is defined by the FDA as data relating to patient health status and/or the delivery of health care routinely collected from a variety of sources <span class="citation" data-cites="FDA-RWE">(<a href="#ref-FDA-RWE" role="doc-biblioref">FDA December 2018</a>)</span>. This data could be from electronic health records, medical claims and billing, electronic medical records, data from product registries, wearable devices, mobile devices and other sources. Sounds pretty good right? Well the quality of the evidence is only as a good as the quality of the study conducted.</p>
 </section>
-<section id="conditional-vs-unconditional-probability" class="level2">
-<h2 class="anchored" data-anchor-id="conditional-vs-unconditional-probability">Conditional vs Unconditional Probability</h2>
-<p>First things first. Let’s review some basic probability terms. Unconditional probability, denoted as <span class="math inline">\(P(A)\)</span>, is the probability that something will happen. Unconditional probability sounds like a mouthful, so we will use marginal instead. For example, let’s assume in a made-up world that the probability of you getting a visit from the toothfairy is 0.30 on any given night. In mathematical terms:</p>
-<p><span class="math display">\[
-P(\text{toothfairy visit}) = 0.30
-\]</span></p>
-<p>Now, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Maybe if you wore your favorite pink pyjamas to bed she’d visit. This can be worded as “the probability that the toothfairy will visit, given that you are wearing pink pyjamas to bed”. Using mathematical notation again:</p>
-<p><span class="math display">\[
-P(\text{toothfairy visit} | \text{wearing pink pyjamas})
-\]</span></p>
-<p>Now, how do we calculate that? Well, the below formula <span class="citation" data-cites="wassertheil2004biostatistics">(<a href="#ref-wassertheil2004biostatistics" role="doc-biblioref">Wassertheil-Smoller and Smoller 2004</a>)</span></p>
-<p><span class="math display">\[
-P(A|B) = \frac{P(\text{A and B})}{P(B)}
-\]</span></p>
-<p><span class="math display">\[
-P(\text{toothfairy visit | wearing pink pyjamas}) = \frac{P(\text{toothfairy visit and wearing pink pyjamas})}{P(\text{wearing pink pyjamas})}
-\]</span></p>
-<p>This same logic goes for when we are conducting studies.</p>
+<section id="hierarchy-of-research" class="level2">
+<h2 class="anchored" data-anchor-id="hierarchy-of-research">Hierarchy of Research</h2>
+<p>Historically, the hierarchy of research has been that systematic reviews with a meta-analysis are at the top of the evidence pyramid, followed by randomized controlled trials (RCTs), cohort studies, case-control studies and anecdotal research.</p>
+<div id="fig-hierarchy" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="hierarchy-study-designs.jpeg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 1: Hierarchy</figcaption><p></p>
+</figure>
+</div>
+<p>RCTs are near the top of this pyramid for good reason. A well-conducted RCT can provide insight into efficacy of a treatment in a controlled environment so that no data is missing, both observed and unobserved confounders are balanced between groups and you can measure the variables you need for analysis. There are however, drawbacks/potential limitations: RCTs can be expensive to conduct, can require a long duration of follow-up, are not feasible to conduct ethically, limited sample size for assessing safety and limited generalizability. Luckily, observational study designs can help fill in the gaps in these areas.</p>
 </section>
-<section id="conditional-mean" class="level2">
-<h2 class="anchored" data-anchor-id="conditional-mean">Conditional Mean</h2>
-<section id="parametric-estimators-of-the-conditional-mean" class="level3">
-<h3 class="anchored" data-anchor-id="parametric-estimators-of-the-conditional-mean">Parametric Estimators of the Conditional Mean</h3>
-<p>The point of a model is to estimate the value <span class="math inline">\(E\)</span> of some parameter. The parameter could be the mean or some other measure. Let’s assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be</p>
-<p><span class="math display">\[
-E[\text{Toothfairy visits} | \text {Pink pyjamas}]
-\]</span></p>
-<p>To figure this out, we need a model.</p>
-<p><span class="math display">\[
-E[\text{Toothfairy visits} | \text {Pink pyjamas}] = \theta_0 + \theta_1*\text{pink pyjamas}
-\]</span></p>
-<p>The equation above is called a <strong>parametric conditional mean model</strong>, because it describes the conditional mean function in terms of a finite number of parameters (note: <span class="math inline">\(\theta_0\)</span> and <span class="math inline">\(\theta_1\)</span> are referred to as parameters).</p>
-<p>Once we’ve fitted some data to the model, we can determine the predicted value for each individual. The notation typically used is</p>
-<p><span class="math display">\[
-\hat{E}[\text{Toothfairy visits} | \text{pink pyjamas = yes}] = \hat{\theta_0} + \hat{\theta_1}*Yes
-\]</span></p>
+<section id="observational-studies" class="level2">
+<h2 class="anchored" data-anchor-id="observational-studies">Observational Studies</h2>
+<p>When people discuss about the hierarchy of study design, such as in <a href="#fig-hierarchy">Figure&nbsp;1</a>, the quality of the study is not mentioned. For example, is a poorly conducted RCT better than a rigorously conducted case-control study using observational data? That is up for debate however, observational studies can be used to supplement findings from RCTs or where RCTs are infeasible.<br>
+</p>
+<p>One of the key issues with observational studies is the variability in methodological rigor. Due to this, results can vary widely from study to study and really depend upon the researchers conducting the study. Luckily, recent strides have been made in this field. To mention a few, the STaRT-RWE template <span class="citation" data-cites="wang2021start">(<a href="#ref-wang2021start" role="doc-biblioref">Wang et al. 2021</a>)</span> and the principles behind emulating a target trial proposed by Hernan &amp; Robins <span class="citation" data-cites="hernan2016target">(<a href="#ref-hernan2016target" role="doc-biblioref">Hernán and Robins 2016</a>)</span>.</p>
 </section>
-<section id="nonparametric-estimators-of-the-conditional-mean" class="level3">
-<h3 class="anchored" data-anchor-id="nonparametric-estimators-of-the-conditional-mean">Nonparametric Estimators of the Conditional Mean</h3>
+<section id="examples-of-rwe" class="level2">
+<h2 class="anchored" data-anchor-id="examples-of-rwe">Examples of RWE</h2>
+<p>Discussing about RWE in theory is useful but what are some use cases? Recently, regulatory bodies are accepting RWE as part of submissions. These can vary from accepting burden of illness studies to help contextualize the current treatment and cost of available treatments to external control arms (ECA). ECAs can be beneficial when a single arm clinical trial is conducted. In certain disease areas, such as cancer, single arm trials are common but this makes it difficult for regulatory reviewers to ascertain the efficacy of a treatment since there is no comparator arm. Demonstration of safety is another area that RWE is well-suited due to the larger sample size and the generalizability of findings to real-world settings.</p>
+<p>Purpura et al. <span class="citation" data-cites="purpura2022role">(<a href="#ref-purpura2022role" role="doc-biblioref">Purpura et al. 2022</a>)</span> reported 116 FDA-approvals of New Drug and Biologics License Applications. Of these 116, 83 used RWE to support therapeutic context and 88 used RWE to support safety and/or effectiveness. Over the coming years, these numbers are expected to rise as the methodological rigor of these studies increases.</p>
 </section>
-</section>
-<section id="effect-modification" class="level2">
-<h2 class="anchored" data-anchor-id="effect-modification">Effect Modification</h2>
-<p>The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> effects. Stratification/restriction and matching can only be used to compute <strong><em>conditional</em></strong> effects in certain subsets of the population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 51</a>)</span>. Let’s break down each of these methods one by one.</p>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
+<p>RWE is starting to be adopted more by regulatory bodies, with the FDA accepting RWE as part of submissions <span class="citation" data-cites="FDA-RWE">(<a href="#ref-FDA-RWE" role="doc-biblioref">FDA December 2018</a>)</span>, as well as the National Institute for Health and Care Excellence (NICE) issuing guidance for the development of RWE. It is a very exciting time for developing RWE given the vast data that is available! However, always keep in mind that these studies need to be conducted to similar standards that we would hope a clinical trial is.</p>
 
 
 
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
-Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
+<div id="ref-FDA-RWE" class="csl-entry" role="doc-biblioentry">
+FDA. December 2018. <span>“Framework for FDA’s Real-World Evidence Program.”</span> Report.
 </div>
-<div id="ref-wassertheil2004biostatistics" class="csl-entry" role="doc-biblioentry">
-Wassertheil-Smoller, Sylvia, and Jordan Smoller. 2004. <em>Biostatistics and Epidemiology: A Primer for Health and Biomedical Professionals</em>. Springer.
+<div id="ref-hernan2016target" class="csl-entry" role="doc-biblioentry">
+Hernán, Miguel A, and James M Robins. 2016. <span>“Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available.”</span> <em>American Journal of Epidemiology</em> 183 (8): 758–64.
+</div>
+<div id="ref-purpura2022role" class="csl-entry" role="doc-biblioentry">
+Purpura, Christina A, Elizabeth M Garry, Nicholaas Honig, Abigail Case, and Jeremy A Rassen. 2022. <span>“The Role of Real-World Evidence in FDA-Approved New Drug and Biologics License Applications.”</span> <em>Clinical Pharmacology &amp; Therapeutics</em> 111 (1): 135–44.
+</div>
+<div id="ref-wang2021start" class="csl-entry" role="doc-biblioentry">
+Wang, Shirley V, Simone Pinheiro, Wei Hua, Peter Arlett, Yoshiaki Uyama, Jesse A Berlin, Dorothee B Bartels, Kristijan H Kahler, Lily G Bessette, and Sebastian Schneeweiss. 2021. <span>“STaRT-RWE: Structured Template for Planning and Reporting on the Implementation of Real World Evidence Studies.”</span> <em>Bmj</em> 372.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
