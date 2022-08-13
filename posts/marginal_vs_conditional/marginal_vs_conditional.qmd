@@ -84,7 +84,7 @@ $$
 
 ## Effect Modification
 
-Effect modification is when
+An effect modifier is when the average causal effect varies across levels of that variable. Using our example before about toothfairy visits and pyjama color, imagine that age is important for toothfairy visits. @fig-effect shows this graphically, using a DAG.
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 #| label: fig-effect
@@ -113,8 +113,15 @@ ggdag::dagify(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   )
-?ggraph::create_layout
 
 ```
 
-The marginal effect measure, would be that that is unconditional (i.e., does not depend on covariates). There are certain methods that can provide a marginal effect measure, while there are others that cannot. Standardization and IP weighting can be used to compute either ***marginal*** or ***conditional*** effects. Stratification/restriction and matching can only be used to compute ***conditional*** effects in certain subsets of the population [@hernanwhatif, pp.51]. Let's break down each of these methods one by one.
+Since our causal effect of interest is pyjama color on toothfairy visits, if we were to stratify by age, we would notice that people who are younger get more visits from the toothfairy.
+
+Now, this effect modification we can adjust for using four techniques: standardization, IP weighting, stratification/restriction and matching. Standardization and IP weighting can be used to compute either ***marginal*** or ***conditional*** effects. Stratification/restriction and matching can only be used to compute ***conditional*** effects in certain subsets of the population [@hernanwhatif, pp.51]. Logically this makes sense because standardization and IP weighting using the entire sample while stratification/matching only use a subset of the population!
+
+Further details on each of these methods will be outlined in subsequent posts.
+
+## Why do we care? 
+
+Finally, why do we care about marginal vs conditional effects at all? Well it matters when we are defining our research question.
