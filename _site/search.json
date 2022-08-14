@@ -35,6 +35,48 @@
     "text": "What’s Next?\nRWE is starting to be adopted more by regulatory bodies, with the FDA accepting RWE as part of submissions (FDA December 2018), as well as the National Institute for Health and Care Excellence (NICE) issuing guidance for the development of RWE. It is a very exciting time for developing RWE given the vast data that is available! However, always keep in mind that these studies need to be conducted to similar standards that we would hope a clinical trial is."
   },
   {
+    "objectID": "posts/marginal-conditional/marginal_conditional.html",
+    "href": "posts/marginal-conditional/marginal_conditional.html",
+    "title": "Ryan's Real-World Experience",
+    "section": "",
+    "text": "This post is going to be about marginal compared to conditional effects. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again."
+  },
+  {
+    "objectID": "posts/marginal-conditional/marginal_conditional.html#conditional-vs-unconditional-probability",
+    "href": "posts/marginal-conditional/marginal_conditional.html#conditional-vs-unconditional-probability",
+    "title": "Ryan's Real-World Experience",
+    "section": "Conditional vs Unconditional Probability",
+    "text": "Conditional vs Unconditional Probability\nFirst things first. Let’s review some basic probability terms. Unconditional probability, denoted as \\(P(A)\\), is the probability that something will happen. Unconditional probability sounds like a mouthful, so we will use marginal instead. For example, let’s assume in a made-up world that the probability of you getting a visit from the toothfairy is 0.30 on any given night. In mathematical terms:\n\\[\nP(\\text{toothfairy visit}) = 0.30\n\\]\nNow, the toothfairy randomly visiting you seems a bit bizarre doesn’t it? She’d just drop by any night for no reason at all? Maybe if you wore pink pyjamas to bed she’d visit. This can be worded as “the probability that the toothfairy will visit, given that you are wearing pink pyjamas to bed”. This probability is conditional, since it is the probability of something happening depending on another variable. Using mathematical notation again:\n\\[\nP(\\text{toothfairy visit} | \\text{wearing pink pyjamas})\n\\]\nThis same logic goes for when we are conducting analyses. At this point, it is important to highlight that exchangeability and positivity are two requirements for causal inference. If the effect is marginal, then exchangeability and positivity need to hold in all levels of the variable (Hernan and Robins 2021, 51). If the effect of interest is conditional, then exchangeability and positivity need to hold in a subset of the sample. Before going any further however, we need to review the conditional mean."
+  },
+  {
+    "objectID": "posts/marginal-conditional/marginal_conditional.html#conditional-mean",
+    "href": "posts/marginal-conditional/marginal_conditional.html#conditional-mean",
+    "title": "Ryan's Real-World Experience",
+    "section": "Conditional Mean",
+    "text": "Conditional Mean\nA conditional mean is similar to the concept of conditional probability, except the measure is a mean instead of a probability. To determine the conditional mean, we can use either parametric estimators or nonparametric estimators. Parameters can be thought of as the coefficients of a variable. These are typically denoted by \\(\\theta\\) or by \\(\\beta\\). These parameters are estimated from the data, which can then be used to make predictions or to determine the expected value, denoted by \\(E\\).\n\nParametric Estimators of the Conditional Mean\nLet’s assume that we use the toothfairy visit example again. We want to know the average number of toothfairy visits among people wearing pink pyjamas. In math terms, that would be\n\\[\nE[\\text{Toothfairy visits} | \\text {Pyjama color}]\n\\]\nTo figure this out, we need a model. Using mathematical notation again:\n\\[\nE[\\text{Toothfairy visits} | \\text {Pyjama Color}] = \\theta_0 + \\theta_1*\\text{pyjama color}\n\\]\nThe equation above is called a parametric conditional mean model (Hernan and Robins 2021, 141), because it describes the conditional mean function in terms of a finite number of parameters (note: \\(\\theta_0\\) and \\(\\theta_1\\) are referred to as parameters of the model). Once we’ve fitted some data to the model, we can determine the predicted value, \\(\\hat{E}\\), for each value of pyjama color. In mathematical terms:\n\\[\n\\hat{E}[\\text{Toothfairy visits} | \\text{pyjama color = pink}] = \\hat{\\theta_0} + \\hat{\\theta_1}*pink\n\\]\nParametric estimators, those based on a parametric conditional mean model, allow us to estimate quantities that cannot be estimated otherwise. However, the inferences are only correct if the restrictions are correct (i.e., the model is correctly specified) (Hernan and Robins 2021, 152). In the above equation, we have to restrict the shape of the relation, also known as the functional form (Hernan and Robins 2021, 141). For the above example, we are assuming that it is a linear relationship between the color of pyjamas and toothfairy visits.\nImagine that in our database, we have no people that wear pink pyjamas BUT we have people that wear blue and green pyjamas! We could use the data on the people wearing blue and green pyjamas to estimate how many toothfairy visits people wearing pink pyjamas get.\n\n\nNonparametric Estimators of the Conditional Mean\nNonparametric estimators of the conditional mean are those that produce estimates from the data without any prior restrictions on the conditional mean function (Hernan and Robins 2021, 143). To use our example above, the only way to have a nonparametric estimator of the conditional mean would be to have that value measured. For our data on toothfairy visits and pink pyjamas, if there were no participants wearing pink pyjamas then there would be no nonparametric estimator for the conditional mean of the toothfairy visiting."
+  },
+  {
+    "objectID": "posts/marginal-conditional/marginal_conditional.html#conditional-to-marginal",
+    "href": "posts/marginal-conditional/marginal_conditional.html#conditional-to-marginal",
+    "title": "Ryan's Real-World Experience",
+    "section": "Conditional to Marginal",
+    "text": "Conditional to Marginal\nNow, we can calculate the unconditional expectation using the law of total expectation, however when we are talking about conditional versus marginal in clinical epidemiology, there is an additional layer we need to discuss: effect modification.\n\\[\nE[Y] = \\sum_x E[Y|X = x]Pr[X=x]\n\\]"
+  },
+  {
+    "objectID": "posts/marginal-conditional/marginal_conditional.html#effect-modification",
+    "href": "posts/marginal-conditional/marginal_conditional.html#effect-modification",
+    "title": "Ryan's Real-World Experience",
+    "section": "Effect Modification",
+    "text": "Effect Modification\nAn effect modifier is when the average causal effect varies across levels of that variable (Hernan and Robins 2021, 42). Since our causal effect of interest is pyjama color on toothfairy visits, if we were to stratify by age, we would notice that people who are older than 20 receive less toothfairy visits than people younger than 20. In this case, age would be\nNow, there are four different techniques that we’ll elaborate on subsequent posts that can be used to adjust for effect modification: standardization, IP weighting, stratification/restriction and matching. Standardization and IP weighting can be used to compute either marginal or conditional effects. Stratification/restriction and matching can only be used to compute conditional effects in certain subsets of the population (Hernan and Robins 2021, 51). Logically this makes sense because standardization and IP weighting can be done using the entire sample, while stratification/matching only use a subset of the population!"
+  },
+  {
+    "objectID": "posts/marginal-conditional/marginal_conditional.html#why-do-we-care",
+    "href": "posts/marginal-conditional/marginal_conditional.html#why-do-we-care",
+    "title": "Ryan's Real-World Experience",
+    "section": "Why do we care?",
+    "text": "Why do we care?\nFinally, why do we care about marginal vs conditional effects at all? Well it matters when we are defining our research question! In order to have a well-defined research question, you need to clearly define what you want to know. For us, it was “does wearing pink pyjamas cause the toothfairy to visit?”."
+  },
+  {
     "objectID": "posts/welcome/welcome.html",
     "href": "posts/welcome/welcome.html",
     "title": "Welcome To My Blog",
@@ -109,7 +151,7 @@
     "href": "index.html",
     "title": "RWE Blog",
     "section": "",
-    "text": "RWE\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 10, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nP-Values\n\n\nHypothesis Tests\n\n\n\n\n\n\n\n\n\n\n\nAug 8, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nCausal Inference\n\n\nRCT\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nOR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
+    "text": "Marginal\n\n\nConditional\n\n\n\n\n\n\n\n\n\n\n\nAug 13, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nRWE\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 10, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nP-Values\n\n\nHypothesis Tests\n\n\n\n\n\n\n\n\n\n\n\nAug 8, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nCausal Inference\n\n\nRCT\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nOR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",

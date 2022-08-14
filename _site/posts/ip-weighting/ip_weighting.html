@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-09">
+<meta name="dcterms.date" content="2022-08-13">
 
 <title>Ryan's Real-World Experience – ip_weighting</title>
 <style>
@@ -17,69 +17,6 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
@@ -186,9 +123,9 @@ div.csl-indent {
 
 
 
-<section id="reweighting" class="level2">
-<h2 class="anchored" data-anchor-id="reweighting">Reweighting</h2>
-<p>This post is going to be about reweighing, specifically inverse probability of treatment weighting (IPTW) technique.</p>
+<section id="re-weighting-like-a-scale" class="level2">
+<h2 class="anchored" data-anchor-id="re-weighting-like-a-scale">Re-weighting? Like a scale?</h2>
+<p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal or conditional</em></strong> causal effect.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -235,45 +172,49 @@ SW^a = \frac{f(A)}{f[A|L]}
 </section>
 <section id="stabilized-or-nonstabilized" class="level2">
 <h2 class="anchored" data-anchor-id="stabilized-or-nonstabilized">Stabilized or Nonstabilized?</h2>
-<p>At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights results in narrower 95% CIs.</p>
+<p>At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs. You should use stabilized weights when your model is not saturated (i.e., there are the same amount of unknowns on both sides of the equations)</p>
 </section>
 <section id="example" class="level2">
 <h2 class="anchored" data-anchor-id="example">Example</h2>
-<p>An example always helps. Let’s jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters.</p>
+<p>An example always helps. Let’s jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters. Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of</p>
 <table class="table">
 <colgroup>
+<col style="width: 36%">
 <col style="width: 22%">
-<col style="width: 20%">
 <col style="width: 26%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Variables</th>
-<th><p>Disney Lover</p>
-(n = )</th>
-<th>Not a Disney Fan</th>
+<th style="text-align: center;">Variables</th>
+<th style="text-align: center;"><p>Disney Lover</p>
+(n = 577)</th>
+<th style="text-align: center;"><p>Not a Disney Fan</p>
+( n = 206)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Age</td>
-<td></td>
-<td></td>
+<td style="text-align: center;">Age, mean (SD)</td>
+<td style="text-align: center;">31.8 (16.3)</td>
+<td style="text-align: center;">54.1 (16.0)</td>
 </tr>
 <tr class="even">
-<td>Female, n (%)</td>
-<td></td>
-<td></td>
+<td style="text-align: center;">Female, n (%)</td>
+<td style="text-align: center;">110 (19.1%)</td>
+<td style="text-align: center;">119, (57.8)</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td></td>
-<td></td>
+<td style="text-align: center;">Sunglasses, n (%)</td>
+<td style="text-align: center;">209 (36.2%)</td>
+<td style="text-align: center;">98 (47.6%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Ice Cream Lovers, n (%)</td>
+<td style="text-align: center;">126 (21.8%)</td>
+<td style="text-align: center;">51 (24.8%)</td>
 </tr>
 </tbody>
 </table>
-<p>Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df<span class="sc">$</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 
