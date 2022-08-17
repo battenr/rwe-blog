@@ -8,7 +8,9 @@ categories: [GLM, Regression]
 draft: true
 ---
 
-## Re-weighting? Like a scale?
+## Regression: Swiss Army Knife of Statistics
+
+Regression is a commonly used tool in statistics. Typically, the starting point is with
 
 Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the ***marginal or conditional*** causal effect.
 
@@ -119,16 +121,16 @@ cbind(n.ic.ndl, round(n.ic.ndl/206, 3)*100)
 
 ```
 
-+-------------------------+---------------+------------------+
-| Variables               | Disney Lover  | Not a Disney Fan |
-|                         |               |                  |
-|                         | (n = 577)     | ( n = 206)       |
-+:=======================:+:=============:+:================:+
-| Age, mean (SD)          | 31.8 (16.3)   | 54.1 (16.0)      |
-+-------------------------+---------------+------------------+
-| Female, n (%)           | 110 (19.1%)   | 119, (57.8)      |
-+-------------------------+---------------+------------------+
-| Sunglasses, n (%)       | 209 (36.2%)   | 98 (47.6%)       |
-+-------------------------+---------------+------------------+
-| Ice Cream Lovers, n (%) | 126 (21.8%)   | 51 (24.8%)       |
-+-------------------------+---------------+------------------+
++-------------------------+--------------+------------------+
+| Variables               | Disney Lover | Not a Disney Fan |
+|                         |              |                  |
+|                         | (n = 577)    | ( n = 206)       |
++:=======================:+:============:+:================:+
+| Age, mean (SD)          | 31.8 (16.3)  | 54.1 (16.0)      |
++-------------------------+--------------+------------------+
+| Female, n (%)           | 110 (19.1%)  | 119, (57.8)      |
++-------------------------+--------------+------------------+
+| Sunglasses, n (%)       | 209 (36.2%)  | 98 (47.6%)       |
++-------------------------+--------------+------------------+
+| Ice Cream Lovers, n (%) | 126 (21.8%)  | 51 (24.8%)       |
++-------------------------+--------------+------------------+

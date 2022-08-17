@@ -1,7 +1,7 @@
 ---
 ttitle: "Inverse Probability Weighting"
 author: "Ryan Batten"
-date: "2022-08-13"
+date: "2022-08-16"
 categories: [IPW, IPTW]
 image: "iptw.jpeg"
 bibliography: ip_weighting.bib
@@ -10,7 +10,7 @@ draft: true
 
 ## Re-weighting? Like a scale?
 
-Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the ***marginal or conditional*** causal effect.
+Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the ***marginal*** or ***conditional*** causal effect.
 
 Now, what is a better way to get started than with probability yet again. In this case, we are going to talk about the probability of receiving treatment.
 
@@ -28,9 +28,38 @@ $$
 
 Where A is treatment and L is covariates.
 
-Imagine we have a clinical trial with two groups. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline.
+Imagine we have a clinical trial with two groups, wanting to determine if bouncing up and down on a trampoline causes a headache. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline based on your age, sex and color shirt you are wearing.
 
 While theoretical discussions are helpful, numbers always help to really drive a point home. Luckily, once again there is a database that has already collected data on such a scenario.
+
+```{r, cache= TRUE, message = FALSE, echo = FALSE}
+
+df.tramp <- data.frame(
+  group = "trampoline",
+  age = runif(n = 260, min = 9, max = 25),
+  sex = rbinom(n = 260, size = 1, prob = 0.77),
+  t_shirt = sample(c("blue", "pink", "orange", "yellow"),
+                   size = 260, 
+                   replace = TRUE, 
+                   prob = c(0.17, 0.46, 0.30, 0.07)),
+  brain_freeze = rbinom(260, size = 1, prob = 0.33), # brain freeze before group
+  time_standing = runif(n = 260, min = 0, max = 60) # time standing in minutes
+) 
+
+df.chair <- data.frame(
+  group = "chair",
+  age = runif(n = 469, min = 19, max = 88),
+  sex = rbinom(n = 469, size = 1, prob = 0.28),
+  t_shirt = sample(c("blue", "pink", "orange", "yellow"),
+                   size = 469, 
+                   replace = TRUE, 
+                   prob = c(0.36, 0.16, 0.42, 0.23)),
+  brain_freeze = rbinom(469, size = 1, prob = 0.48), # brain freeze before group
+  time_standing = runif(n = 469, min = 0, max = 60) # time standing in minutes
+)
+
+df <- rbind(df.tramp, df.chair)
+```
 
 ## Pseudo-Population
 
@@ -119,16 +148,16 @@ cbind(n.ic.ndl, round(n.ic.ndl/206, 3)*100)
 
 ```
 
-+-------------------------+--------------+------------------+
-| Variables               | Disney Lover | Not a Disney Fan |
-|                         |              |                  |
-|                         | (n = 577)    | ( n = 206)       |
-+:=======================:+:============:+:================:+
-| Age, mean (SD)          | 31.8 (16.3)  | 54.1 (16.0)      |
-+-------------------------+--------------+------------------+
-| Female, n (%)           | 110 (19.1%)  | 119, (57.8)      |
-+-------------------------+--------------+------------------+
-| Sunglasses, n (%)       | 209 (36.2%)  | 98 (47.6%)       |
-+-------------------------+--------------+------------------+
-| Ice Cream Lovers, n (%) | 126 (21.8%)  | 51 (24.8%)       |
-+-------------------------+--------------+------------------+
++-------------------------+---------------+------------------+
+| Variables               | Disney Lover  | Not a Disney Fan |
+|                         |               |                  |
+|                         | (n = 577)     | ( n = 206)       |
++:=======================:+:=============:+:================:+
+| Age, mean (SD)          | 31.8 (16.3)   | 54.1 (16.0)      |
++-------------------------+---------------+------------------+
+| Female, n (%)           | 110 (19.1%)   | 119, (57.8)      |
++-------------------------+---------------+------------------+
+| Sunglasses, n (%)       | 209 (36.2%)   | 98 (47.6%)       |
++-------------------------+---------------+------------------+
+| Ice Cream Lovers, n (%) | 126 (21.8%)   | 51 (24.8%)       |
++-------------------------+---------------+------------------+
