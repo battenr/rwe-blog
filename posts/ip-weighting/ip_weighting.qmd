@@ -34,6 +34,8 @@ While theoretical discussions are helpful, numbers always help to really drive a
 
 ```{r, cache= TRUE, message = FALSE, echo = FALSE}
 
+library(tidyverse)
+
 df.tramp <- data.frame(
   group = "trampoline",
   age = runif(n = 260, min = 9, max = 25),
@@ -43,7 +45,8 @@ df.tramp <- data.frame(
                    replace = TRUE, 
                    prob = c(0.17, 0.46, 0.30, 0.07)),
   brain_freeze = rbinom(260, size = 1, prob = 0.33), # brain freeze before group
-  time_standing = runif(n = 260, min = 0, max = 60) # time standing in minutes
+  time_standing = runif(n = 260, min = 0, max = 60), # time standing in minutes
+  headache = rbinom(260, size = 1, prob = 0.64)
 ) 
 
 df.chair <- data.frame(
@@ -55,11 +58,53 @@ df.chair <- data.frame(
                    replace = TRUE, 
                    prob = c(0.36, 0.16, 0.42, 0.23)),
   brain_freeze = rbinom(469, size = 1, prob = 0.48), # brain freeze before group
-  time_standing = runif(n = 469, min = 0, max = 60) # time standing in minutes
+  time_standing = runif(n = 469, min = 0, max = 60), # time standing in minutes
+  headache = rbinom(469, size = 1, prob = 0.39)
 )
+
+# Trampoline Group Demographics
+
+cbind(mean(df.tramp$age), sd(df.tramp$age)) # age
+rwetasks::count_percent(df.tramp, sex) # sex
+rwetasks::count_percent(df.tramp, t_shirt) # t-shirt
+rwetasks::count_percent(df.tramp, brain_freeze) # brain-freeze
+cbind(mean(df.tramp$age), sd(df.tramp$time_standing)) # time standing
+rwetasks::count_percent(df.tramp, headache) # headache
+
+# Chair Demographics
+
+
+
+# Combining the two groups
 
 df <- rbind(df.tramp, df.chair)
 ```
+
++------------------------------------+-----------------+-----------------+
+|                                    | Trampoline      | Chair           |
+|                                    |                 |                 |
+|                                    | (n = 260)       | (n = 469)       |
++====================================+:===============:+:===============:+
+| Age, mean (SD)                     | 17.3 (4.95)     | 54.0 (19.9)     |
++------------------------------------+-----------------+-----------------+
+| Female, n (%)                      | 194 (74.6)      |                 |
++------------------------------------+-----------------+-----------------+
+| T-Shirt Color, n (%)               | 116 (44.6)      |                 |
+|                                    |                 |                 |
+| Pink                               | 79 (30.4)       |                 |
+|                                    |                 |                 |
+| Orange                             | 44 (16.9)       |                 |
+|                                    |                 |                 |
+| Blue                               | 21 (8.1)        |                 |
+|                                    |                 |                 |
+| Yellow                             |                 |                 |
++------------------------------------+-----------------+-----------------+
+| Brain Freeze, n (%)                | 72 (27.7)       |                 |
++------------------------------------+-----------------+-----------------+
+| Time Standing (minutes), mean (SD) | 28.8 (16.6)     |                 |
++------------------------------------+-----------------+-----------------+
+| Headache                           |                 |                 |
++------------------------------------+-----------------+-----------------+
 
 ## Pseudo-Population
 
@@ -148,16 +193,16 @@ cbind(n.ic.ndl, round(n.ic.ndl/206, 3)*100)
 
 ```
 
-+-------------------------+---------------+------------------+
-| Variables               | Disney Lover  | Not a Disney Fan |
-|                         |               |                  |
-|                         | (n = 577)     | ( n = 206)       |
-+:=======================:+:=============:+:================:+
-| Age, mean (SD)          | 31.8 (16.3)   | 54.1 (16.0)      |
-+-------------------------+---------------+------------------+
-| Female, n (%)           | 110 (19.1%)   | 119, (57.8)      |
-+-------------------------+---------------+------------------+
-| Sunglasses, n (%)       | 209 (36.2%)   | 98 (47.6%)       |
-+-------------------------+---------------+------------------+
-| Ice Cream Lovers, n (%) | 126 (21.8%)   | 51 (24.8%)       |
-+-------------------------+---------------+------------------+
++-------------------------+----------------+------------------+
+| Variables               | Disney Lover   | Not a Disney Fan |
+|                         |                |                  |
+|                         | (n = 577)      | ( n = 206)       |
++:=======================:+:==============:+:================:+
+| Age, mean (SD)          | 31.8 (16.3)    | 54.1 (16.0)      |
++-------------------------+----------------+------------------+
+| Female, n (%)           | 110 (19.1%)    | 119, (57.8)      |
++-------------------------+----------------+------------------+
+| Sunglasses, n (%)       | 209 (36.2%)    | 98 (47.6%)       |
++-------------------------+----------------+------------------+
+| Ice Cream Lovers, n (%) | 126 (21.8%)    | 51 (24.8%)       |
++-------------------------+----------------+------------------+
