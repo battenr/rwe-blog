@@ -42,6 +42,7 @@ While theoretical discussions are helpful, numbers always help to really drive a
 set.seed(2218) # August 18, 2022
 
 library(tidyverse)
+library(rwetasks)
 
 df.tramp <- data.frame(
   group = "trampoline",
@@ -69,48 +70,63 @@ df.chair <- data.frame(
   headache = rbinom(469, size = 1, prob = 0.39)
 )
 
+df <- rbind(df.tramp, df.chair) %>% 
+  dplyr::mutate(
+    beta_age = runif(1, min = 0, max = 0.10), 
+    beta_sex = runif(1, min = 0, max = 0.10),
+    beta_tshirt = runif(1, min = 0, max = 0.10),
+    beta_ts = runif(1, min = 0, max = 0.10), 
+    prob_tramp = (beta_age*age + beta_sex*sex + beta_ts*time_standing)/10,
+    tramp_group = rbinom(729, size = 1, prob = prob_tramp)
+  )
+
 # Trampoline Group Demographics
 
-cbind(mean(df.tramp$age), sd(df.tramp$age)) # age
-rwetasks::count_percent(df.tramp, sex) # sex
-rwetasks::count_percent(df.tramp, t_shirt) # t-shirt
-rwetasks::count_percent(df.tramp, brain_freeze) # brain-freeze
-cbind(mean(df.tramp$age), sd(df.tramp$time_standing)) # time standing
-rwetasks::count_percent(df.tramp, headache) # headache
+df.tramp.demo <- df %>% dplyr::filter(tramp_group == 1)
+
+cbind(mean(df.tramp.demo$age), sd(df.tramp.demo$age)) # age
+rwetasks::count_percent(df.tramp.demo, sex) # sex
+rwetasks::count_percent(df.tramp.demo, t_shirt) # t-shirt
+rwetasks::count_percent(df.tramp.demo, brain_freeze) # brain-freeze
+cbind(mean(df.tramp.demo$time_standing), sd(df.tramp.demo$time_standing)) # time standing
+rwetasks::count_percent(df.tramp.demo, headache) # headache
 
 # Chair Demographics
 
+df.chair.demo <- df %>% dplyr::filter(tramp_group == 0)
 
-
-# Combining the two groups
-
-df <- rbind(df.tramp, df.chair)
+cbind(mean(df.chair.demo$age), sd(df.chair.demo$age)) # age
+rwetasks::count_percent(df.chair.demo, sex) # sex
+rwetasks::count_percent(df.chair.demo, t_shirt) # t-shirt
+rwetasks::count_percent(df.chair.demo, brain_freeze) # brain-freeze
+cbind(mean(df.chair.demo$time_standing), sd(df.chair.demo$time_standing)) # time standing
+rwetasks::count_percent(df.chair.demo, headache) # headache
 ```
 
 +------------------------------------+----------------+----------------+
 |                                    | Trampoline     | Chair          |
 |                                    |                |                |
-|                                    | (n = 260)      | (n = 469)      |
+|                                    | (n = 242)      | (n = 487)      |
 +====================================+:==============:+:==============:+
-| Age, mean (SD)                     | 17.1 (4.6)     | 52.8 (19.4)    |
+| Age, mean (SD)                     | 46.6 (24.3)    | 36.8 (22.1)    |
 +------------------------------------+----------------+----------------+
-| Female, n (%)                      | 194 (74.6)     | 135 (28.8)     |
+| Female, n (%)                      | 92 (38.0)      | 237 (48.7)     |
 +------------------------------------+----------------+----------------+
-| T-Shirt Color, n (%)               | 124 (47.7)     | 60 (12.8)      |
+| T-Shirt Color, n (%)               | 85 (35.1)      | 183 (37.6)     |
 |                                    |                |                |
-| Pink                               | 84 (32.3)      | 184 (39.2)     |
+| Orange                             | 48 (19.8)      | 136 (27.9)     |
 |                                    |                |                |
-| Orange                             | 37 (14.2)      | 134 (28.6)     |
+| Pink                               | 71 (29.3)      | 100 (20.5)     |
 |                                    |                |                |
-| Blue                               | 15 (5.8)       | 91 (19.4)      |
+| Blue                               | 38 (15.7)      | 68 (14.0)      |
 |                                    |                |                |
 | Yellow                             |                |                |
 +------------------------------------+----------------+----------------+
-| Brain Freeze, n (%)                | 92 (35.4)      | 220 (46.9)     |
+| Brain Freeze, n (%)                | 94 (38.8)      | 218 (44.8)     |
 +------------------------------------+----------------+----------------+
-| Time Standing (minutes), mean (SD) | 31.4 (18.0)    | 29.8 (17.3)    |
+| Time Standing (minutes), mean (SD) | 34.9 (17.3)    | 28.1 (17.3)    |
 +------------------------------------+----------------+----------------+
-| Headache                           | 159 (61.2)     | 172 (36.7)     |
+| Headache                           | 105 (43.4)     | 226 (46.4)     |
 +------------------------------------+----------------+----------------+
 
 : Trampoline Jumpers vs Chair Sitters {#tbl-demo}
@@ -132,7 +148,7 @@ $$
 For our example, $f[A|L]$ is the probability of being a trampoline jumper conditional on the measured confounders (in mathematical notation:
 
 $$
-Pr[A = \text{trampoline jumpers} | \text{L = age, sex, t-shirt color, time standing}]
+Pr[A = \text{trampoline jumpers} | \text{L = age, sex, time standing}]
 $$
 
 Now, from probability we know that the total probability has to equal 1. So:
@@ -157,9 +173,9 @@ $$
 E[Headache^{a = \text{trampoline jumper}}] - E[Headache^{a = \text{not a trampoline jumper}}]
 $$
 
-## Estimating Weights 
+## Estimating Weights
 
-Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, t-shirt color and time standing. Using that model we will calculate the weights, for trampoline jumpers as:\
+Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, and time standing. Using that model we will calculate the weights, for trampoline jumpers as:\
 $$
 \hat{W} = \frac{1}{\hat{Pr}[A = \text{trampoline jumper} | L]}
 $$
@@ -178,15 +194,7 @@ $\hat{W}$ and $\hat{Pr}$ are the estimated, or predicted, values. A logistic reg
 
 library(tidyverse)
 
-df = df %>% 
-  dplyr::mutate(
-    trampoline = dplyr::case_when(
-      group == "trampoline" ~ 1, 
-      group == "chair" ~ 0 
-    )
-  )
-
-mod.fit <- stats::glm(formula = trampoline ~ age + as.factor(sex) + as.factor(t_shirt) + time_standing + I(age ^ 2) + I(time_standing ^ 2), 
+mod.fit <- stats::glm(formula = tramp_group ~ age + as.factor(sex) + time_standing + I(age ^ 2) + I(time_standing ^ 2), 
                       family = binomial(link = "logit"),
                       data = df)
 
@@ -211,7 +219,7 @@ summary(df.weights$ip_weights)
 
 ```
 
-The IP weights simulate a pseudo-population where all members of the sample are replaced by two copies of themselves. [@hernanwhatif, pp. 153] One copy receives the treatment value A = 1 and the other copy receives the value A = 0. \[@hernanwhatif, pp. 153\]. The expected mean of the weights should be 2 because all individuals are included both under treatment and under no treatment.
+The IP weights simulate a pseudo-population where all members of the sample are replaced by two copies of themselves. [@hernanwhatif, pp. 153] One copy receives the treatment value A = 1 and the other copy receives the value A = 0. [@hernanwhatif, pp. 153]. The expected mean of the weights should be 2 because all individuals are included both under treatment and under no treatment.
 
 If we look back to our example, we can examine the summary statistics of these weights. A couple of things jump out at first:
 
@@ -254,7 +262,7 @@ summary(df.weights$ip_weights)
 
 This is notably different from when we used $\frac{1}{f[A|L]}$. Now the weights range from 0.357 to 14.8 whereas before they ranged from 1 to 23.0. Not only that but now in the pseudo-population, the ratio of trampoline jumpers to not trampoline jumpers is kept. The stabilizing factor, $f[A]$, is responsible for the narrower range [@hernanwhatif, pp. 153]. Weights that use the stabilizng factor are referred to as stabilized weights.
 
-## Stabilized Weight
+## Stabilized Weights
 
 $$
 SW^a = \frac{f(A)}{f[A|L]}
@@ -279,7 +287,10 @@ df.weights <- df %>%
                                     type = "response"))
     ),
     ps.numerator = predict(mod.intercept, type = "response"),
-    ip_weights = ps.numerator/ps.denominator
+    ip_weights = dplyr::case_when(
+      trampoline == 1 ~ ps.numerator/ps.denominator,
+      trampoline == 0 ~ (1-ps.numerator)/(1-ps.denominator)
+  )
   )
   
 summary(df.weights$ip_weights)
@@ -293,6 +304,6 @@ Now which method would we prefer for estimating the weights? Well this comes dow
 
 At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs [@hernanwhatif, pp. 154]. However, this only occurs when the model is not saturated. A model is saturated when the number of parameters equals the number of quantities to be estimated. For example, $E[Y|A] = \beta_0 + \beta_1*A$ is a saturated model because it has two parameters, $\beta_0$ and $\beta_1$, and two quantities to estimate $E[Y|A = 1]$ and $E[Y|A = 0]$ [@hernanwhatif, pp. 151]. Keep in mind this example is for a binary variable, however this becomes nearly impossible to meet for continuous variables since you would need to have a parameter for every value of that variable.
 
-## What Now? 
+## What Now?
 
 Okay cool, so what now? Glad you asked! Well now you can go freely with your new knowledge and re-weight away!
