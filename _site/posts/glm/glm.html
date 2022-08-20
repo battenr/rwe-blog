@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-16">
+<meta name="dcterms.date" content="2022-08-13">
 
-<title>Ryan's Real-World Experience – ip_weighting</title>
+<title>Ryan's Real-World Experience – glm</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -17,25 +17,6 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
 </style>
 
 
@@ -123,9 +104,14 @@ div.csl-indent {
 
 
 
-<section id="re-weighting-like-a-scale" class="level2">
-<h2 class="anchored" data-anchor-id="re-weighting-like-a-scale">Re-weighting? Like a scale?</h2>
-<p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> causal effect.</p>
+<section id="regression-swiss-army-knife-of-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="regression-swiss-army-knife-of-statistics">Regression: Swiss Army Knife of Statistics</h2>
+<p>Regression is a commonly used tool in statistics. Typically, the starting point is with</p>
+<p>What does GLM actually stand for? Well, it stands for</p>
+</section>
+<section id="main-parts-of-glm" class="level2">
+<h2 class="anchored" data-anchor-id="main-parts-of-glm">Main Parts of GLM</h2>
+<p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal or conditional</em></strong> causal effect.</p>
 <p>Now, what is a better way to get started than with probability yet again. In this case, we are going to talk about the probability of receiving treatment.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -137,130 +123,27 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This post will draw heavily from Chapter 12 of What If <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021</a>)</span></p>
+<p>This post will draw heavily from Chapter 12 of What If <span class="citation" data-cites="hernanwhatif">[@hernanwhatif]</span></p>
 </div>
 </div>
 </section>
 <section id="propensity-score" class="level2">
 <h2 class="anchored" data-anchor-id="propensity-score">Propensity Score</h2>
-<p>A term that is commonly used in clinical epidemiology is the <strong><em>propensity score</em></strong>. The propensity score is the conditional probability of receiving treatment <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021</a>)</span>, or in mathematical notation:</p>
+<p>A term that is commonly used in clinical epidemiology is the <strong><em>propensity score</em></strong>. The propensity score is the conditional probability of receiving treatment <span class="citation" data-cites="hernanwhatif">[@hernanwhatif]</span>, or in mathematical notation:</p>
 <p><span class="math display">\[
 Pr[A = 1| L = l]
 \]</span></p>
 <p>Where A is treatment and L is covariates.</p>
-<p>Imagine we have a clinical trial with two groups, wanting to determine if bouncing up and down on a trampoline causes a headache. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline based on your age, sex and color shirt you are wearing.</p>
-</section>
-<section id="does-jumping-on-a-trampoline-cause-a-headache" class="level2">
-<h2 class="anchored" data-anchor-id="does-jumping-on-a-trampoline-cause-a-headache">Does jumping on a trampoline cause a headache?</h2>
-<p>While theoretical discussions are helpful, numbers always help to really drive a point home. While we can’t conduct a clinical trial, luckily there is a database that has already collected data on such a scenario.</p>
-<div id="tbl-demo" class="anchored">
-<table class="table">
-<caption>Table 1: Trampoline Jumpers vs Chair Sitters</caption>
-<colgroup>
-<col style="width: 51%">
-<col style="width: 23%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th style="text-align: center;"><p>Trampoline</p>
-(n = 260)</th>
-<th style="text-align: center;"><p>Chair</p>
-(n = 469)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Age, mean (SD)</td>
-<td style="text-align: center;">17.1 (4.6)</td>
-<td style="text-align: center;">52.8 (19.4)</td>
-</tr>
-<tr class="even">
-<td>Female, n (%)</td>
-<td style="text-align: center;">194 (74.6)</td>
-<td style="text-align: center;">135 (28.8)</td>
-</tr>
-<tr class="odd">
-<td><p>T-Shirt Color, n (%)</p>
-<p>Pink</p>
-<p>Orange</p>
-<p>Blue</p>
-<p>Yellow</p></td>
-<td style="text-align: center;"><p>124 (47.7)</p>
-<p>84 (32.3)</p>
-<p>37 (14.2)</p>
-<p>15 (5.8)</p></td>
-<td style="text-align: center;"><p>60 (12.8)</p>
-<p>184 (39.2)</p>
-<p>134 (28.6)</p>
-<p>91 (19.4)</p></td>
-</tr>
-<tr class="even">
-<td>Brain Freeze, n (%)</td>
-<td style="text-align: center;">92 (35.4)</td>
-<td style="text-align: center;">220 (46.9)</td>
-</tr>
-<tr class="odd">
-<td>Time Standing (minutes), mean (SD)</td>
-<td style="text-align: center;">31.4 (18.0)</td>
-<td style="text-align: center;">29.8 (17.3)</td>
-</tr>
-<tr class="even">
-<td>Headache</td>
-<td style="text-align: center;">159 (61.2)</td>
-<td style="text-align: center;">172 (36.7)</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Now, if our causal question is “Does jumping on a trampoline cause a headache?” we need to look at the two groups that we are comparing. If we review <a href="#tbl-demo">Table&nbsp;1</a>, do the two groups look similar? These two groups seem quite different. If these two are so different how can we expect to even compare the two?! That’s like comparing apples to coconuts! Well, luckily we can use a statistical method known as inverse probability of treatment weighting to make those coconuts look more like apples. Think of it like we are painting the coconuts, and focusing more on the ones that are a similar size and shape.</p>
+<p>Imagine we have a clinical trial with two groups. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline.</p>
+<p>While theoretical discussions are helpful, numbers always help to really drive a point home. Luckily, once again there is a database that has already collected data on such a scenario.</p>
 </section>
 <section id="pseudo-population" class="level2">
 <h2 class="anchored" data-anchor-id="pseudo-population">Pseudo-Population</h2>
-<p>The goal of reweighing is to make a pseudo-population where exchangeability holds. Essentially, in our “make believe” sample the two groups would be comparable. One way to do this, is to fit a logistic regression (since the outcome would be a yes/no) to trampoline jumpers. Using this model, we can predict the probability of someone being a trampoline jumper, or conversely the probability that they are not a trampoline jumper. Once we do that, we can compare the two groups. First, we need to go over some basics of IP weighting.</p>
+<p>The goal of reweighing is to make a pseudo-population where exchangeability holds. To do this, we fit a logistic regression where the outcome is treatment.</p>
 </section>
-<section id="ip-weighting" class="level2">
-<h2 class="anchored" data-anchor-id="ip-weighting">IP Weighting</h2>
-<p>The pseudo-population is created by weighting each individual by the inverse of the conditional probability of receiving the treatment they did actually receive <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 151</a>)</span>.</p>
-<p><span class="math display">\[
-W^a = \frac{1}{f[A|L]}
-\]</span></p>
-<p>For our example, <span class="math inline">\(f[A|L]\)</span> is the probability of being a trampoline jumper conditional on the measured confounders (in mathematical notation:</p>
-<p><span class="math display">\[
-Pr[A = \text{trampoline jumpers} | \text{L = age, sex, t-shirt color, time standing}]
-\]</span></p>
-<p>Now, from probability we know that the total probability has to equal 1. So:</p>
-<p><span class="math display">\[
-Pr[A = \text{not trampoline jumpers}|L] = 1 - Pr[A = \text{trampoline jumpers} | L]
-\]</span></p>
-<p>Great! So basically all we need to do is calculate the probability of being a trampoline jumper given measured confounders then we can calculate the conditional probability of not being a trampoline jumper . Now how do we calculate this conditional probability?</p>
-<section id="logistic-regression" class="level3">
-<h3 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h3>
-<p>Since our two groups can be thought of as a binary variable, trampoline jumpers or not trampoline jumpers, we get a parametric estimate using logistic regression of <span class="math inline">\(Pr[A=\text{trampoline jumper}|L]\)</span>. If no confounding for the effect of A in the pseudo-population and the model is correctly specified then association is causation and an unbiased estimator of the associational difference in the pseudo-population:</p>
-<p><span class="math display">\[
-E[Headache | A = \text{trampoline jumper}] - E[Headache | A = \text{not a trampoline jumper}]
-\]</span></p>
-<p>is also an unbiased estimator of the causal difference:</p>
-<p><span class="math display">\[
-E[Headache^{a = \text{trampoline jumper}}] - E[Headache^{a = \text{not a trampoline jumper}}]
-\]</span></p>
-</section>
-</section>
-<section id="estimating-weights" class="level2">
-<h2 class="anchored" data-anchor-id="estimating-weights">Estimating Weights</h2>
-<p>Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, t-shirt color and time standing. Using that model we will calculate the weights.^[Note that the weights and probability are estimated/predicted]</p>
-<p><span class="math display">\[
-\hat{W} = \frac{1}{\hat{Pr}[A = \text{trampoline jumper} | L]}
-\]</span></p>
-<p>and for not trampoline jumpers as:</p>
-<p><span class="math display">\[
-\hat{W} = \frac{1}{1 - \hat{Pr}[A = \text{trampoline jumper} | L]}
-\]</span></p>
-<p>[^1]: Remember that <span class="math inline">\(\hat{W}\)</span> and <span class="math inline">\(\hat{Pr}\)</span> refer to the predicted values.</p>
-<section id="general-formula" class="level3">
-<h3 class="anchored" data-anchor-id="general-formula">General Formula</h3>
-<p>The below formula is from <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>.</p>
+<section id="general-formula-for-ip-weighting" class="level2">
+<h2 class="anchored" data-anchor-id="general-formula-for-ip-weighting">General Formula for IP Weighting</h2>
+<p>The below formula is from <span class="citation" data-cites="hernanwhatif">[@hernanwhatif, pp.153]</span>.</p>
 <p><span class="math display">\[
 W^a = \frac{p}{f[A|L]}
 \]</span></p>
@@ -268,7 +151,6 @@ W^a = \frac{p}{f[A|L]}
 <p><span class="math display">\[
 \frac{f(A)}{f[A|L]}
 \]</span></p>
-</section>
 </section>
 <section id="stabilized-weight" class="level2">
 <h2 class="anchored" data-anchor-id="stabilized-weight">Stabilized Weight</h2>
@@ -287,7 +169,7 @@ SW^a = \frac{f(A)}{f[A|L]}
 <table class="table">
 <colgroup>
 <col style="width: 36%">
-<col style="width: 23%">
+<col style="width: 20%">
 <col style="width: 26%">
 </colgroup>
 <thead>
@@ -324,14 +206,9 @@ SW^a = \frac{f(A)}{f[A|L]}
 </table>
 
 
-
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
-Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
-</div>
-</div></section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

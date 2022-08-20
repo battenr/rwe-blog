@@ -12,6 +12,10 @@ draft: true
 
 Regression is a commonly used tool in statistics. Typically, the starting point is with
 
+What does GLM actually stand for? Well, it stands for
+
+## Main Parts of GLM
+
 Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the ***marginal or conditional*** causal effect.
 
 Now, what is a better way to get started than with probability yet again. In this case, we are going to talk about the probability of receiving treatment.

@@ -6,6 +6,9 @@ categories: [IPW, IPTW]
 image: "iptw.jpeg"
 bibliography: ip_weighting.bib
 draft: true
+format: 
+  html:
+    code-fold: true
 ---
 
 ## Re-weighting? Like a scale?
@@ -30,9 +33,13 @@ Where A is treatment and L is covariates.
 
 Imagine we have a clinical trial with two groups, wanting to determine if bouncing up and down on a trampoline causes a headache. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline based on your age, sex and color shirt you are wearing.
 
-While theoretical discussions are helpful, numbers always help to really drive a point home. Luckily, once again there is a database that has already collected data on such a scenario.
+## Does jumping on a trampoline cause a headache?
 
-```{r, cache= TRUE, message = FALSE, echo = FALSE}
+While theoretical discussions are helpful, numbers always help to really drive a point home. While we can't conduct a clinical trial, luckily there is a database that has already collected data on such a scenario.
+
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
+
+set.seed(2218) # August 18, 2022
 
 library(tidyverse)
 
@@ -80,49 +87,172 @@ rwetasks::count_percent(df.tramp, headache) # headache
 df <- rbind(df.tramp, df.chair)
 ```
 
-+------------------------------------+-----------------+-----------------+
-|                                    | Trampoline      | Chair           |
-|                                    |                 |                 |
-|                                    | (n = 260)       | (n = 469)       |
-+====================================+:===============:+:===============:+
-| Age, mean (SD)                     | 17.3 (4.95)     | 54.0 (19.9)     |
-+------------------------------------+-----------------+-----------------+
-| Female, n (%)                      | 194 (74.6)      |                 |
-+------------------------------------+-----------------+-----------------+
-| T-Shirt Color, n (%)               | 116 (44.6)      |                 |
-|                                    |                 |                 |
-| Pink                               | 79 (30.4)       |                 |
-|                                    |                 |                 |
-| Orange                             | 44 (16.9)       |                 |
-|                                    |                 |                 |
-| Blue                               | 21 (8.1)        |                 |
-|                                    |                 |                 |
-| Yellow                             |                 |                 |
-+------------------------------------+-----------------+-----------------+
-| Brain Freeze, n (%)                | 72 (27.7)       |                 |
-+------------------------------------+-----------------+-----------------+
-| Time Standing (minutes), mean (SD) | 28.8 (16.6)     |                 |
-+------------------------------------+-----------------+-----------------+
-| Headache                           |                 |                 |
-+------------------------------------+-----------------+-----------------+
++------------------------------------+----------------+----------------+
+|                                    | Trampoline     | Chair          |
+|                                    |                |                |
+|                                    | (n = 260)      | (n = 469)      |
++====================================+:==============:+:==============:+
+| Age, mean (SD)                     | 17.1 (4.6)     | 52.8 (19.4)    |
++------------------------------------+----------------+----------------+
+| Female, n (%)                      | 194 (74.6)     | 135 (28.8)     |
++------------------------------------+----------------+----------------+
+| T-Shirt Color, n (%)               | 124 (47.7)     | 60 (12.8)      |
+|                                    |                |                |
+| Pink                               | 84 (32.3)      | 184 (39.2)     |
+|                                    |                |                |
+| Orange                             | 37 (14.2)      | 134 (28.6)     |
+|                                    |                |                |
+| Blue                               | 15 (5.8)       | 91 (19.4)      |
+|                                    |                |                |
+| Yellow                             |                |                |
++------------------------------------+----------------+----------------+
+| Brain Freeze, n (%)                | 92 (35.4)      | 220 (46.9)     |
++------------------------------------+----------------+----------------+
+| Time Standing (minutes), mean (SD) | 31.4 (18.0)    | 29.8 (17.3)    |
++------------------------------------+----------------+----------------+
+| Headache                           | 159 (61.2)     | 172 (36.7)     |
++------------------------------------+----------------+----------------+
+
+: Trampoline Jumpers vs Chair Sitters {#tbl-demo}
+
+Now, if our causal question is "Does jumping on a trampoline cause a headache?" we need to look at the two groups that we are comparing. If we review @tbl-demo, do the two groups look similar? These two groups seem quite different. If these two are so different how can we expect to even compare the two?! That's like comparing apples to coconuts! Well, luckily we can use a statistical method known as inverse probability of treatment weighting to make those coconuts look more like apples. Think of it like we are painting the coconuts, and focusing more on the ones that are a similar size and shape.
 
 ## Pseudo-Population
 
-The goal of reweighing is to make a pseudo-population where exchangeability holds. To do this, we fit a logistic regression where the outcome is treatment.
+The goal of reweighing is to make a pseudo-population where exchangeability holds. Essentially, in our "make believe" sample the two groups would be comparable. One way to do this, is to fit a logistic regression (since the outcome would be a yes/no) to trampoline jumpers. Using this model, we can predict the probability of someone being a trampoline jumper, or conversely the probability that they are not a trampoline jumper. Once we do that, we can compare the two groups. First, we need to go over some basics of IP weighting.
 
-## General Formula for IP Weighting
+## IP Weighting
 
-The below formula is from [@hernanwhatif, pp.153].
+The pseudo-population is created by weighting each individual by the inverse of the conditional probability of receiving the treatment they did actually receive [@hernanwhatif, pp. 151].
+
+$$
+W^a = \frac{1}{f[A|L]}
+$$
+
+For our example, $f[A|L]$ is the probability of being a trampoline jumper conditional on the measured confounders (in mathematical notation:
+
+$$
+Pr[A = \text{trampoline jumpers} | \text{L = age, sex, t-shirt color, time standing}]
+$$
+
+Now, from probability we know that the total probability has to equal 1. So:
+
+$$
+Pr[A = \text{not trampoline jumpers}|L] = 1 - Pr[A = \text{trampoline jumpers} | L]
+$$
+
+Great! So basically all we need to do is calculate the probability of being a trampoline jumper given measured confounders then we can calculate the conditional probability of not being a trampoline jumper . Now how do we calculate this conditional probability?
+
+### Logistic Regression
+
+Since our two groups can be thought of as a binary variable, trampoline jumpers or not trampoline jumpers, we get a parametric estimate using logistic regression of $Pr[A=\text{trampoline jumper}|L]$. If no confounding for the effect of A in the pseudo-population and the model is correctly specified then association is causation and an unbiased estimator of the associational difference in the pseudo-population:
+
+$$
+E[Headache | A = \text{trampoline jumper}] - E[Headache | A = \text{not a trampoline jumper}]
+$$
+
+is also an unbiased estimator of the causal difference:
+
+$$
+E[Headache^{a = \text{trampoline jumper}}] - E[Headache^{a = \text{not a trampoline jumper}}]
+$$
+
+## Estimating Weights 
+
+Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, t-shirt color and time standing. Using that model we will calculate the weights, for trampoline jumpers as:\
+$$
+\hat{W} = \frac{1}{\hat{Pr}[A = \text{trampoline jumper} | L]}
+$$
+
+and for not trampoline jumpers as:
+
+$$
+\hat{W} = \frac{1}{1 - \hat{Pr}[A = \text{trampoline jumper} | L]}
+$$
+
+::: callout-note
+$\hat{W}$ and $\hat{Pr}$ are the estimated, or predicted, values. A logistic regression is used in this case because our outcome is binary, trampoline jumper: yes/no, Using this model we can predict the conditional probability which then is used to calculate the weights.
+:::
+
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
+
+library(tidyverse)
+
+df = df %>% 
+  dplyr::mutate(
+    trampoline = dplyr::case_when(
+      group == "trampoline" ~ 1, 
+      group == "chair" ~ 0 
+    )
+  )
+
+mod.fit <- stats::glm(formula = trampoline ~ age + as.factor(sex) + as.factor(t_shirt) + time_standing + I(age ^ 2) + I(time_standing ^ 2), 
+                      family = binomial(link = "logit"),
+                      data = df)
+
+df.weights <- df %>% 
+  dplyr::mutate(
+    ps = dplyr::case_when(
+      trampoline == 1 ~ predict(mod.fit, 
+                                type = "response"),
+      trampoline == 0 ~ (1 - predict(mod.fit, 
+                                    type = "response"))
+    ),
+    ip_weights = 1/ps,
+    half_ipw = 0.5/ps
+  )
+```
+
+Now we have the weights, let's check the summary statistics of them.
+
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
+
+summary(df.weights$ip_weights)
+
+```
+
+The IP weights simulate a pseudo-population where all members of the sample are replaced by two copies of themselves. [@hernanwhatif, pp. 153] One copy receives the treatment value A = 1 and the other copy receives the value A = 0. \[@hernanwhatif, pp. 153\]. The expected mean of the weights should be 2 because all individuals are included both under treatment and under no treatment.
+
+If we look back to our example, we can examine the summary statistics of these weights. A couple of things jump out at first:
+
+1.  The mean does not equal 2
+
+2.  The minimum weight is 1, which seems okay, however the maximum weight is ***23!!***
+
+Something seems off about this. Now there are a few options. One would be to create a pseudo-population similar to what we have done, expect use 0.5 for the numerator. That is, the unconditional probability of being a trampoline jumper is 0.5 and the unconditional probability of not being a trampoline jumper is 0.5. In this scenario the pseudo-population would be the same size as the study population, and would be equal to if we used $\frac{1}{f(A|L}$ but divided all the weights by 2 [@hernanwhatif, pp.153]. We can write this more generally
+
+### General Formula
+
+A general formula for $W^a$ is: [@hernanwhatif, pp.153].
 
 $$
 W^a = \frac{p}{f[A|L]}
 $$
 
-where $p$ is the unconditional probability of treatment. Note: $0< p \leq 1$, whereas $f[A|L]$ is the probability of treatment based on covariates L. A common choice is to use $Pr[A = 1]$ for $p$ in the treated and $Pr[A=0]$ for $p$ in the untreated. $Pr$ in this case means the proportion. More compactly:
+where $p$ is the unconditional probability of treatment. Note: $0< p \leq 1$, whereas $f[A|L]$ is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities [@hernanwhatif, pp. 153]. A common choice is to use $Pr[A = 1]$ for $p$ in the treated and $Pr[A=0]$ for $p$ in the untreated. $Pr$ in this case would just be the proportion. Using our example again, $Pr[A = \text{trampoline jumpers}] = \frac{260}{729} = 0.357$ and for the not trampoline jumpers, $Pr[A = \text{not trampoline jumper}] = \frac{469}{729} = 0.643$. If we use these values for our example:
 
-$$
-\frac{f(A)}{f[A|L]}
-$$
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
+
+library(tidyverse)
+
+df.weights <- df %>% 
+  dplyr::mutate(
+    ps = dplyr::case_when(
+      trampoline == 1 ~ predict(mod.fit, 
+                                type = "response"),
+      trampoline == 0 ~ (1 - predict(mod.fit, 
+                                    type = "response"))
+    ),
+    ip_weights = dplyr::case_when(
+      trampoline == 1 ~ 0.357/ps,
+      trampoline == 0 ~ 0.643/ps
+  )
+  )
+  
+summary(df.weights$ip_weights)
+```
+
+This is notably different from when we used $\frac{1}{f[A|L]}$. Now the weights range from 0.357 to 14.8 whereas before they ranged from 1 to 23.0. Not only that but now in the pseudo-population, the ratio of trampoline jumpers to not trampoline jumpers is kept. The stabilizing factor, $f[A]$, is responsible for the narrower range [@hernanwhatif, pp. 153]. Weights that use the stabilizng factor are referred to as stabilized weights.
 
 ## Stabilized Weight
 
@@ -130,79 +260,39 @@ $$
 SW^a = \frac{f(A)}{f[A|L]}
 $$
 
-Mean of the stabilized weights should be 1. This is important to check when conducting an analysis using stabilized weights.
+From the above section, we saw that the stabilizing factor made our weights have a narrower range. The mean of the stabilized weights is also expected to be 1 because the size of the pseudo-population is equal to the study population [@hernanwhatif, pp. 153]. This is important to check when conducting an analysis using stabilized weights. An alternative to using the nonparametric estimator (i.e., the proportion of individuals), is to estimate $f[A]$ using the same model but with an intercept and no covariates. If we do that using our example:
 
-## Stabilized or Nonstabilized?
-
-At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs. You should use stabilized weights when your model is not saturated (i.e., there are the same amount of unknowns on both sides of the equations)
-
-## Example
-
-An example always helps. Let's jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters. Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of
-
-```{r, cache = TRUE, include = FALSE, message = FALSE, echo - FALSE}
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
 
 library(tidyverse)
 
-set.seed(202208)
+mod.intercept <- stats::glm(formula = trampoline ~ 1, 
+                      family = binomial(link = "logit"),
+                      data = df)
 
-df.disney.lover <- data.frame(
-  sex = rbinom(577, size = 1, prob = 0.19), # 1 = female
-  age = runif(577, min = 5, max = 60),
-  disney_lover = 1,
-  sunglasses = rbinom(577, size = 1, prob = 0.37),
-  ice_cream = rbinom(577, size = 1, prob = 0.22)
-)
-
-df.disney.hater <- data.frame(
-  sex = rbinom(206, size = 1, prob = 0.61), # 1 = female
-  age = runif(206, min = 25, max = 80),
-  disney_lover = 0,
-  sunglasses = rbinom(206, size = 1, prob = 0.50),
-  ice_cream = rbinom(206, size = 1, prob = 0.22)
-)
-
-# Age
-
-cbind(mean(df.disney.lover$age), sd(df.disney.lover$age))
-cbind(mean(df.disney.hater$age), sd(df.disney.hater$age))
-
-# Sex
-
-n.female.dl = df.disney.lover %>% dplyr::filter(sex == 1) %>%  count()
-cbind(n.female.dl, round(n.female.dl/577, 3)*100)
-
-n.female.ndl = df.disney.hater %>% dplyr::filter(sex == 1) %>%  count()
-cbind(n.female.ndl, round(n.female.ndl/206, 3)*100)
-
-# Sunglasses
-
-n.sg.dl = df.disney.lover %>% dplyr::filter(sunglasses == 1) %>%  count()
-cbind(n.sg.dl, round(n.sg.dl/577, 3)*100)
-
-n.sg.ndl = df.disney.hater %>% dplyr::filter(sunglasses == 1) %>%  count()
-cbind(n.sg.ndl, round(n.sg.ndl/206, 3)*100)
-
-# Ice Cream Lovers
-
-n.ic.dl = df.disney.lover %>% dplyr::filter(ice_cream == 1) %>%  count()
-cbind(n.ic.dl, round(n.ic.dl/577, 3)*100)
-
-n.ic.ndl = df.disney.hater %>% dplyr::filter(ice_cream == 1) %>%  count()
-cbind(n.ic.ndl, round(n.ic.ndl/206, 3)*100)
-
+df.weights <- df %>% 
+  dplyr::mutate(
+    ps.denominator = dplyr::case_when(
+      trampoline == 1 ~ predict(mod.fit, 
+                                type = "response"),
+      trampoline == 0 ~ (1 - predict(mod.fit, 
+                                    type = "response"))
+    ),
+    ps.numerator = predict(mod.intercept, type = "response"),
+    ip_weights = ps.numerator/ps.denominator
+  )
+  
+summary(df.weights$ip_weights)
 ```
 
-+-------------------------+----------------+------------------+
-| Variables               | Disney Lover   | Not a Disney Fan |
-|                         |                |                  |
-|                         | (n = 577)      | ( n = 206)       |
-+:=======================:+:==============:+:================:+
-| Age, mean (SD)          | 31.8 (16.3)    | 54.1 (16.0)      |
-+-------------------------+----------------+------------------+
-| Female, n (%)           | 110 (19.1%)    | 119, (57.8)      |
-+-------------------------+----------------+------------------+
-| Sunglasses, n (%)       | 209 (36.2%)    | 98 (47.6%)       |
-+-------------------------+----------------+------------------+
-| Ice Cream Lovers, n (%) | 126 (21.8%)    | 51 (24.8%)       |
-+-------------------------+----------------+------------------+
+Now we have weights with a mean further away from zero however with a lower maximum weight. There is still one more thing that has to be checked whenever using these cases: the positivity assumption! We have to ensure that all participants have a greater than 0 probabilty of being a trampoline jumper! After checking this, we are confident that the positivity assumption is met.
+
+Now which method would we prefer for estimating the weights? Well this comes down to opinion. My personal preference is to use the weights estimated using regression for both the numerator and denominator.
+
+## Stabilized or Nonstabilized?
+
+At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs [@hernanwhatif, pp. 154]. However, this only occurs when the model is not saturated. A model is saturated when the number of parameters equals the number of quantities to be estimated. For example, $E[Y|A] = \beta_0 + \beta_1*A$ is a saturated model because it has two parameters, $\beta_0$ and $\beta_1$, and two quantities to estimate $E[Y|A = 1]$ and $E[Y|A = 0]$ [@hernanwhatif, pp. 151]. Keep in mind this example is for a binary variable, however this becomes nearly impossible to meet for continuous variables since you would need to have a parameter for every value of that variable.
+
+## What Now? 
+
+Okay cool, so what now? Glad you asked! Well now you can go freely with your new knowledge and re-weight away!
