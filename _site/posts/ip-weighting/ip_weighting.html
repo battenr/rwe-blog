@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-16">
+<meta name="dcterms.date" content="2022-08-21">
 
-<title>Ryan's Real-World Experience – ip_weighting</title>
+<title>Ryan’s Real-World Experience - Inverse Probability Weighting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -114,7 +114,38 @@ div.csl-indent {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Inverse Probability Weighting</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">IPW</div>
+                <div class="quarto-category">IPTW</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ryan Batten </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 21, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
@@ -123,10 +154,11 @@ div.csl-indent {
 
 
 
+
 <section id="re-weighting-like-a-scale" class="level2">
 <h2 class="anchored" data-anchor-id="re-weighting-like-a-scale">Re-weighting? Like a scale?</h2>
-<p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> causal effect.</p>
-<p>Now, what is a better way to get started than with probability yet again. In this case, we are going to talk about the probability of receiving treatment.</p>
+<p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> causal effect.</p>
+<p>Now, what is a better way to get started than with probability yet again? In this case, we are going to talk about the probability of receiving treatment.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -147,12 +179,14 @@ Note
 <p><span class="math display">\[
 Pr[A = 1| L = l]
 \]</span></p>
-<p>Where A is treatment and L is covariates.</p>
-<p>Imagine we have a clinical trial with two groups, wanting to determine if bouncing up and down on a trampoline causes a headache. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline based on your age, sex and color shirt you are wearing.</p>
+<p>Where A is treatment and L is the covariate(s) of interest. While equations are good, examples are better. Imagine we have a clinical trial with two groups, wanting to determine if bouncing up and down on a trampoline causes a headache. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline based on your age, sex and color shirt you are wearing.</p>
 </section>
 <section id="does-jumping-on-a-trampoline-cause-a-headache" class="level2">
 <h2 class="anchored" data-anchor-id="does-jumping-on-a-trampoline-cause-a-headache">Does jumping on a trampoline cause a headache?</h2>
-<p>While theoretical discussions are helpful, numbers always help to really drive a point home. While we can’t conduct a clinical trial, luckily there is a database that has already collected data on such a scenario.</p>
+<p>While theoretical discussions are helpful, numbers always help to really drive a point home. While we can’t conduct a clinical trial, luckily there is a database that has already collected data on such a scenario!</p>
+<div class="cell">
+
+</div>
 <div id="tbl-demo" class="anchored">
 <table class="table">
 <caption>Table 1: Trampoline Jumpers vs Chair Sitters</caption>
@@ -165,70 +199,91 @@ Pr[A = 1| L = l]
 <tr class="header">
 <th></th>
 <th style="text-align: center;"><p>Trampoline</p>
-(n = 260)</th>
+(n = 213)</th>
 <th style="text-align: center;"><p>Chair</p>
-(n = 469)</th>
+(n = 516)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Age, mean (SD)</td>
-<td style="text-align: center;">17.1 (4.6)</td>
-<td style="text-align: center;">52.8 (19.4)</td>
+<td style="text-align: center;">54.2 (22.7)</td>
+<td style="text-align: center;">34.2 (21.0)</td>
 </tr>
 <tr class="even">
 <td>Female, n (%)</td>
-<td style="text-align: center;">194 (74.6)</td>
-<td style="text-align: center;">135 (28.8)</td>
+<td style="text-align: center;">71 (33.3)</td>
+<td style="text-align: center;">258 (50.0)</td>
 </tr>
 <tr class="odd">
 <td><p>T-Shirt Color, n (%)</p>
-<p>Pink</p>
 <p>Orange</p>
 <p>Blue</p>
-<p>Yellow</p></td>
-<td style="text-align: center;"><p>124 (47.7)</p>
-<p>84 (32.3)</p>
-<p>37 (14.2)</p>
-<p>15 (5.8)</p></td>
-<td style="text-align: center;"><p>60 (12.8)</p>
-<p>184 (39.2)</p>
-<p>134 (28.6)</p>
-<p>91 (19.4)</p></td>
+<p>Yellow</p>
+<p>Pink</p></td>
+<td style="text-align: center;"><p>89 (41.8)</p>
+<p>52 (24.4)</p>
+<p>39 (18.3)</p>
+<p>33 (15.5)</p></td>
+<td style="text-align: center;"><p>179 (34.7)</p>
+<p>119 (23.1)</p>
+<p>67 (13.0)</p>
+<p>151 (29.3)</p></td>
 </tr>
 <tr class="even">
 <td>Brain Freeze, n (%)</td>
-<td style="text-align: center;">92 (35.4)</td>
-<td style="text-align: center;">220 (46.9)</td>
+<td style="text-align: center;">100 (46.9)</td>
+<td style="text-align: center;">212 (41.1)</td>
 </tr>
 <tr class="odd">
 <td>Time Standing (minutes), mean (SD)</td>
-<td style="text-align: center;">31.4 (18.0)</td>
-<td style="text-align: center;">29.8 (17.3)</td>
+<td style="text-align: center;">31.0 (16.8)</td>
+<td style="text-align: center;">30.1 (17.9)</td>
 </tr>
 <tr class="even">
 <td>Headache</td>
-<td style="text-align: center;">159 (61.2)</td>
-<td style="text-align: center;">172 (36.7)</td>
+<td style="text-align: center;">116 (37.8)</td>
+<td style="text-align: center;">102 (24.2)</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Now, if our causal question is “Does jumping on a trampoline cause a headache?” we need to look at the two groups that we are comparing. If we review <a href="#tbl-demo">Table&nbsp;1</a>, do the two groups look similar? These two groups seem quite different. If these two are so different how can we expect to even compare the two?! That’s like comparing apples to coconuts! Well, luckily we can use a statistical method known as inverse probability of treatment weighting to make those coconuts look more like apples. Think of it like we are painting the coconuts, and focusing more on the ones that are a similar size and shape.</p>
+<p>Now, if our causal question is “Does jumping on a trampoline cause a headache?” we need to look at the two groups that we are comparing. If we review <a href="#tbl-demo">Table&nbsp;1</a>, do the two groups look similar? Well for starters, the mean age is different. People in the trampoline group are an average age of 54 compared to 34 in the chair sitting group. The other characteristics seem quite different as well. If these two are so different how can we expect to even compare the two?! That’s like comparing apples to coconuts!</p>
+<p>Well, luckily we can use a statistical method known as inverse probability weighting to make those coconuts look more like apples. Think of it like we are painting the coconuts, and focusing more on the ones that are a similar size and shape.</p>
 </section>
 <section id="pseudo-population" class="level2">
 <h2 class="anchored" data-anchor-id="pseudo-population">Pseudo-Population</h2>
-<p>The goal of reweighing is to make a pseudo-population where exchangeability holds. Essentially, in our “make believe” sample the two groups would be comparable. One way to do this, is to fit a logistic regression (since the outcome would be a yes/no) to trampoline jumpers. Using this model, we can predict the probability of someone being a trampoline jumper, or conversely the probability that they are not a trampoline jumper. Once we do that, we can compare the two groups. First, we need to go over some basics of IP weighting.</p>
+<p>The goal of reweighing is to make a pseudo-population where exchangeability holds. Essentially, in our “make believe” sample the two groups would be comparable. <a href="#fig-reweighted">Figure&nbsp;1</a> shows the two different groups and the proportion of male to females. Now, we can make these more similar by reweighting them to align with the overall sample (n = 729).</p>
+<div id="fig-reweighted" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="before-and-after-reweighting.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 1: Before and After Reweighting</figcaption><p></p>
+</figure>
+</div>
+<p>One way to do this, is to fit a logistic regression (since the outcome would be a yes/no) to trampoline jumpers. Using this model, we can predict the probability of someone being a trampoline jumper, or conversely the probability that they are not a trampoline jumper. Once we do that, we can compare the two groups. First, we need to go over some basics of IP weighting.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Reweighting here is done to estimate the average treatment effect (ATE). Depending upon what the estimand of interest is, the weighting may be different. For example, if you want to estimate the average treatment effect in the treated: the people in the treated group receive a weight of 1.0 while those in the control group are reweighted. For more information on choosing the estimand of interest, I recommend reading <span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span>.</p>
+</div>
+</div>
 </section>
 <section id="ip-weighting" class="level2">
 <h2 class="anchored" data-anchor-id="ip-weighting">IP Weighting</h2>
-<p>The pseudo-population is created by weighting each individual by the inverse of the conditional probability of receiving the treatment they did actually receive <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 151</a>)</span>.</p>
+<p>The pseudo-population is created by weighting each individual by the inverse of the conditional probability of receiving the treatment they did actually receive <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 151</a>)</span>. The formula for this is:</p>
 <p><span class="math display">\[
 W^a = \frac{1}{f[A|L]}
 \]</span></p>
 <p>For our example, <span class="math inline">\(f[A|L]\)</span> is the probability of being a trampoline jumper conditional on the measured confounders (in mathematical notation:</p>
 <p><span class="math display">\[
-Pr[A = \text{trampoline jumpers} | \text{L = age, sex, t-shirt color, time standing}]
+Pr[A = \text{trampoline jumpers} | \text{L = age, sex, time standing}]
 \]</span></p>
 <p>Now, from probability we know that the total probability has to equal 1. So:</p>
 <p><span class="math display">\[
@@ -249,7 +304,8 @@ E[Headache^{a = \text{trampoline jumper}}] - E[Headache^{a = \text{not a trampol
 </section>
 <section id="estimating-weights" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-weights">Estimating Weights</h2>
-<p>Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, t-shirt color and time standing. Using that model we will calculate the weights.^[Note that the weights and probability are estimated/predicted]</p>
+<p>Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, and time standing. Using that model we will calculate the weights, for trampoline jumpers as:<br>
+</p>
 <p><span class="math display">\[
 \hat{W} = \frac{1}{\hat{Pr}[A = \text{trampoline jumper} | L]}
 \]</span></p>
@@ -257,79 +313,170 @@ E[Headache^{a = \text{trampoline jumper}}] - E[Headache^{a = \text{not a trampol
 <p><span class="math display">\[
 \hat{W} = \frac{1}{1 - \hat{Pr}[A = \text{trampoline jumper} | L]}
 \]</span></p>
-<p>[^1]: Remember that <span class="math inline">\(\hat{W}\)</span> and <span class="math inline">\(\hat{Pr}\)</span> refer to the predicted values.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat{W}\)</span> and <span class="math inline">\(\hat{Pr}\)</span> are the estimated, or predicted, values. A logistic regression is used in this case because our outcome is binary, trampoline jumper: yes/no, Using this model we can predict the conditional probability which then is used to calculate the weights.</p>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>Now we have the weights, let’s check the summary statistics of them.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.074   1.163   1.430   1.997   2.039  12.130 </code></pre>
+</div>
+</div>
+<p>The IP weights simulate a pseudo-population where all members of the sample are replaced by two copies of themselves. <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span> One copy receives the treatment value A = 1 and the other copy receives the value A = 0. <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. The expected mean of the weights should be 2 because all individuals are included both under treatment and under no treatment.</p>
+<p>If we look back to our example, we can examine the summary statistics of these weights. The mean is sufficiently close to 2, 1.997, which is what we’d expect, however the maximum weight is <strong><em>12!!</em></strong> For one individual to be weighted as 12, that is rather larger. Now there are a few options.</p>
+<p>One would be to create a pseudo-population similar to what we have done, except using 0.5 for the numerator. That is, the unconditional probability of being a trampoline jumper is 0.5 and the unconditional probability of not being a trampoline jumper is 0.5. In this scenario the pseudo-population would be the same size as the study population, and would be equal to if we used <span class="math inline">\(\frac{1}{f(A|L}\)</span> but divided all the weights by 2 <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. We can write this more generally</p>
 <section id="general-formula" class="level3">
 <h3 class="anchored" data-anchor-id="general-formula">General Formula</h3>
-<p>The below formula is from <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>.</p>
+<p>A general formula for <span class="math inline">\(W^a\)</span> is: <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>.</p>
 <p><span class="math display">\[
 W^a = \frac{p}{f[A|L]}
 \]</span></p>
-<p>where <span class="math inline">\(p\)</span> is the unconditional probability of treatment. Note: <span class="math inline">\(0&lt; p \leq 1\)</span>, whereas <span class="math inline">\(f[A|L]\)</span> is the probability of treatment based on covariates L. A common choice is to use <span class="math inline">\(Pr[A = 1]\)</span> for <span class="math inline">\(p\)</span> in the treated and <span class="math inline">\(Pr[A=0]\)</span> for <span class="math inline">\(p\)</span> in the untreated. <span class="math inline">\(Pr\)</span> in this case means the proportion. More compactly:</p>
-<p><span class="math display">\[
-\frac{f(A)}{f[A|L]}
-\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is the unconditional probability of treatment. Note: <span class="math inline">\(0&lt; p \leq 1\)</span>, whereas <span class="math inline">\(f[A|L]\)</span> is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. A common choice is to use <span class="math inline">\(Pr[A = 1]\)</span> for <span class="math inline">\(p\)</span> in the treated and <span class="math inline">\(Pr[A=0]\)</span> for <span class="math inline">\(p\)</span> in the untreated. <span class="math inline">\(Pr\)</span> in this case would just be the proportion. Using our example again, <span class="math inline">\(Pr[A = \text{trampoline jumpers}] = \frac{213}{729} = 0.292\)</span> and for the not trampoline jumpers, <span class="math inline">\(Pr[A = \text{not trampoline jumper}] = \frac{516}{729} = 0.708\)</span>. If we use these values for our example:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.4122  0.7843  0.8460  0.9997  1.0805  3.5420 </code></pre>
+</div>
+</div>
+<p>This is notably different from when we used <span class="math inline">\(\frac{1}{f[A|L]}\)</span>. Now the weights range from 0.412 to 3.54 whereas before they ranged from 1.07 to 12.1. Not only that, but now in the pseudo-population, the ratio of trampoline jumpers to not trampoline jumpers is kept. The stabilizing factor, <span class="math inline">\(f[A]\)</span>, is responsible for the narrower range <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. Weights that use the stabilizng factor are referred to as stabilized weights.</p>
 </section>
 </section>
-<section id="stabilized-weight" class="level2">
-<h2 class="anchored" data-anchor-id="stabilized-weight">Stabilized Weight</h2>
+<section id="stabilized-weights" class="level2">
+<h2 class="anchored" data-anchor-id="stabilized-weights">Stabilized Weights</h2>
 <p><span class="math display">\[
 SW^a = \frac{f(A)}{f[A|L]}
 \]</span></p>
-<p>Mean of the stabilized weights should be 1. This is important to check when conducting an analysis using stabilized weights.</p>
+<p>From the above section, we saw that the stabilizing factor made our weights have a narrower range. The mean of the stabilized weights is also expected to be 1 because the size of the pseudo-population is equal to the study population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. This is important to check when conducting an analysis using stabilized weights. An alternative to using the nonparametric estimator (i.e., the proportion of individuals), is to estimate <span class="math inline">\(f[A]\)</span> using the same model but with an intercept and no covariates. If we do that using our example:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.4125  0.7841  0.8458  0.9997  1.0803  3.5442 </code></pre>
+</div>
+</div>
+<p>Now we have weights with a mean that is close to 1 with a maximum of 3.54. There is still one more thing that has to be checked whenever using these weights: the positivity assumption! We have to ensure that all participants have a greater than 0 probability of being a trampoline jumper! After checking this, we are confident that twe can use these weights.</p>
+<p>Now which method would we prefer for estimating the weights? Well this comes down to opinion. For this example, both methods give very similar results for the weights. My personal preference is to use the parametric estimated weights, using logistic regression, for both the numerator and denominator rather than a parametric estimator for the denominator and nonparametric for the numerator.</p>
 </section>
 <section id="stabilized-or-nonstabilized" class="level2">
 <h2 class="anchored" data-anchor-id="stabilized-or-nonstabilized">Stabilized or Nonstabilized?</h2>
-<p>At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs. You should use stabilized weights when your model is not saturated (i.e., there are the same amount of unknowns on both sides of the equations)</p>
+<p>At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 154</a>)</span>. However, this only occurs when the model is not saturated. A model is saturated when the number of parameters equals the number of quantities to be estimated. For example, <span class="math inline">\(E[Y|A] = \beta_0 + \beta_1*A\)</span> is a saturated model because it has two parameters, <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, and two quantities to estimate <span class="math inline">\(E[Y|A = 1]\)</span> and <span class="math inline">\(E[Y|A = 0]\)</span> <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 151</a>)</span>. Keep in mind this example is for a binary variable, however this becomes nearly impossible to meet for continuous variables since you would need to have a parameter for every value of that variable.</p>
 </section>
-<section id="example" class="level2">
-<h2 class="anchored" data-anchor-id="example">Example</h2>
-<p>An example always helps. Let’s jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters. Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of</p>
+<section id="did-it-work" class="level2">
+<h2 class="anchored" data-anchor-id="did-it-work">Did it work?</h2>
+<p>For any adjustment technique that aims to achieve balance, such as IPTW, entropy balancing, weights used as part of matching adjusted indirect comparisons (MAICs), we need to check to see if balance has actually been met. In this case, we were trying to balance on the confounders age, sex and time standing. We can now check to see if this is achieved.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 40.12249</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23.49507</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  sex         n
+1   0 119.08270
+2   1  93.00391</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 32.01415</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17.72694</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 40.16206</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23.41653</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  sex        n
+1   0 285.1017
+2   1 231.6131</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 30.51661</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17.61288</code></pre>
+</div>
+</div>
+<div id="tbl-weighted" class="anchored">
 <table class="table">
+<caption>Table 2: Characteristics After Reweighting</caption>
 <colgroup>
-<col style="width: 36%">
-<col style="width: 23%">
+<col style="width: 31%">
+<col style="width: 24%">
+<col style="width: 18%">
 <col style="width: 26%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">Variables</th>
-<th style="text-align: center;"><p>Disney Lover</p>
-(n = 577)</th>
-<th style="text-align: center;"><p>Not a Disney Fan</p>
-( n = 206)</th>
+<th></th>
+<th style="text-align: center;"><p>Trampoline Jumpers</p>
+(n = 213)</th>
+<th style="text-align: center;"><p>Chair Sitters</p>
+(n = 516)</th>
+<th style="text-align: center;"><p>Overall (unweighted)</p>
+(n = 729)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">Age, mean (SD)</td>
-<td style="text-align: center;">31.8 (16.3)</td>
-<td style="text-align: center;">54.1 (16.0)</td>
+<td>Age, mean (SD)</td>
+<td style="text-align: center;">40.1 (23.5)</td>
+<td style="text-align: center;">40.2 (23.4)</td>
+<td style="text-align: center;">40.1 (23.3)</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">Female, n (%)</td>
-<td style="text-align: center;">110 (19.1%)</td>
-<td style="text-align: center;">119, (57.8)</td>
+<td>Female, n (%)</td>
+<td style="text-align: center;">92 (43.9)</td>
+<td style="text-align: center;">231 (44.8)</td>
+<td style="text-align: center;">329 (45.1)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">Sunglasses, n (%)</td>
-<td style="text-align: center;">209 (36.2%)</td>
-<td style="text-align: center;">98 (47.6%)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Ice Cream Lovers, n (%)</td>
-<td style="text-align: center;">126 (21.8%)</td>
-<td style="text-align: center;">51 (24.8%)</td>
+<td>Time Standing, mean (SD)</td>
+<td style="text-align: center;">32.0 (17.7)</td>
+<td style="text-align: center;">30.5 (17.6)</td>
+<td style="text-align: center;">30.4 (17.6)</td>
 </tr>
 </tbody>
 </table>
+</div>
+<p><a href="#tbl-weighted">Table&nbsp;2</a> shows the characteristics that we included in the regression model after reweighting using stabilized weights. The mean of both groups is now similar, which consequently, and also close to the overall unweighted sample. If these values don’t look any different to you, then compare them to those show in <a href="#tbl-demo">Table&nbsp;1</a>.</p>
+</section>
+<section id="drumroll-please" class="level2">
+<h2 class="anchored" data-anchor-id="drumroll-please">Drumroll Please!</h2>
+<p>Now we are finally ready to answer our question! We will use a logistic regression since our outcome is binary, headache: yes/no.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "OR, 1; (95% CI, 0.66-1.51)"</code></pre>
+</div>
+</div>
+<p>Using our stabilized weights that we calculated earlier, we can now answer our causal question: “Does jumping on a trampoline cause headaches?”. Based upon our model, the answer is no since our 95% CI includes unity, aka 1. We are now free to jump on trampolines without the worry of headaches!!</p>
 
 
 
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-greifer2021choosing" class="csl-entry" role="doc-biblioentry">
+Greifer, Noah, and Elizabeth A Stuart. 2021. <span>“Choosing the Estimand When Matching or Weighting in Observational Studies.”</span> <em>arXiv Preprint arXiv:2106.10577</em>.
+</div>
 <div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
-Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Journal Article.
+Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Textbook.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
