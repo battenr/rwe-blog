@@ -77,7 +77,9 @@ df <- rbind(df.tramp, df.chair) %>%
     beta_tshirt = runif(1, min = 0, max = 0.10),
     beta_ts = runif(1, min = 0, max = 0.10), 
     prob_tramp = (beta_age*age + beta_sex*sex + beta_ts*time_standing)/10,
-    tramp_group = rbinom(729, size = 1, prob = prob_tramp)
+    tramp_group = rbinom(729, size = 1, prob = prob_tramp),
+    prob_headache = (beta_age*age + 2*beta_sex*sex + 3*beta_ts*time_standing)/20,
+    headache = rbinom(729, size = 1, prob = prob_headache),
   )
 
 # Trampoline Group Demographics
@@ -106,27 +108,27 @@ rwetasks::count_percent(df.chair.demo, headache) # headache
 +------------------------------------+----------------+----------------+
 |                                    | Trampoline     | Chair          |
 |                                    |                |                |
-|                                    | (n = 242)      | (n = 487)      |
+|                                    | (n = 213)      | (n = 516)      |
 +====================================+:==============:+:==============:+
-| Age, mean (SD)                     | 46.6 (24.3)    | 36.8 (22.1)    |
+| Age, mean (SD)                     | 54.2 (22.7)    | 34.2 (21.0)    |
 +------------------------------------+----------------+----------------+
-| Female, n (%)                      | 92 (38.0)      | 237 (48.7)     |
+| Female, n (%)                      | 71 (33.3)      | 258 (50.0)     |
 +------------------------------------+----------------+----------------+
-| T-Shirt Color, n (%)               | 85 (35.1)      | 183 (37.6)     |
+| T-Shirt Color, n (%)               | 89 (41.8)      | 179 (34.7)     |
 |                                    |                |                |
-| Orange                             | 48 (19.8)      | 136 (27.9)     |
+| Orange                             | 52 (24.4)      | 119 (23.1)     |
 |                                    |                |                |
-| Pink                               | 71 (29.3)      | 100 (20.5)     |
+| Blue                               | 39 (18.3)      | 67 (13.0)      |
 |                                    |                |                |
-| Blue                               | 38 (15.7)      | 68 (14.0)      |
+| Yellow                             | 33 (15.5)      | 151 (29.3)     |
 |                                    |                |                |
-| Yellow                             |                |                |
+| Pink                               |                |                |
 +------------------------------------+----------------+----------------+
-| Brain Freeze, n (%)                | 94 (38.8)      | 218 (44.8)     |
+| Brain Freeze, n (%)                | 100 (46.9)     | 212 (41.1)     |
 +------------------------------------+----------------+----------------+
-| Time Standing (minutes), mean (SD) | 34.9 (17.3)    | 28.1 (17.3)    |
+| Time Standing (minutes), mean (SD) | 31.0 (16.8)    | 30.1 (17.9)    |
 +------------------------------------+----------------+----------------+
-| Headache                           | 105 (43.4)     | 226 (46.4)     |
+| Headache                           | 116 (37.8)     | 102 (24.2)     |
 +------------------------------------+----------------+----------------+
 
 : Trampoline Jumpers vs Chair Sitters {#tbl-demo}
@@ -135,7 +137,9 @@ Now, if our causal question is "Does jumping on a trampoline cause a headache?" 
 
 ## Pseudo-Population
 
-The goal of reweighing is to make a pseudo-population where exchangeability holds. Essentially, in our "make believe" sample the two groups would be comparable. One way to do this, is to fit a logistic regression (since the outcome would be a yes/no) to trampoline jumpers. Using this model, we can predict the probability of someone being a trampoline jumper, or conversely the probability that they are not a trampoline jumper. Once we do that, we can compare the two groups. First, we need to go over some basics of IP weighting.
+The goal of reweighing is to make a pseudo-population where exchangeability holds. Essentially, in our "make believe" sample the two groups would be comparable.
+
+One way to do this, is to fit a logistic regression (since the outcome would be a yes/no) to trampoline jumpers. Using this model, we can predict the probability of someone being a trampoline jumper, or conversely the probability that they are not a trampoline jumper. Once we do that, we can compare the two groups. First, we need to go over some basics of IP weighting.
 
 ## IP Weighting
 
@@ -201,9 +205,9 @@ mod.fit <- stats::glm(formula = tramp_group ~ age + as.factor(sex) + time_standi
 df.weights <- df %>% 
   dplyr::mutate(
     ps = dplyr::case_when(
-      trampoline == 1 ~ predict(mod.fit, 
+      tramp_group == 1 ~ predict(mod.fit, 
                                 type = "response"),
-      trampoline == 0 ~ (1 - predict(mod.fit, 
+      tramp_group == 0 ~ (1 - predict(mod.fit, 
                                     type = "response"))
     ),
     ip_weights = 1/ps,
@@ -221,13 +225,9 @@ summary(df.weights$ip_weights)
 
 The IP weights simulate a pseudo-population where all members of the sample are replaced by two copies of themselves. [@hernanwhatif, pp. 153] One copy receives the treatment value A = 1 and the other copy receives the value A = 0. [@hernanwhatif, pp. 153]. The expected mean of the weights should be 2 because all individuals are included both under treatment and under no treatment.
 
-If we look back to our example, we can examine the summary statistics of these weights. A couple of things jump out at first:
+If we look back to our example, we can examine the summary statistics of these weights. The mean is sufficiently close to 2, 1.997, which is what we'd expect, however the maximum weight is ***12!!*** For one individual to be weighted as 12, that is rather larger. Now there are a few options.
 
-1.  The mean does not equal 2
-
-2.  The minimum weight is 1, which seems okay, however the maximum weight is ***23!!***
-
-Something seems off about this. Now there are a few options. One would be to create a pseudo-population similar to what we have done, expect use 0.5 for the numerator. That is, the unconditional probability of being a trampoline jumper is 0.5 and the unconditional probability of not being a trampoline jumper is 0.5. In this scenario the pseudo-population would be the same size as the study population, and would be equal to if we used $\frac{1}{f(A|L}$ but divided all the weights by 2 [@hernanwhatif, pp.153]. We can write this more generally
+One would be to create a pseudo-population similar to what we have done, except using 0.5 for the numerator. That is, the unconditional probability of being a trampoline jumper is 0.5 and the unconditional probability of not being a trampoline jumper is 0.5. In this scenario the pseudo-population would be the same size as the study population, and would be equal to if we used $\frac{1}{f(A|L}$ but divided all the weights by 2 [@hernanwhatif, pp.153]. We can write this more generally
 
 ### General Formula
 
@@ -237,7 +237,7 @@ $$
 W^a = \frac{p}{f[A|L]}
 $$
 
-where $p$ is the unconditional probability of treatment. Note: $0< p \leq 1$, whereas $f[A|L]$ is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities [@hernanwhatif, pp. 153]. A common choice is to use $Pr[A = 1]$ for $p$ in the treated and $Pr[A=0]$ for $p$ in the untreated. $Pr$ in this case would just be the proportion. Using our example again, $Pr[A = \text{trampoline jumpers}] = \frac{260}{729} = 0.357$ and for the not trampoline jumpers, $Pr[A = \text{not trampoline jumper}] = \frac{469}{729} = 0.643$. If we use these values for our example:
+where $p$ is the unconditional probability of treatment. Note: $0< p \leq 1$, whereas $f[A|L]$ is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities [@hernanwhatif, pp. 153]. A common choice is to use $Pr[A = 1]$ for $p$ in the treated and $Pr[A=0]$ for $p$ in the untreated. $Pr$ in this case would just be the proportion. Using our example again, $Pr[A = \text{trampoline jumpers}] = \frac{213}{729} = 0.292$ and for the not trampoline jumpers, $Pr[A = \text{not trampoline jumper}] = \frac{516}{729} = 0.708$. If we use these values for our example:
 
 ```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
 
@@ -246,21 +246,21 @@ library(tidyverse)
 df.weights <- df %>% 
   dplyr::mutate(
     ps = dplyr::case_when(
-      trampoline == 1 ~ predict(mod.fit, 
+      tramp_group == 1 ~ predict(mod.fit, 
                                 type = "response"),
-      trampoline == 0 ~ (1 - predict(mod.fit, 
+      tramp_group == 0 ~ (1 - predict(mod.fit, 
                                     type = "response"))
     ),
     ip_weights = dplyr::case_when(
-      trampoline == 1 ~ 0.357/ps,
-      trampoline == 0 ~ 0.643/ps
+      tramp_group == 1 ~ 0.292/ps,
+      tramp_group == 0 ~ 0.708/ps
   )
   )
   
 summary(df.weights$ip_weights)
 ```
 
-This is notably different from when we used $\frac{1}{f[A|L]}$. Now the weights range from 0.357 to 14.8 whereas before they ranged from 1 to 23.0. Not only that but now in the pseudo-population, the ratio of trampoline jumpers to not trampoline jumpers is kept. The stabilizing factor, $f[A]$, is responsible for the narrower range [@hernanwhatif, pp. 153]. Weights that use the stabilizng factor are referred to as stabilized weights.
+This is notably different from when we used $\frac{1}{f[A|L]}$. Now the weights range from 0.412 to 3.54 whereas before they ranged from 1.07 to 12.1. Not only that but now in the pseudo-population, the ratio of trampoline jumpers to not trampoline jumpers is kept. The stabilizing factor, $f[A]$, is responsible for the narrower range [@hernanwhatif, pp. 153]. Weights that use the stabilizng factor are referred to as stabilized weights.
 
 ## Stabilized Weights
 
@@ -274,36 +274,146 @@ From the above section, we saw that the stabilizing factor made our weights have
 
 library(tidyverse)
 
-mod.intercept <- stats::glm(formula = trampoline ~ 1, 
+mod.intercept <- stats::glm(formula = tramp_group ~ 1, 
                       family = binomial(link = "logit"),
                       data = df)
 
 df.weights <- df %>% 
   dplyr::mutate(
     ps.denominator = dplyr::case_when(
-      trampoline == 1 ~ predict(mod.fit, 
-                                type = "response"),
-      trampoline == 0 ~ (1 - predict(mod.fit, 
+      tramp_group == 1 ~ predict(mod.fit, 
+                                    type = "response"),
+      tramp_group == 0 ~ (1 - predict(mod.fit, 
                                     type = "response"))
     ),
     ps.numerator = predict(mod.intercept, type = "response"),
     ip_weights = dplyr::case_when(
-      trampoline == 1 ~ ps.numerator/ps.denominator,
-      trampoline == 0 ~ (1-ps.numerator)/(1-ps.denominator)
+      tramp_group == 1 ~ ps.numerator/ps.denominator,
+      tramp_group == 0 ~ (1-ps.numerator)/(ps.denominator)
   )
   )
   
 summary(df.weights$ip_weights)
 ```
 
-Now we have weights with a mean further away from zero however with a lower maximum weight. There is still one more thing that has to be checked whenever using these cases: the positivity assumption! We have to ensure that all participants have a greater than 0 probabilty of being a trampoline jumper! After checking this, we are confident that the positivity assumption is met.
+Now we have weights with a mean that is close to 1 with a maximum of 3.54. There is still one more thing that has to be checked whenever using these weights: the positivity assumption! We have to ensure that all participants have a greater than 0 probability of being a trampoline jumper! After checking this, we are confident that twe can use these weights.
 
-Now which method would we prefer for estimating the weights? Well this comes down to opinion. My personal preference is to use the weights estimated using regression for both the numerator and denominator.
+Now which method would we prefer for estimating the weights? Well this comes down to opinion. For this example, both methods give very similar results for the weights. My personal preference is to use the parametric estimated weights, using logistic regression, for both the numerator and denominator rather than a parametric estimator for the denominator and nonparametric for the numerator.
 
 ## Stabilized or Nonstabilized?
 
 At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs [@hernanwhatif, pp. 154]. However, this only occurs when the model is not saturated. A model is saturated when the number of parameters equals the number of quantities to be estimated. For example, $E[Y|A] = \beta_0 + \beta_1*A$ is a saturated model because it has two parameters, $\beta_0$ and $\beta_1$, and two quantities to estimate $E[Y|A = 1]$ and $E[Y|A = 0]$ [@hernanwhatif, pp. 151]. Keep in mind this example is for a binary variable, however this becomes nearly impossible to meet for continuous variables since you would need to have a parameter for every value of that variable.
 
-## What Now?
+## Did it work? 
 
-Okay cool, so what now? Glad you asked! Well now you can go freely with your new knowledge and re-weight away!
+For any adjustment technique that aims to achieve balance, such as IPTW, entropy balancing, weights used as part of matching adjusted indirect comparisons (MAICs), we need to check to see if balance has actually been met. In this case, we were trying to balance on the confounders age, sex and time standing. We can now check to see if this is achieved.
+
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
+
+library(tidyverse)
+library(Hmisc)
+
+tramp.wt <- df.weights %>% dplyr::filter(tramp_group == 1)
+
+# Age 
+x <- tramp.wt$age
+wt <- tramp.wt$ip_weights
+
+wtd.mean(x, wt)
+sqrt(wtd.var(x, wt)) # std dev = sqrt(var)
+
+# Sex
+
+df.weights %>% 
+  dplyr::filter(tramp_group == 1) %>% 
+  count(sex, 
+        wt = ip_weights)
+
+# Time Standing
+
+x <- tramp.wt$time_standing
+wt <- tramp.wt$ip_weights
+
+wtd.mean(x, wt)
+sqrt(wtd.var(x, wt)) # std dev = sqrt(var)
+
+# Chair Sitters
+
+chair.wt <- df.weights %>% dplyr::filter(tramp_group == 0)
+
+
+# Age 
+x <- chair.wt$age
+wt <- chair.wt$ip_weights
+
+wtd.mean(x, wt)
+sqrt(wtd.var(x, wt)) # std dev = sqrt(var)
+
+# Sex
+
+df.weights %>% 
+  dplyr::filter(tramp_group == 0) %>% 
+  count(sex, 
+        wt = ip_weights)
+
+# Time Standing
+
+x <- chair.wt$time_standing
+wt <- chair.wt$ip_weights
+
+wtd.mean(x, wt)
+sqrt(wtd.var(x, wt)) # std dev = sqrt(var)
+
+
+```
+
++--------------------------+---------------------+---------------+----------------------+
+|                          | Trampoline Jumpers  | Chair Sitters | Overall (unweighted) |
+|                          |                     |               |                      |
+|                          | (n = 213)           | (n = 516)     | (n = 729)            |
++==========================+:===================:+:=============:+:====================:+
+| Age, mean (SD)           | 40.1 (23.5)         | 40.2 (23.4)   | 40.1 (23.3)          |
++--------------------------+---------------------+---------------+----------------------+
+| Female, n (%)            | 92 (43.9)           | 231 (44.8)    | 329 (45.1)           |
++--------------------------+---------------------+---------------+----------------------+
+| Time Standing, mean (SD) | 32.0 (17.7)         | 30.5 (17.6)   | 30.4 (17.6)          |
++--------------------------+---------------------+---------------+----------------------+
+
+: Characteristics After Reweighting {#tbl-weighted}
+
+@tbl-weighted shows the characteristics that we included in the regression model after reweighting using stabilized weights. The mean of both groups is now similar, which consequently, and also close to the overall unweighted sample. If these values don't look any different to you, then compare them to those show in @tbl-demo.
+
+## Drumroll Please!
+
+Now we are finally ready to answer our question! We will use a logistic regression since our outcome is binary, headache: yes/no.
+
+```{r, message = FALSE, echo = FALSE, include = FALSE, warning=FALSE}
+
+library(tidyverse)
+library(broom)
+
+mod.outcome <- stats::glm(
+  formula = headache ~ tramp_group,
+  family = binomial(link = "logit"),
+  data = df.weights,
+  weights = ip_weights
+)
+
+output <- broom::tidy(mod.outcome) %>% 
+  dplyr::filter(
+    term == "tramp_group"
+  ) %>% 
+  dplyr::mutate(
+    log.upper.ci = estimate + qnorm(0.975)*std.error,
+    log.lower.ci = estimate - qnorm(0.975)*std.error,
+    OR = exp(estimate),
+    upper.ci = exp(log.upper.ci),
+    lower.ci = exp(log.lower.ci)
+  )
+
+paste0("OR, ", round(output$OR,2), ";",
+       " (95% CI, ", round(output$lower.ci, 2), "-", 
+       round(output$upper.ci,2), ")")
+```
+
+Using our stabilized weights that we calculated earlier, we can now answer our causal question: "Does jumping on a trampoline cause headaches?". Based upon our model, the answer is no since our 95% CI includes unity, aka 1. We are now free to jump on trampolines without the worry of headaches!!
