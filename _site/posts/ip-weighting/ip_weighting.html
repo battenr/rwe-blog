@@ -17,6 +17,69 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
@@ -185,7 +248,73 @@ Pr[A = 1| L = l]
 <h2 class="anchored" data-anchor-id="does-jumping-on-a-trampoline-cause-a-headache">Does jumping on a trampoline cause a headache?</h2>
 <p>While theoretical discussions are helpful, numbers always help to really drive a point home. While we can’t conduct a clinical trial, luckily there is a database that has already collected data on such a scenario!</p>
 <div class="cell">
-
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2218</span>) <span class="co"># August 18, 2022</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rwetasks)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df.tramp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">"trampoline"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">260</span>, <span class="at">min =</span> <span class="dv">9</span>, <span class="at">max =</span> <span class="dv">25</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">260</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.77</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">t_shirt =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"pink"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">size =</span> <span class="dv">260</span>, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">replace =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.17</span>, <span class="fl">0.46</span>, <span class="fl">0.30</span>, <span class="fl">0.07</span>)),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">brain_freeze =</span> <span class="fu">rbinom</span>(<span class="dv">260</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.33</span>), <span class="co"># brain freeze before group</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_standing =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">260</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">60</span>), <span class="co"># time standing in minutes</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">headache =</span> <span class="fu">rbinom</span>(<span class="dv">260</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.64</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df.chair <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">"chair"</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">469</span>, <span class="at">min =</span> <span class="dv">19</span>, <span class="at">max =</span> <span class="dv">88</span>),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">469</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.28</span>),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">t_shirt =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"pink"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span>),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">size =</span> <span class="dv">469</span>, </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">replace =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                   <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.36</span>, <span class="fl">0.16</span>, <span class="fl">0.42</span>, <span class="fl">0.23</span>)),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">brain_freeze =</span> <span class="fu">rbinom</span>(<span class="dv">469</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.48</span>), <span class="co"># brain freeze before group</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_standing =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">469</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">60</span>), <span class="co"># time standing in minutes</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">headache =</span> <span class="fu">rbinom</span>(<span class="dv">469</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.39</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df.tramp, df.chair) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_age =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.10</span>), </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_sex =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.10</span>),</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_tshirt =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.10</span>),</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_ts =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.10</span>), </span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">prob_tramp =</span> (beta_age<span class="sc">*</span>age <span class="sc">+</span> beta_sex<span class="sc">*</span>sex <span class="sc">+</span> beta_ts<span class="sc">*</span>time_standing)<span class="sc">/</span><span class="dv">10</span>,</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">tramp_group =</span> <span class="fu">rbinom</span>(<span class="dv">729</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob_tramp),</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">prob_headache =</span> (beta_age<span class="sc">*</span>age <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>beta_sex<span class="sc">*</span>sex <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>beta_ts<span class="sc">*</span>time_standing)<span class="sc">/</span><span class="dv">20</span>,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">headache =</span> <span class="fu">rbinom</span>(<span class="dv">729</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob_headache),</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Trampoline Group Demographics</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>df.tramp.demo <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(tramp_group <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co"># cbind(mean(df.tramp.demo$age), sd(df.tramp.demo$age)) # age</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.tramp.demo, sex) # sex</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.tramp.demo, t_shirt) # t-shirt</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.tramp.demo, brain_freeze) # brain-freeze</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co"># cbind(mean(df.tramp.demo$time_standing), sd(df.tramp.demo$time_standing)) # time standing</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.tramp.demo, headache) # headache</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Chair Demographics</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>df.chair.demo <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(tramp_group <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="co"># cbind(mean(df.chair.demo$age), sd(df.chair.demo$age)) # age</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.chair.demo, sex) # sex</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.chair.demo, t_shirt) # t-shirt</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.chair.demo, brain_freeze) # brain-freeze</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="co"># cbind(mean(df.chair.demo$time_standing), sd(df.chair.demo$time_standing)) # time standing</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="co"># rwetasks::count_percent(df.chair.demo, headache) # headache</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div id="tbl-demo" class="anchored">
 <table class="table">
@@ -271,7 +400,7 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Reweighting here is done to estimate the average treatment effect (ATE). Depending upon what the estimand of interest is, the weighting may be different. For example, if you want to estimate the average treatment effect in the treated: the people in the treated group receive a weight of 1.0 while those in the control group are reweighted. For more information on choosing the estimand of interest, I recommend reading <span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span>.</p>
+<p>Reweighting here is done to estimate the average treatment effect (ATE). Depending upon what the estimand of interest is, the weighting may be different. For example, if you want to estimate the average treatment effect in the treated (ATT), the people in the treated group would receive a weight of 1.0 while those in the control group are reweighted. For more information on choosing the estimand of interest, I recommend reading <span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span>.</p>
 </div>
 </div>
 </section>
@@ -281,7 +410,7 @@ Important
 <p><span class="math display">\[
 W^a = \frac{1}{f[A|L]}
 \]</span></p>
-<p>For our example, <span class="math inline">\(f[A|L]\)</span> is the probability of being a trampoline jumper conditional on the measured confounders (in mathematical notation:</p>
+<p>For our example, <span class="math inline">\(f[A|L]\)</span> is the probability of being a trampoline jumper conditional on the measured confounders. In mathematical notation:</p>
 <p><span class="math display">\[
 Pr[A = \text{trampoline jumpers} | \text{L = age, sex, time standing}]
 \]</span></p>
@@ -292,7 +421,7 @@ Pr[A = \text{not trampoline jumpers}|L] = 1 - Pr[A = \text{trampoline jumpers} |
 <p>Great! So basically all we need to do is calculate the probability of being a trampoline jumper given measured confounders then we can calculate the conditional probability of not being a trampoline jumper . Now how do we calculate this conditional probability?</p>
 <section id="logistic-regression" class="level3">
 <h3 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h3>
-<p>Since our two groups can be thought of as a binary variable, trampoline jumpers or not trampoline jumpers, we get a parametric estimate using logistic regression of <span class="math inline">\(Pr[A=\text{trampoline jumper}|L]\)</span>. If no confounding for the effect of A in the pseudo-population and the model is correctly specified then association is causation and an unbiased estimator of the associational difference in the pseudo-population:</p>
+<p>Since our two groups can be thought of as a binary variable, trampoline jumpers or not trampoline jumpers, we get a parametric estimate using logistic regression. Assuming that our model is correct, we can then predict/estimate <span class="math inline">\(Pr[A=\text{trampoline jumper}|L]\)</span>. If no confounding for the effect of A in the pseudo-population and the model is correctly specified, then association is causation and an unbiased estimator of the associational difference in the pseudo-population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 151</a>)</span> :</p>
 <p><span class="math display">\[
 E[Headache | A = \text{trampoline jumper}] - E[Headache | A = \text{not a trampoline jumper}]
 \]</span></p>
@@ -304,7 +433,21 @@ E[Headache^{a = \text{trampoline jumper}}] - E[Headache^{a = \text{not a trampol
 </section>
 <section id="estimating-weights" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-weights">Estimating Weights</h2>
-<p>Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following variables: age, sex, and time standing. Using that model we will calculate the weights, for trampoline jumpers as:<br>
+<p>Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following confounders: age, sex, and time standing.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For this example we have selected age, sex and time standing to be confounders. We know this because it is a simulated dataset however there are approaches for selecting potential confounders. Methods for selecting confounders will be discussed in an upcoming post.</p>
+</div>
+</div>
+<p>Using that model we will calculate the weights, for trampoline jumpers as:<br>
 </p>
 <p><span class="math display">\[
 \hat{W} = \frac{1}{\hat{Pr}[A = \text{trampoline jumper} | L]}
@@ -323,21 +466,44 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\hat{W}\)</span> and <span class="math inline">\(\hat{Pr}\)</span> are the estimated, or predicted, values. A logistic regression is used in this case because our outcome is binary, trampoline jumper: yes/no, Using this model we can predict the conditional probability which then is used to calculate the weights.</p>
+<p><span class="math inline">\(\hat{W}\)</span> and <span class="math inline">\(\hat{Pr}\)</span> are the estimated, or predicted, values. A logistic regression is used in this case because our outcome is binary (trampoline jumper: yes/no). Using this model we can predict the conditional probability which then is used to calculate the weights.</p>
 </div>
 </div>
 <div class="cell">
-
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mod.fit <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(<span class="at">formula =</span> tramp_group <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">as.factor</span>(sex) <span class="sc">+</span> time_standing <span class="sc">+</span> <span class="fu">I</span>(age <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(time_standing <span class="sc">^</span> <span class="dv">2</span>), </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> df)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df.weights <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ps =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fu">predict</span>(mod.fit, </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(mod.fit, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">ip_weights =</span> <span class="dv">1</span><span class="sc">/</span>ps,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">half_ipw =</span> <span class="fl">0.5</span><span class="sc">/</span>ps</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Now we have the weights, let’s check the summary statistics of them.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df.weights<span class="sc">$</span>ip_weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   1.074   1.163   1.430   1.997   2.039  12.130 </code></pre>
 </div>
 </div>
 <p>The IP weights simulate a pseudo-population where all members of the sample are replaced by two copies of themselves. <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span> One copy receives the treatment value A = 1 and the other copy receives the value A = 0. <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. The expected mean of the weights should be 2 because all individuals are included both under treatment and under no treatment.</p>
-<p>If we look back to our example, we can examine the summary statistics of these weights. The mean is sufficiently close to 2, 1.997, which is what we’d expect, however the maximum weight is <strong><em>12!!</em></strong> For one individual to be weighted as 12, that is rather larger. Now there are a few options.</p>
+<p>If we look back to our example, we can examine the summary statistics of these weights. The mean is sufficiently close to 2, 1.997, which is what we’d expect, however the maximum weight is <strong><em>12!!</em></strong> For one individual to be weighted as 12, that is rather large. Now there are a few options.</p>
 <p>One would be to create a pseudo-population similar to what we have done, except using 0.5 for the numerator. That is, the unconditional probability of being a trampoline jumper is 0.5 and the unconditional probability of not being a trampoline jumper is 0.5. In this scenario the pseudo-population would be the same size as the study population, and would be equal to if we used <span class="math inline">\(\frac{1}{f(A|L}\)</span> but divided all the weights by 2 <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. We can write this more generally</p>
 <section id="general-formula" class="level3">
 <h3 class="anchored" data-anchor-id="general-formula">General Formula</h3>
@@ -345,8 +511,28 @@ Note
 <p><span class="math display">\[
 W^a = \frac{p}{f[A|L]}
 \]</span></p>
-<p>where <span class="math inline">\(p\)</span> is the unconditional probability of treatment. Note: <span class="math inline">\(0&lt; p \leq 1\)</span>, whereas <span class="math inline">\(f[A|L]\)</span> is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. A common choice is to use <span class="math inline">\(Pr[A = 1]\)</span> for <span class="math inline">\(p\)</span> in the treated and <span class="math inline">\(Pr[A=0]\)</span> for <span class="math inline">\(p\)</span> in the untreated. <span class="math inline">\(Pr\)</span> in this case would just be the proportion. Using our example again, <span class="math inline">\(Pr[A = \text{trampoline jumpers}] = \frac{213}{729} = 0.292\)</span> and for the not trampoline jumpers, <span class="math inline">\(Pr[A = \text{not trampoline jumper}] = \frac{516}{729} = 0.708\)</span>. If we use these values for our example:</p>
+<p>where <span class="math inline">\(p\)</span> is the unconditional probability of treatment. Note: <span class="math inline">\(0&lt; p \leq 1\)</span>, whereas <span class="math inline">\(f[A|L]\)</span> is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. A common choice is to use <span class="math inline">\(Pr[A = 1]\)</span> for <span class="math inline">\(p\)</span> in the treated and <span class="math inline">\(Pr[A=0]\)</span> for <span class="math inline">\(p\)</span> in the untreated. <span class="math inline">\(Pr\)</span> in this case would just be the proportion. Using our example again, <span class="math inline">\(Pr[A = \text{trampoline jumpers}] = \frac{213}{729} = 0.292\)</span> and for the not trampoline jumpers, <span class="math inline">\(Pr[A = \text{not trampoline jumper}] = \frac{516}{729} = 0.708\)</span>. If we use these values for the numerator in calculating the weights for our example:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df.weights <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ps =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fu">predict</span>(mod.fit, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(mod.fit, </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ip_weights =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fl">0.292</span><span class="sc">/</span>ps,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="fl">0.708</span><span class="sc">/</span>ps</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df.weights<span class="sc">$</span>ip_weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.4122  0.7843  0.8460  0.9997  1.0805  3.5420 </code></pre>
@@ -362,12 +548,55 @@ SW^a = \frac{f(A)}{f[A|L]}
 \]</span></p>
 <p>From the above section, we saw that the stabilizing factor made our weights have a narrower range. The mean of the stabilized weights is also expected to be 1 because the size of the pseudo-population is equal to the study population <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 153</a>)</span>. This is important to check when conducting an analysis using stabilized weights. An alternative to using the nonparametric estimator (i.e., the proportion of individuals), is to estimate <span class="math inline">\(f[A]\)</span> using the same model but with an intercept and no covariates. If we do that using our example:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>mod.intercept <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(<span class="at">formula =</span> tramp_group <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> df)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>df.weights <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ps.denominator =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="fu">predict</span>(mod.fit, </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(mod.fit, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">ps.numerator =</span> <span class="fu">predict</span>(mod.intercept, <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">ip_weights =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> ps.numerator<span class="sc">/</span>ps.denominator,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      tramp_group <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> (<span class="dv">1</span><span class="sc">-</span>ps.numerator)<span class="sc">/</span>(ps.denominator)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df.weights<span class="sc">$</span>ip_weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.4125  0.7841  0.8458  0.9997  1.0803  3.5442 </code></pre>
 </div>
 </div>
 <p>Now we have weights with a mean that is close to 1 with a maximum of 3.54. There is still one more thing that has to be checked whenever using these weights: the positivity assumption! We have to ensure that all participants have a greater than 0 probability of being a trampoline jumper! After checking this, we are confident that twe can use these weights.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While checking the summary statistics and positivity assumption are important, it is always a good idea to additional check:</p>
+<ol type="1">
+<li><p>Balance has been achieved for the variables that were included in the model</p></li>
+<li><p>The distribution of weights, typically done graphically</p></li>
+<li><p>Check the higher order moments. For example, don’t just check to see if mean is similar for a continuous variable, but that standard deviation is similar as well.</p></li>
+</ol>
+</div>
+</div>
 <p>Now which method would we prefer for estimating the weights? Well this comes down to opinion. For this example, both methods give very similar results for the weights. My personal preference is to use the parametric estimated weights, using logistic regression, for both the numerator and denominator rather than a parametric estimator for the denominator and nonparametric for the numerator.</p>
 </section>
 <section id="stabilized-or-nonstabilized" class="level2">
@@ -378,40 +607,62 @@ SW^a = \frac{f(A)}{f[A|L]}
 <h2 class="anchored" data-anchor-id="did-it-work">Did it work?</h2>
 <p>For any adjustment technique that aims to achieve balance, such as IPTW, entropy balancing, weights used as part of matching adjusted indirect comparisons (MAICs), we need to check to see if balance has actually been met. In this case, we were trying to balance on the confounders age, sex and time standing. We can now check to see if this is achieved.</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 40.12249</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 23.49507</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  sex         n
-1   0 119.08270
-2   1  93.00391</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 32.01415</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 17.72694</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 40.16206</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 23.41653</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  sex        n
-1   0 285.1017
-2   1 231.6131</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 30.51661</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 17.61288</code></pre>
-</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>tramp.wt <span class="ot">&lt;-</span> df.weights <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(tramp_group <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Age </span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> tramp.wt<span class="sc">$</span>age</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>wt <span class="ot">&lt;-</span> tramp.wt<span class="sc">$</span>ip_weights</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># wtd.mean(x, wt)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(wtd.var(x, wt)) # std dev = sqrt(var)</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Sex</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># df.weights %&gt;% </span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dplyr::filter(tramp_group == 1) %&gt;% </span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># count(sex, </span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">#wt = ip_weights)</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Time Standing</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> tramp.wt<span class="sc">$</span>time_standing</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>wt <span class="ot">&lt;-</span> tramp.wt<span class="sc">$</span>ip_weights</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># wtd.mean(x, wt)</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(wtd.var(x, wt)) # std dev = sqrt(var)</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Chair Sitters</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>chair.wt <span class="ot">&lt;-</span> df.weights <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(tramp_group <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Age </span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> chair.wt<span class="sc">$</span>age</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>wt <span class="ot">&lt;-</span> chair.wt<span class="sc">$</span>ip_weights</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="co"># wtd.mean(x, wt)</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(wtd.var(x, wt)) # std dev = sqrt(var)</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Sex</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co"># df.weights %&gt;% </span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">#   dplyr::filter(tramp_group == 0) %&gt;% </span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   count(sex, </span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="co">#         wt = ip_weights)</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Time Standing</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> chair.wt<span class="sc">$</span>time_standing</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>wt <span class="ot">&lt;-</span> chair.wt<span class="sc">$</span>ip_weights</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="co"># wtd.mean(x, wt)</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(wtd.var(x, wt)) # std dev = sqrt(var)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div id="tbl-weighted" class="anchored">
 <table class="table">
@@ -455,12 +706,40 @@ SW^a = \frac{f(A)}{f[A|L]}
 </tbody>
 </table>
 </div>
-<p><a href="#tbl-weighted">Table&nbsp;2</a> shows the characteristics that we included in the regression model after reweighting using stabilized weights. The mean of both groups is now similar, which consequently, and also close to the overall unweighted sample. If these values don’t look any different to you, then compare them to those show in <a href="#tbl-demo">Table&nbsp;1</a>.</p>
+<p><a href="#tbl-weighted">Table&nbsp;2</a> shows the characteristics that we included in the regression model after reweighting using stabilized weights. The mean of both groups is now similar, which consequently is also close to the overall unweighted sample. If these values don’t look any different to you, then compare them to those show in <a href="#tbl-demo">Table&nbsp;1</a>.</p>
 </section>
 <section id="drumroll-please" class="level2">
 <h2 class="anchored" data-anchor-id="drumroll-please">Drumroll Please!</h2>
-<p>Now we are finally ready to answer our question! We will use a logistic regression since our outcome is binary, headache: yes/no.</p>
+<p>Now we are finally ready to answer our question! We will use a logistic regression since our outcome is binary, headache: yes/no, with our new fancy weights!</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>mod.outcome <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> headache <span class="sc">~</span> tramp_group,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df.weights,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> ip_weights</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>output <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(mod.outcome) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    term <span class="sc">==</span> <span class="st">"tramp_group"</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">log.upper.ci =</span> estimate <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>std.error,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">log.lower.ci =</span> estimate <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>std.error,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">OR =</span> <span class="fu">exp</span>(estimate),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper.ci =</span> <span class="fu">exp</span>(log.upper.ci),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower.ci =</span> <span class="fu">exp</span>(log.lower.ci)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"OR, "</span>, <span class="fu">round</span>(output<span class="sc">$</span>OR,<span class="dv">2</span>), <span class="st">";"</span>,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>       <span class="st">" (95% CI, "</span>, <span class="fu">round</span>(output<span class="sc">$</span>lower.ci, <span class="dv">2</span>), <span class="st">"-"</span>, </span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>       <span class="fu">round</span>(output<span class="sc">$</span>upper.ci,<span class="dv">2</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "OR, 1; (95% CI, 0.66-1.51)"</code></pre>
 </div>

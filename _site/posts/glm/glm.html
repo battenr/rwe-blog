@@ -56,7 +56,6 @@ ul.task-list{list-style: none;}
   }
 }</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -109,101 +108,12 @@ ul.task-list{list-style: none;}
 <p>Regression is a commonly used tool in statistics. Typically, the starting point is with</p>
 <p>What does GLM actually stand for? Well, it stands for</p>
 </section>
+<section id="equation-of-a-line" class="level2">
+<h2 class="anchored" data-anchor-id="equation-of-a-line">Equation of a Line</h2>
+</section>
 <section id="main-parts-of-glm" class="level2">
 <h2 class="anchored" data-anchor-id="main-parts-of-glm">Main Parts of GLM</h2>
-<p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for effect modification and confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal or conditional</em></strong> causal effect.</p>
-<p>Now, what is a better way to get started than with probability yet again. In this case, we are going to talk about the probability of receiving treatment.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This post will draw heavily from Chapter 12 of What If <span class="citation" data-cites="hernanwhatif">[@hernanwhatif]</span></p>
-</div>
-</div>
-</section>
-<section id="propensity-score" class="level2">
-<h2 class="anchored" data-anchor-id="propensity-score">Propensity Score</h2>
-<p>A term that is commonly used in clinical epidemiology is the <strong><em>propensity score</em></strong>. The propensity score is the conditional probability of receiving treatment <span class="citation" data-cites="hernanwhatif">[@hernanwhatif]</span>, or in mathematical notation:</p>
-<p><span class="math display">\[
-Pr[A = 1| L = l]
-\]</span></p>
-<p>Where A is treatment and L is covariates.</p>
-<p>Imagine we have a clinical trial with two groups. The treatment group get to bounce on a trampoline for 10 minutes, while the control group have to sit down on a chair for 10 minutes. In this scenario, the propensity score would be the conditional probability of getting to bounce on the trampoline.</p>
-<p>While theoretical discussions are helpful, numbers always help to really drive a point home. Luckily, once again there is a database that has already collected data on such a scenario.</p>
-</section>
-<section id="pseudo-population" class="level2">
-<h2 class="anchored" data-anchor-id="pseudo-population">Pseudo-Population</h2>
-<p>The goal of reweighing is to make a pseudo-population where exchangeability holds. To do this, we fit a logistic regression where the outcome is treatment.</p>
-</section>
-<section id="general-formula-for-ip-weighting" class="level2">
-<h2 class="anchored" data-anchor-id="general-formula-for-ip-weighting">General Formula for IP Weighting</h2>
-<p>The below formula is from <span class="citation" data-cites="hernanwhatif">[@hernanwhatif, pp.153]</span>.</p>
-<p><span class="math display">\[
-W^a = \frac{p}{f[A|L]}
-\]</span></p>
-<p>where <span class="math inline">\(p\)</span> is the unconditional probability of treatment. Note: <span class="math inline">\(0&lt; p \leq 1\)</span>, whereas <span class="math inline">\(f[A|L]\)</span> is the probability of treatment based on covariates L. A common choice is to use <span class="math inline">\(Pr[A = 1]\)</span> for <span class="math inline">\(p\)</span> in the treated and <span class="math inline">\(Pr[A=0]\)</span> for <span class="math inline">\(p\)</span> in the untreated. <span class="math inline">\(Pr\)</span> in this case means the proportion. More compactly:</p>
-<p><span class="math display">\[
-\frac{f(A)}{f[A|L]}
-\]</span></p>
-</section>
-<section id="stabilized-weight" class="level2">
-<h2 class="anchored" data-anchor-id="stabilized-weight">Stabilized Weight</h2>
-<p><span class="math display">\[
-SW^a = \frac{f(A)}{f[A|L]}
-\]</span></p>
-<p>Mean of the stabilized weights should be 1. This is important to check when conducting an analysis using stabilized weights.</p>
-</section>
-<section id="stabilized-or-nonstabilized" class="level2">
-<h2 class="anchored" data-anchor-id="stabilized-or-nonstabilized">Stabilized or Nonstabilized?</h2>
-<p>At this point, you may be wondering to yourself if we should be using stabilized or nonstabilized weights. One reason is stabilized weights result in narrower 95% CIs. You should use stabilized weights when your model is not saturated (i.e., there are the same amount of unknowns on both sides of the equations)</p>
-</section>
-<section id="example" class="level2">
-<h2 class="anchored" data-anchor-id="example">Example</h2>
-<p>An example always helps. Let’s jump right into our made up dataset. We have 5 variables: sex, sunglasses, age, love for disney princess and ice cream eaters. Now for this dataset, we want to know if loving Disney movie causes people to become ice cream lovers. Below is a summary table of</p>
-<table class="table">
-<colgroup>
-<col style="width: 36%">
-<col style="width: 20%">
-<col style="width: 26%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Variables</th>
-<th style="text-align: center;"><p>Disney Lover</p>
-(n = 577)</th>
-<th style="text-align: center;"><p>Not a Disney Fan</p>
-( n = 206)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Age, mean (SD)</td>
-<td style="text-align: center;">31.8 (16.3)</td>
-<td style="text-align: center;">54.1 (16.0)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Female, n (%)</td>
-<td style="text-align: center;">110 (19.1%)</td>
-<td style="text-align: center;">119, (57.8)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Sunglasses, n (%)</td>
-<td style="text-align: center;">209 (36.2%)</td>
-<td style="text-align: center;">98 (47.6%)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Ice Cream Lovers, n (%)</td>
-<td style="text-align: center;">126 (21.8%)</td>
-<td style="text-align: center;">51 (24.8%)</td>
-</tr>
-</tbody>
-</table>
+<p>There are three components to any GLM</p>
 
 
 </section>

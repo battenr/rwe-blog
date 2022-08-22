@@ -34,7 +34,7 @@ Where A is treatment and L is the covariate(s) of interest. While equations are 
 
 While theoretical discussions are helpful, numbers always help to really drive a point home. While we can't conduct a clinical trial, luckily there is a database that has already collected data on such a scenario!
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 set.seed(2218) # August 18, 2022
 
@@ -170,7 +170,7 @@ Great! So basically all we need to do is calculate the probability of being a tr
 
 ### Logistic Regression
 
-Since our two groups can be thought of as a binary variable, trampoline jumpers or not trampoline jumpers, we get a parametric estimate using logistic regression. Assuming that our model is correct, we can then predict/estimate $Pr[A=\text{trampoline jumper}|L]$. If no confounding for the effect of A in the pseudo-population and the model is correctly specified, then association is causation and an unbiased estimator of the associational difference in the pseudo-population \[@hernanwhatif, pp.151\] :
+Since our two groups can be thought of as a binary variable, trampoline jumpers or not trampoline jumpers, we get a parametric estimate using logistic regression. Assuming that our model is correct, we can then predict/estimate $Pr[A=\text{trampoline jumper}|L]$. If no confounding for the effect of A in the pseudo-population and the model is correctly specified, then association is causation and an unbiased estimator of the associational difference in the pseudo-population [@hernanwhatif, pp.151] :
 
 $$
 E[Headache | A = \text{trampoline jumper}] - E[Headache | A = \text{not a trampoline jumper}]
@@ -184,7 +184,13 @@ $$
 
 ## Estimating Weights
 
-Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following confounders: age, sex, and time standing. Using that model we will calculate the weights, for trampoline jumpers as:\
+Now we are ready to estimate some weights! We will estimate the weights using a logistic regression with the following confounders: age, sex, and time standing.
+
+::: callout-note
+For this example we have selected age, sex and time standing to be confounders. We know this because it is a simulated dataset however there are approaches for selecting potential confounders. Methods for selecting confounders will be discussed in an upcoming post.
+:::
+
+Using that model we will calculate the weights, for trampoline jumpers as:\
 $$
 \hat{W} = \frac{1}{\hat{Pr}[A = \text{trampoline jumper} | L]}
 $$
@@ -196,10 +202,10 @@ $$
 $$
 
 ::: callout-note
-$\hat{W}$ and $\hat{Pr}$ are the estimated, or predicted, values. A logistic regression is used in this case because our outcome is binary, trampoline jumper: yes/no, Using this model we can predict the conditional probability which then is used to calculate the weights.
+$\hat{W}$ and $\hat{Pr}$ are the estimated, or predicted, values. A logistic regression is used in this case because our outcome is binary (trampoline jumper: yes/no). Using this model we can predict the conditional probability which then is used to calculate the weights.
 :::
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 library(tidyverse)
 
@@ -222,7 +228,7 @@ df.weights <- df %>%
 
 Now we have the weights, let's check the summary statistics of them.
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 summary(df.weights$ip_weights)
 
@@ -244,7 +250,7 @@ $$
 
 where $p$ is the unconditional probability of treatment. Note: $0< p \leq 1$, whereas $f[A|L]$ is the probability of treatment based on covariates L. An alternative is for different people to have different probabilities [@hernanwhatif, pp. 153]. A common choice is to use $Pr[A = 1]$ for $p$ in the treated and $Pr[A=0]$ for $p$ in the untreated. $Pr$ in this case would just be the proportion. Using our example again, $Pr[A = \text{trampoline jumpers}] = \frac{213}{729} = 0.292$ and for the not trampoline jumpers, $Pr[A = \text{not trampoline jumper}] = \frac{516}{729} = 0.708$. If we use these values for the numerator in calculating the weights for our example:
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 library(tidyverse)
 
@@ -275,7 +281,7 @@ $$
 
 From the above section, we saw that the stabilizing factor made our weights have a narrower range. The mean of the stabilized weights is also expected to be 1 because the size of the pseudo-population is equal to the study population [@hernanwhatif, pp. 153]. This is important to check when conducting an analysis using stabilized weights. An alternative to using the nonparametric estimator (i.e., the proportion of individuals), is to estimate $f[A]$ using the same model but with an intercept and no covariates. If we do that using our example:
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 library(tidyverse)
 
@@ -323,7 +329,7 @@ At this point, you may be wondering to yourself if we should be using stabilized
 
 For any adjustment technique that aims to achieve balance, such as IPTW, entropy balancing, weights used as part of matching adjusted indirect comparisons (MAICs), we need to check to see if balance has actually been met. In this case, we were trying to balance on the confounders age, sex and time standing. We can now check to see if this is achieved.
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 library(tidyverse)
 library(Hmisc)
@@ -339,10 +345,10 @@ wt <- tramp.wt$ip_weights
 
 # Sex
 
-df.weights %>% 
-  dplyr::filter(tramp_group == 1) %>% 
-  count(sex, 
-        wt = ip_weights)
+# df.weights %>% 
+  # dplyr::filter(tramp_group == 1) %>% 
+  # count(sex, 
+        #wt = ip_weights)
 
 # Time Standing
 
@@ -366,10 +372,10 @@ wt <- chair.wt$ip_weights
 
 # Sex
 
-df.weights %>% 
-  dplyr::filter(tramp_group == 0) %>% 
-  count(sex, 
-        wt = ip_weights)
+# df.weights %>% 
+#   dplyr::filter(tramp_group == 0) %>% 
+#   count(sex, 
+#         wt = ip_weights)
 
 # Time Standing
 
@@ -402,7 +408,7 @@ wt <- chair.wt$ip_weights
 
 Now we are finally ready to answer our question! We will use a logistic regression since our outcome is binary, headache: yes/no, with our new fancy weights!
 
-```{r, message = FALSE, echo = FALSE, warning=FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 library(tidyverse)
 library(broom)
