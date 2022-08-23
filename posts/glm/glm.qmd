@@ -10,11 +10,17 @@ draft: true
 
 ## Regression: Swiss Army Knife of Statistics
 
-Regression is a commonly used tool in statistics. Typically, the starting point is with
-
-What does GLM actually stand for? Well, it stands for
+Regression is a commonly used tool in statistics. Typically, the starting point is with ordinary least squares (OLS) regression. This is where we will also start. Well? Let's get started!
 
 ## Equation of a Line
+
+From high school math, you probably remember the equation of a line as:
+
+$$
+y = mx +b
+$$
+
+where
 
 ## Main Parts of GLM
 

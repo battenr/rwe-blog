@@ -408,10 +408,17 @@ wt <- chair.wt$ip_weights
 
 Now we are finally ready to answer our question! We will use a logistic regression since our outcome is binary, headache: yes/no, with our new fancy weights!
 
+::: callout-note
+To determine the 95% CI we need to use a method that takes the IP weighting into account [@hernanwhatif, pp. 152]. One approach is to use nonparametric bootstrapping. Another approach is to use the robust variance estimator. Here we will use the robust variance estimator, however it is important to note that the robust variance estimator is conservative since it covers the super-population parameter more than 95% of the time. [@hernanwhatif, pp. 152]
+
+(Thanks to Giusi Moffa for pointing out I should be more clear about the CIs!)
+:::
+
 ```{r, message = FALSE, warning=FALSE}
 
 library(tidyverse)
 library(broom)
+library(sandwich)
 
 mod.outcome <- stats::glm(
   formula = headache ~ tramp_group,
@@ -420,19 +427,21 @@ mod.outcome <- stats::glm(
   weights = ip_weights
 )
 
+sandwich_se <- diag(sandwich::vcovHC(mod.outcome, type = "HC"))^0.5
+
 output <- broom::tidy(mod.outcome) %>% 
   dplyr::filter(
     term == "tramp_group"
   ) %>% 
   dplyr::mutate(
-    log.upper.ci = estimate + qnorm(0.975)*std.error,
-    log.lower.ci = estimate - qnorm(0.975)*std.error,
+    log.upper.ci = estimate + qnorm(0.975)*0.221,
+    log.lower.ci = estimate - qnorm(0.975)*0.221,
     OR = exp(estimate),
     upper.ci = exp(log.upper.ci),
     lower.ci = exp(log.lower.ci)
   )
 
-paste0("OR, ", round(output$OR,2), ";",
+paste0("OR, ", round(output$OR,3), ";",
        " (95% CI, ", round(output$lower.ci, 2), "-", 
        round(output$upper.ci,2), ")")
 ```
