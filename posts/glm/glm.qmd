@@ -27,7 +27,7 @@ where $m$ is the slope of the line, $x$ is the value of the dependent variable a
 
 ## Ordinary Regression
 
-The typical place to start with regression is ordinary least squares. This method tries to minimize the sum of squares of the differences between the observed variable and those predicted by the model (hence the *least squares*). Put otherwise: by minimizing the residuals. Another way to conceptualize this is by drawing the line of best fit. \
+The typical place to start with regression is ordinary least squares. This method tries to minimize the sum of squares of the differences between the observed variable and those predicted by the model (hence the *least squares*). Put otherwise: by minimizing the residuals. Another way to conceptualize this is by drawing the line of best fit.\
 \
 For example, imagine we have a database and want to examine the association between age and the number of balloons that a person owns. Our database has four variables: age, sex, candy lover (yes/no) and the number of balloons the person owns. Now, if we draw a line of best fit through the data, we'll get the below figure.
 
@@ -65,21 +65,175 @@ ggplot2::ggplot(data = df, mapping = aes(x = age, y = num_ballons)) +
 
 ```
 
-If we look at the distance from the red dot to blue line for each point, this is the measurement from the observed value (red dot) to the predicted value (on the blue line). This is also known as the
+If we look at the distance from the red dot to blue line for each point, this is the measurement from the observed value (red dot) to the predicted value (on the blue line). This is also known as the residuals (in the figure the dashed black line).
 
-### Mathematical Method
+Of course this is great in theory to draw the line of best fit, however there is also a mathematical equation that is more useful in practice for determining this.
+
+### Using Equations and Matrices
+
+We can find the estimated values of the parameters (i.e., $\beta_1$, $\beta_2$, $\beta_3$) using the below equation. Note that these variables are referring to the matrix, rather than a specific variable.
 
 $$
 \hat{\beta} = (X^TX)^{-1}X^Ty
 $$
 
-where $\hat{\beta}$ is the ordinary least squares estimator, $X$ is the and $y$ is the vector of the response variable. Using our example,
+where $\hat{\beta}$ is the ordinary least squares estimator, $X$ is the matrix containing the predictor variables and $y$ is the vector of the response variable. For our example, $X$ is the matrix containing the values of an intercept and values for the following variables: age, sex and candy lover.
 
-## Main Parts of GLM
+::: callout-note
+For those not familiar with linear algebra, the superscript T is called the transpose. Similarly, the -1 superscript is referred to as the inverse of a matrix.
+:::
 
-There are three components to any GLM
+Abstract concepts can be helpful however an example is always better. Using our data (showing the first 6 rows):
 
-## Candy and Cavities
+```{r, message = FALSE, warning = FALSE}
+
+X = as.matrix(cbind(1, df$age, df$sex, df$candy_lover))
+
+head(X)
+
+```
+
+As you can see, the first column is all 1s. The second is the value for age, third is sex (1 = female, 0 = male) and fourth is the value for candy lover (1 = yes, 0 = no). Now for the y matrix:
+
+```{r, message = FALSE, warning = FALSE}
+
+y = as.matrix(df$num_ballons)
+
+head(y)
+```
+
+#### Estimating Parameters
+
+We can estimate the parameters using the below formula and plugging in our matrices.
+
+$$
+\hat{\beta} = (X^TX)^{-1}X^Ty
+$$
+
+If we use this equation with our example:
+
+```{r, message = FALSE, warning = FALSE}
+
+# Doing it step by step:
+
+step.1 <- t(X)%*%X
+step.2 <- solve(step.1) # solve will return the inverse of a
+step.3 <- step.2%*%t(X)
+step.4 <- step.3%*%y
+beta <- step.4
+
+# Alternatively, can do in one messy looking code: 
+
+beta <- solve(t(X)%*%X)%*%t(X)%*%y
+
+# credit to https://economictheoryblog.com/2016/02/20/rebuild-ols-estimator-manually-in-r/ for the code all in one
+
+beta
+```
+
+Now we are ready to move onto calculating the variance covariance matrix, which we can use to derive our standard errors.
+
+#### Estimating Variance
+
+The first step is to calculate the residuals. We can do that using the below formula:
+
+$$
+Residuals = y - \beta_1 - \beta_2*age - \beta_3*sex - \beta_4*\text{candy lover}
+$$
+
+Once we know the residuals, as a matrix, we can calculate the variance-covariance matrix as
+
+$$
+VCov = \frac{1}{n-k}(RES^TRES)*(X^TX)^{-1}
+$$
+
+where $n, k, RES, X$ are the number of observations, number of parameters estimated, residual matrix and matrix of values for the predictor variables. Back to our example:
+
+```{r, message = FALSE, warning = FALSE}
+
+# Calculating residuals as y-intercept-beta_1*X1-beta_2*X2
+
+res <- as.matrix(y-beta[1]-beta[2]*X[,2]-beta[3]*X[,3] - beta[4]*X[,4])
+
+# Note the above is really:
+# res <- as.matrix(y-beta[1]-beta[n]*X[,n]) for as many n's as there are 
+
+# Variance-Covariance Matrix (VCV) 
+
+# Formula for VCV: (1/df)*t(res)*res*[t(X)(X)]^-1
+
+n = nrow(df)
+k = ncol(X)
+
+VCV <- (1/(n-k))*as.numeric(t(res)%*%res)*solve(t(X)%*%X)
+
+```
+
+#### Standard Error
+
+We can calculate the standard error from a variance covariance matrix as the square root of the diagonal values. Doing this
+
+```{r, message = FALSE, warning = FALSE}
+
+se <- sqrt(diag(VCV))
+
+```
+
+So using the equations and matrices results in the following output
+
+```{r, message = FALSE, warning = FALSE}
+
+p_value <- rbind(
+  2*pnorm(abs(beta[1]/se[1]), lower.tail = FALSE),
+  2*pnorm(abs(beta[2]/se[2]), lower.tail = FALSE),
+  2*pnorm(abs(beta[3]/se[3]), lower.tail = FALSE),
+  2*pnorm(abs(beta[4]/se[4]), lower.tail = FALSE)
+)
+
+#... Output ----
+
+output <- as.data.frame(
+  cbind(
+    c("Intercept", "Age", "Sex"),
+    round(beta,5),
+    round(se, 5),
+    round(p_value, 4)
+)
+)
+
+names(output) <- c(
+  "Coefficients",
+  "Estimate",
+  "Std. Error",
+  "Pr(>{Z}"
+)
+
+output
+
+```
+
+#### Comparing to lm()
+
+Comparing these values to if we use the *lm()* function in R
+
+```{r, warning = FALSE, error = FALSE}
+
+mod.fit <- lm(num_ballons ~ age + sex + candy_lover, 
+              data = df)
+
+summary(mod.fit)
+
+```
+
+Now that we have covered linear regression, we are ready to move onto generalized linear models (GLM).
+
+## Generalized Linear Model
+
+### Main Parts of GLM
+
+There are three components to any GLM:
+
+1.  
 
 ```{r, message = FALSE, warning = FALSE}
 
