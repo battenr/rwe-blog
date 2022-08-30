@@ -1,11 +1,14 @@
 ---
 ttitle: "Generalized Linear Model"
 author: "Ryan Batten"
-date: "2022-08-13"
+date: "2022-08-28"
 categories: [GLM, Regression]
 # image: "iptw.jpeg"
-# bibliography: ip_weighting.bib
+# bibliography: glm.bib
 draft: true
+format: 
+  html:
+    code-fold: true
 ---
 
 ## Regression: Swiss Army Knife of Statistics
@@ -20,8 +23,64 @@ $$
 y = mx +b
 $$
 
-where
+where $m$ is the slope of the line, $x$ is the value of the dependent variable and $b$ is the y-intercept of the line. We can build upon this simple equation for linear regression.
+
+## Ordinary Regression
+
+The typical place to start with regression is ordinary least squares. This method tries to minimize the sum of squares of the differences between the observed variable and those predicted by the model (hence the *least squares*). Put otherwise: by minimizing the residuals. Another way to conceptualize this is by drawing the line of best fit. \
+\
+For example, imagine we have a database and want to examine the association between age and the number of balloons that a person owns. Our database has four variables: age, sex, candy lover (yes/no) and the number of balloons the person owns. Now, if we draw a line of best fit through the data, we'll get the below figure.
+
+```{r, message = FALSE, warning = FALSE}
+
+set.seed(2228) # August 28, 2022
+
+library(tidyverse)
+library(ggxmean)
+
+n.id = 250
+
+df <- data.frame(
+  age = runif(n = n.id, min = c(5, 18), max = c(30, 85)),
+  sex = rbinom(n = n.id, size = 1, prob = c(0.60,0.20)),
+  candy_lover = rbinom(n = n.id, size = 1, prob = c(0.64, 0.45)),
+  
+  # Beta Coefficients
+  
+  beta_age = runif(n = n.id, min = 0, max = 0.10),
+  beta_sex = runif(n = n.id, min = 0, max = 0.30),
+  beta_candy = runif(n = n.id, min = 0, max = 0.40)
+) %>% 
+  dplyr::mutate(
+    num_ballons = round((beta_age*age + beta_sex*sex + beta_candy*candy_lover)*3,0) # number of ballons that you own
+  )
+
+ggplot2::ggplot(data = df, mapping = aes(x = age, y = num_ballons)) +
+  ggplot2::geom_point(color = "red") +
+  geom_lm() +
+  ggxmean::geom_lm_residuals(linetype = "dashed") +
+  labs(x = "Age", y = "Number of Ballons Owned") +
+  theme_minimal()
+
+
+```
+
+If we look at the distance from the red dot to blue line for each point, this is the measurement from the observed value (red dot) to the predicted value (on the blue line). This is also known as the
+
+### Mathematical Method
+
+$$
+\hat{\beta} = (X^TX)^{-1}X^Ty
+$$
+
+where $\hat{\beta}$ is the ordinary least squares estimator, $X$ is the and $y$ is the vector of the response variable. Using our example,
 
 ## Main Parts of GLM
 
 There are three components to any GLM
+
+## Candy and Cavities
+
+```{r, message = FALSE, warning = FALSE}
+
+```
