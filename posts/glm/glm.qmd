@@ -13,7 +13,9 @@ format:
 
 ## Regression: Swiss Army Knife of Statistics
 
-Regression is a commonly used tool in statistics. Typically, the starting point is with ordinary least squares (OLS) regression. This is where we will also start. Well? Let's get started!
+Regression is a commonly used tool in inferential statistics. Before we start however, I'd like to highlight that regression is not always necessary. Sometimes, descriptive statistics are a preferred tool as opposed to a formal model that is testing a hypothesis to make inferences about a super-population. With that being said, regression can be used in multiple situations and flexible to a wide range of datasets. One last point before we get started, my favorite quote by George Box "All models are wrong, some are useful".
+
+Without further ado, let's get started. The real question is where to start? Typically, when most people initially begin learning about regression they think about, or are taught, ordinary least squares (OLS) regression. Seems like a reasonable place to me to begin as well! However, we will back up a little bit and start with the equation of a line.
 
 ## Equation of a Line
 
@@ -23,13 +25,13 @@ $$
 y = mx +b
 $$
 
-where $m$ is the slope of the line, $x$ is the value of the dependent variable and $b$ is the y-intercept of the line. We can build upon this simple equation for linear regression.
+where $m$ is the slope of the line, $x$ is the value of the dependent variable and $b$ is the y-intercept of the line. A key exercise that is often used in math, using graph paper, is to first plot data points based on their coordinates (x, y), then draw a line of best fit through them. The goal of drawing this line is capture as many data points on the line as possible, or closest to the line. OLS regression is similar to this.
 
-## Ordinary Regression
+## Plain Old Ordinary Regression
 
-The typical place to start with regression is ordinary least squares. This method tries to minimize the sum of squares of the differences between the observed variable and those predicted by the model (hence the *least squares*). Put otherwise: by minimizing the residuals. Another way to conceptualize this is by drawing the line of best fit.\
+OLS regression tries to minimize the sum of squares of the differences between the observed variable and those predicted by the model (hence the *least squares*). Put otherwise: by minimizing the residuals. Another way to conceptualize this is by drawing the line of best fit. \
 \
-For example, imagine we have a database and want to examine the association between age and the number of balloons that a person owns. Our database has four variables: age, sex, candy lover (yes/no) and the number of balloons the person owns. Now, if we draw a line of best fit through the data, we'll get the below figure.
+For example, imagine we have a database that we can use to ask a burning question we have: is the number of balloons a person owns affected by their age? Our database has four variables: age, sex, candy lover (yes/no) and the number of balloons the person owns. Now, if we draw a line of best fit through the data, using number of balloons as the outcome/y/dependent variable, and age as the predictor/x/independent variable... we get the below figure.
 
 ```{r, message = FALSE, warning = FALSE}
 
@@ -59,19 +61,23 @@ ggplot2::ggplot(data = df, mapping = aes(x = age, y = num_ballons)) +
   ggplot2::geom_point(color = "red") +
   geom_lm() +
   ggxmean::geom_lm_residuals(linetype = "dashed") +
-  labs(x = "Age", y = "Number of Ballons Owned") +
-  theme_minimal()
+  labs(x = "Age", y = "Number of Balloons Owned") +
+  theme_minimal() + 
+  ggtitle("Number of Balloons by Age") +
+  scale_x_continuous(limits = c(0, 100)) + 
+  scale_y_continuous(limits = c(0, 30)) + 
+  theme(plot.title = element_text(hjust = 0.5))
 
 
 ```
 
-If we look at the distance from the red dot to blue line for each point, this is the measurement from the observed value (red dot) to the predicted value (on the blue line). This is also known as the residuals (in the figure the dashed black line).
+Let's break down this figure a little. First, let's focus on the distance from the red dot to the blue line for each data point. This measurement is from the observed value (red dot) to the predicted value (on the blue line). This is also known as the ***residual*** (in the figure the dashed black line). By drawing the line of best fit, we are aiming to minimize the residuals.
 
-Of course this is great in theory to draw the line of best fit, however there is also a mathematical equation that is more useful in practice for determining this.
+Of course, this is great in theory to draw the line of best fit, however it can get more complicated when there are additional variables we'd like to adjust for. For example, we may also want to adjust for whether a person loves candy or not since candy buyers tend to buy more balloons. Furthermore, we may also want to adjust for sex. To do this, a more useful approach is to use a mathematical equation.
 
 ### Using Equations and Matrices
 
-We can find the estimated values of the parameters (i.e., $\beta_1$, $\beta_2$, $\beta_3$) using the below equation. Note that these variables are referring to the matrix, rather than a specific variable.
+Instead of drawing a line, we can find the estimated values of the parameters (i.e., $\beta_1$, $\beta_2$, $\beta_3$) using the below equation. Note that these variables are referring to the matrix, rather than a specific variable.
 
 $$
 \hat{\beta} = (X^TX)^{-1}X^Ty
@@ -83,7 +89,9 @@ where $\hat{\beta}$ is the ordinary least squares estimator, $X$ is the matrix c
 For those not familiar with linear algebra, the superscript T is called the transpose. Similarly, the -1 superscript is referred to as the inverse of a matrix.
 :::
 
-Abstract concepts can be helpful however an example is always better. Using our data (showing the first 6 rows):
+Abstract concepts can be helpful however an example using data is always better. Using our data from before on balloons and age, we can create our matrix of predictors, $X$. In our matrix, we will also include a column of all 1s to reflect the intercept.
+
+Looking at the first six individuals, we get a sense of what the matrix looks like.
 
 ```{r, message = FALSE, warning = FALSE}
 
@@ -93,7 +101,7 @@ head(X)
 
 ```
 
-As you can see, the first column is all 1s. The second is the value for age, third is sex (1 = female, 0 = male) and fourth is the value for candy lover (1 = yes, 0 = no). Now for the y matrix:
+As you can see, the first column is all 1s. The second is the value for age, third is sex (1 = female, 0 = male) and fourth is the value for candy lover (1 = yes, 0 = no). Similarly, for the $y$ matrix:
 
 ```{r, message = FALSE, warning = FALSE}
 
@@ -102,15 +110,17 @@ y = as.matrix(df$num_ballons)
 head(y)
 ```
 
+We can see that the $y$ matrix is essentially just the outcome variable of interest. Now, how do we estimate the parameters? For that, we turn to our handy dandy formula.
+
 #### Estimating Parameters
 
-We can estimate the parameters using the below formula and plugging in our matrices.
+We can estimate the parameters using the below formula and plugging in our matrices where applicable.
 
 $$
 \hat{\beta} = (X^TX)^{-1}X^Ty
 $$
 
-If we use this equation with our example:
+Using the equation above:
 
 ```{r, message = FALSE, warning = FALSE}
 
@@ -166,6 +176,8 @@ n = nrow(df)
 k = ncol(X)
 
 VCV <- (1/(n-k))*as.numeric(t(res)%*%res)*solve(t(X)%*%X)
+
+# credit to https://economictheoryblog.com/2016/02/20/rebuild-ols-estimator-manually-in-r/ for the code all in one
 
 ```
 
@@ -349,6 +361,8 @@ iwls <- function(X, y, tol = 1e-7, iter = 500){
 
 ### Comparing our method to glm()
 
+Now that we've written a function that calculates estimates of the parameters and standard errors, we need to see if it works! What's a better way to check than comparing with a well-established method? We'll compare our function to that from glm, although admittedly our output is not as clean.
+
 ```{r, message = FALSE, warning = FALSE}
 
 library(tidyverse)
@@ -367,13 +381,32 @@ diag(our.way$se)
 glm.way <- glm(candy_lover ~ age + sex + num_ballons, 
                family = binomial(link = "logit"), 
                data = df)
-
-glm.way$coefficients
-summary(glm.way)
 ```
 
-If we compare the estimates from the *glm()* function to the our function, the results are fairly similar. For example, sex has an estimate of 0.680716 (SE: 0.305779) with the glm function and 0.68071575 with ours (SE: 0.30577906). Nearly identical results! Yippee!
++---------------------------+----------------------------------+------------------------------+
+| Parameter                 | Estimate (SE)                    | Estimate (SE)                |
+|                           |                                  |                              |
+|                           | *glm()*                          | our method                   |
++:=========================:+:================================:+:============================:+
+| Intercept                 | 0.233782 (0.300512)              | 0.233783 (0.300512)          |
++---------------------------+----------------------------------+------------------------------+
+| Age                       | -0.013238 (0.008063)             | -0.013238 (0.008063)         |
++---------------------------+----------------------------------+------------------------------+
+| Sex                       | 0.680716 (0.305779)              | 0.680716 (0.305779)          |
++---------------------------+----------------------------------+------------------------------+
+| Number of Balloons        | 0.068098 (0.35405)               | 0.068098 (0.035405)          |
++---------------------------+----------------------------------+------------------------------+
+
+: Output from our function compared to glm()
+
+Looking at the estimates from the *glm()* function to our function...nearly identical results! Yippee! This is also what we'd expect. We can also look at the weights from the last iteration for both the *glm()* method and using our function. The code is in the below snippet, however rather than boring you with weights for 250 observations, I will leave that up to you to review if you are interested (tldr: they are quite similar).
+
+```{r, message = FALSE, warning = FALSE}
+
+result.weights <- cbind(glm.way$weights, our.way$weights) %>% as.data.frame()
+
+```
 
 ## Conclusion
 
-Since every good story must come to an end, so too does our glm by hand exercise...but fear not! You can now use this to foray into the world of glm with better knowledge!
+Since every good story must come to an end, so too does our GLM by hand exercise...but fear not! You can now use this to foray into the world of GLM with a better understanding of how these parameters are calculated!

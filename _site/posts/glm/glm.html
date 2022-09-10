@@ -80,6 +80,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -429,23 +448,230 @@ Multiple R-squared:  0.423, Adjusted R-squared:  0.4159
 F-statistic:  60.1 on 3 and 246 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<p>Now that we have covered linear regression, we are ready to move onto generalized linear models (GLM).</p>
 </section>
 </section>
 </section>
-<section id="generalized-linear-regression" class="level2">
-<h2 class="anchored" data-anchor-id="generalized-linear-regression">Generalized Linear Regression</h2>
+<section id="generalized-linear-model" class="level2">
+<h2 class="anchored" data-anchor-id="generalized-linear-model">Generalized Linear Model</h2>
 <section id="main-parts-of-glm" class="level3">
 <h3 class="anchored" data-anchor-id="main-parts-of-glm">Main Parts of GLM</h3>
-<p>There are three components to any GLM</p>
+<p>There are three components to any GLM <span class="citation" data-cites="stat504">(<a href="#ref-stat504" role="doc-biblioref">Statistics, n.d.</a>)</span>:</p>
+<ol type="1">
+<li><p>Random Component. This specifies the probability distribution of the response variable. Essentially, we are selecting the distribution for the</p></li>
+<li><p>Systematic Component</p></li>
+<li><p>Link Function</p></li>
+</ol>
+<p>Another way to think of these three components are as the response variable (aka y), explanatory variables (aka x) and how they are connected.</p>
+<p>There are some assumptions as well:</p>
+<ul>
+<li><p>The data are independently distributed</p></li>
+<li><p>The dependent variable typically assumes a distribution from an exponential family (i.e., normal, binomial, Poisson, etc.)</p></li>
+<li><p>A linear relationship between the transformed expected response in terms of the link function and explanatory variables (however <strong><em>not</em></strong> in terms of the response and explanatory variables)</p></li>
+<li><p>Errors need to be independent but not normally distributed</p></li>
+</ul>
+</section>
+<section id="maximum-likelihood-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-likelihood-estimation">Maximum Likelihood Estimation</h3>
+<p>One of the key differences between OLS and GLM is the way that parameters (aka coefficients) are estimated. While OLS uses ordinary least squares, GLMs use something called maximum likelihood estimation (MLE). MLE is like what it sounds: it maximizing the likelihood function so that the model uses values that make the observed data most probable (aka most likely). There are different methods to determine this value for MLE including solving the derivative of the likelihood funciton where it is 0, hence the maxima, or more iterative procedures such as Gradient descent method or Newton-Raphson method.</p>
+<p>Here we will focus on iteratively reweighted least squares since that is what R uses by default.</p>
+<section id="iteratively-reweighted-least-squares" class="level4">
+<h4 class="anchored" data-anchor-id="iteratively-reweighted-least-squares">Iteratively Reweighted Least Squares</h4>
+<p>Iteratively reweighted least squares (IWLS), is an algorithm that is used to determine the parameters and standard errors of the parameters. We’ll use logistic regression to walk through the steps, although for other link functions it is a similar process. The steps for IWLS are outlined below <span class="citation" data-cites="fox2014">(<a href="#ref-fox2014" role="doc-biblioref">Fox 2014</a>)</span></p>
+<ol type="1">
+<li><p>Set the regression coefficients to initial values. For our example, we will start with 0</p></li>
+<li><p>For each iteration, <em>t,</em> calculate the fitted probabilities, <span class="math inline">\(\mu\)</span>, variance-function values, <span class="math inline">\(v\)</span>, working-response values, <span class="math inline">\(z\)</span>, and weights, <span class="math inline">\(w\)</span>.</p>
+<p><span class="math inline">\(\mu_i^{(t)} = [1 + exp(-\eta_i^{(t)})]^{-1}\)</span></p>
+<p><span class="math inline">\(v_i^{(t)} = \mu_i^{(t)}(1-\mu_i^{(t)})\)</span></p>
+<p><span class="math inline">\(z_i^{(t)} = \eta_i^{(t)} + (y_i - \mu_i^{(t)})/v_i^{(t)}\)</span></p>
+<p><span class="math inline">\(w_i^{(t)} = n_i*v_i\)</span></p>
+<p>Note: <span class="math inline">\(n_i\)</span> represents the binomial denominator for the ith observation. For binary data, all of the <span class="math inline">\(n_i\)</span> are 1.</p></li>
+<li><p>Regress the working response on the predictors using weighted least squares, minimizing the weighted residual sum of squares</p>
+<p><span class="math inline">\(\sum\limits_{i = 1}^{n}w_i^{(t)}(z_i^{(t)} - x_i^{'}\beta)^2\)</span></p>
+<p>where <span class="math inline">\(x_i^{'}\)</span> is the <em>i</em>th row of the model matrix.</p></li>
+<li><p>Repeat steps 2 and 3 until the regression coefficients stabilize at the maximum-likelihood estimator <span class="math inline">\(\hat\beta\)</span></p></li>
+<li><p>Calculate the estimated asymptotic covariance matrix of the coefficients as</p>
+<p><span class="math inline">\(\hat{V}(\hat{\beta}) = (X^{'}WX)^{-1}\)</span></p>
+<p>where <span class="math inline">\(W = \text{diag}\text{(}w_i\text{})\)</span> is the diagonal matrix of weights from the last iteration and <span class="math inline">\(X\)</span> is the model matrix.</p></li>
+</ol>
+<p>Reading through steps can be helpful but an example is always better. Let’s work through this in R. First we’ll want to make a function to calculate IWLS implementing these steps (credit to Michael Clark for code for implementing IWLS, link in below code snippet)</p>
 <div class="cell">
-
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Link to code that this is built off of: </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># https://m-clark.github.io/models-by-example/newton-irls.html#comparison-42</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>iwls <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, <span class="at">tol =</span> <span class="fl">1e-7</span>, <span class="at">iter =</span> <span class="dv">500</span>){</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note: tol = 1e-7 is used by the lsfit function</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># First we need to start with some inital values</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  int <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">mean</span>(y)) <span class="sc">/</span> (<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(y)) <span class="co"># intercept</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> <span class="fu">c</span>(int, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X) <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  currtol <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  it <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="dv">0</span> <span class="co"># log likelihood</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># As long as the tolerance calculate is greater than what we will allow we want the code to repeat</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(currtol <span class="sc">&gt;</span> tol <span class="sc">&amp;&amp;</span> it <span class="sc">&lt;</span> iter){</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    it <span class="ot">=</span> it <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="ot">=</span> ll</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">=</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">plogis</span>(eta)[,<span class="dv">1</span>]</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    s <span class="ot">=</span> mu<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>mu)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    S <span class="ot">=</span> <span class="fu">diag</span>(s)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    z <span class="ot">=</span> eta <span class="sc">+</span> (y<span class="sc">-</span>mu)<span class="sc">/</span>s</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">=</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> S <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> (S <span class="sc">%*%</span> z))</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    var <span class="ot">=</span> <span class="fu">solve</span>((<span class="fu">t</span>(X) <span class="sc">%*%</span> S <span class="sc">%*%</span> X))</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">=</span> <span class="fu">sum</span>(</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">dbinom</span>(</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        y, </span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">prob =</span> <span class="fu">plogis</span>(X<span class="sc">%*%</span> beta), </span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">1</span>, </span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    currtol <span class="ot">=</span> <span class="fu">abs</span>(ll <span class="sc">-</span> ll_old)</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta =</span> beta, </span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">var =</span> var, </span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="fu">diag</span>(<span class="fu">sqrt</span>(var)), <span class="co"># SE = sqrt(var) but we want diagnoals of the variance-covariance matrix </span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> it, </span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">tol =</span> currtol, </span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">loglik =</span> ll, </span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">plogis</span>(X <span class="sc">%*%</span> beta))</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
+</section>
+</section>
+<section id="comparing-our-method-to-glm" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-our-method-to-glm">Comparing our method to glm()</h3>
+<p>Now that we’ve written a function that calculates estimates of the parameters and standard errors, we need to see if it works! What’s a better way to check than comparing with a well-established method? We’ll compare our function to that from glm, although admittedly our output is not as clean.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>, df<span class="sc">$</span>age, df<span class="sc">$</span>sex, df<span class="sc">$</span>num_ballons) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> df<span class="sc">$</span>candy_lover <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>our.way <span class="ot">&lt;-</span> <span class="fu">iwls</span>(X, y)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>our.way<span class="sc">$</span>beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]
+[1,]  0.23378250
+[2,] -0.01323819
+[3,]  0.68071575
+[4,]  0.06809751</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(our.way)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Length Class  Mode   
+beta      4    -none- numeric
+var      16    -none- numeric
+se        4    -none- numeric
+iter      1    -none- numeric
+tol       1    -none- numeric
+loglik    1    -none- numeric
+weights 250    -none- numeric</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(our.way<span class="sc">$</span>se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]        [,2]      [,3]      [,4]
+[1,] 0.300512 0.000000000 0.0000000 0.0000000
+[2,] 0.000000 0.008062909 0.0000000 0.0000000
+[3,] 0.000000 0.000000000 0.3057791 0.0000000
+[4,] 0.000000 0.000000000 0.0000000 0.0354048</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>glm.way <span class="ot">&lt;-</span> <span class="fu">glm</span>(candy_lover <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> num_ballons, </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<table class="table">
+<caption>Output from our function compared to glm()</caption>
+<colgroup>
+<col style="width: 29%">
+<col style="width: 37%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;"><p>Estimate (SE)</p>
+<em>glm()</em></th>
+<th style="text-align: center;"><p>Estimate (SE)</p>
+our method</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Intercept</td>
+<td style="text-align: center;">0.233782 (0.300512)</td>
+<td style="text-align: center;">0.233783 (0.300512)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Age</td>
+<td style="text-align: center;">-0.013238 (0.008063)</td>
+<td style="text-align: center;">-0.013238 (0.008063)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Sex</td>
+<td style="text-align: center;">0.680716 (0.305779)</td>
+<td style="text-align: center;">0.680716 (0.305779)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Number of Balloons</td>
+<td style="text-align: center;">0.068098 (0.35405)</td>
+<td style="text-align: center;">0.068098 (0.035405)</td>
+</tr>
+</tbody>
+</table>
+<p>Looking at the estimates from the <em>glm()</em> function to our function…nearly identical results! Yippee! This is also what we’d expect. We can also look at the weights from the last iteration for both the <em>glm()</em> method and using our function. The code is in the below snippet, however rather than boring you with weights for 250 observations, I will leave that up to you to review if you are interested (tldr: they are quite similar).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>result.weights <span class="ot">&lt;-</span> <span class="fu">cbind</span>(glm.way<span class="sc">$</span>weights, our.way<span class="sc">$</span>weights) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Since every good story must come to an end, so too does our GLM by hand exercise…but fear not! You can now use this to foray into the world of GLM with a better understanding of how these parameters are calculated!</p>
+
 
 
 </section>
-</section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-fox2014" class="csl-entry" role="doc-biblioentry">
+Fox, John. 2014. <span>“Introduction to the r Statistical Computing Environment r Programming: Exercises.”</span> Web Page. <a href="https://socialsciences.mcmaster.ca/jfox/Courses/R/ICPSR/exercises-programming.pdf">https://socialsciences.mcmaster.ca/jfox/Courses/R/ICPSR/exercises-programming.pdf</a>.
+</div>
+<div id="ref-stat504" class="csl-entry" role="doc-biblioentry">
+Statistics, Penn State’s Department of. n.d. <span>“STAT 504: Analysis of Discrete Data.”</span> Web Page. <a href="https://online.stat.psu.edu/stat504/">https://online.stat.psu.edu/stat504/</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
