@@ -4,7 +4,7 @@ author: "Ryan Batten"
 date: "2022-08-28"
 categories: [GLM, Regression]
 # image: "iptw.jpeg"
-# bibliography: glm.bib
+bibliography: glm.bib
 draft: true
 format: 
   html:
@@ -231,10 +231,149 @@ Now that we have covered linear regression, we are ready to move onto generalize
 
 ### Main Parts of GLM
 
-There are three components to any GLM:
+There are three components to any GLM [@stat504]:
 
-1.  
+1.  Random Component. This specifies the probability distribution of the response variable. Essentially, we are selecting the distribution for the
+
+2.  Systematic Component
+
+3.  Link Function
+
+Another way to think of these three components are as the response variable (aka y), explanatory variables (aka x) and how they are connected.
+
+There are some assumptions as well:
+
+-   The data are independently distributed
+
+-   The dependent variable typically assumes a distribution from an exponential family (i.e., normal, binomial, Poisson, etc.)
+
+-   A linear relationship between the transformed expected response in terms of the link function and explanatory variables (however ***not*** in terms of the response and explanatory variables)
+
+-   Errors need to be independent but not normally distributed
+
+### Maximum Likelihood Estimation
+
+One of the key differences between OLS and GLM is the way that parameters (aka coefficients) are estimated. While OLS uses ordinary least squares, GLMs use something called maximum likelihood estimation (MLE). MLE is like what it sounds: it maximizing the likelihood function so that the model uses values that make the observed data most probable (aka most likely). There are different methods to determine this value for MLE including solving the derivative of the likelihood funciton where it is 0, hence the maxima, or more iterative procedures such as Gradient descent method or Newton-Raphson method.
+
+Here we will focus on iteratively reweighted least squares since that is what R uses by default.
+
+#### Iteratively Reweighted Least Squares
+
+Iteratively reweighted least squares (IWLS), is an algorithm that is used to determine the parameters and standard errors of the parameters. We'll use logistic regression to walk through the steps, although for other link functions it is a similar process. The steps for IWLS are outlined below [@fox2014]
+
+1.  Set the regression coefficients to initial values. For our example, we will start with 0
+
+2.  For each iteration, *t,* calculate the fitted probabilities, $\mu$, variance-function values, $v$, working-response values, $z$, and weights, $w$.
+
+    $\mu_i^{(t)} = [1 + exp(-\eta_i^{(t)})]^{-1}$
+
+    $v_i^{(t)} = \mu_i^{(t)}(1-\mu_i^{(t)})$
+
+    $z_i^{(t)} = \eta_i^{(t)} + (y_i - \mu_i^{(t)})/v_i^{(t)}$
+
+    $w_i^{(t)} = n_i*v_i$
+
+    Note: $n_i$ represents the binomial denominator for the ith observation. For binary data, all of the $n_i$ are 1.
+
+3.  Regress the working response on the predictors using weighted least squares, minimizing the weighted residual sum of squares
+
+    $\sum\limits_{i = 1}^{n}w_i^{(t)}(z_i^{(t)} - x_i^{'}\beta)^2$
+
+    where $x_i^{'}$ is the *i*th row of the model matrix.
+
+4.  Repeat steps 2 and 3 until the regression coefficients stabilize at the maximum-likelihood estimator $\hat\beta$
+
+5.  Calculate the estimated asymptotic covariance matrix of the coefficients as
+
+    $\hat{V}(\hat{\beta}) = (X^{'}WX)^{-1}$
+
+    where $W = \text{diag}\text{(}w_i\text{})$ is the diagonal matrix of weights from the last iteration and $X$ is the model matrix.
+
+Reading through steps can be helpful but an example is always better. Let's work through this in R. First we'll want to make a function to calculate IWLS implementing these steps (credit to Michael Clark for code for implementing IWLS, link in below code snippet)
 
 ```{r, message = FALSE, warning = FALSE}
 
+# Link to code that this is built off of: 
+
+# https://m-clark.github.io/models-by-example/newton-irls.html#comparison-42
+
+iwls <- function(X, y, tol = 1e-7, iter = 500){
+  
+  # Note: tol = 1e-7 is used by the lsfit function
+  
+  # First we need to start with some inital values
+  
+  int = log(mean(y)) / (1-mean(y)) # intercept
+  beta = c(int, rep(0, ncol(X) -1))
+  currtol = 1
+  it = 0
+  ll = 0 # log likelihood
+  
+  # As long as the tolerance calculate is greater than what we will allow we want the code to repeat
+  
+  while(currtol > tol && it < iter){
+    it = it + 1
+    ll_old = ll
+    
+    eta = X %*% beta
+    mu = plogis(eta)[,1]
+    s = mu*(1-mu)
+    S = diag(s)
+    z = eta + (y-mu)/s
+    beta = solve(t(X) %*% S %*% X) %*% (t(X) %*% (S %*% z))
+    var = solve((t(X) %*% S %*% X))
+    
+    ll = sum(
+      dbinom(
+        y, 
+        prob = plogis(X%*% beta), 
+        size = 1, 
+        log = TRUE)
+      )
+    
+    currtol = abs(ll - ll_old)
+  }
+  
+  list(
+    beta = beta, 
+    var = var, 
+    se = diag(sqrt(var)), # SE = sqrt(var) but we want diagnoals of the variance-covariance matrix 
+    iter = it, 
+    tol = currtol, 
+    loglik = ll, 
+    weights = plogis(X %*% beta) * (1 - plogis(X %*% beta))
+  )
+  
+}
 ```
+
+### Comparing our method to glm()
+
+```{r, message = FALSE, warning = FALSE}
+
+library(tidyverse)
+
+X <- cbind(1, df$age, df$sex, df$num_ballons) %>% as.matrix()
+y <- df$candy_lover %>% as.matrix()
+
+our.way <- iwls(X, y)
+
+our.way$beta
+
+summary(our.way)
+
+diag(our.way$se)
+
+glm.way <- glm(candy_lover ~ age + sex + num_ballons, 
+               family = binomial(link = "logit"), 
+               data = df)
+
+glm.way$coefficients
+summary(glm.way)
+```
+
+If we compare the estimates from the *glm()* function to the our function, the results are fairly similar. For example, sex has an estimate of 0.680716 (SE: 0.305779) with the glm function and 0.68071575 with ours (SE: 0.30577906). Nearly identical results! Yippee!
+
+## Conclusion
+
+Since every good story must come to an end, so too does our glm by hand exercise...but fear not! You can now use this to foray into the world of glm with better knowledge!
