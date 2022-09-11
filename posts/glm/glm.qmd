@@ -114,7 +114,7 @@ We can see that the $y$ matrix is essentially just the outcome variable of inter
 
 #### Estimating Parameters
 
-We can estimate the parameters using the below formula and plugging in our matrices where applicable.
+We can estimate the parameters using our handy dandy formula below and plugging in our matrices where applicable.
 
 $$
 \hat{\beta} = (X^TX)^{-1}X^Ty
@@ -138,14 +138,24 @@ beta <- solve(t(X)%*%X)%*%t(X)%*%y
 
 # credit to https://economictheoryblog.com/2016/02/20/rebuild-ols-estimator-manually-in-r/ for the code all in one
 
-beta
+beta %>% 
+  as.data.frame() %>% 
+  dplyr::mutate(
+    variable = c("intercept", "age", "sex", "candy lover")
+  ) %>% 
+  dplyr::rename(
+    estimate = V1
+  ) %>% 
+  dplyr::select(
+    variable, estimate
+  )
 ```
 
-Now we are ready to move onto calculating the variance covariance matrix, which we can use to derive our standard errors.
+The next step is to determine the standard error for our estimates. To do this, we first need the variance which we can get from the variance-covariance matrix. How can we determine this variance-covariance matrix? Another formula!
 
 #### Estimating Variance
 
-The first step is to calculate the residuals. We can do that using the below formula:
+In order to calculate the variance-covariance matrix, we first need to calculate the residuals. We can do that using the below formula:
 
 $$
 Residuals = y - \beta_1 - \beta_2*age - \beta_3*sex - \beta_4*\text{candy lover}
@@ -157,9 +167,11 @@ $$
 VCov = \frac{1}{n-k}(RES^TRES)*(X^TX)^{-1}
 $$
 
-where $n, k, RES, X$ are the number of observations, number of parameters estimated, residual matrix and matrix of values for the predictor variables. Back to our example:
+where $n, k, RES, X$ are the number of observations, number of parameters estimated, matrix of residuals and matrix of values for the predictor variables. Back to our example, since working through an example is always best:
 
 ```{r, message = FALSE, warning = FALSE}
+
+# credit to https://economictheoryblog.com/2016/02/20/rebuild-ols-estimator-manually-in-r/ for the code 
 
 # Calculating residuals as y-intercept-beta_1*X1-beta_2*X2
 
@@ -177,13 +189,10 @@ k = ncol(X)
 
 VCV <- (1/(n-k))*as.numeric(t(res)%*%res)*solve(t(X)%*%X)
 
-# credit to https://economictheoryblog.com/2016/02/20/rebuild-ols-estimator-manually-in-r/ for the code all in one
-
+VCV
 ```
 
-#### Standard Error
-
-We can calculate the standard error from a variance covariance matrix as the square root of the diagonal values. Doing this
+Ta-da! We have our variance-covariance matrix! You may be asking yourself "so what?", well this matrix is how we can determine the standard error. The diagonals of the matrix are the variance for each of the variables. If we take the square root of the variance, we will get the standard deviation. In this case the standard deviation of the sampling distribution, or the standard error.
 
 ```{r, message = FALSE, warning = FALSE}
 
@@ -191,7 +200,7 @@ se <- sqrt(diag(VCV))
 
 ```
 
-So using the equations and matrices results in the following output
+The last piece to our puzzle is to add some p-values. While we're at it, let's make it a little easier to read by adding in some formatting and text to help the reader make sense of our results.
 
 ```{r, message = FALSE, warning = FALSE}
 
@@ -206,7 +215,7 @@ p_value <- rbind(
 
 output <- as.data.frame(
   cbind(
-    c("Intercept", "Age", "Sex"),
+    c("Intercept", "Age", "Candy Lover"),
     round(beta,5),
     round(se, 5),
     round(p_value, 4)
@@ -226,7 +235,7 @@ output
 
 #### Comparing to lm()
 
-Comparing these values to if we use the *lm()* function in R
+Great so we have worked through calculating OLS regression by hand, now what? Glad you asked! How do we know it worked? One way to check is to compare the values we got with those if we use the *lm()* function in R.
 
 ```{r, warning = FALSE, error = FALSE}
 
@@ -237,23 +246,46 @@ summary(mod.fit)
 
 ```
 
-Now that we have covered linear regression, we are ready to move onto generalized linear models (GLM).
+| Variable    | Estimate (SE) by hand | Estimate (SE) using *lm()* |
+|-------------|-----------------------|----------------------------|
+| Intercept   |                       |                            |
+| Age         |                       |                            |
+| Sex         |                       |                            |
+| Candy Lover |                       |                            |
+
+: Linear Regression by Hand versus lm()
+
+As you can see above, the results obtained by calculating by hand are very similar to those using the *lm()* function. Now that we have covered linear regression, we are ready to move onto generalized linear models (GLM).
+
+::: callout-note
+This post focuses on how the estimates are derived for linear regression, not the assumptions or diagnostics that can be used to check these assumptions. It's always important to check the assumptions to see if any of them are violated, for example if the assumption of homoscedasticity for the residuals. A good resource for reviewing the assumptions of OLS is by Jim Frost (https://statisticsbyjim.com/regression/ols-linear-regression-assumptions/)
+:::
 
 ## Generalized Linear Model
+
+For any statistical method there are certain assumptions that have to be met. For example, with OLS regression one of the key assumptions is homoscedasticity for the residuals (see list of assumptions here https://statisticsbyjim.com/regression/ols-linear-regression-assumptions/). Sometimes these assumptions are not met. Using homoscedasticity as an example, sometimes the variance of the errors is not consistent across observations. Due to this violation, using OLS regression may provide inaccurate results. One solution to this is to use a generalized linear model (GLM), however GLMs have their own set of assumptions. But first, we need to review that a GLM is!
+
+::: callout-note
+Why GLMs over OLS? Well there are a few reasons [@stat504]:
+
+-   Models are fitted via MLE instead of OLS. This relaxes some of the assumptions required for OLS such as homogeneity of the residuals and the need for residuals to be normally distributed.
+
+-   No need to transform the outcome variable to have a normal distribution
+
+-   Choosing the link has nothing to do with what you choose for the random component. For example, you can use a binomial distribution but choose to use a logit link or probit.
+:::
 
 ### Main Parts of GLM
 
 There are three components to any GLM [@stat504]:
 
-1.  Random Component. This specifies the probability distribution of the response variable. Essentially, we are selecting the distribution for the
+1.  Random Component. This specifies the probability distribution of the response variable. Essentially, we are selecting the distribution for the outcome variable of interest. For example, assume we want to examine whether candy lovers own more balloons. For this question, we would assume that candy lovers is a binomial distribution (i.e., yes/no). Note that there is no separate error term for a GLM.
 
-2.  Systematic Component
+2.  Systematic Component. This outlines the explanatory variables. Again, using the example above, the systematic component is linear since it will be $\beta_0 + \beta_1*age + \beta_2*sex + \beta_3*\text{number of balloons}$
 
-3.  Link Function
+3.  Link Function. The link function is a crucial component of GLMs. This specifies how the random and systematic components are connected. For our example, the link function is logit. If our outcome variable were continuous it would be the identity link function (why it's called the identity link function has never made sense to me. Think of it as the one you are used to: y = mx + b).
 
-Another way to think of these three components are as the response variable (aka y), explanatory variables (aka x) and how they are connected.
-
-There are some assumptions as well:
+Another way to think of these three components are as the response variable (aka y), explanatory variables (aka x) and how they are connected. Like any statistical technique, there are assumptions as well [@stat504]:
 
 -   The data are independently distributed
 
@@ -261,17 +293,15 @@ There are some assumptions as well:
 
 -   A linear relationship between the transformed expected response in terms of the link function and explanatory variables (however ***not*** in terms of the response and explanatory variables)
 
--   Errors need to be independent but not normally distributed
+-   Errors need to be independent but not normally distributed (this is a key difference between OLS regression and GLMs)
 
 ### Maximum Likelihood Estimation
 
-One of the key differences between OLS and GLM is the way that parameters (aka coefficients) are estimated. While OLS uses ordinary least squares, GLMs use something called maximum likelihood estimation (MLE). MLE is like what it sounds: it maximizing the likelihood function so that the model uses values that make the observed data most probable (aka most likely). There are different methods to determine this value for MLE including solving the derivative of the likelihood funciton where it is 0, hence the maxima, or more iterative procedures such as Gradient descent method or Newton-Raphson method.
-
-Here we will focus on iteratively reweighted least squares since that is what R uses by default.
+One of the key differences between OLS and GLM is the way that parameters (aka coefficients) are estimated. While OLS uses ordinary least squares, GLMs use something called maximum likelihood estimation (MLE). MLE is like what it sounds like: it's about maximizing the likelihood function so that the model uses values that make the observed data most probable (aka most likely). There are different methods to determine this value for MLE including solving the derivative of the likelihood funciton where it is 0, hence the maxima, or more iterative procedures such as the Gradient descent method or the Newton-Raphson method. Here we will focus on iteratively reweighted least squares (IWLS) since that is what R uses by default.
 
 #### Iteratively Reweighted Least Squares
 
-Iteratively reweighted least squares (IWLS), is an algorithm that is used to determine the parameters and standard errors of the parameters. We'll use logistic regression to walk through the steps, although for other link functions it is a similar process. The steps for IWLS are outlined below [@fox2014]
+IWLS, is an algorithm that is used to determine the parameters and standard errors of the parameters. We'll use logistic regression to walk through the steps, although for other link functions it is a similar process. The steps for IWLS are outlined below [@fox2014]
 
 1.  Set the regression coefficients to initial values. For our example, we will start with 0
 
