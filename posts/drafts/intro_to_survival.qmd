@@ -1,0 +1,137 @@
+---
+title: "Introduction to Survival Analysis"
+author: "Ryan Batten"
+date: "2022-09-19"
+categories: [Survival Analysis]
+# image: "iptw.jpeg"
+bibliography: intro_to_survival.bib
+sidebar: 
+  contents:
+  - intro_to_survival.qmd
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+## Time-to-Event Data
+
+## Functions
+
+### Probability Density Function
+
+$$
+f(t) = \lim_{\triangle \to 0}\frac{1}{\triangle}P(t \leq T \leq t + \triangle)
+$$
+
+### Survival Function
+
+The survival function is given by $S(t) = P(T>t)$, which is the probability that the event occurs after time t
+
+$$
+S(t) = 1 - P(T\leq t) = 1 - F(t) = 1-\int_{0}^{1}f(s)ds
+$$
+
+where F(t) is the cumulative distribution function, also referred to as the cumulative incidence function somtimes
+
+### Hazard Function
+
+The hazard function is related to the survival function as
+
+$$
+\lambda(t) = \lim_{\triangle \to 0}\frac{1}{\triangle}P(t \leq T \leq t + \triangle |T \geq t)
+$$
+
+It is important to note that $P(t \leq T \leq t + \triangle | T \geq t)$ is the probability the event has not occurred by time $t$ but then does occur in the next time interval $\triangle$. Another way of thinking of this is the conditional probability of experiencing the event within the next $\triangle$ time units at time $t$ given that the event has not occurred yet.
+
+$$
+\lambda(t) = \frac{f(t)}{S(t)} = -\frac{d}{dt} log S(t)
+$$
+
+### Cumulative Hazard Function
+
+Similarly, the cumulative hazard function could be defined as
+
+$$
+\Lambda(t) = -log S(t)
+$$
+
+## Distribution for TTE Data
+
+Each of the four function can be used to characterize the distribution of T. For a data analysis, you can first choose some parametric distribution and then structure any of the four functions ($f(t)$, $S(t)$, $\lambda(t), \Lambda(t)$ )
+
+### Exponential Distribution
+
+$$
+h_i(t) = \lambda \text{ exp}(X_i^T\beta)
+$$
+
+$$
+H_i(t) = \lambda t \text{ exp}(X_i^T\beta)
+$$
+
+$$
+S_i(t) = \text {exp}(-\lambda t \text { exp}(X_i^T \beta))
+$$
+
+$$
+S_i^{-1}(u) = \frac{\text{- log}(u)}{\lambda \text{ exp}(X_i^T \beta)}
+$$
+
+### Weibull Distribution
+
+$$
+h_i(t) = \gamma \lambda (t^{\gamma-1}) \text{ exp}(X_i^T\beta)
+$$
+
+$$
+H_i(t) = \lambda (t^{\gamma}) \text{ exp}(X_i^T\beta)
+$$
+
+$$
+S_i(t) = \text {exp}(-\lambda (t^{\gamma}) \text { exp}(X_i^T \beta))
+$$
+
+$$
+S_i^{-1}(u) = (\frac{\text{- log}(u)}{\lambda \text{ exp}(X_i^T \beta)})^{\frac{1}{\gamma}}
+$$
+
+### 
+
+### Gompertz Distribution
+
+$$
+h_i(t) = \lambda \text{ exp}(\gamma t) \text{ exp}(X_i^T\beta)
+$$
+
+$$
+H_i(t) = \frac {\lambda(\text {exp } (\gamma t) -1}{\gamma} \text{ exp}(X_i^T\beta)
+$$
+
+$$
+S_i(t) = \text {exp}( \frac{-\lambda(exp(\gamma t) - 1)}{\gamma} \text { exp}(X_i^T \beta))
+$$
+
+$$
+S_i^{-1}(u) = \frac{1}{\gamma}\text{log}[(\frac{-\gamma \text{log}(u)}{\lambda \text{exp}(X_i^T\beta)}) + 1]
+$$
+
+### 
+
+## Kaplan-Meier Estimator
+
+The Kaplan-Meier estimator, sometimes referred to as the *life table method* can be used to estimate the survival function nonparametrically (aka without assuming anything about the underlying distribution).
+
+The conditional probability of survival past time $t_{(k)}$, given the event had not occurred by time $t_{(k)}$ as:
+
+$$
+\hat{P}(T>t_{(k)}|T\geq t_{(k)} = \frac{s_k}{n_k} = 1 - \frac{d_k}{n_k}
+$$
+
+If we multiply these conditional probabilities across all risk sets, we can find the Kaplan-Meier estimator of $S(t)$ :
+
+$$
+\hat{S}_{KM}(t) = \prod_{k:t_{(k)} \leq t} \frac{s_k}{n_k} = \prod_{k:t_{(k)} \leq t} 1- \frac{d_k}{n_k}
+$$
+
+Let's work through our example
