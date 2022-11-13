@@ -1,4 +1,5 @@
 ---
+ggit ---
 title: "Introduction to Survival Analysis"
 author: "Ryan Batten"
 date: "2022-10-24"
@@ -156,7 +157,7 @@ $$
 \Lambda(t) = -log S(t)
 $$
 
-## Bonus! 
+## Bonus!
 
 ### Distribution for TTE Data
 
