@@ -1,0 +1,14 @@
+---
+title: "Standardization"
+author: "Ryan Batten"
+date: "2022-09-26"
+categories: [Stanardization]
+# image: "iptw.jpeg"
+bibliography: standardization.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+## Standardization

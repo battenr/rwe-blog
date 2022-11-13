@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Survival Analysis"
 author: "Ryan Batten"
-date: "2022-09-19"
+date: "2022-10-24"
 categories: [Survival Analysis]
 # image: "iptw.jpeg"
 bibliography: intro_to_survival.bib
@@ -14,7 +14,107 @@ format:
     code-fold: true
 ---
 
-## Time-to-Event Data
+## Survival Analysis and Halloween Candy?
+
+What could time-to-event analysis and Halloween candy possible have in common? Well with Halloween fast approaching, we will get to go trick or treating which means more candy! However, it seems that sometimes our candy disappears quicker after Halloween than it probably should. Why is that you may ask? Well, sometimes parents get their hands on candy and gobble it up before you can get to eat every last piece! How will we deal with this?
+
+Putting on our statistics had, one solution is to try and found out what the median time is to all of our candy being eaten and then try to make sure it's all gone by then (or if not, then our favorite candy at least!). Luck for us, there is a a database that keeps track of kids candy and whether they got to eat all their candy.
+
+## Research Question
+
+The first part to any research project is to first define our research question. In this situation we want to know: "What is the risk of all of my candy going missing
+
+With Christmas approaching soon, we all want to know: what are the odds of Santa vising me before my friends? Luckily, there is a database that keeps track of all of this! So, how are we going to answer our question with Christmas fast approaching? Well, one method would be to use a linear regression, or perhaps a generalized linear model, however there is a unique component to time-to-event data: censoring.
+
+## Causal Question
+
+The first part to any research project is to define the research question. Our research question is: "What is the median time to getting to eat all of my candy?". Now that we know our research question, we need to look to our handy-dandy database that has data on this.
+
+```{r, generating data, message = FALSE, warning = FALSE}
+
+n.obs = 244
+maxtime = 12 
+
+set.seed(20221106)
+
+# credit to post here from Tomas Bene
+
+df <- data.frame(
+  id = sample(x = 1:n.obs, size = n.obs, replace = FALSE),
+  age = runif(n= n.obs, min = 5, max = 22),
+  sex = rbinom(n = n.obs, size = 1, prob = 0.81), # 1 = female
+  costume = sample( x = c("avocado","bumblebee", "pumpkin", "lion"),
+                   size = n.obs, 
+                   replace = TRUE, 
+                   prob = c(0.40, 0.30, 0.20, 0.10)
+                   ),
+ candy_amount = runif(n = n.obs, min = 20, max = 100), # number of pieces of candy
+ candy_type = sample (x = 
+                        c("skittles", "popeye sticks", "candy corn", "lemon heads", "M&Ms"),  
+                      size = n.obs, 
+                      replace = TRUE, 
+                      prob = c(0.15, 0.30, 0.15, 0.20, 0.20)
+                      ), # what is the most common type of candy you have 
+ maxtime = 12 # 
+) %>% 
+  dplyr::mutate(
+    # no candy should be left before next halloween
+    
+  )
+  
+
+  # Note: Bender et al 2005 has good info on simulating survival data 
+  
+  N = nc + nt # total N as sum of both arms
+  covariate <- c(rep(1, nt), rep(0, nc)) # treating treatment group as only covariate
+  cens <- maxtime * runif(N) # create censoring times (unrelated to survival). calculated as a proportion of max time
+  beta <- log(hr) # convert hazard ratio to beta
+  h <- exp(beta*covariate) # convert back to HR after multiplying by covariate
+  dt <- -log(runif(N))/h # taken from above link but Tomas referred to Bender article. 
+  # Bender formula for times T ~ Exponential(baseline_hazard)
+  
+  # e <- ifelse(dt <= cens, 1, 0)
+  ndc <- round(nc*propc,0) # number of events in control group
+  ndt <- round(nt*propt,0) # number of events in trial group
+  nsc <- nc - ndc # number of nonevents in control group
+  nst <- nt - ndt  # number of nonevents in trial group
+  
+  # Simulating based on proportion of event in each arm
+  e <- c(rbinom(nt, size = 1, prob = propt), rbinom(nc, size = 1, prob = propc)) 
+  # If you don't want to simulate 
+  
+  # e <- c(rep(1, ndt), rep(0, nst), rep(1, ndc), rep(0, nsc)) # if you want to not simulate data
+  
+  dt <- pmin(dt, cens) # taking minimum of calculated dt above or the censored time
+  S <- Surv(dt, e) # can just input into formula or make S here instead 
+
+
+
+```
+
+One thing we notice when we look at the data is that we aren't sure if some kids get to eat all of their candy or not. This could be due to different reasons, such as them getting sick of their candy, only having their least favorite kind left, parent's not letting them eat the rest or....the worst of all... parents eating the rest of their candy! What should we do with this partial data?
+
+One thing we could do is to delete this partial data as missing data, however we'd lose lots of valuable information! Even though we don't know when their candy was finished, we know the last time they had *some* candy left. This is info that we can definitely use, but how should we approach it? This is where censoring comes into play.
+
+## Censoring
+
+So what exactly is censoring? Well, it's a fancy way to deal with having partial information. For example, imagine that we know that our best friend had candy and the last day that she had some candy left but that was the last day we knew she had candy available. This type of observation is called *right censoring* [@clark2003survivalI]. Censoring could also occur where we know the event, for example when all her candy was gone, but not when she got the candy to begin with. This is called *left censoring* [@clark2003survivalI]. There is also a third type of censoring called *interval censoring* [@clark2003survivalI] *,* where the people being observed can come in and out of being observed.
+
+## Visualize, Visualize, Visualize
+
+One of the best things to do when first inspecting any data is to plot it. Let's do that with our data
+
+```{r, dumbbell plot}
+
+```
+
+## Kaplan-Meier Plot
+
+## Statistical Methods
+
+### Cox Proportional Hazards
+
+### Kaplan Meier
 
 ## Functions
 
@@ -56,11 +156,13 @@ $$
 \Lambda(t) = -log S(t)
 $$
 
-## Distribution for TTE Data
+## Bonus! 
+
+### Distribution for TTE Data
 
 Each of the four function can be used to characterize the distribution of T. For a data analysis, you can first choose some parametric distribution and then structure any of the four functions ($f(t)$, $S(t)$, $\lambda(t), \Lambda(t)$ )
 
-### Exponential Distribution
+#### Exponential Distribution
 
 $$
 h_i(t) = \lambda \text{ exp}(X_i^T\beta)
@@ -78,7 +180,7 @@ $$
 S_i^{-1}(u) = \frac{\text{- log}(u)}{\lambda \text{ exp}(X_i^T \beta)}
 $$
 
-### Weibull Distribution
+#### Weibull Distribution
 
 $$
 h_i(t) = \gamma \lambda (t^{\gamma-1}) \text{ exp}(X_i^T\beta)
@@ -98,7 +200,7 @@ $$
 
 ### 
 
-### Gompertz Distribution
+#### Gompertz Distribution
 
 $$
 h_i(t) = \lambda \text{ exp}(\gamma t) \text{ exp}(X_i^T\beta)
@@ -109,14 +211,12 @@ H_i(t) = \frac {\lambda(\text {exp } (\gamma t) -1}{\gamma} \text{ exp}(X_i^T\be
 $$
 
 $$
-S_i(t) = \text {exp}( \frac{-\lambda(exp(\gamma t) - 1)}{\gamma} \text { exp}(X_i^T \beta))
+S_i(t) = \text {exp}( \frac{(-\lambda(exp(\gamma t) - 1)}{\gamma} \text { exp}(X_i^T \beta))
 $$
 
 $$
 S_i^{-1}(u) = \frac{1}{\gamma}\text{log}[(\frac{-\gamma \text{log}(u)}{\lambda \text{exp}(X_i^T\beta)}) + 1]
 $$
-
-### 
 
 ## Kaplan-Meier Estimator
 
@@ -134,4 +234,4 @@ $$
 \hat{S}_{KM}(t) = \prod_{k:t_{(k)} \leq t} \frac{s_k}{n_k} = \prod_{k:t_{(k)} \leq t} 1- \frac{d_k}{n_k}
 $$
 
-Let's work through our example
+## 
