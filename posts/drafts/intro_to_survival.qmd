@@ -90,6 +90,112 @@ df <- data.frame(
   S <- Surv(dt, e) # can just input into formula or make S here instead 
 
 
+library(tidyverse)
+library(survival)
+library(survminer)
+
+n.obs = 244
+maxtime = 12 
+
+set.seed(20221106)
+
+# credit to post here from Tomas Bene
+
+df <- data.frame(
+  id = sample(x = 1:n.obs, size = n.obs, replace = FALSE),
+  age = runif(n= n.obs, min = 5, max = 22),
+  sex = rbinom(n = n.obs, size = 1, prob = 0.81), # 1 = female
+  costume = sample( x = c("avocado","bumblebee", "pumpkin", "lion"),
+                    size = n.obs, 
+                    replace = TRUE, 
+                    prob = c(0.40, 0.30, 0.20, 0.10)
+  ),
+  candy_amount = runif(n = n.obs, min = 20, max = 100), # number of pieces of candy
+  candy_type = sample (x = 
+                         c("skittles", "popeye sticks", "candy corn", "lemon heads", "M&Ms"),  
+                       size = n.obs, 
+                       replace = TRUE, 
+                       prob = c(0.15, 0.30, 0.15, 0.20, 0.20)
+  ), # what is the most common type of candy you have 
+  maxtime = 12 # 12 months until next Halloween
+) 
+
+surv_data <- df %>% 
+  dplyr::mutate(
+    censort = maxtime*runif(n = n.obs, min = 0, max = 1),
+    hr_age = 0.5,
+    hr_sex = 0.6,
+    hr_costume = dplyr::case_when(
+      costume == "avocado" ~ 2.3, 
+      costume == "bumblebee" ~ 1.4,
+      costume == "pumpkin" ~ 0.36,
+      costume == "lion" ~ 0.56 
+    ),
+    hr_candy_amount = 0.001, 
+    hr_candy_type = dplyr::case_when(
+      candy_type == "skittles" ~ 0.8,
+      candy_type == "popeye sticks" ~ 0.4, 
+      candy_type == "candy corn" ~ 0.2, 
+      candy_type == "lemon heads" ~ 0.5, 
+      candy_type == "M&Ms" ~ 0.9
+    ),
+    candy_num = 
+      dplyr::case_when(
+        candy_type == "skittles" ~ 1,
+        candy_type == "popeye sticks" ~ 2, 
+        candy_type == "candy corn" ~ 3, 
+        candy_type == "lemon heads" ~ 4, 
+        candy_type == "M&Ms" ~ 5
+      ),
+    costume_num = 
+      dplyr::case_when(
+        costume == "avocado" ~ 1, 
+        costume == "bumblebee" ~ 2,
+        costume == "pumpkin" ~ 3,
+        costume == "lion" ~ 4 
+      )
+    ) %>% 
+  dplyr::mutate(
+    beta_age = log(hr_age),
+    beta_sex = log(hr_sex),
+    beta_costume = log(hr_costume),
+    beta_candy_amount = log(hr_candy_amount),
+    beta_candy_type = log(hr_candy_type)
+    ) %>% 
+  dplyr::mutate(
+    # h = exp(beta_age*age + beta_sex*sex + beta_candy_amount*candy_amount + beta_candy_type),
+    h = exp(beta_candy_type*candy_num + beta_sex*sex + beta_costume*costume_num),
+    dt = -log(runif(n.obs))/h, # taken from above link but Tomas referred to Bender article. 
+             # Bender formula for times T ~ Exponential(baseline_hazard)
+    status = dplyr::case_when(
+      dt <= censort ~ 1, 
+      dt > censort ~ 0
+    ),
+             # If you don't want to simulate 
+             
+    time = pmin(dt, censort) # taking minimum of calculated dt above or the censored time
+  )
+
+
+
+# Graphs 
+
+survminer::ggsurvplot(survfit(Surv(time, status) ~ candy_num, 
+                              data = surv_data), 
+                      data = surv_data, 
+                      risk.table = TRUE)
+
+survminer::ggsurvplot(survfit(Surv(time, status) ~ sex, 
+                              data = surv_data), 
+                      data = surv_data, 
+                      risk.table = TRUE)
+
+survminer::ggsurvplot(survfit(Surv(time, status) ~ costume_num, 
+                              data = surv_data), 
+                      data = surv_data, 
+                      risk.table = TRUE)
+
+
 
 ```
 
