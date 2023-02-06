@@ -1,0 +1,98 @@
+---
+title: "Bootstrap Bill & Jackknnife Sparrow"
+author: "Ryan Batten"
+date: "2022-09-26"
+categories: [Resampling]
+# image: "iptw.jpeg"
+bibliography: bootstrap-jackknife.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+## Pirates of the Caribbean?
+
+No, this post will not be focusing on Pirates of the Caribbean but does have bootstrapping and jackknifing!
+
+## Variance Estimation
+
+A key aspect of conducting statistical analyses is to identify the most appropriate way to estimate variance. Whether it be the variance for a descriptive or inferential statistic the variance can tell us a lot.
+
+<!--# Chat GPT Text -->
+
+Variance is a measure of how spread out a set of data is. It can tell us how much variation or dispersion there is from the average or mean of the data set. Variance can help us understand how much risk is associated with a particular investment or how much variation there is in a population. It can also help us identify outliers in a data set.
+
+## Types of Variance Estimation
+
+### Parametric Variance Estimators
+
+<!--# Chat GPT Text -->
+
+what are the different parametric variance estimators
+
+1.  Maximum Likelihood Estimator (MLE)
+2.  Method of Moments Estimator (MME)
+3.  Bayesian Estimator
+4.  Restricted Maximum Likelihood Estimator (REML)
+5.  Generalized Method of Moments Estimator (GMM)
+6.  Empirical Bayes Estimator
+7.  Bootstrap Estimator
+8.  Jackknife Estimator
+
+for the population mean.
+
+The parametric variance estimator for the population mean is a statistical method used to estimate the variance of a population mean. It is based on the assumption that the population follows a normal distribution. The estimator uses the sample mean and sample variance to calculate the population mean and variance. The formula for the parametric variance estimator is:
+
+σ2 = (1/n) \* Σ(x - x̄)2
+
+where n is the sample size, x is the individual sample values, and x̄ is the sample mean.
+
+### Nonparametric Variance Estimators
+
+<!--# Chat GPT Text -->
+
+what are the types of nonparametric variance estimators
+
+1.  Bootstrap Variance Estimator
+2.  Jackknife Variance Estimator
+3.  Permutation Variance Estimator
+4.  Subsampling Variance Estimator
+5.  Kernel Variance Estimator
+6.  Rank Variance Estimator
+7.  Resampling Variance Estimator
+8.  Empirical Variance Estimator
+
+## Jackknife
+
+<!--# Chat GPT Text -->
+
+what is jackknife resampling
+
+Jackknife resampling is a statistical technique used to estimate the bias and standard error of a statistic. It involves repeatedly leaving out one observation from a dataset and calculating the statistic of interest on the remaining data. The results are then averaged to obtain an estimate of the statistic's bias and standard error.
+
+## Bootstrapping
+
+<!--# Chat GPT Text -->
+
+what is bootstrap resampling
+
+Bootstrap resampling is a statistical technique used to estimate the sampling distribution of an estimator by resampling a dataset with replacement. It is a type of resampling method that is used to estimate the sampling distribution of a statistic by resampling a dataset with replacement. The bootstrap method is used to estimate the standard errors of a statistic, to estimate confidence intervals, and to construct hypothesis tests.
+
+simulate data in R about pirates of the carribeans
+
+simulate data in R about pirates of the carribeans
+
+```{r}
+#set seed
+set.seed(123)
+
+#create data frame
+pirates <- data.frame(
+  name = c("Jack Sparrow", "Will Turner", "Elizabeth Swann", "Hector Barbossa", "Davy Jones"),
+  age = c(45, 28, 25, 55, 300),
+  ship = c("The Black Pearl", "The Flying Dutchman", "The Interceptor", "The Black Pearl", "The Flying Dutchman"),
+  weapon = c("Sword", "Sword", "Sword", "Pistol", "Kraken")
+)
+
+```

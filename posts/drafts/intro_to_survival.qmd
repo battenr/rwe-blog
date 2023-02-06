@@ -1,5 +1,4 @@
 ---
-ggit ---
 title: "Introduction to Survival Analysis"
 author: "Ryan Batten"
 date: "2022-10-24"
@@ -32,64 +31,6 @@ With Christmas approaching soon, we all want to know: what are the odds of Santa
 The first part to any research project is to define the research question. Our research question is: "What is the median time to getting to eat all of my candy?". Now that we know our research question, we need to look to our handy-dandy database that has data on this.
 
 ```{r, generating data, message = FALSE, warning = FALSE}
-
-n.obs = 244
-maxtime = 12 
-
-set.seed(20221106)
-
-# credit to post here from Tomas Bene
-
-df <- data.frame(
-  id = sample(x = 1:n.obs, size = n.obs, replace = FALSE),
-  age = runif(n= n.obs, min = 5, max = 22),
-  sex = rbinom(n = n.obs, size = 1, prob = 0.81), # 1 = female
-  costume = sample( x = c("avocado","bumblebee", "pumpkin", "lion"),
-                   size = n.obs, 
-                   replace = TRUE, 
-                   prob = c(0.40, 0.30, 0.20, 0.10)
-                   ),
- candy_amount = runif(n = n.obs, min = 20, max = 100), # number of pieces of candy
- candy_type = sample (x = 
-                        c("skittles", "popeye sticks", "candy corn", "lemon heads", "M&Ms"),  
-                      size = n.obs, 
-                      replace = TRUE, 
-                      prob = c(0.15, 0.30, 0.15, 0.20, 0.20)
-                      ), # what is the most common type of candy you have 
- maxtime = 12 # 
-) %>% 
-  dplyr::mutate(
-    # no candy should be left before next halloween
-    
-  )
-  
-
-  # Note: Bender et al 2005 has good info on simulating survival data 
-  
-  N = nc + nt # total N as sum of both arms
-  covariate <- c(rep(1, nt), rep(0, nc)) # treating treatment group as only covariate
-  cens <- maxtime * runif(N) # create censoring times (unrelated to survival). calculated as a proportion of max time
-  beta <- log(hr) # convert hazard ratio to beta
-  h <- exp(beta*covariate) # convert back to HR after multiplying by covariate
-  dt <- -log(runif(N))/h # taken from above link but Tomas referred to Bender article. 
-  # Bender formula for times T ~ Exponential(baseline_hazard)
-  
-  # e <- ifelse(dt <= cens, 1, 0)
-  ndc <- round(nc*propc,0) # number of events in control group
-  ndt <- round(nt*propt,0) # number of events in trial group
-  nsc <- nc - ndc # number of nonevents in control group
-  nst <- nt - ndt  # number of nonevents in trial group
-  
-  # Simulating based on proportion of event in each arm
-  e <- c(rbinom(nt, size = 1, prob = propt), rbinom(nc, size = 1, prob = propc)) 
-  # If you don't want to simulate 
-  
-  # e <- c(rep(1, ndt), rep(0, nst), rep(1, ndc), rep(0, nsc)) # if you want to not simulate data
-  
-  dt <- pmin(dt, cens) # taking minimum of calculated dt above or the censored time
-  S <- Surv(dt, e) # can just input into formula or make S here instead 
-
-
 library(tidyverse)
 library(survival)
 library(survminer)
@@ -175,27 +116,6 @@ surv_data <- df %>%
              
     time = pmin(dt, censort) # taking minimum of calculated dt above or the censored time
   )
-
-
-
-# Graphs 
-
-survminer::ggsurvplot(survfit(Surv(time, status) ~ candy_num, 
-                              data = surv_data), 
-                      data = surv_data, 
-                      risk.table = TRUE)
-
-survminer::ggsurvplot(survfit(Surv(time, status) ~ sex, 
-                              data = surv_data), 
-                      data = surv_data, 
-                      risk.table = TRUE)
-
-survminer::ggsurvplot(survfit(Surv(time, status) ~ costume_num, 
-                              data = surv_data), 
-                      data = surv_data, 
-                      risk.table = TRUE)
-
-
 
 ```
 

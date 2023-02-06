@@ -2,19 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.269">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Ryan’s Real-World Experience - RWE Blog</title>
+<title>Ryan’s Real-World Evidence - RWE Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 </style>
 
 
@@ -96,26 +101,29 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Ryan’s Real-World Experience</span>
-  </a>
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Ryan’s Real-World Evidence</span>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html">About Me</a>
+    <a class="nav-link" href="./about.html">
+ <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/battenr"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://twitter.com/rwe_ryan"><i class="bi bi-twitter" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -135,6 +143,7 @@ ul.task-list{list-style: none;}
   <div class="quarto-title-meta">
 
       
+    
       
     </div>
     
@@ -180,7 +189,7 @@ Regression
 </div>
 <a href="./posts/glm/glm.html">
 <div class="listing-description">
-Regression is a commonly used tool in inferential statistics to build a model to make inferences about a super-population. Before we start however, I’d like to highlight that regression is not always necessary or even the best approach. For example, sometimes descriptive statistics are a more appropriate tool. With that being said, regression is a key tool in a statistician’s toolbox. Before we get started, I’d like to revisit one of my favorite quotes by George Box, a British statistician: “All models are wrong, some are useful”.
+Regression is a commonly used tool in inferential statistics to build a model to make inferences about a super-population. Before we start however, I’d like to highlight…
 </div>
 </a>
 </div>
@@ -218,7 +227,7 @@ IPTW
 </div>
 <a href="./posts/ip-weighting/ip_weighting.html">
 <div class="listing-description">
-Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> causal effect.
+Re-weighting in this context has nothing to…<strong><em></em></strong><strong><em></em></strong>
 </div>
 </a>
 </div>
@@ -256,7 +265,7 @@ Conditional
 </div>
 <a href="./posts/marginal-conditional/marginal_conditional.html">
 <div class="listing-description">
-This post is going to be about marginal compared to conditional effects. First, we need to understand what in the world these terms even mean. To do that, can you guess what we are going to start with? Yup! Probability again.
+This post is going to be about marginal compared…
 </div>
 </a>
 </div>
@@ -294,7 +303,7 @@ Observational Data
 </div>
 <a href="./posts/rwe-whats-the-hype/rwe_intro.html">
 <div class="listing-description">
-You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential for answering important research questions, however what exactly is RWE? RWE is evidence generated from real-world data (RWD). RWD is defined by the FDA as data relating to patient health status and/or the delivery of health care routinely collected from a variety of sources <span class="citation" data-cites="FDA-RWE">(FDA December 2018)</span>. This data could be from electronic health records, medical claims and billing, electronic medical records, data from product registries, wearable devices, mobile devices and other sources. Sounds pretty good right? Well the quality of the evidence is only as a good as the quality of the study conducted.
+You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential for answering important research questions, however…<span class="citation" data-cites="FDA-RWE"></span>
 </div>
 </a>
 </div>
@@ -332,7 +341,7 @@ Hypothesis Tests
 </div>
 <a href="./posts/p-value-power/p-value-power.html">
 <div class="listing-description">
-P-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted. The p in p-value stands for probability, as a lot of statistics begins with. What exactly does it tell us? Let’s find out
+P-values are a term commonly heard in scientific literature, however often…
 </div>
 </a>
 </div>
@@ -373,9 +382,7 @@ Observational Data
 </div>
 <a href="./posts/causal_inference_intro/causal_inference.html">
 <div class="listing-description">
-I was first introduced to causal inference by <span class="citation" data-cites="RN509">Hernan and Robins (2021)</span>, in the summer of 2021 prior to starting my PhD. This book was tremendous and changed my thinking about “correlation doesn’t equal causation”.<br>
-<br>
-From introductory science, as scientists, we are taught that correlation doesn’t equal causation. I had never questioned this until I was in my MSc program and started thinking about the association between lung cancer and smokers. <span class="citation" data-cites="RN816">Stellman et al. (2001)</span> reported an odds ratio of 40.4 (95% CI: 21.8-79.6), which to me seemed high.
+I was first introduced to causal inference by <span class="citation" data-cites="RN509">Hernan and Robins (2021)</span>, in the summer of 2021 prior to…<br><br><span class="citation" data-cites="RN816"></span>
 </div>
 </a>
 </div>
@@ -416,9 +423,7 @@ HR
 </div>
 <a href="./posts/or_rr_hr/or_rr_hr.html">
 <div class="listing-description">
-Let’s start with probability because that’s probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that my favorite show will come on TV today? Or how likely is it that it will rain today? Based upon these probabilities you can make informed decisions. The neat thing about probability, is that you can incorporate it into different measures when conducting scientific research. An example of this is the odds that something will happen, similar to how a betting line works when gambling.<br>
-<br>
-To convert from probability to odds, the formula is the probability of something happening divided by the probability of that something not happening. In mathematical terms:
+Let’s start with probability because that’s probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that…<br><br>
 </div>
 </a>
 </div>
@@ -446,7 +451,7 @@ Welcome To My Blog
 
 </div>
 <div class="listing-description">
-This is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to elaborate on methods I’ve come across while reading and hopefully be able to teach one person something new, or in a more intuitive way. A huge credit to the Count Bayesie blog (@willkurt on twitter). Reading his blog posts encouraged me to do the same.
+This is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to…
 </div>
 </a>
 </div>
@@ -507,7 +512,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -535,31 +557,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>

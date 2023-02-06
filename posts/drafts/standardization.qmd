@@ -8,7 +8,84 @@ bibliography: standardization.bib
 draft: true
 format: 
   html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
     code-fold: true
 ---
 
-## Standardization
+## Why and how do we standardize?
+
+I think first it's important to go over some of high level points of standardizing in general. First, what is standardizing? I'm sure you're familiar with the phrase "you can't compare these, that's like comparing apples and oranges!" and there is some truth to that. What if you could compare them with respect to the amount of juice a single one produces? Or how far away from the color blue they are? (Alright, bad example I admit but you get the point). The reasons that we standardize is to allow for a observations to be on a common scale. For example, you can't compare apples to oranges but you **can** compare the volume of juice contained in an apple to that of an orange.
+
+## Why should we standardize something?
+
+What exactly is standardizing?
+
+## How do we standardize something?
+
+In general, standardization is typically performed by standardizing the data
+
+describe standardization
+
+Standardization is the process of transforming data into a common format by adjusting the values of the observations to a common scale. This is done by subtracting the mean of the data from each observation and then dividing by the standard deviation. This process helps to make data more comparable and easier to interpret. Standardization is often used in machine learning algorithms to ensure that all features are on the same scale and have the same variance.
+
+## Standardization versus IPTW
+
+### IPTW
+
+I won't bore you here, I'll keep it brief (if you want a more in-depth review of IPTW please see my other post).
+
+briefly explain difference between iptw and standardization
+
+## Standardization in Causal Inference
+
+The standardized mean in the uncensored (C = 0) is calculated as
+
+$$
+{\sum_{l}E[Y|A = a, C=0, L=l]}  \times Pr[L=l]
+$$
+
+Now, in an ideal world we'd be able to calculate this nonparametrically. We could calculate the mean outcomes in the uncensored, treated in each stratum $l$ of the confounders $L$ (i.e., $E[Y|A =1, C=0, L=l]$ for each of the strata $l$. Then we would take the weighted mean sum. To do this, we'd use the above formula where the weights are the proportion of people in each straum L. Rather than just described, how about an example?
+
+::: callout-note
+## What if L is continuous?
+
+If $L$ is continuous in the above formula, then we need to replace $Pr[L=l]$ with the probability density function $f_{L}[l]$.
+:::
+
+### Does Eating Candy Cause Cavities? 
+
+```{r, candy cavity causal data, eval = FALSE}
+
+library(tidyverse)
+
+candy_cavity <- data.frame(
+  cavity = 
+)
+
+```
+
+###  
+
+### Nonparametric Standardization
+
+Unfortunately, this isn't always possible, especially when we are dealing with real-world data. People drop out of databases or may have missing data, just to name two potential problems. Sometimes if we also have high dimensional data with multiple confounders, it's not feasible. This is where modelling can come in handy!
+
+### Mean Outcome Modelling
+
+So what exactly are we going to do for modelling? Well, we are \
+\
+
+## Assumptions for Standardization
+
+1.  Structural positivity. Similar to IP weighting, positivity is also necessary for standardization because when $Pr[A = a | L = l] = 0$ and $Pr[L = l] \neq 0$ then the conditional mean outcome $E[Y|A,L]$ is undefined [@hernanwhatif, pp.162].
+
+2.  
+
+::: callout-note
+## Positivity Assumption
+
+While both IP weighting and standardization require structural positivity, the implications of this assumptions not being valid can vary. For standardization, it is possible to use if this is assumption isn't met however there then needs to be a willingness to rely on parametric extrapolation (this can be done to fit a model that will smooth over the strata with structural zeroes) however this will introduce bias into the estimation. This will result in the nomial 95% confidence intervals around the estimates covering the true effect less than 95% of the time. See @hernanwhatif, pp. 162 for more details.
+:::
