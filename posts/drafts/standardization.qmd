@@ -2,7 +2,7 @@
 title: "Standardization"
 author: "Ryan Batten"
 date: "2022-09-26"
-categories: [Stanardization]
+categories: [Standardization]
 # image: "iptw.jpeg"
 bibliography: standardization.bib
 draft: true
@@ -15,7 +15,15 @@ format:
     code-fold: true
 ---
 
-## Why and how do we standardize?
+### What is standardization and why do we care?
+
+You are actually already familiar with standardization, you just may not think about it. One common example is height. Depending on where you live you probably measure height in inches (feet and inches), or centimeters.
+
+Now this naturally leads in
+
+### How do we standardize?
+
+Alright so we've covered the what and why, but how do we apply that in this case? Well in a similar fashion, albeit a bit different.
 
 I think first it's important to go over some of high level points of standardizing in general. First, what is standardizing? I'm sure you're familiar with the phrase "you can't compare these, that's like comparing apples and oranges!" and there is some truth to that. What if you could compare them with respect to the amount of juice a single one produces? Or how far away from the color blue they are? (Alright, bad example I admit but you get the point). The reasons that we standardize is to allow for a observations to be on a common scale. For example, you can't compare apples to oranges but you **can** compare the volume of juice contained in an apple to that of an orange.
 
@@ -55,7 +63,7 @@ Now, in an ideal world we'd be able to calculate this nonparametrically. We coul
 If $L$ is continuous in the above formula, then we need to replace $Pr[L=l]$ with the probability density function $f_{L}[l]$.
 :::
 
-### Does Eating Candy Cause Cavities? 
+### Does Eating Candy Cause Cavities?
 
 ```{r, candy cavity causal data, eval = FALSE}
 
@@ -67,7 +75,7 @@ candy_cavity <- data.frame(
 
 ```
 
-###  
+### 
 
 ### Nonparametric Standardization
 
@@ -75,8 +83,11 @@ Unfortunately, this isn't always possible, especially when we are dealing with r
 
 ### Mean Outcome Modelling
 
-So what exactly are we going to do for modelling? Well, we are \
-\
+So what exactly are we going to do for modelling? Well, we are
+
+## Standardizing the Mean Outcome to the Confounder Distribution
+
+##   
 
 ## Assumptions for Standardization
 
