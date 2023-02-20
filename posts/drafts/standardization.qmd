@@ -63,7 +63,7 @@ Now, in an ideal world we'd be able to calculate this nonparametrically. We coul
 If $L$ is continuous in the above formula, then we need to replace $Pr[L=l]$ with the probability density function $f_{L}[l]$.
 :::
 
-### Does Eating Candy Cause Cavities?
+### Are the number of cavities we have caused by how much candy we eat?
 
 ```{r, candy cavity causal data, eval = FALSE}
 
@@ -75,8 +75,6 @@ candy_cavity <- data.frame(
 
 ```
 
-### 
-
 ### Nonparametric Standardization
 
 Unfortunately, this isn't always possible, especially when we are dealing with real-world data. People drop out of databases or may have missing data, just to name two potential problems. Sometimes if we also have high dimensional data with multiple confounders, it's not feasible. This is where modelling can come in handy!
@@ -87,7 +85,17 @@ So what exactly are we going to do for modelling? Well, we are
 
 ## Standardizing the Mean Outcome to the Confounder Distribution
 
-##   
+There are four steps involved to standardization:
+
+1.  Expansion of dataset
+
+2.  Modelling
+
+3.  Prediction
+
+4.  Standardization by averaging
+
+## 
 
 ## Assumptions for Standardization
 
@@ -100,3 +108,41 @@ So what exactly are we going to do for modelling? Well, we are
 
 While both IP weighting and standardization require structural positivity, the implications of this assumptions not being valid can vary. For standardization, it is possible to use if this is assumption isn't met however there then needs to be a willingness to rely on parametric extrapolation (this can be done to fit a model that will smooth over the strata with structural zeroes) however this will introduce bias into the estimation. This will result in the nomial 95% confidence intervals around the estimates covering the true effect less than 95% of the time. See @hernanwhatif, pp. 162 for more details.
 :::
+
+## Standardization for Binary Outcome
+
+Our example used a continuous outcome, however standardization can also be applied to a binary outcome. Odds ratios,
+
+[@lee2022application]
+
+### Causal Estimand of Treatment
+
+[@lee2022application] \# Ryan to add formulas here that are in the article
+
+## IP Weighting or Standardization?
+
+note to self: show that IPTW and standardization give the exact same result if estimated nonparametrically?
+
+Both IP weighting and standardization will give the exact same result. So then why would we choose one over the other? Well, they only give the same answer when no models are used to estimate them. \
+\
+At this point, you may be thinking "Well that's not really an answer" so lets try and explain. When you use a model, you are using two different models (in our case) with two different outcomes. For IP weighting, a logistic regression model is fit to estimate $Pr[A = a, C= 0|L]$ whereas in standardization, the conditional mean $E[Y|A=a C = 0, L = l]$
+
+However, some degree of misspecification is a part of all models, which will introduce some bias. Due to this, the estimates from IP weighting and standardization will differ, but large differences will alert us to potentially serious model misspecification.
+
+@hernanwhatif - Section 13.4
+
+::: callout-note
+## Doubly Robust
+
+A future post will dive more into this, however it's worth mentioning about the doubly robust estimator. In brief, a doubly robust estimator gives us two chances to get the model right [@hernanwhatif, pp. 167]\
+\
+Note to self: Make a minor note about the bias of doubly robust estimators (pg 170)
+:::
+
+What does this all mean? (Hurry up old man, we don't have all day! Which one is it?) Often there is no need to choose between them.
+
+## What Next? 
+
+Both IP weighting and standardization are estimators of the g-formula (also a topic of a subsequent post). Standardization however is a *plug-in* *g-formula* estimators. Since we used a parametric model, this is called the *parametric g-formula.*
+
+Both methods (IPW and parametric g-formula) can be used to estimate average causal effects in either the entire population or a subset.

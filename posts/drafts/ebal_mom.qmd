@@ -1,0 +1,26 @@
+---
+title: "Entropy Balancing and Method of Moments"
+author: "Ryan Batten"
+date: "2023-03-01""
+categories: [Standardization]
+# image: "iptw.jpeg"
+bibliography: standardization.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Reweighting
+
+Reweighting is a common technique
+
+## Method of Moments
+
+## Entropy Balancing
+
+So what exactly is entropy?
