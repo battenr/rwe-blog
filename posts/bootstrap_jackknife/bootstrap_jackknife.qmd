@@ -12,7 +12,7 @@ format:
 
 ## Pirates of the Caribbean?
 
-No, this post will not be focusing on Pirates of the Caribbean but does have bootstrapping and jackknifing! So perhaps there will be
+No, this post will not be focusing on Pirates of the Caribbean but does have bootstrapping and jackknifing! However...perhaps we will
 
 ## Variance Estimation
 

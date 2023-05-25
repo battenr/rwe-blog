@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/standardization/standardization.html",
       "/posts/glm/glm.html",
       "/posts/ip-weighting/ip_weighting.html",
       "/posts/marginal-conditional/marginal_conditional.html",
