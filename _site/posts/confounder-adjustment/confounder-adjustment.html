@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ryan Batten">
+<meta name="dcterms.date" content="2023-03-02">
+
+<title>Ryan’s Real-World Evidence - Damn Confounders. I need to adjust</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Ryan’s Real-World Evidence</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/battenr"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/rwe_ryan"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Damn Confounders. I need to adjust</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">DAGs</div>
+                <div class="quarto-category">Causal Diagrams</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ryan Batten </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 2, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#table-2-fallacy" id="toc-table-2-fallacy" class="nav-link active" data-scroll-target="#table-2-fallacy">Table 2 Fallacy</a></li>
+  <li><a href="#darn-another-graph" id="toc-darn-another-graph" class="nav-link" data-scroll-target="#darn-another-graph">“Darn, Another Graph?!”</a>
+  <ul>
+  <li><a href="#what-is-standardization-and-why-do-we-care" id="toc-what-is-standardization-and-why-do-we-care" class="nav-link" data-scroll-target="#what-is-standardization-and-why-do-we-care">What is standardization and why do we care?</a></li>
+  <li><a href="#how-do-we-standardize" id="toc-how-do-we-standardize" class="nav-link" data-scroll-target="#how-do-we-standardize">How do we standardize?</a></li>
+  </ul></li>
+  <li><a href="#why-should-we-standardize-something" id="toc-why-should-we-standardize-something" class="nav-link" data-scroll-target="#why-should-we-standardize-something">Why should we standardize something?</a></li>
+  <li><a href="#how-do-we-standardize-something" id="toc-how-do-we-standardize-something" class="nav-link" data-scroll-target="#how-do-we-standardize-something">How do we standardize something?</a></li>
+  <li><a href="#standardization-versus-iptw" id="toc-standardization-versus-iptw" class="nav-link" data-scroll-target="#standardization-versus-iptw">Standardization versus IPTW</a>
+  <ul>
+  <li><a href="#iptw" id="toc-iptw" class="nav-link" data-scroll-target="#iptw">IPTW</a></li>
+  </ul></li>
+  <li><a href="#standardization-in-causal-inference" id="toc-standardization-in-causal-inference" class="nav-link" data-scroll-target="#standardization-in-causal-inference">Standardization in Causal Inference</a>
+  <ul>
+  <li><a href="#are-the-number-of-cavities-we-have-caused-by-how-much-candy-we-eat" id="toc-are-the-number-of-cavities-we-have-caused-by-how-much-candy-we-eat" class="nav-link" data-scroll-target="#are-the-number-of-cavities-we-have-caused-by-how-much-candy-we-eat">Are the number of cavities we have caused by how much candy we eat?</a></li>
+  <li><a href="#nonparametric-standardization" id="toc-nonparametric-standardization" class="nav-link" data-scroll-target="#nonparametric-standardization">Nonparametric Standardization</a></li>
+  <li><a href="#mean-outcome-modelling" id="toc-mean-outcome-modelling" class="nav-link" data-scroll-target="#mean-outcome-modelling">Mean Outcome Modelling</a></li>
+  </ul></li>
+  <li><a href="#standardizing-the-mean-outcome-to-the-confounder-distribution" id="toc-standardizing-the-mean-outcome-to-the-confounder-distribution" class="nav-link" data-scroll-target="#standardizing-the-mean-outcome-to-the-confounder-distribution">Standardizing the Mean Outcome to the Confounder Distribution</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#assumptions-for-standardization" id="toc-assumptions-for-standardization" class="nav-link" data-scroll-target="#assumptions-for-standardization">Assumptions for Standardization</a></li>
+  <li><a href="#standardization-for-binary-outcome" id="toc-standardization-for-binary-outcome" class="nav-link" data-scroll-target="#standardization-for-binary-outcome">Standardization for Binary Outcome</a>
+  <ul>
+  <li><a href="#causal-estimand-of-treatment" id="toc-causal-estimand-of-treatment" class="nav-link" data-scroll-target="#causal-estimand-of-treatment">Causal Estimand of Treatment</a></li>
+  </ul></li>
+  <li><a href="#ip-weighting-or-standardization" id="toc-ip-weighting-or-standardization" class="nav-link" data-scroll-target="#ip-weighting-or-standardization">IP Weighting or Standardization?</a></li>
+  <li><a href="#parametric-g-formula" id="toc-parametric-g-formula" class="nav-link" data-scroll-target="#parametric-g-formula">Parametric G-Formula</a></li>
+  <li><a href="#what-next" id="toc-what-next" class="nav-link" data-scroll-target="#what-next">What Next?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="table-2-fallacy" class="level2">
+<h2 class="anchored" data-anchor-id="table-2-fallacy">Table 2 Fallacy</h2>
+<p>So what should we report? There was a great paper that was published in</p>
+</section>
+<section id="darn-another-graph" class="level2">
+<h2 class="anchored" data-anchor-id="darn-another-graph">“Darn, Another Graph?!”</h2>
+<p>Sure, how about “Don’t Analyze Graphs”? It’s a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.</p>
+<p>How about “Dramatic Action Graph”? It’s not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!</p>
+<section id="what-is-standardization-and-why-do-we-care" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-standardization-and-why-do-we-care">What is standardization and why do we care?</h3>
+<p>“You can’t compare those! That’s like comparing apples and oranges”. Standardization can help with this. Say that you have two different things that you want to compare, for example apples and oranges, the big question is how will you compare them?</p>
+<p>You are actually already familiar with standardization, you just may not think about it. One common example is height. Depending on where you live you probably measure height in inches (feet and inches), or centimeters.</p>
+<p>Now this naturally leads in</p>
+</section>
+<section id="how-do-we-standardize" class="level3">
+<h3 class="anchored" data-anchor-id="how-do-we-standardize">How do we standardize?</h3>
+<p>Alright so we’ve covered the what and why, but how do we apply that in this case? Well in a similar fashion, albeit a bit different.</p>
+<p>I think first it’s important to go over some of high level points of standardizing in general. First, what is standardizing? I’m sure you’re familiar with the phrase “you can’t compare these, that’s like comparing apples and oranges!” and there is some truth to that. What if you could compare them with respect to the amount of juice a single one produces? Or how far away from the color blue they are? (Alright, bad example I admit but you get the point). The reasons that we standardize is to allow for a observations to be on a common scale. For example, you can’t compare apples to oranges but you <strong>can</strong> compare the volume of juice contained in an apple to that of an orange.</p>
+</section>
+</section>
+<section id="why-should-we-standardize-something" class="level2">
+<h2 class="anchored" data-anchor-id="why-should-we-standardize-something">Why should we standardize something?</h2>
+<p>What exactly is standardizing?</p>
+</section>
+<section id="how-do-we-standardize-something" class="level2">
+<h2 class="anchored" data-anchor-id="how-do-we-standardize-something">How do we standardize something?</h2>
+<p>In general, standardization is typically performed by standardizing the data</p>
+<p>describe standardization</p>
+<p>Standardization is the process of transforming data into a common format by adjusting the values of the observations to a common scale. This is done by subtracting the mean of the data from each observation and then dividing by the standard deviation. This process helps to make data more comparable and easier to interpret. Standardization is often used in machine learning algorithms to ensure that all features are on the same scale and have the same variance.</p>
+</section>
+<section id="standardization-versus-iptw" class="level2">
+<h2 class="anchored" data-anchor-id="standardization-versus-iptw">Standardization versus IPTW</h2>
+<section id="iptw" class="level3">
+<h3 class="anchored" data-anchor-id="iptw">IPTW</h3>
+<p>I won’t bore you here, I’ll keep it brief (if you want a more in-depth review of IPTW please see my other post).</p>
+<p>briefly explain difference between iptw and standardization</p>
+</section>
+</section>
+<section id="standardization-in-causal-inference" class="level2">
+<h2 class="anchored" data-anchor-id="standardization-in-causal-inference">Standardization in Causal Inference</h2>
+<p>The standardized mean in the uncensored (C = 0) is calculated as</p>
+<p><span class="math display">\[
+{\sum_{l}E[Y|A = a, C=0, L=l]}  \times Pr[L=l]
+\]</span></p>
+<p>Now, in an ideal world we’d be able to calculate this nonparametrically. We could calculate the mean outcomes in the uncensored, treated in each stratum <span class="math inline">\(l\)</span> of the confounders <span class="math inline">\(L\)</span> (i.e., <span class="math inline">\(E[Y|A =1, C=0, L=l]\)</span> for each of the strata <span class="math inline">\(l\)</span>. Then we would take the weighted mean sum. To do this, we’d use the above formula where the weights are the proportion of people in each straum L. Rather than just described, how about an example?</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What if L is continuous?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(L\)</span> is continuous in the above formula, then we need to replace <span class="math inline">\(Pr[L=l]\)</span> with the probability density function <span class="math inline">\(f_{L}[l]\)</span>.</p>
+</div>
+</div>
+<section id="are-the-number-of-cavities-we-have-caused-by-how-much-candy-we-eat" class="level3">
+<h3 class="anchored" data-anchor-id="are-the-number-of-cavities-we-have-caused-by-how-much-candy-we-eat">Are the number of cavities we have caused by how much candy we eat?</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>candy_cavity <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cavity =</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="nonparametric-standardization" class="level3">
+<h3 class="anchored" data-anchor-id="nonparametric-standardization">Nonparametric Standardization</h3>
+<p>Unfortunately, this isn’t always possible, especially when we are dealing with real-world data. People drop out of databases or may have missing data, just to name two potential problems. Sometimes if we also have high dimensional data with multiple confounders, it’s not feasible. This is where modelling can come in handy!</p>
+</section>
+<section id="mean-outcome-modelling" class="level3">
+<h3 class="anchored" data-anchor-id="mean-outcome-modelling">Mean Outcome Modelling</h3>
+<p>So what exactly are we going to do for modelling? Well, we are</p>
+</section>
+</section>
+<section id="standardizing-the-mean-outcome-to-the-confounder-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="standardizing-the-mean-outcome-to-the-confounder-distribution">Standardizing the Mean Outcome to the Confounder Distribution</h2>
+<p>There are four steps involved to standardization:</p>
+<ol type="1">
+<li><p>Expansion of dataset</p></li>
+<li><p>Modelling</p></li>
+<li><p>Prediction</p></li>
+<li><p>Standardization by averaging</p></li>
+</ol>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
+</section>
+<section id="assumptions-for-standardization" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions-for-standardization">Assumptions for Standardization</h2>
+<ol type="1">
+<li><p>Structural positivity. Similar to IP weighting, positivity is also necessary for standardization because when <span class="math inline">\(Pr[A = a | L = l] = 0\)</span> and <span class="math inline">\(Pr[L = l] \neq 0\)</span> then the conditional mean outcome <span class="math inline">\(E[Y|A,L]\)</span> is undefined <span class="citation" data-cites="hernanwhatif">[@hernanwhatif, pp.162]</span>.</p></li>
+<li></li>
+</ol>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Positivity Assumption
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While both IP weighting and standardization require structural positivity, the implications of this assumptions not being valid can vary. For standardization, it is possible to use if this is assumption isn’t met however there then needs to be a willingness to rely on parametric extrapolation (this can be done to fit a model that will smooth over the strata with structural zeroes) however this will introduce bias into the estimation. This will result in the nomial 95% confidence intervals around the estimates covering the true effect less than 95% of the time. See <span class="citation" data-cites="hernanwhatif">@hernanwhatif</span>, pp.&nbsp;162 for more details.</p>
+</div>
+</div>
+</section>
+<section id="standardization-for-binary-outcome" class="level2">
+<h2 class="anchored" data-anchor-id="standardization-for-binary-outcome">Standardization for Binary Outcome</h2>
+<p>Our example used a continuous outcome, however standardization can also be applied to a binary outcome. Odds ratios,</p>
+<p><span class="citation" data-cites="lee2022">[@lee2022]</span></p>
+<section id="causal-estimand-of-treatment" class="level3">
+<h3 class="anchored" data-anchor-id="causal-estimand-of-treatment">Causal Estimand of Treatment</h3>
+<p><span class="citation" data-cites="lee2022">[@lee2022]</span> # Ryan to add formulas here that are in the article</p>
+</section>
+</section>
+<section id="ip-weighting-or-standardization" class="level2">
+<h2 class="anchored" data-anchor-id="ip-weighting-or-standardization">IP Weighting or Standardization?</h2>
+<p>note to self: show that IPTW and standardization give the exact same result if estimated nonparametrically?</p>
+<p>Both IP weighting and standardization will give the exact same result. So then why would we choose one over the other? Well, they only give the same answer when no models are used to estimate them.<br>
+<br>
+At this point, you may be thinking “Well that’s not really an answer” so lets try and explain. When you use a model, you are using two different models (in our case) with two different outcomes. For IP weighting, a logistic regression model is fit to estimate <span class="math inline">\(Pr[A = a, C= 0|L]\)</span> whereas in standardization, the conditional mean <span class="math inline">\(E[Y|A=a C = 0, L = l]\)</span></p>
+<p>However, some degree of misspecification is a part of all models, which will introduce some bias. Due to this, the estimates from IP weighting and standardization will differ, but large differences will alert us to potentially serious model misspecification.</p>
+<p><span class="citation" data-cites="hernanwhatif">@hernanwhatif</span> - Section 13.4</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Doubly Robust
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A future post will dive more into this, however it’s worth mentioning about the doubly robust estimator. In brief, a doubly robust estimator gives us two chances to get the model right <span class="citation" data-cites="hernanwhatif">[@hernanwhatif, pp. 167]</span><br>
+<br>
+Note to self: Make a minor note about the bias of doubly robust estimators (pg 170)</p>
+</div>
+</div>
+<p>What does this all mean? (Hurry up old man, we don’t have all day! Which one is it?) Often there is no need to choose between them.</p>
+</section>
+<section id="parametric-g-formula" class="level2">
+<h2 class="anchored" data-anchor-id="parametric-g-formula">Parametric G-Formula</h2>
+<p>So what is the parametric g-formula? Well you already used it. It’s the same as standardization. You see, standardization replaces the conditional mean outcome in the g-formula by it’s estimates, in this case those estimates were estimated from a parametric model and…ta da! You get the parametric g-formula.</p>
+</section>
+<section id="what-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-next">What Next?</h2>
+<p>Both IP weighting and standardization are estimators of the g-formula (also a topic of a subsequent post). Standardization however is a <em>plug-in</em> <em>g-formula</em> estimators. Since we used a parametric model, this is called the <em>parametric g-formula.</em></p>
+<p>Both methods (IPW and parametric g-formula) can be used to estimate average causal effects in either the entire population or a subset.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

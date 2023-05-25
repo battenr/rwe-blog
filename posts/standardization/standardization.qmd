@@ -1,0 +1,310 @@
+---
+title: "Standardize Your Way to Causal Inference" 
+subtitle: "Standardization and the Parametric G-Formula"
+author: "Ryan Batten"
+date: "2023-05-25"
+categories: [Standardization, Parametric G-Formula]
+image : "standards.png"
+bibliography: standardize.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Comparing Apples and Oranges
+
+Imagine that we have two groups of people that we are comparing the a*verage length of plants* grown: group A and group O. Group A are comprised of kids in grade 1 while group O are the parents. The kids (Group A) received a lesson about growing plants, while the parents (group O) did not. After receiving the lesson, each person got a plant and grew it. After 12 weeks, the plants length was measured. \
+\
+When the teacher looks at the plants grown, they conclude that group O are better at growing plants. That's when a parent runs up huffing and puffing "You can't compare those! That's like comparing apples and oranges" when a kid from group A chimes in "If we didn't water them as much then we'd have done way better than them!"\
+\
+Now they have a point, watering a plant will certainly have an impact on how the plants grow, as will the sunlight, soil and other important factors. "So what do we do? Throw out this experiment?" the teacher asks the parent. "Not so fast! We can standardize these and then compare the groups!" you exclaim. So how exactly do we standardize to compare Groups A and O?
+
+### How do we standardize?
+
+Alright so we have our question, "Does getting a lesson in plant growing cause your plants to grow longer?", but how exactly do we apply that in this case? Well first we need to have a look at the data and see what we have.
+
+```{r, message = FALSE, warning = FALSE}
+
+library(tidyverse)
+
+set.seed(1513) # picked based on runif(1, min = 0, max = 2023)
+
+grp_a <- data.frame(
+  age = rnorm(n = 116, mean = 10, sd = 3),
+  indoors = rbinom(n = 116, size = 1, prob = 0.3), 
+  hrs_sunlight = runif(n = 116, min = 2, max = 6), 
+  watered = rbinom(n = 116, size = 1, prob = 0.4),
+  group = 1
+) 
+
+grp_o <- data.frame(
+  age = rnorm(n = 116, mean = 30, sd = 7),
+  indoors = rbinom(n = 116, size = 1, prob = 0.8), 
+  hrs_sunlight = runif(n = 116, min = 8, max = 12), 
+  watered = rbinom(n = 116, size = 1, prob = 0.6),
+  group = 0
+) 
+
+df = rbind(grp_a, grp_o) |> 
+  dplyr::mutate(
+    plant_length = rnorm(n = 232, mean = 1.5*group + 0.2*age + 0.3*indoors + 0.8*hrs_sunlight - 0.5*watered, sd = 1)
+  ) 
+
+
+```
+
++------------------------------+---------------+---------------+
+| Characteristic               | Group A       | Group O       |
+|                              |               |               |
+|                              | (n = 116)     | (n = 116)     |
++:============================:+:=============:+:=============:+
+| Age, Mean (SD)               | 10 (2.74)     | 30.04 (6.12)  |
++------------------------------+---------------+---------------+
+| Indoors, n (%)               | 34, (30.2%)   | 99 (85.3%)    |
++------------------------------+---------------+---------------+
+| Hours in Sunlight, Mean (SD) | 3.77 (1.23)   | 10.02 (1.18)  |
++------------------------------+---------------+---------------+
+| Adequately watered, n (%)    | 46, (39.7%)   | 59, (50.9%)   |
++------------------------------+---------------+---------------+
+| Length of plant, Mean (SD)   | 6.52 (1.58)   | 14.2 (1.89)   |
++------------------------------+---------------+---------------+
+
+Alright so now we have our data and know the age of each person, how many plants were grown indoors in each group, the hours in the sunlight of each plant, whether the plant was adequately watered and the length of each plant. So what? Well we need to standardize these groups. \
+\
+You may be thinking of standardization in terms of other methods, that are not necessarily statistical. For example, say you weighted three rocks: one is 110 kilogram, one is 167 pounds and one is 25 stones, how could you possible compare these three? They are in different units! In this situation, you might be thinking "Well, we just convert them all to the same units duh"...exactly! You are standardizing the units. In this case we are doing something similar, except with a regression model.
+
+## Standardization for Causal Inference
+
+Inverse probability weighting (IPW) is a commonly used method for causal inference however standardization is one alternative. I won't bore you here with extraneous details about IPW but you can find more information about IPW in another of my blog posts.\
+\
+Briefly, IPW uses a model for the treatment (aka the propensity score) whereas standardization models the outcome [@hernanwhatif]. More formally, if we were to write it as an equation, assuming that no individuals are censored (C=0) [@hernanwhatif, pp. 162] :
+
+$$
+{\sum_{l}E[Y|A = a, C=0, L=l]}  \times Pr[L=l]
+$$
+
+Now, in an ideal world we'd be able to calculate this nonparametrically. To do that, we could calculate the mean outcome in each stratum $l$ of the confounders $L$. So in our case we could look at one strata as the individuals who are 5 years old, grew their plant indoor, had their plant in the sunlight for 2 hours and adequately watered their plant. We could do this for each strata, then take the weighted mean sum using the above formula.
+
+::: callout-note
+## What if L is continuous?
+
+If $L$ is continuous in the above formula, then we need to replace $Pr[L=l]$ with the probability density function $f_{L}[l]$ [@hernanwhatif, pp. 162].
+:::
+
+Now, as you can imagine that is a lot of work especially when the variable is continuous. You can probably imagine that this isn't always possible, especially when dealing with real-world data or many covariates. As the number of covariates increases, so does the number of strata. Lucky for us, this is where modelling can come in handy!
+
+## Standardizing the Mean Outcome to the Confounder Distribution
+
+Firstly, we need to go over the four steps, very briefly, involved in standardizing the mean outcome. The steps are [@hernanwhatif, pp. 164]:
+
+1.  Expansion of data set
+
+2.  Modelling
+
+3.  Prediction
+
+4.  Standardization by averaging
+
+### Expansion of data set
+
+For the first step, we expand the dataset by creating three total datasets. The first will be our original dataset, the second is a dataset where the treatment is set to 0 and we have a missing outcome while the third is one where the treatment is set to 1 and we have a missing outcome.
+
+```{r, message = FALSE, warning = FALSE}
+
+df_og <- df
+
+df_grp0 <- df |> 
+  dplyr::select(
+    -plant_length, -group
+  ) |> 
+  dplyr::mutate(
+    group = 0
+  )
+
+df_grp1 <- df |> 
+  dplyr::select(
+    -plant_length, -group
+  ) |> 
+  dplyr::mutate(
+    group = 1
+  )
+
+```
+
+### Modelling
+
+For this step, we will use the first dataset (the one where we have the outcomes). We will fit a model, including the covariates we want to adjust for (in this case, those that are confounders).
+
+```{r, message = FALSE, warning = FALSE}
+
+fit <- glm(
+  plant_length ~ group + age + indoors + hrs_sunlight + watered, 
+  family = gaussian(link = "identity"), 
+  data = df
+)
+
+```
+
+### Prediction
+
+Using our handy dandy model, we will now predict the outcome for each of the datasets. First we predict the outcome for the data set if everyone were in group O. Next, we predict the outcome for the data set if everyone were in group A.
+
+```{r, message = FALSE, warning = FALSE}
+
+pred0 <- predict(fit, df_grp0) |> as.data.frame() |> 
+  rename(plant_length = `predict(fit, df_grp0)`)
+
+pred1 <- predict(fit, df_grp1) |> as.data.frame() |> 
+  rename(plant_length = `predict(fit, df_grp1)`)
+
+```
+
+### Standardization by averaging
+
+Now that we have predicted the outcomes, we can calculate the average outcome for each data set. Before we calculate this, you might be asking about the uncertainty for this measurement, which I'm glad you asked! \
+\
+To get 95% confidence intervals for this, we can use bootstrapping (with R code that complements the Causal Inference Book, a special thanks to Joy Shi, Sean McGrath and Tom Palmer for providing this). \
+
+```{r, warning = FALSE, message = FALSE}
+
+# A special thanks to Joy Shi, Sean McGrath and Tom Palmer for providing this code for free. Link here: https://remlapmot.github.io/cibookex-r/standardization-and-the-parametric-g-formula.html#program-13.4
+
+library(boot)
+
+# Function, altered from the above link for our use 
+
+standardization <- function(data, indices) {
+  
+  # We need to first make the datasets that we need
+  
+  # 1st copy: our original
+  
+  d <- data[indices, ] 
+  
+  # 2nd copy: Same as original but with group = 0 and outcome as missing
+  
+  d0 <- d 
+  d0$group <- 0 # setting group to 0
+  d0$plant_length <- NA # setting plant length (our outcome) to missing 
+  
+  # 3rd copy: Same as original but with group = 1 and outcome as missing
+  
+  d1 <- d 
+  d1$group <- 1 # setting group to 1
+  d1$plant_length <- NA # setting plant length (our outcome) to missing 
+  
+  # Making one sample
+  
+  d.onesample <- rbind(d, d0, d1) # combining datasets
+  
+  # Fitting a model for each iteration
+  
+  fit <- glm(
+    plant_length ~ group + age + indoors + hrs_sunlight + watered,
+    data = d.onesample
+  )
+  
+  # Using model to predict the outcome
+  
+  d.onesample$predicted_meanY <- predict(fit, d.onesample)
+  
+  # Calculate the mean for each of the groups. The third calculation is for the difference in group O (0) vs group A (1)
+  
+  return(c(
+    mean(d.onesample$predicted_meanY[d.onesample$group == 0]),
+    mean(d.onesample$predicted_meanY[d.onesample$group == 1]),
+    # Treatment - No Treatment
+    
+    mean(d.onesample$predicted_meanY[d.onesample$group == 1]) -
+    mean(d.onesample$predicted_meanY[d.onesample$group == 0])
+  ))
+}
+
+
+# Now we can bootstrap this statistic using our dataset
+
+results <- boot(data = df,
+                statistic = standardization,
+                R = 5)
+
+# Using the bootstrapped sample (titled result), we can calculate the confidence intervals. We take the standard deviation of the sampling distribution. This will give us our standard error
+
+se <- c(sd(results$t[, 1]),
+        sd(results$t[, 2]),
+        sd(results$t[,3]))
+
+
+mean <- results$t0 # calculate mean 
+ll <- mean - qnorm(0.975) * se # lower limits
+ul <- mean + qnorm(0.975) * se # upper limits
+
+finalresults <- data.frame(
+  result_title = c("Group O", "Group A", "Difference"),
+  mean = round(mean,3),
+  ci = paste0("95% CI: ", round(ll, 3), " - ", round(ul, 3))
+)
+
+```
+
+Finally we have our results! We end up with a mean difference of -1.43 (95% -0.96 to -1.90). Finally, we can put to rest that the people being put in Group O grew longer plants than those in group A (or those in group A grew shorter plants than those in Group O). Now begs the question of when are these valid?
+
+## Assumptions for Standardization
+
+So when are these valid? We can group the assumptions into three groups: identifability conditions, measurement of variables and specification of model [@hernanwhatif, pp. 168]. The idenifability conditions are exchangeability, positivity and consistency. Positivity can be checked empirically but the other two are opinion based. For a more detailed version of these, check out my other blog post.
+
+The second condition is the variables used in the analysis need to be correctly measured. Measurement error in the treatment, outcome or the confounders will generally result in bias (see chapter 9 of @hernanwhatif for more specifics). \
+\
+Finally, all models need to be correctly specified (see chapter 11 of @hernanwhatif for more specifics). Of course, all of these will never hold perfectly but some remain a matter of judgement which means it can be open to criticism. It's important to keep these assumptions in mind and the validity of them. For example, a critique in our example could be that our intervention is not well-defined (which I'd agree with and we could make our intervention definition more defined).
+
+We need to make sure all of these conditions hold, at least in approximately since in the real-world it is difficult (i.e., in practice there is most likely some form of model misspecification). Some of these assumptions are based on judgement, which is important to note.
+
+::: callout-note
+## Positivity Assumption
+
+While both IP weighting and standardization require structural positivity, the implications of this assumptions not being valid can vary. For standardization, it is possible to use if this is assumption isn't met however there then needs to be a willingness to rely on parametric extrapolation (this can be done to fit a model that will smooth over the strata with structural zeroes) however this will introduce bias into the estimation. This will result in the nomial 95% confidence intervals around the estimates covering the true effect less than 95% of the time. See @hernanwhatif, pp. 162 for more details.
+:::
+
+## What about other measures? 
+
+Our example used a continuous outcome, so we used risk difference as our causal estimand. Of course, there are other causal estimands of interest as well. I won't bore you with another example here (maybe in the future). I'd highly recommend checking out @lee2022 if you are interested in other estimands including relative risk and odds ratios. The process is very similar.
+
+## IP Weighting or Standardization?
+
+If we were to do both without using any models (i.e., nonparametrically), then we would expect both methods to give the exact same result. This is because they are modelling different things (treatment for IPW, outcome for standardizaiton) and we can always expect some level of misspecification of a model in practice. So if they don't give the same answer then how do we pick? The short answer is we don't.\
+\
+Large differences between them will let us know that there is some serious misspecificaiton in at least one of the estimates. Small differences may still indicate there's a problem but not as serious misspecification.\
+\
+Basically what I'm trying to say is when both methods can be used, just use both.
+
+::: callout-note
+## G-formula
+
+Fun fact: both IPW and standardization are estimators of the g-formula. Standardization is called a *plug-in g-formula* estimator because it replaces the conditional mean outcome by its estimates. When those estimates come from parametric models, we refer to the method as the *parametric g-formula*.\
+\
+Note: when there is no time-varying confounders, the parametric g-formula doesn't require parametric modelling of the distribution of the confounders.
+:::
+
+Both IP weighting and standardization will give the exact same result. So then why would we choose one over the other? Well, they only give the same answer when no models are used to estimate them.\
+\
+At this point, you may be thinking "Well that's not really an answer" so lets try and explain. When you use a model, you are using two different models (in our case) with two different outcomes. For IP weighting, a logistic regression model is fit to estimate $Pr[A = a, C= 0|L]$ whereas in standardization, the conditional mean $E[Y|A=a C = 0, L = l]$
+
+However, some degree of misspecification is a part of all models, which will introduce some bias. Due to this, the estimates from IP weighting and standardization will differ, but large differences will alert us to potentially serious model misspecification.
+
+## The G-Formula
+
+Enough teasing already! What does the parametric g-formula have to do with this!! You may be screaming at your screen right now. Alright, so first the equation for the *g-formula* is formally expressed as [@naimi2017]:
+
+$$
+E(Y^{a_0, a_1}) = \sum_{z_1}E(Y|A_1 = a_1, Z_1 = z1, A_0 = a_0)P(Z_1=z_1|A_0=a_0)
+$$
+
+At this point you may be wondering "What in the world does this formula have to do with standardization?". If you are thinking that, props to you! (side note: I personally always like to ask these types of questions). Well, when we just input the values to this equation, we say that we are using a *plug-in g-formula* estimator since we just...you guessed it....plug in the values! Standardization is a *plug-in g-formula* estimator however since, in our case, the estimate came from a parametric model we call it the *parametric g-formula.*
+
+## What Next?
+
+Now you are free to go standardize away out there in the free world!

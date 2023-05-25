@@ -3,11 +3,7 @@ title: "Introduction to Survival Analysis"
 author: "Ryan Batten"
 date: "2022-10-24"
 categories: [Survival Analysis]
-# image: "iptw.jpeg"
 bibliography: intro_to_survival.bib
-sidebar: 
-  contents:
-  - intro_to_survival.qmd
 draft: true
 format: 
   html:

@@ -1,0 +1,88 @@
+---
+title: "Collapsibility/Non-collapsibility" 
+subtitle: "TBD"
+author: "Ryan Batten"
+date: "2023-03-02"
+categories: [Nested Models, G-Estimation]
+# image : "standards.png"
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Title Options (Delete)
+
+Title options (from ChatGPT)
+
+1.  "In a Game of Statistical Jenga, Odds Ratios and Hazard Ratios Never Collapse!"
+
+2.  "Non-Collapsible Ratios: When Your Statistics Have Better Posture Than You!"
+
+3.  "Non-Collapsible Effect Measures: Because Some Ratios Just Won't Fold Under Pressure!"
+
+4.  "Odds Ratios and Hazard Ratios: The Non-Collapsible Chairs of Epidemiology."
+
+## Collapsible?
+
+\
+\#
+
+## Ratios
+
+Odds ratios (OR) and hazard ratios (HR) are two types of effect measures used in epidemiology and statistics to compare the risk or odds of an event happening in two different groups. They are considered non-collapsible effect measures because they can change when additional variables are adjusted for in a model, even if these variables do not interact with the exposure variable.
+
+Non-collapsibility refers to the property that the measure of effect for a particular exposure can change when a variable that is not a confounder is added to the model.
+
+1.  **Odds Ratios**: Odds ratios are calculated as the odds of an event occurring in the exposed group divided by the odds of the event occurring in the unexposed group. They are non-collapsible because the odds ratio calculated in a simple unadjusted analysis can be different from the odds ratio calculated in a multivariable model that adjusts for other variables. This is a consequence of the mathematical properties of the odds ratio.
+
+2.  **Hazard Ratios**: Hazard ratios are used in survival analysis and are calculated as the hazard (or risk) of an event in the exposed group divided by the hazard in the unexposed group. They are also non-collapsible because the hazard ratio can change when other variables are added to a Cox proportional hazards model, even if these variables are not confounders.
+
+This feature of ORs and HRs is important to consider in statistical analysis, as it can lead to different interpretations of the data depending on what variables are included in the model. It's also a key reason why researchers carefully consider which variables to include in their models.
+
+In contrast, other measures of effect like risk ratios or risk differences are collapsible, meaning they remain the same whether or not non-confounding variables are adjusted for in the model.
+
+## Simulated Data
+
+```{r}
+
+# From ChatGPT
+
+# Load required library
+
+library(dplyr)
+
+# Set seed for reproducibility
+
+set.seed(123)
+
+# Simulate data
+
+N <- 10000 # Number of observations
+
+z <- rbinom(N, 1, 0.5) # Covariate (not a confounder)
+
+x <- rbinom(N, 1, 0.5 + 0.3*z) # Exposure
+
+y <- rbinom(N, 1, 0.5 + 0.3*x + 0.3*z) # Outcome
+
+# Combine into a data frame
+
+data <- data.frame(y = y, x = x, z = z)
+
+# Calculate the crude (unadjusted) odds ratio
+
+crude_or <- exp(coef(glm(y ~ x, data = data, family = "binomial"))["x"])
+
+# Calculate the adjusted odds ratio
+
+adj_or <- exp(coef(glm(y ~ x + z, data = data, family = "binomial"))["x"])
+
+print(paste("Crude Odds Ratio: ", crude_or))
+
+print(paste("Adjusted Odds Ratio: ", adj_or))
+```

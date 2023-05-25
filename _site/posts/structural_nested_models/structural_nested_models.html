@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ryan Batten">
+<meta name="dcterms.date" content="2023-03-02">
+
+<title>Ryan’s Real-World Evidence - Structural Nested Mean Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Ryan’s Real-World Evidence</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/battenr"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/rwe_ryan"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Structural Nested Mean Models</h1>
+            <p class="subtitle lead">TBD</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Nested Models</div>
+                <div class="quarto-category">G-Estimation</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ryan Batten </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 2, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#yet-another-method" id="toc-yet-another-method" class="nav-link active" data-scroll-target="#yet-another-method">Yet Another Method?</a></li>
+  <li><a href="#exchangeability-again" id="toc-exchangeability-again" class="nav-link" data-scroll-target="#exchangeability-again">Exchangeability again?!</a></li>
+  <li><a href="#structural-nested-mean-models" id="toc-structural-nested-mean-models" class="nav-link" data-scroll-target="#structural-nested-mean-models">Structural Nested Mean Models</a></li>
+  <li><a href="#rank-preservation" id="toc-rank-preservation" class="nav-link" data-scroll-target="#rank-preservation">Rank Preservation</a></li>
+  <li><a href="#g-estimation" id="toc-g-estimation" class="nav-link" data-scroll-target="#g-estimation">G-Estimation</a></li>
+  <li><a href="#estimating-95-ci" id="toc-estimating-95-ci" class="nav-link" data-scroll-target="#estimating-95-ci">Estimating 95% CI</a></li>
+  <li><a href="#what-about-our-rank-preservation-assumption" id="toc-what-about-our-rank-preservation-assumption" class="nav-link" data-scroll-target="#what-about-our-rank-preservation-assumption">What about our rank preservation assumption?</a></li>
+  <li><a href="#multiple-parameters" id="toc-multiple-parameters" class="nav-link" data-scroll-target="#multiple-parameters">Multiple Parameters</a></li>
+  <li><a href="#so-how-useful-is-this-anyways" id="toc-so-how-useful-is-this-anyways" class="nav-link" data-scroll-target="#so-how-useful-is-this-anyways">So how useful is this anyways?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="yet-another-method" class="level2">
+<h2 class="anchored" data-anchor-id="yet-another-method">Yet Another Method?</h2>
+<p>There are multiple ways to estimate the average causal effect: IP weighting (IPW), standardization and g-estimation to name a few. See posts here and here <strong>(RYAN ADD LINK)</strong> on IPW and standardization respectively. These are commonly called <em>g</em>-methods since they are designed for applying to <em>g</em>eneralized treatment contrasts involving treatments that vary over time. Models that are estimated via g-estimation are known as <em>structural nested models</em>.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+G-Methods Require Assumptions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Each of the three g-methods previously described are based on different modelling assumptions.</p>
+</div>
+</div>
+</section>
+<section id="exchangeability-again" class="level2">
+<h2 class="anchored" data-anchor-id="exchangeability-again">Exchangeability again?!</h2>
+<p>If you’ve read some of my previous posts (or even if you haven’t but you know what exchangeability is), and feel like you already know what it is feel free to skip this section. If not, I’ll keep it brief but explain what we mean. Exchangeability is a key assumption in causal inference. Specifically, it’s means that you can exchange the groups with regards to confounders. Another way of putting it, as is in Hernan &amp; Robins What If: “Conditional exhangeability means that if the outcome distribution in the treated and untreated would be the same if both groups had received the same treatment level”. Mathematically we can say<br>
+<br>
+<span class="math display">\[Pr[A = 1|Y^{a = 0}, L] = Pr[A = 1 |L]\]</span></p>
+<p>Personally the way I like to think of it is like this: say you want to know if licking popsicles causes your tongue to turn blue but you have two groups. The average age in group 1, people who got a popsicle, is 5 years old and the average age in group 2, people who got a popsicle stick with no popsicle (the horror!) is 56 then we can’t compare these two because age could be a confounder. (Note, not all covariates have to be balanced, that’s a conversion for another day. There’s also differing views on how you select what to include when trying to achieve conditional exchangeability).</p>
+</section>
+<section id="structural-nested-mean-models" class="level2">
+<h2 class="anchored" data-anchor-id="structural-nested-mean-models">Structural Nested Mean Models</h2>
+<p>“What are we trying to do?” This is always an important thing to keep in mind. In this case, we are trying to estimate the causal effects in a subset of the population. For example, we may want to know the average causal effect of treatment A within levels of the confounder <em>L</em>. If there were no effect-measure modification by <em>L</em>, these differences would be constant (i.e., <span class="math inline">\(E[Y^{a = 1} - Y^{a = 0}|L] = \beta_1\)</span> where <span class="math inline">\(\beta_{1}\)</span> would be the average causal effect in each stratum and also the entire population)</p>
+<p>Under exchangeability, the structural model can be also written as:</p>
+<p><span class="math display">\[
+E[Y^{a} - Y^{a = 0}|A = a, L] = \beta_{1}a + \beta_{2}aL
+\]</span></p>
+<p>which is referred to as a <em>structural nested mean model</em>, where <span class="math inline">\(\beta_{1}, \beta_{2}\)</span> are estimated by g-estimation. It’s important to note here that these models are semiparametric because they are agnostic about both the intercept and main effect of L (aka there is no parameter <span class="math inline">\(\beta_0\)</span> and no parameter <span class="math inline">\(\beta_3\)</span> for a term <span class="math inline">\(\beta_{3}L\)</span>.</p>
+<p>If there is censoring, this can change the model to <span class="math inline">\(E[Y^{a=1, c=0} - Y^{a = 0, c = 0}|A, L]\)</span> rather than <span class="math inline">\(E[Y^{a = 1} - Y^{a = 0} | A, L]\)</span>. To account for this difference, requires adjusting for both confounding and selection bias, luckily IPW and standardization can be used to adjust for both these biases however G-estimation cannot (only for confounding).</p>
+<p>This is all to say, when using g-estimation first we need to adjust for selection bias due to censoring by IPW.</p>
+</section>
+<section id="rank-preservation" class="level2">
+<h2 class="anchored" data-anchor-id="rank-preservation">Rank Preservation</h2>
+<p>If we were to rank all of the individuals for each of their counterfactual outcomes, and they remained in the same order that would be rank preservation. When the effect of the treatment <em>A</em> on the outcome <em>Y</em> is exactly the same on the additive scale, for all individuals in the study population, we say that <em>additive rank preservation holds</em>. For example, if smoking increases everyones weight by exactly 3kg, then the ranking according to <span class="math inline">\(Y^{a = 0}\)</span> is the same ranking as <span class="math inline">\(Y^{a = 1}\)</span> except the latter is 3kg heavier.</p>
+<p>Now at this point you may think “Huh? That seems super impractical!”….and you’d be right. As a general rule of thumb, it’s never a good idea to use methods that require rank preservation. However, we will use it to introduce g-estimation since it’s easier to understand for rank-preserving models but it’s the same method for rank-preserving and non rank-perserving models.</p>
+</section>
+<section id="g-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="g-estimation">G-Estimation</h2>
+<p>Suppose we want to estimate the parameters of the structural nested mean model <span class="math inline">\(E[Y^{a} - Y^{a = 0}|A = a, L] = \beta_{a}\)</span>. For simplicity, we are starting with a model with a single parameter <span class="math inline">\(\beta_{1}\)</span>. Since there is no term <span class="math inline">\(\beta_2aL\)</span>, we are essentially assuming that the average causal effect is constant across the strata of <em>L</em> (i.e., no additive effect modification by L).</p>
+<p>We are also assuming that additive rank-preserving model <span class="math inline">\(Y^{a}_{i} - Y_{i}^{a = 0} = \psi_1a\)</span> is correctly specified for all individuals <em>i</em>. If that is the case then <span class="math inline">\(\psi_1\)</span> is equal to the average causal effect <span class="math inline">\(\beta_1\)</span> which is what we really want to know. When we write the model, we will remove the subscript <em>i</em> since it is the same for all individuals, therefore:</p>
+<p><span class="math display">\[
+Y^{a = 0} = Y^a - \psi_1a
+\]</span></p>
+<p>Now we are ready to go!</p>
+<p>The first step is to link the model to the observed data. Due to consistency, the counterfactual outcome <span class="math inline">\(Y^{a = 1}\)</span> if <span class="math inline">\(A = 1\)</span> and <span class="math inline">\(Y^{a = 0}\)</span> if <span class="math inline">\(A = 0\)</span>. Therefore, if we replaced the value <em>a</em> in the structural model by each individuals value of <em>A</em> (1 or 0) then we can replace the outcome by the individuals observed outcome, <span class="math inline">\(Y^{A} = Y\)</span>. Based on this the model, if we assume rank-preservation, implies an equation <span class="math inline">\(Y^{a = 0} = Y - \psi_1A\)</span> where each individuals counterfactual outcome is a function of the the person’s observed data on treatment and the outcome and unknown parameter <span class="math inline">\(\psi_1\)</span>:</p>
+<p><span class="math display">\[
+Y^{a = 0} = Y - \psi_1A
+\]</span></p>
+<p>Now, if this were correct and we knew the value of <span class="math inline">\(\psi_1\)</span> then we could calculate the counterfactual outcome under no treatment for each individual in the study popluation, except that we don’t know <span class="math inline">\(\psi_1\)</span>. Estimating this is exactly what we want to do.<br>
+<br>
+</p>
+<p>Now how exactly will we do this? Well we can fit a logistic model, using different values. Say for each option we do:</p>
+<p><span class="math display">\[
+H(\psi^+) = Y - \psi^+A
+\]</span></p>
+<p>When conditional exchangeability holds, the parameter <span class="math inline">\(\alpha_1\)</span> should be 0. So we can fit the following model, trying different values for <span class="math inline">\(\psi_1\)</span> until <span class="math inline">\(\alpha_1\)</span> is 0. The model is written as follows:</p>
+<p><span class="math display">\[
+logit Pr[A=1|H(\psi^+), L] = \alpha_0 + \alpha_1H(\psi^+)+\alpha_2L
+\]</span></p>
+<p>One thing about this, is that we can only search for so many values at a time. It’s a good idea to start with a certain search, then narrow it to be finer as we “hone in” on the value, so to speak.</p>
+</section>
+<section id="estimating-95-ci" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-95-ci">Estimating 95% CI</h2>
+<p>We need to determine the uncertainty around this estimate. One way is to check different values and find out where the thresholds are to keep P &gt; 0.05. Another option is to use bootstrapping.</p>
+<p>It’s worth noting here that if we had to use IP weighting to adjust for censoring, it would’ve meant we had to use a robust variance estimator to adjust for the IP weights. In that case, the 95% CI is conservative in large samples (i.e., will trap the true value <em>at least</em> 95% of the time).<br>
+<br>
+If we have a large sample (note how large is vague here, long story), then bootstrapping would result in non-conservation values, therefore possibly narrower 95% CIs for the g-estimate.</p>
+</section>
+<section id="what-about-our-rank-preservation-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="what-about-our-rank-preservation-assumption">What about our rank preservation assumption?</h2>
+<p>At this point you may be thinking back to the unreasonable rank preservation assumption. “Well? What about it Ryan?”…glad you remembered! The g-estimation algorithm (fancy way of saying our iterations/guess and check method) gives us a consistent estimate of the parameter <span class="math inline">\(\beta_1\)</span> of the mean model, assuming the mean model is correctly specified. This is true whether rank preservation holds up or not. It only requires that <span class="math inline">\(H(\beta_1)\)</span> and <span class="math inline">\(Y^{a = 0}\)</span> have the same conditional mean given L.<br>
+<br>
+Interestingly it can be modified to incorporate a sensivity for unmeasured confounding (upcoming post to keep an eye out for, if interested).</p>
+</section>
+<section id="multiple-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-parameters">Multiple Parameters</h2>
+<p>By now, you may be wondering how useful this actually is, if we can only do one parameter. Fear not! By definition, structural nested models estimate, by definition, the average causal effect within levels of the confounders <em>L</em>, not the average causal effect in the population. Ommitting product terms can lead to bias, it generally does, due to model misspecification.</p>
+<p>In this case, we can consider the model <span class="math inline">\(E[Y^a - Y^{a = 0}|A=a, L] = \beta_1a+\beta_2aV\)</span> and for the purpose of g-estimation, the rank-preserving model <span class="math inline">\(Y_i^a-Y_i^{a = 0} = \psi_1a+\psi_2aV_i\)</span>. Since the structural model has two parameters, <span class="math inline">\(\psi_1\)</span> and <span class="math inline">\(\psi_2\)</span> we need to include two parameters in the IP weighted logistic model.</p>
+<p>Now we need to find the combination of these two parameters that make both <span class="math inline">\(\alpha_1\)</span> and <span class="math inline">\(\alpha_2\)</span> equal to 0.</p>
+</section>
+<section id="so-how-useful-is-this-anyways" class="level2">
+<h2 class="anchored" data-anchor-id="so-how-useful-is-this-anyways">So how useful is this anyways?</h2>
+<p>Unfortunately it isn’t really. In fact, it’s rarely used but they can be used in general settings such as when there is time-varying treatment (a common occurence for RWE).</p>
+<p>The first step in g-estimation is to adjust for selection bias by weighting for censoring (if there is censoring). G-estimation can be used for</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Censoring
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If we are using a time-fixed treatment that doesn’t affect any variable in <em>L</em> and an outcome measured at a single time, then we don’t need to create a pseudo-population. We can just apply g-estimation to the uncensored subjects (without having to use IPW),</p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

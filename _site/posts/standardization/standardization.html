@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ryan Batten">
+<meta name="dcterms.date" content="2023-05-25">
+
+<title>Ryan’s Real-World Evidence - Standardize Your Way to Causal Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Ryan’s Real-World Evidence</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/battenr"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/rwe_ryan"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Standardize Your Way to Causal Inference</h1>
+            <p class="subtitle lead">Standardization and the Parametric G-Formula</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Standardization</div>
+                <div class="quarto-category">Parametric G-Formula</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ryan Batten </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 25, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#comparing-apples-and-oranges" id="toc-comparing-apples-and-oranges" class="nav-link active" data-scroll-target="#comparing-apples-and-oranges">Comparing Apples and Oranges</a>
+  <ul>
+  <li><a href="#how-do-we-standardize" id="toc-how-do-we-standardize" class="nav-link" data-scroll-target="#how-do-we-standardize">How do we standardize?</a></li>
+  </ul></li>
+  <li><a href="#standardization-for-causal-inference" id="toc-standardization-for-causal-inference" class="nav-link" data-scroll-target="#standardization-for-causal-inference">Standardization for Causal Inference</a></li>
+  <li><a href="#standardizing-the-mean-outcome-to-the-confounder-distribution" id="toc-standardizing-the-mean-outcome-to-the-confounder-distribution" class="nav-link" data-scroll-target="#standardizing-the-mean-outcome-to-the-confounder-distribution">Standardizing the Mean Outcome to the Confounder Distribution</a>
+  <ul>
+  <li><a href="#expansion-of-data-set" id="toc-expansion-of-data-set" class="nav-link" data-scroll-target="#expansion-of-data-set">Expansion of data set</a></li>
+  <li><a href="#modelling" id="toc-modelling" class="nav-link" data-scroll-target="#modelling">Modelling</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction">Prediction</a></li>
+  <li><a href="#standardization-by-averaging" id="toc-standardization-by-averaging" class="nav-link" data-scroll-target="#standardization-by-averaging">Standardization by averaging</a></li>
+  </ul></li>
+  <li><a href="#assumptions-for-standardization" id="toc-assumptions-for-standardization" class="nav-link" data-scroll-target="#assumptions-for-standardization">Assumptions for Standardization</a></li>
+  <li><a href="#what-about-other-measures" id="toc-what-about-other-measures" class="nav-link" data-scroll-target="#what-about-other-measures">What about other measures?</a></li>
+  <li><a href="#ip-weighting-or-standardization" id="toc-ip-weighting-or-standardization" class="nav-link" data-scroll-target="#ip-weighting-or-standardization">IP Weighting or Standardization?</a></li>
+  <li><a href="#the-g-formula" id="toc-the-g-formula" class="nav-link" data-scroll-target="#the-g-formula">The G-Formula</a></li>
+  <li><a href="#what-next" id="toc-what-next" class="nav-link" data-scroll-target="#what-next">What Next?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="comparing-apples-and-oranges" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-apples-and-oranges">Comparing Apples and Oranges</h2>
+<p>Imagine that we have two groups of people that we are comparing the a<em>verage length of plants</em> grown: group A and group O. Group A are comprised of kids in grade 1 while group O are the parents. The kids (Group A) received a lesson about growing plants, while the parents (group O) did not. After receiving the lesson, each person got a plant and grew it. After 12 weeks, the plants length was measured.<br>
+<br>
+When the teacher looks at the plants grown, they conclude that group O are better at growing plants. That’s when a parent runs up huffing and puffing “You can’t compare those! That’s like comparing apples and oranges” when a kid from group A chimes in “If we didn’t water them as much then we’d have done way better than them!”<br>
+<br>
+Now they have a point, watering a plant will certainly have an impact on how the plants grow, as will the sunlight, soil and other important factors. “So what do we do? Throw out this experiment?” the teacher asks the parent. “Not so fast! We can standardize these and then compare the groups!” you exclaim. So how exactly do we standardize to compare Groups A and O?</p>
+<section id="how-do-we-standardize" class="level3">
+<h3 class="anchored" data-anchor-id="how-do-we-standardize">How do we standardize?</h3>
+<p>Alright so we have our question, “Does getting a lesson in plant growing cause your plants to grow longer?”, but how exactly do we apply that in this case? Well first we need to have a look at the data and see what we have.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1513</span>) <span class="co"># picked based on runif(1, min = 0, max = 2023)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>grp_a <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">indoors =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span>), </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hrs_sunlight =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">min =</span> <span class="dv">2</span>, <span class="at">max =</span> <span class="dv">6</span>), </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">watered =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.4</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="dv">1</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>grp_o <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">mean =</span> <span class="dv">30</span>, <span class="at">sd =</span> <span class="dv">7</span>),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">indoors =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.8</span>), </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">hrs_sunlight =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">min =</span> <span class="dv">8</span>, <span class="at">max =</span> <span class="dv">12</span>), </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">watered =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">116</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.6</span>),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="dv">0</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">rbind</span>(grp_a, grp_o) <span class="sc">|&gt;</span> </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">plant_length =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">232</span>, <span class="at">mean =</span> <span class="fl">1.5</span><span class="sc">*</span>group <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>age <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>indoors <span class="sc">+</span> <span class="fl">0.8</span><span class="sc">*</span>hrs_sunlight <span class="sc">-</span> <span class="fl">0.5</span><span class="sc">*</span>watered, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<table class="table">
+<colgroup>
+<col style="width: 43%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Characteristic</th>
+<th style="text-align: center;"><p>Group A</p>
+<p>(n = 116)</p></th>
+<th style="text-align: center;"><p>Group O</p>
+<p>(n = 116)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Age, Mean (SD)</td>
+<td style="text-align: center;">10 (2.74)</td>
+<td style="text-align: center;">30.04 (6.12)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Indoors, n (%)</td>
+<td style="text-align: center;">34, (30.2%)</td>
+<td style="text-align: center;">99 (85.3%)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Hours in Sunlight, Mean (SD)</td>
+<td style="text-align: center;">3.77 (1.23)</td>
+<td style="text-align: center;">10.02 (1.18)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Adequately watered, n (%)</td>
+<td style="text-align: center;">46, (39.7%)</td>
+<td style="text-align: center;">59, (50.9%)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Length of plant, Mean (SD)</td>
+<td style="text-align: center;">6.52 (1.58)</td>
+<td style="text-align: center;">14.2 (1.89)</td>
+</tr>
+</tbody>
+</table>
+<p>Alright so now we have our data and know the age of each person, how many plants were grown indoors in each group, the hours in the sunlight of each plant, whether the plant was adequately watered and the length of each plant. So what? Well we need to standardize these groups.<br>
+<br>
+You may be thinking of standardization in terms of other methods, that are not necessarily statistical. For example, say you weighted three rocks: one is 110 kilogram, one is 167 pounds and one is 25 stones, how could you possible compare these three? They are in different units! In this situation, you might be thinking “Well, we just convert them all to the same units duh”…exactly! You are standardizing the units. In this case we are doing something similar, except with a regression model.</p>
+</section>
+</section>
+<section id="standardization-for-causal-inference" class="level2">
+<h2 class="anchored" data-anchor-id="standardization-for-causal-inference">Standardization for Causal Inference</h2>
+<p>Inverse probability weighting (IPW) is a commonly used method for causal inference however standardization is one alternative. I won’t bore you here with extraneous details about IPW but you can find more information about IPW in another of my blog posts.<br>
+<br>
+Briefly, IPW uses a model for the treatment (aka the propensity score) whereas standardization models the outcome <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021</a>)</span>. More formally, if we were to write it as an equation, assuming that no individuals are censored (C=0) <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 162</a>)</span> :</p>
+<p><span class="math display">\[
+{\sum_{l}E[Y|A = a, C=0, L=l]}  \times Pr[L=l]
+\]</span></p>
+<p>Now, in an ideal world we’d be able to calculate this nonparametrically. To do that, we could calculate the mean outcome in each stratum <span class="math inline">\(l\)</span> of the confounders <span class="math inline">\(L\)</span>. So in our case we could look at one strata as the individuals who are 5 years old, grew their plant indoor, had their plant in the sunlight for 2 hours and adequately watered their plant. We could do this for each strata, then take the weighted mean sum using the above formula.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What if L is continuous?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(L\)</span> is continuous in the above formula, then we need to replace <span class="math inline">\(Pr[L=l]\)</span> with the probability density function <span class="math inline">\(f_{L}[l]\)</span> <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 162</a>)</span>.</p>
+</div>
+</div>
+<p>Now, as you can imagine that is a lot of work especially when the variable is continuous. You can probably imagine that this isn’t always possible, especially when dealing with real-world data or many covariates. As the number of covariates increases, so does the number of strata. Lucky for us, this is where modelling can come in handy!</p>
+</section>
+<section id="standardizing-the-mean-outcome-to-the-confounder-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="standardizing-the-mean-outcome-to-the-confounder-distribution">Standardizing the Mean Outcome to the Confounder Distribution</h2>
+<p>Firstly, we need to go over the four steps, very briefly, involved in standardizing the mean outcome. The steps are <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 164</a>)</span>:</p>
+<ol type="1">
+<li><p>Expansion of data set</p></li>
+<li><p>Modelling</p></li>
+<li><p>Prediction</p></li>
+<li><p>Standardization by averaging</p></li>
+</ol>
+<section id="expansion-of-data-set" class="level3">
+<h3 class="anchored" data-anchor-id="expansion-of-data-set">Expansion of data set</h3>
+<p>For the first step, we expand the dataset by creating three total datasets. The first will be our original dataset, the second is a dataset where the treatment is set to 0 and we have a missing outcome while the third is one where the treatment is set to 1 and we have a missing outcome.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_og <span class="ot">&lt;-</span> df</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df_grp0 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>plant_length, <span class="sc">-</span>group</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="dv">0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>df_grp1 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>plant_length, <span class="sc">-</span>group</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="dv">1</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="modelling" class="level3">
+<h3 class="anchored" data-anchor-id="modelling">Modelling</h3>
+<p>For this step, we will use the first dataset (the one where we have the outcomes). We will fit a model, including the covariates we want to adjust for (in this case, those that are confounders).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  plant_length <span class="sc">~</span> group <span class="sc">+</span> age <span class="sc">+</span> indoors <span class="sc">+</span> hrs_sunlight <span class="sc">+</span> watered, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="prediction" class="level3">
+<h3 class="anchored" data-anchor-id="prediction">Prediction</h3>
+<p>Using our handy dandy model, we will now predict the outcome for each of the datasets. First we predict the outcome for the data set if everyone were in group O. Next, we predict the outcome for the data set if everyone were in group A.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pred0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, df_grp0) <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">plant_length =</span> <span class="st">`</span><span class="at">predict(fit, df_grp0)</span><span class="st">`</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>pred1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, df_grp1) <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">plant_length =</span> <span class="st">`</span><span class="at">predict(fit, df_grp1)</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="standardization-by-averaging" class="level3">
+<h3 class="anchored" data-anchor-id="standardization-by-averaging">Standardization by averaging</h3>
+<p>Now that we have predicted the outcomes, we can calculate the average outcome for each data set. Before we calculate this, you might be asking about the uncertainty for this measurement, which I’m glad you asked!<br>
+<br>
+To get 95% confidence intervals for this, we can use bootstrapping (with R code that complements the Causal Inference Book, a special thanks to Joy Shi, Sean McGrath and Tom Palmer for providing this).<br>
+</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A special thanks to Joy Shi, Sean McGrath and Tom Palmer for providing this code for free. Link here: https://remlapmot.github.io/cibookex-r/standardization-and-the-parametric-g-formula.html#program-13.4</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Function, altered from the above link for our use </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>standardization <span class="ot">&lt;-</span> <span class="cf">function</span>(data, indices) {</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We need to first make the datasets that we need</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1st copy: our original</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> data[indices, ] </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2nd copy: Same as original but with group = 0 and outcome as missing</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  d0 <span class="ot">&lt;-</span> d </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  d0<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># setting group to 0</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  d0<span class="sc">$</span>plant_length <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># setting plant length (our outcome) to missing </span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3rd copy: Same as original but with group = 1 and outcome as missing</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  d1 <span class="ot">&lt;-</span> d </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  d1<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># setting group to 1</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  d1<span class="sc">$</span>plant_length <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># setting plant length (our outcome) to missing </span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Making one sample</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  d.onesample <span class="ot">&lt;-</span> <span class="fu">rbind</span>(d, d0, d1) <span class="co"># combining datasets</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fitting a model for each iteration</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    plant_length <span class="sc">~</span> group <span class="sc">+</span> age <span class="sc">+</span> indoors <span class="sc">+</span> hrs_sunlight <span class="sc">+</span> watered,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> d.onesample</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Using model to predict the outcome</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  d.onesample<span class="sc">$</span>predicted_meanY <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, d.onesample)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate the mean for each of the groups. The third calculation is for the difference in group O (0) vs group A (1)</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(d.onesample<span class="sc">$</span>predicted_meanY[d.onesample<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">0</span>]),</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(d.onesample<span class="sc">$</span>predicted_meanY[d.onesample<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">1</span>]),</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Treatment - No Treatment</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(d.onesample<span class="sc">$</span>predicted_meanY[d.onesample<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(d.onesample<span class="sc">$</span>predicted_meanY[d.onesample<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can bootstrap this statistic using our dataset</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">boot</span>(<span class="at">data =</span> df,</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>                <span class="at">statistic =</span> standardization,</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>                <span class="at">R =</span> <span class="dv">5</span>)</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Using the bootstrapped sample (titled result), we can calculate the confidence intervals. We take the standard deviation of the sampling distribution. This will give us our standard error</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">sd</span>(results<span class="sc">$</span>t[, <span class="dv">1</span>]),</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sd</span>(results<span class="sc">$</span>t[, <span class="dv">2</span>]),</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sd</span>(results<span class="sc">$</span>t[,<span class="dv">3</span>]))</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>mean <span class="ot">&lt;-</span> results<span class="sc">$</span>t0 <span class="co"># calculate mean </span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>ll <span class="ot">&lt;-</span> mean <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se <span class="co"># lower limits</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>ul <span class="ot">&lt;-</span> mean <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se <span class="co"># upper limits</span></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>finalresults <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">result_title =</span> <span class="fu">c</span>(<span class="st">"Group O"</span>, <span class="st">"Group A"</span>, <span class="st">"Difference"</span>),</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean =</span> <span class="fu">round</span>(mean,<span class="dv">3</span>),</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="fu">paste0</span>(<span class="st">"95% CI: "</span>, <span class="fu">round</span>(ll, <span class="dv">3</span>), <span class="st">" - "</span>, <span class="fu">round</span>(ul, <span class="dv">3</span>))</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Finally we have our results! We end up with a mean difference of -1.43 (95% -0.96 to -1.90). Finally, we can put to rest that the people being put in Group O grew longer plants than those in group A (or those in group A grew shorter plants than those in Group O). Now begs the question of when are these valid?</p>
+</section>
+</section>
+<section id="assumptions-for-standardization" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions-for-standardization">Assumptions for Standardization</h2>
+<p>So when are these valid? We can group the assumptions into three groups: identifability conditions, measurement of variables and specification of model <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 168</a>)</span>. The idenifability conditions are exchangeability, positivity and consistency. Positivity can be checked empirically but the other two are opinion based. For a more detailed version of these, check out my other blog post.</p>
+<p>The second condition is the variables used in the analysis need to be correctly measured. Measurement error in the treatment, outcome or the confounders will generally result in bias (see chapter 9 of <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span> for more specifics).<br>
+<br>
+Finally, all models need to be correctly specified (see chapter 11 of <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span> for more specifics). Of course, all of these will never hold perfectly but some remain a matter of judgement which means it can be open to criticism. It’s important to keep these assumptions in mind and the validity of them. For example, a critique in our example could be that our intervention is not well-defined (which I’d agree with and we could make our intervention definition more defined).</p>
+<p>We need to make sure all of these conditions hold, at least in approximately since in the real-world it is difficult (i.e., in practice there is most likely some form of model misspecification). Some of these assumptions are based on judgement, which is important to note.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Positivity Assumption
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While both IP weighting and standardization require structural positivity, the implications of this assumptions not being valid can vary. For standardization, it is possible to use if this is assumption isn’t met however there then needs to be a willingness to rely on parametric extrapolation (this can be done to fit a model that will smooth over the strata with structural zeroes) however this will introduce bias into the estimation. This will result in the nomial 95% confidence intervals around the estimates covering the true effect less than 95% of the time. See <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span>, pp.&nbsp;162 for more details.</p>
+</div>
+</div>
+</section>
+<section id="what-about-other-measures" class="level2">
+<h2 class="anchored" data-anchor-id="what-about-other-measures">What about other measures?</h2>
+<p>Our example used a continuous outcome, so we used risk difference as our causal estimand. Of course, there are other causal estimands of interest as well. I won’t bore you with another example here (maybe in the future). I’d highly recommend checking out <span class="citation" data-cites="lee2022">Lee and Lee (<a href="#ref-lee2022" role="doc-biblioref">2022</a>)</span> if you are interested in other estimands including relative risk and odds ratios. The process is very similar.</p>
+</section>
+<section id="ip-weighting-or-standardization" class="level2">
+<h2 class="anchored" data-anchor-id="ip-weighting-or-standardization">IP Weighting or Standardization?</h2>
+<p>If we were to do both without using any models (i.e., nonparametrically), then we would expect both methods to give the exact same result. This is because they are modelling different things (treatment for IPW, outcome for standardizaiton) and we can always expect some level of misspecification of a model in practice. So if they don’t give the same answer then how do we pick? The short answer is we don’t.<br>
+<br>
+Large differences between them will let us know that there is some serious misspecificaiton in at least one of the estimates. Small differences may still indicate there’s a problem but not as serious misspecification.<br>
+<br>
+Basically what I’m trying to say is when both methods can be used, just use both.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+G-formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fun fact: both IPW and standardization are estimators of the g-formula. Standardization is called a <em>plug-in g-formula</em> estimator because it replaces the conditional mean outcome by its estimates. When those estimates come from parametric models, we refer to the method as the <em>parametric g-formula</em>.<br>
+<br>
+Note: when there is no time-varying confounders, the parametric g-formula doesn’t require parametric modelling of the distribution of the confounders.</p>
+</div>
+</div>
+<p>Both IP weighting and standardization will give the exact same result. So then why would we choose one over the other? Well, they only give the same answer when no models are used to estimate them.<br>
+<br>
+At this point, you may be thinking “Well that’s not really an answer” so lets try and explain. When you use a model, you are using two different models (in our case) with two different outcomes. For IP weighting, a logistic regression model is fit to estimate <span class="math inline">\(Pr[A = a, C= 0|L]\)</span> whereas in standardization, the conditional mean <span class="math inline">\(E[Y|A=a C = 0, L = l]\)</span></p>
+<p>However, some degree of misspecification is a part of all models, which will introduce some bias. Due to this, the estimates from IP weighting and standardization will differ, but large differences will alert us to potentially serious model misspecification.</p>
+</section>
+<section id="the-g-formula" class="level2">
+<h2 class="anchored" data-anchor-id="the-g-formula">The G-Formula</h2>
+<p>Enough teasing already! What does the parametric g-formula have to do with this!! You may be screaming at your screen right now. Alright, so first the equation for the <em>g-formula</em> is formally expressed as <span class="citation" data-cites="naimi2017">(<a href="#ref-naimi2017" role="doc-biblioref">Naimi, Cole, and Kennedy 2017</a>)</span>:</p>
+<p><span class="math display">\[
+E(Y^{a_0, a_1}) = \sum_{z_1}E(Y|A_1 = a_1, Z_1 = z1, A_0 = a_0)P(Z_1=z_1|A_0=a_0)
+\]</span></p>
+<p>At this point you may be wondering “What in the world does this formula have to do with standardization?”. If you are thinking that, props to you! (side note: I personally always like to ask these types of questions). Well, when we just input the values to this equation, we say that we are using a <em>plug-in g-formula</em> estimator since we just…you guessed it….plug in the values! Standardization is a <em>plug-in g-formula</em> estimator however since, in our case, the estimate came from a parametric model we call it the <em>parametric g-formula.</em></p>
+</section>
+<section id="what-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-next">What Next?</h2>
+<p>Now you are free to go standardize away out there in the free world!</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-hernanwhatif" class="csl-entry" role="doc-biblioentry">
+Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Textbook.
+</div>
+<div id="ref-lee2022" class="csl-entry" role="doc-biblioentry">
+Lee, Sangwon, and Woojoo Lee. 2022. <span>“Application of Standardization for Causal Inference in Observational Studies: A Step-by-Step Tutorial for Analysis Using r Software.”</span> <em>Journal of Preventive Medicine and Public Health</em> 55 (2): 116.
+</div>
+<div id="ref-naimi2017" class="csl-entry" role="doc-biblioentry">
+Naimi, Ashley I, Stephen R Cole, and Edward H Kennedy. 2017. <span>“An Introduction to g Methods.”</span> <em>International Journal of Epidemiology</em> 46 (2): 756–62.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

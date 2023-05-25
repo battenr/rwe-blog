@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-10">
+<meta name="dcterms.date" content="2023-03-02">
 
-<title>Ryan’s Real-World Evidence - Real-World Evidence: What’s all the hype?</title>
+<title>Ryan’s Real-World Evidence - Hot Diggity DAG</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,25 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
-}
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
 }
 </style>
 
@@ -83,7 +64,7 @@ div.csl-indent {
 
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -123,10 +104,11 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Real-World Evidence: What’s all the hype?</h1>
+      <h1 class="title">Hot Diggity DAG</h1>
+            <p class="subtitle lead">An introduction to DAGs</p>
                                 <div class="quarto-categories">
-                <div class="quarto-category">RWE</div>
-                <div class="quarto-category">Observational Data</div>
+                <div class="quarto-category">DAGs</div>
+                <div class="quarto-category">Causal Diagrams</div>
               </div>
                   </div>
   </div>
@@ -144,7 +126,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 10, 2022</p>
+        <p class="date">March 2, 2023</p>
       </div>
     </div>
     
@@ -155,61 +137,45 @@ div.csl-indent {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#dont-analyze-graphs" id="toc-dont-analyze-graphs" class="nav-link active" data-scroll-target="#dont-analyze-graphs">“Don’t Analyze Graphs?”</a></li>
+  <li><a href="#simple-dag" id="toc-simple-dag" class="nav-link" data-scroll-target="#simple-dag">Simple DAG</a></li>
+  <li><a href="#think-of-water-flowing-in-a-pipe.what" id="toc-think-of-water-flowing-in-a-pipe.what" class="nav-link" data-scroll-target="#think-of-water-flowing-in-a-pipe.what">“Think of Water Flowing in a Pipe”….What?</a></li>
+  <li><a href="#title-ideas-from-chatgpt" id="toc-title-ideas-from-chatgpt" class="nav-link" data-scroll-target="#title-ideas-from-chatgpt">Title ideas (from ChatGPT)</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
-<section id="what-is-rwe" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-rwe">What is RWE?</h2>
-<p>You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential for answering important research questions, however what exactly is RWE? RWE is evidence generated from real-world data (RWD). RWD is defined by the FDA as data relating to patient health status and/or the delivery of health care routinely collected from a variety of sources <span class="citation" data-cites="FDA-RWE">(<a href="#ref-FDA-RWE" role="doc-biblioref">FDA December 2018</a>)</span>. This data could be from electronic health records, medical claims and billing, electronic medical records, data from product registries, wearable devices, mobile devices and other sources. Sounds pretty good right? Well the quality of the evidence is only as a good as the quality of the study conducted.</p>
+<section id="dont-analyze-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="dont-analyze-graphs">“Don’t Analyze Graphs?”</h2>
+<p>Yes..well no…well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that’s not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn’t have put it better myself, “Draw your assumptions before your conclusions”.</p>
+<p>A DAG can help contain information</p>
 </section>
-<section id="hierarchy-of-research" class="level2">
-<h2 class="anchored" data-anchor-id="hierarchy-of-research">Hierarchy of Research</h2>
-<p>Historically, the hierarchy of research has been that systematic reviews with a meta-analysis are at the top of the evidence pyramid, followed by randomized controlled trials (RCTs), cohort studies, case-control studies and anecdotal research.</p>
-<div id="fig-hierarchy" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="hierarchy-study-designs.jpeg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: Hierarchy</figcaption><p></p>
-</figure>
-</div>
-<p>RCTs are near the top of this pyramid for good reason. A well-conducted RCT can provide insight into efficacy of a treatment in a controlled environment so that no data is missing, both observed and unobserved confounders are balanced between groups and you can measure the variables you need for analysis. There are however, drawbacks/potential limitations: RCTs can be expensive to conduct, can require a long duration of follow-up, are not feasible to conduct ethically, limited sample size for assessing safety and limited generalizability. Luckily, observational study designs can help fill in the gaps in these areas.</p>
+<section id="simple-dag" class="level2">
+<h2 class="anchored" data-anchor-id="simple-dag">Simple DAG</h2>
 </section>
-<section id="observational-studies" class="level2">
-<h2 class="anchored" data-anchor-id="observational-studies">Observational Studies</h2>
-<p>When people discuss about the hierarchy of study design, such as in <a href="#fig-hierarchy">Figure&nbsp;1</a>, the quality of the study is not mentioned. For example, is a poorly conducted RCT better than a rigorously conducted case-control study using observational data? That is up for debate however, observational studies can be used to supplement findings from RCTs or where RCTs are infeasible.<br>
-</p>
-<p>One of the key issues with observational studies is the variability in methodological rigor. Due to this, results can vary widely from study to study and really depend upon the researchers conducting the study. Luckily, recent strides have been made in this field. To mention a few, the STaRT-RWE template <span class="citation" data-cites="wang2021start">(<a href="#ref-wang2021start" role="doc-biblioref">Wang et al. 2021</a>)</span> and the principles behind emulating a target trial proposed by Hernan &amp; Robins <span class="citation" data-cites="hernan2016target">(<a href="#ref-hernan2016target" role="doc-biblioref">Hernán and Robins 2016</a>)</span>.</p>
+<section id="think-of-water-flowing-in-a-pipe.what" class="level2">
+<h2 class="anchored" data-anchor-id="think-of-water-flowing-in-a-pipe.what">“Think of Water Flowing in a Pipe”….What?</h2>
+<p>One of the peskiest biases</p>
 </section>
-<section id="examples-of-rwe" class="level2">
-<h2 class="anchored" data-anchor-id="examples-of-rwe">Examples of RWE</h2>
-<p>Discussing about RWE in theory is useful but what are some use cases? Recently, regulatory bodies are accepting RWE as part of submissions. These can vary from accepting burden of illness studies to help contextualize the current treatment and cost of available treatments to external control arms (ECA). ECAs can be beneficial when a single arm clinical trial is conducted. In certain disease areas, such as cancer, single arm trials are common but this makes it difficult for regulatory reviewers to ascertain the efficacy of a treatment since there is no comparator arm. Demonstration of safety is another area that RWE is well-suited due to the larger sample size and the generalizability of findings to real-world settings.</p>
-<p>Purpura et al. <span class="citation" data-cites="purpura2022role">(<a href="#ref-purpura2022role" role="doc-biblioref">Purpura et al. 2022</a>)</span> reported 116 FDA-approvals of New Drug and Biologics License Applications. Of these 116, 83 used RWE to support therapeutic context and 88 used RWE to support safety and/or effectiveness. Over the coming years, these numbers are expected to rise as the methodological rigor of these studies increases.</p>
-</section>
-<section id="whats-next" class="level2">
-<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
-<p>RWE is starting to be adopted more by regulatory bodies, with the FDA accepting RWE as part of submissions <span class="citation" data-cites="FDA-RWE">(<a href="#ref-FDA-RWE" role="doc-biblioref">FDA December 2018</a>)</span>, as well as the National Institute for Health and Care Excellence (NICE) issuing guidance for the development of RWE. It is a very exciting time for developing RWE given the vast data that is available! However, always keep in mind that these studies need to be conducted to similar standards that we would hope a clinical trial is.</p>
-
+<section id="title-ideas-from-chatgpt" class="level2">
+<h2 class="anchored" data-anchor-id="title-ideas-from-chatgpt">Title ideas (from ChatGPT)</h2>
+<p>Sure, how about “Don’t Analyze Graphs”? It’s a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.</p>
+<p>How about “Dramatic Action Graph”? It’s not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!</p>
 
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-FDA-RWE" class="csl-entry" role="doc-biblioentry">
-FDA. December 2018. <span>“Framework for FDA’s Real-World Evidence Program.”</span> Report.
-</div>
-<div id="ref-hernan2016target" class="csl-entry" role="doc-biblioentry">
-Hernán, Miguel A, and James M Robins. 2016. <span>“Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available.”</span> <em>American Journal of Epidemiology</em> 183 (8): 758–64.
-</div>
-<div id="ref-purpura2022role" class="csl-entry" role="doc-biblioentry">
-Purpura, Christina A, Elizabeth M Garry, Nicholaas Honig, Abigail Case, and Jeremy A Rassen. 2022. <span>“The Role of Real-World Evidence in FDA-Approved New Drug and Biologics License Applications.”</span> <em>Clinical Pharmacology &amp; Therapeutics</em> 111 (1): 135–44.
-</div>
-<div id="ref-wang2021start" class="csl-entry" role="doc-biblioentry">
-Wang, Shirley V, Simone Pinheiro, Wei Hua, Peter Arlett, Yoshiaki Uyama, Jesse A Berlin, Dorothee B Bartels, Kristijan H Kahler, Lily G Bessette, and Sebastian Schneeweiss. 2021. <span>“STaRT-RWE: Structured Template for Planning and Reporting on the Implementation of Real World Evidence Studies.”</span> <em>Bmj</em> 372.
-</div>
-</div></section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

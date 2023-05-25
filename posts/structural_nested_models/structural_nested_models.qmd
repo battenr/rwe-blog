@@ -1,0 +1,126 @@
+---
+title: "Structural Nested Mean Models" 
+subtitle: "TBD"
+author: "Ryan Batten"
+date: "2023-03-02"
+categories: [Nested Models, G-Estimation]
+# image : "standards.png"
+bibliography: structural_nested_models.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Yet Another Method?
+
+There are multiple ways to estimate the average causal effect: IP weighting (IPW), standardization and g-estimation to name a few. See posts here and here **(RYAN ADD LINK)** on IPW and standardization respectively. These are commonly called *g*-methods since they are designed for applying to *g*eneralized treatment contrasts involving treatments that vary over time. Models that are estimated via g-estimation are known as *structural nested models*.
+
+::: callout-note
+## G-Methods Require Assumptions
+
+Each of the three g-methods previously described are based on different modelling assumptions.
+:::
+
+## Exchangeability again?!
+
+If you've read some of my previous posts (or even if you haven't but you know what exchangeability is), and feel like you already know what it is feel free to skip this section. If not, I'll keep it brief but explain what we mean. Exchangeability is a key assumption in causal inference. Specifically, it's means that you can exchange the groups with regards to confounders. Another way of putting it, as is in Hernan & Robins What If: "Conditional exhangeability means that if the outcome distribution in the treated and untreated would be the same if both groups had received the same treatment level". Mathematically we can say\
+\
+$$Pr[A = 1|Y^{a = 0}, L] = Pr[A = 1 |L]$$
+
+Personally the way I like to think of it is like this: say you want to know if licking popsicles causes your tongue to turn blue but you have two groups. The average age in group 1, people who got a popsicle, is 5 years old and the average age in group 2, people who got a popsicle stick with no popsicle (the horror!) is 56 then we can't compare these two because age could be a confounder. (Note, not all covariates have to be balanced, that's a conversion for another day. There's also differing views on how you select what to include when trying to achieve conditional exchangeability).
+
+## Structural Nested Mean Models
+
+"What are we trying to do?" This is always an important thing to keep in mind. In this case, we are trying to estimate the causal effects in a subset of the population. For example, we may want to know the average causal effect of treatment A within levels of the confounder *L*. If there were no effect-measure modification by *L*, these differences would be constant (i.e., $E[Y^{a = 1} - Y^{a = 0}|L] = \beta_1$ where $\beta_{1}$ would be the average causal effect in each stratum and also the entire population)
+
+Under exchangeability, the structural model can be also written as:
+
+$$
+E[Y^{a} - Y^{a = 0}|A = a, L] = \beta_{1}a + \beta_{2}aL
+$$
+
+which is referred to as a *structural nested mean model*, where $\beta_{1}, \beta_{2}$ are estimated by g-estimation. It's important to note here that these models are semiparametric because they are agnostic about both the intercept and main effect of L (aka there is no parameter $\beta_0$ and no parameter $\beta_3$ for a term $\beta_{3}L$.
+
+If there is censoring, this can change the model to $E[Y^{a=1, c=0} - Y^{a = 0, c = 0}|A, L]$ rather than $E[Y^{a = 1} - Y^{a = 0} | A, L]$. To account for this difference, requires adjusting for both confounding and selection bias, luckily IPW and standardization can be used to adjust for both these biases however G-estimation cannot (only for confounding).
+
+This is all to say, when using g-estimation first we need to adjust for selection bias due to censoring by IPW.
+
+## Rank Preservation
+
+If we were to rank all of the individuals for each of their counterfactual outcomes, and they remained in the same order that would be rank preservation. When the effect of the treatment *A* on the outcome *Y* is exactly the same on the additive scale, for all individuals in the study population, we say that *additive rank preservation holds*. For example, if smoking increases everyones weight by exactly 3kg, then the ranking according to $Y^{a = 0}$ is the same ranking as $Y^{a = 1}$ except the latter is 3kg heavier.
+
+Now at this point you may think "Huh? That seems super impractical!"....and you'd be right. As a general rule of thumb, it's never a good idea to use methods that require rank preservation. However, we will use it to introduce g-estimation since it's easier to understand for rank-preserving models but it's the same method for rank-preserving and non rank-perserving models.
+
+## G-Estimation
+
+Suppose we want to estimate the parameters of the structural nested mean model $E[Y^{a} - Y^{a = 0}|A = a, L] = \beta_{a}$. For simplicity, we are starting with a model with a single parameter $\beta_{1}$. Since there is no term $\beta_2aL$, we are essentially assuming that the average causal effect is constant across the strata of *L* (i.e., no additive effect modification by L).
+
+We are also assuming that additive rank-preserving model $Y^{a}_{i} - Y_{i}^{a = 0} = \psi_1a$ is correctly specified for all individuals *i*. If that is the case then $\psi_1$ is equal to the average causal effect $\beta_1$ which is what we really want to know. When we write the model, we will remove the subscript *i* since it is the same for all individuals, therefore:
+
+$$
+Y^{a = 0} = Y^a - \psi_1a
+$$
+
+Now we are ready to go!
+
+The first step is to link the model to the observed data. Due to consistency, the counterfactual outcome $Y^{a = 1}$ if $A = 1$ and $Y^{a = 0}$ if $A = 0$. Therefore, if we replaced the value *a* in the structural model by each individuals value of *A* (1 or 0) then we can replace the outcome by the individuals observed outcome, $Y^{A} = Y$. Based on this the model, if we assume rank-preservation, implies an equation $Y^{a = 0} = Y - \psi_1A$ where each individuals counterfactual outcome is a function of the the person's observed data on treatment and the outcome and unknown parameter $\psi_1$:
+
+$$
+Y^{a = 0} = Y - \psi_1A
+$$
+
+Now, if this were correct and we knew the value of $\psi_1$ then we could calculate the counterfactual outcome under no treatment for each individual in the study popluation, except that we don't know $\psi_1$. Estimating this is exactly what we want to do. \
+\
+
+Now how exactly will we do this? Well we can fit a logistic model, using different values. Say for each option we do:
+
+$$
+H(\psi^+) = Y - \psi^+A
+$$
+
+When conditional exchangeability holds, the parameter $\alpha_1$ should be 0. So we can fit the following model, trying different values for $\psi_1$ until $\alpha_1$ is 0. The model is written as follows:
+
+$$
+logit Pr[A=1|H(\psi^+), L] = \alpha_0 + \alpha_1H(\psi^+)+\alpha_2L
+$$
+
+One thing about this, is that we can only search for so many values at a time. It's a good idea to start with a certain search, then narrow it to be finer as we "hone in" on the value, so to speak.
+
+## Estimating 95% CI
+
+We need to determine the uncertainty around this estimate. One way is to check different values and find out where the thresholds are to keep P \> 0.05. Another option is to use bootstrapping.
+
+It's worth noting here that if we had to use IP weighting to adjust for censoring, it would've meant we had to use a robust variance estimator to adjust for the IP weights. In that case, the 95% CI is conservative in large samples (i.e., will trap the true value *at least* 95% of the time). \
+\
+If we have a large sample (note how large is vague here, long story), then bootstrapping would result in non-conservation values, therefore possibly narrower 95% CIs for the g-estimate.
+
+## What about our rank preservation assumption?
+
+At this point you may be thinking back to the unreasonable rank preservation assumption. "Well? What about it Ryan?"...glad you remembered! The g-estimation algorithm (fancy way of saying our iterations/guess and check method) gives us a consistent estimate of the parameter $\beta_1$ of the mean model, assuming the mean model is correctly specified. This is true whether rank preservation holds up or not. It only requires that $H(\beta_1)$ and $Y^{a = 0}$ have the same conditional mean given L. \
+\
+Interestingly it can be modified to incorporate a sensivity for unmeasured confounding (upcoming post to keep an eye out for, if interested).
+
+## Multiple Parameters 
+
+By now, you may be wondering how useful this actually is, if we can only do one parameter. Fear not! By definition, structural nested models estimate, by definition, the average causal effect within levels of the confounders *L*, not the average causal effect in the population. Ommitting product terms can lead to bias, it generally does, due to model misspecification.
+
+In this case, we can consider the model $E[Y^a - Y^{a = 0}|A=a, L] = \beta_1a+\beta_2aV$ and for the purpose of g-estimation, the rank-preserving model $Y_i^a-Y_i^{a = 0} = \psi_1a+\psi_2aV_i$. Since the structural model has two parameters, $\psi_1$ and $\psi_2$ we need to include two parameters in the IP weighted logistic model.
+
+Now we need to find the combination of these two parameters that make both $\alpha_1$ and $\alpha_2$ equal to 0.
+
+## So how useful is this anyways? 
+
+Unfortunately it isn't really. In fact, it's rarely used but they can be used in general settings such as when there is time-varying treatment (a common occurence for RWE).
+
+The first step in g-estimation is to adjust for selection bias by weighting for censoring (if there is censoring). G-estimation can be used for
+
+::: callout-note
+## Censoring
+
+If we are using a time-fixed treatment that doesn't affect any variable in *L* and an outcome measured at a single time, then we don't need to create a pseudo-population. We can just apply g-estimation to the uncensored subjects (without having to use IPW),
+:::

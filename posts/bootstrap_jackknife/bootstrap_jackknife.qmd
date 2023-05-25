@@ -3,7 +3,6 @@ title: "Bootstrap Bill & Jackknnife Sparrow"
 author: "Ryan Batten"
 date: "2022-09-26"
 categories: [Resampling]
-# image: "iptw.jpeg"
 bibliography: bootstrap-jackknife.bib
 draft: true
 format: 
@@ -13,21 +12,17 @@ format:
 
 ## Pirates of the Caribbean?
 
-No, this post will not be focusing on Pirates of the Caribbean but does have bootstrapping and jackknifing!
+No, this post will not be focusing on Pirates of the Caribbean but does have bootstrapping and jackknifing! So perhaps there will be
 
 ## Variance Estimation
 
 A key aspect of conducting statistical analyses is to identify the most appropriate way to estimate variance. Whether it be the variance for a descriptive or inferential statistic the variance can tell us a lot.
-
-<!--# Chat GPT Text -->
 
 Variance is a measure of how spread out a set of data is. It can tell us how much variation or dispersion there is from the average or mean of the data set. Variance can help us understand how much risk is associated with a particular investment or how much variation there is in a population. It can also help us identify outliers in a data set.
 
 ## Types of Variance Estimation
 
 ### Parametric Variance Estimators
-
-<!--# Chat GPT Text -->
 
 what are the different parametric variance estimators
 
@@ -50,8 +45,6 @@ where n is the sample size, x is the individual sample values, and x̄ is the sa
 
 ### Nonparametric Variance Estimators
 
-<!--# Chat GPT Text -->
-
 what are the types of nonparametric variance estimators
 
 1.  Bootstrap Variance Estimator
@@ -65,15 +58,11 @@ what are the types of nonparametric variance estimators
 
 ## Jackknife
 
-<!--# Chat GPT Text -->
-
 what is jackknife resampling
 
 Jackknife resampling is a statistical technique used to estimate the bias and standard error of a statistic. It involves repeatedly leaving out one observation from a dataset and calculating the statistic of interest on the remaining data. The results are then averaged to obtain an estimate of the statistic's bias and standard error.
 
 ## Bootstrapping
-
-<!--# Chat GPT Text -->
 
 what is bootstrap resampling
 

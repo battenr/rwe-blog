@@ -1,0 +1,39 @@
+---
+title: "Advanced PS" 
+subtitle: "TBD"
+author: "Ryan Batten"
+date: "2023-04-20"
+categories: [Nested Models, G-Estimation]
+# image : "standards.png"
+# bibliography: structural_nested_models.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Yet Another Method?
+
+There are multiple ways to estimate the average causal effect: IP weighting (IPW), standardization and g-estimation to name a few. See posts here and here **(RYAN ADD LINK)** on IPW and standardization respectively. These are commonly called *g*-methods since they are designed for applying to *g*eneralized treatment contrasts involving treatments that vary over time. Models that are estimated via g-estimation are known as *structural nested models*.
+
+::: callout-note
+## G-Methods Require Assumptions
+
+Each of the three g-methods previously described are based on different modelling assumptions.
+:::
+
+## Exchangeability again?!
+
+If you've read some of my previous posts (or even if you haven't but you know what exchangeability is), and feel like you already know what it is feel free to skip this section. If not, I'll keep it brief but explain what we mean. Exchangeability is a key assumption in causal inference. Specifically, it's means that you can exchange the groups with regards to confounders. Another way of putting it, as is in Hernan & Robins What If: "Conditional exhangeability means that if the outcome distribution in the treated and untreated would be the same if both groups had received the same treatment level". Mathematically we can say\
+\
+$$Pr[A = 1|Y^{a = 0}, L] = Pr[A = 1 |L]$$
+
+Personally the way I like to think of it is like this: say you want to know if licking popsicles causes your tongue to turn blue but you have two groups. The average age in group 1, people who got a popsicle, is 5 years old and the average age in group 2, people who got a popsicle stick with no popsicle (the horror!) is 56 then we can't compare these two because age could be a confounder. (Note, not all covariates have to be balanced, that's a conversion for another day. There's also differing views on how you select what to include when trying to achieve conditional exchangeability).
+
+## Structural Nested Mean Models
+
+"What are we trying to do?" This is always a

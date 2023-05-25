@@ -1,0 +1,35 @@
+---
+title: "Hot Diggity DAG" 
+subtitle: "An introduction to DAGs"
+author: "Ryan Batten"
+date: "2023-03-02"
+categories: [DAGs, Causal Diagrams]
+# image : "standards.png"
+bibliography: dags.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## "Don't Analyze Graphs?"
+
+Yes..well no...well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that's not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn't have put it better myself, "Draw your assumptions before your conclusions".
+
+A DAG can help contain information
+
+## Simple DAG
+
+## "Think of Water Flowing in a Pipe"....What?
+
+One of the peskiest biases
+
+## Title ideas (from ChatGPT)
+
+Sure, how about "Don't Analyze Graphs"? It's a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.
+
+How about "Dramatic Action Graph"? It's not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!

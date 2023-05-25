@@ -1,10 +1,11 @@
 ---
-title: "Standardization"
+title: "Damn Confounders. I need to adjust" 
+# subtitle: "Standardization and the Parametric G-Formula"
+# some potential title ideas: 
 author: "Ryan Batten"
-date: "2022-09-26"
-categories: [Standardization]
-# image: "iptw.jpeg"
-bibliography: standardization.bib
+date: "2023-03-02"
+categories: [DAGs, Causal Diagrams]
+# image : "standards.png"
 draft: true
 format: 
   html:
@@ -15,7 +16,19 @@ format:
     code-fold: true
 ---
 
+## Table 2 Fallacy
+
+So what should we report? There was a great paper that was published in
+
+## "Darn, Another Graph?!"
+
+Sure, how about "Don't Analyze Graphs"? It's a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.
+
+How about "Dramatic Action Graph"? It's not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!
+
 ### What is standardization and why do we care?
+
+"You can't compare those! That's like comparing apples and oranges". Standardization can help with this. Say that you have two different things that you want to compare, for example apples and oranges, the big question is how will you compare them?
 
 You are actually already familiar with standardization, you just may not think about it. One common example is height. Depending on where you live you probably measure height in inches (feet and inches), or centimeters.
 
@@ -113,17 +126,17 @@ While both IP weighting and standardization require structural positivity, the i
 
 Our example used a continuous outcome, however standardization can also be applied to a binary outcome. Odds ratios,
 
-[@lee2022application]
+[@lee2022]
 
 ### Causal Estimand of Treatment
 
-[@lee2022application] \# Ryan to add formulas here that are in the article
+[@lee2022] \# Ryan to add formulas here that are in the article
 
 ## IP Weighting or Standardization?
 
 note to self: show that IPTW and standardization give the exact same result if estimated nonparametrically?
 
-Both IP weighting and standardization will give the exact same result. So then why would we choose one over the other? Well, they only give the same answer when no models are used to estimate them. \
+Both IP weighting and standardization will give the exact same result. So then why would we choose one over the other? Well, they only give the same answer when no models are used to estimate them.\
 \
 At this point, you may be thinking "Well that's not really an answer" so lets try and explain. When you use a model, you are using two different models (in our case) with two different outcomes. For IP weighting, a logistic regression model is fit to estimate $Pr[A = a, C= 0|L]$ whereas in standardization, the conditional mean $E[Y|A=a C = 0, L = l]$
 
@@ -141,7 +154,11 @@ Note to self: Make a minor note about the bias of doubly robust estimators (pg 1
 
 What does this all mean? (Hurry up old man, we don't have all day! Which one is it?) Often there is no need to choose between them.
 
-## What Next? 
+## Parametric G-Formula
+
+So what is the parametric g-formula? Well you already used it. It's the same as standardization. You see, standardization replaces the conditional mean outcome in the g-formula by it's estimates, in this case those estimates were estimated from a parametric model and...ta da! You get the parametric g-formula.
+
+## What Next?
 
 Both IP weighting and standardization are estimators of the g-formula (also a topic of a subsequent post). Standardization however is a *plug-in* *g-formula* estimators. Since we used a parametric model, this is called the *parametric g-formula.*
 
