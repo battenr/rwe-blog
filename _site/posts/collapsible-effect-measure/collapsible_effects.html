@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-03-02">
+<meta name="dcterms.date" content="2023-06-08">
 
 <title>Ryan’s Real-World Evidence - Collapsibility/Non-collapsibility</title>
 <style>
@@ -85,6 +85,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -124,6 +143,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -170,8 +190,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <h1 class="title">Collapsibility/Non-collapsibility</h1>
             <p class="subtitle lead">TBD</p>
                                 <div class="quarto-categories">
-                <div class="quarto-category">Nested Models</div>
-                <div class="quarto-category">G-Estimation</div>
+                <div class="quarto-category">OR</div>
+                <div class="quarto-category">GLM</div>
+                <div class="quarto-category">Collapsibility</div>
               </div>
                   </div>
   </div>
@@ -189,7 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">March 2, 2023</p>
+        <p class="date">June 8, 2023</p>
       </div>
     </div>
     
@@ -205,10 +226,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#title-options-delete" id="toc-title-options-delete" class="nav-link active" data-scroll-target="#title-options-delete">Title Options (Delete)</a></li>
-  <li><a href="#collapsible" id="toc-collapsible" class="nav-link" data-scroll-target="#collapsible">Collapsible?</a></li>
-  <li><a href="#ratios" id="toc-ratios" class="nav-link" data-scroll-target="#ratios">Ratios</a></li>
-  <li><a href="#simulated-data" id="toc-simulated-data" class="nav-link" data-scroll-target="#simulated-data">Simulated Data</a></li>
+  <li><a href="#measures-of-effect" id="toc-measures-of-effect" class="nav-link active" data-scroll-target="#measures-of-effect">Measures of Effect</a></li>
+  <li><a href="#example-time" id="toc-example-time" class="nav-link" data-scroll-target="#example-time">Example time!</a></li>
+  <li><a href="#what-if-we-use-a-glm" id="toc-what-if-we-use-a-glm" class="nav-link" data-scroll-target="#what-if-we-use-a-glm">What if we use a GLM?</a></li>
+  <li><a href="#what-exactly-do-we-mean-by-collapsible" id="toc-what-exactly-do-we-mean-by-collapsible" class="nav-link" data-scroll-target="#what-exactly-do-we-mean-by-collapsible">What exactly do we mean by collapsible?</a></li>
+  <li><a href="#so-whats-the-problem" id="toc-so-whats-the-problem" class="nav-link" data-scroll-target="#so-whats-the-problem">So what’s the problem?</a></li>
   </ul>
 </nav>
     </div>
@@ -218,108 +240,203 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<section id="title-options-delete" class="level2">
-<h2 class="anchored" data-anchor-id="title-options-delete">Title Options (Delete)</h2>
-<p>Title options (from ChatGPT)</p>
-<ol type="1">
-<li><p>“In a Game of Statistical Jenga, Odds Ratios and Hazard Ratios Never Collapse!”</p></li>
-<li><p>“Non-Collapsible Ratios: When Your Statistics Have Better Posture Than You!”</p></li>
-<li><p>“Non-Collapsible Effect Measures: Because Some Ratios Just Won’t Fold Under Pressure!”</p></li>
-<li><p>“Odds Ratios and Hazard Ratios: The Non-Collapsible Chairs of Epidemiology.”</p></li>
-</ol>
+<section id="measures-of-effect" class="level2">
+<h2 class="anchored" data-anchor-id="measures-of-effect">Measures of Effect</h2>
+<p>Epidemiologists and clinical researchers use different metrics to quantify the relationship between the exposure and outcome. Commonly used measures include the risk ratio (RR), risk difference (RD), odds ratio (OR) and hazard ratio (HR). Each one of these has benefits and drawbacks, including the type of outcome (binary, continuous, time-to-event), how these can apply to other samples/populations (often referred to as transportability or portability) and collapsibility. For this post, we’re going to focus on the last one.</p>
 </section>
-<section id="collapsible" class="level2">
-<h2 class="anchored" data-anchor-id="collapsible">Collapsible?</h2>
-<p><br>
-## Ratios</p>
-</section>
-<section id="ratios" class="level2">
-<h2 class="anchored" data-anchor-id="ratios">Ratios</h2>
-<p>Odds ratios (OR) and hazard ratios (HR) are two types of effect measures used in epidemiology and statistics to compare the risk or odds of an event happening in two different groups. They are considered non-collapsible effect measures because they can change when additional variables are adjusted for in a model, even if these variables do not interact with the exposure variable.</p>
-<p>Non-collapsibility refers to the property that the measure of effect for a particular exposure can change when a variable that is not a confounder is added to the model.</p>
-<ol type="1">
-<li><p><strong>Odds Ratios</strong>: Odds ratios are calculated as the odds of an event occurring in the exposed group divided by the odds of the event occurring in the unexposed group. They are non-collapsible because the odds ratio calculated in a simple unadjusted analysis can be different from the odds ratio calculated in a multivariable model that adjusts for other variables. This is a consequence of the mathematical properties of the odds ratio.</p></li>
-<li><p><strong>Hazard Ratios</strong>: Hazard ratios are used in survival analysis and are calculated as the hazard (or risk) of an event in the exposed group divided by the hazard in the unexposed group. They are also non-collapsible because the hazard ratio can change when other variables are added to a Cox proportional hazards model, even if these variables are not confounders.</p></li>
-</ol>
-<p>This feature of ORs and HRs is important to consider in statistical analysis, as it can lead to different interpretations of the data depending on what variables are included in the model. It’s also a key reason why researchers carefully consider which variables to include in their models.</p>
-<p>In contrast, other measures of effect like risk ratios or risk differences are collapsible, meaning they remain the same whether or not non-confounding variables are adjusted for in the model.</p>
-</section>
-<section id="simulated-data" class="level2">
-<h2 class="anchored" data-anchor-id="simulated-data">Simulated Data</h2>
+<section id="example-time" class="level2">
+<h2 class="anchored" data-anchor-id="example-time">Example time!</h2>
+<p>Rather than bore you with a bunch of jargon up front, it’s always better to work through an example first (at least in my opinion) and then bore you with jargon (just kidding!….maybe…maybe not).</p>
+<p>Let’s say that we have two animal types (turtles and lions) and whether they caught a ball (yes/no). There is also sometimes a zookeeper that is around. Now this zookeeper can throw the animals a ball, which makes a difference on if they catch it or not.<br>
+</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From ChatGPT</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required library</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>animal_type <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>) <span class="co"># 0 for turtle, 1 for lion</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>zookeeper_present <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>) <span class="co"># 0 for absent, 1 for present</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ball_catch <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>animal_type <span class="sc">+</span> zookeeper_present))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(animal_type, zookeeper_present, ball_catch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
+<p>The first thing to do is to look at our fancy pants data we have. Let’s separate it by whether a zookeeper was present or not.</p>
+<table class="table">
+<caption><strong>Zookeeper Present</strong></caption>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ball Not Caught</th>
+<th>Ball Caught</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Turtle</strong></td>
+<td>65</td>
+<td>70</td>
+<td><strong>135</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Lion</strong></td>
+<td>13</td>
+<td>110</td>
+<td><strong>123</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td><strong>78</strong></td>
+<td><strong>180</strong></td>
+<td><strong>258</strong></td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<caption><strong>Zookeeper Absent</strong></caption>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ball Not Caught</th>
+<th>Ball Caught</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Turtle</strong></td>
+<td>95</td>
+<td>35</td>
+<td><strong>130</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Lion</strong></td>
+<td>30</td>
+<td>82</td>
+<td><strong>112</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td>125</td>
+<td>117</td>
+<td><strong>242</strong></td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<caption><strong>Overall</strong></caption>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ball Not Caught</th>
+<th>Ball Caught</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Turtle</strong></td>
+<td>160</td>
+<td>105</td>
+<td><strong>265</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Lion</strong></td>
+<td>43</td>
+<td>192</td>
+<td><strong>235</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td><strong>203</strong></td>
+<td><strong>197</strong></td>
+<td><strong>500</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s get down to some analysis using the odds ratio (OR). If we calculate the odds ratio for each of these tables, we’d find ORs of: 7.86 for when the zookeeper is present, 7.42 when the zookeeper is absent and 6.80 overall. You may be wondering why there is such a difference. Perhaps these are just different numbers and we should expect this? At first, you’d be tempted to think that it’s just a difference and perhaps if we average them it’ll fix it. However that’s not the case, the weighted average of 7.86 and 7.42 won’t give us 6.80. So what do we do? Maybe we’ll try a GLM.</p>
+</section>
+<section id="what-if-we-use-a-glm" class="level2">
+<h2 class="anchored" data-anchor-id="what-if-we-use-a-glm">What if we use a GLM?</h2>
+<div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate data</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">10000</span> <span class="co"># Number of observations</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># Covariate (not a confounder)</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>z) <span class="co"># Exposure</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>x <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>z) <span class="co"># Outcome</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in rbinom(N, 1, 0.5 + 0.3 * x + 0.3 * z): NAs produced</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a data frame</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">z =</span> z)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the crude (unadjusted) odds ratio</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>crude_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(<span class="fu">glm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data, <span class="at">family =</span> <span class="st">"binomial"</span>))[<span class="st">"x"</span>])</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the adjusted odds ratio</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>adj_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(<span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> data, <span class="at">family =</span> <span class="st">"binomial"</span>))[<span class="st">"x"</span>])</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Crude Odds Ratio: "</span>, crude_or))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(ball_catch <span class="sc">~</span> animal_type, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(ball_catch <span class="sc">~</span> animal_type <span class="sc">+</span> zookeeper_present, </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(fit1)[<span class="st">'animal_type'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Crude Odds Ratio:  2.88761029799451"</code></pre>
+<pre><code>animal_type 
+   6.803987 </code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Adjusted Odds Ratio: "</span>, adj_or))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(fit2)[<span class="st">'animal_type'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Adjusted Odds Ratio:  3.90776960011745"</code></pre>
+<pre><code>animal_type 
+   7.602132 </code></pre>
 </div>
 </div>
+<p>Dammit, must be some sort of sorcery you blurt out with an exasperated look on your face. “Gotta be confounding…or…some weird magical bias or…”. If you’re thinking that, relax. It’s a known “issue” (more on if it’s an issue later), that happens with odds ratios as a measure.<br>
+<br>
+What is happening here is something called non-collapsibility.</p>
+</section>
+<section id="what-exactly-do-we-mean-by-collapsible" class="level2">
+<h2 class="anchored" data-anchor-id="what-exactly-do-we-mean-by-collapsible">What exactly do we mean by collapsible?</h2>
+<p>Greenland and Pearl defined collapsibility as “when an adjustment does not alter a measure, the measure is said to be collapsible over C or invariant with respect to the adjustment. Conversely, if an adjustment alters a measure the measure is said to be non-collapsible over C” <span class="citation" data-cites="greenland2011">(<a href="#ref-greenland2011" role="doc-biblioref">Greenland and Pearl 2011</a>)</span>.</p>
+<p>So what exactly does this mean? Well it means that even when there is no confounding whether we include a covariate in our model matters for the magnitude of our treatment (if that covariate impacts the outcome) <span class="citation" data-cites="daniel2021">(<a href="#ref-daniel2021" role="doc-biblioref">Daniel, Zhang, and Farewell 2021</a>)</span>. The paper by Daniel et al., illustrates a good way to tell if we should expect a measure to be collapsible or not.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Bore you about statistics?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you are actually interested in what I’m referring to, here’s the nitty gritty (keep in mind it’s a very, very brief summary). For GLMs, an important component is the link function. In the paper they highlight five: identity, log, logit, complementary log-log and probit. They use a function called the <em>characteristic collapsibility function</em> which can be used to explain the difference in collapsible vs noncollapsible measures.<br>
+<br>
+<span class="math display">\[
+g_\nu(.) = f^{-1}{f(.) + \nu}
+\]</span><br>
+<br>
+This shows that what is a super helpful property: not allowing models to predict probabilites outside the range of [0, 1]. To do this, the function needed to be bended. These bendy bits result in an inevitable consequence: noncollapsibility.</p>
+</div>
+</div>
+</section>
+<section id="so-whats-the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="so-whats-the-problem">So what’s the problem?</h2>
+<p>As Frank Harrell points out in his blog post, this isn’t necessarily undesirable (link: https://www.fharrell.com/post/marg/). Any covariate adjustment will improve estimation and power over unadjusted marginal treatment effects. Another issue is that pooled marginal estimates are difficult to interpret. For example, who exactly does this estimate apply to? Yet another issue is that marginal ORs do not transport to populations with a different ratio than the sample you are analyzing.</p>
+<p>There are differing views on the correct approach and boils down to opinion of the analyst. There is a great article by <span class="citation" data-cites="doi2022">(<a href="#ref-doi2022" role="doc-biblioref">Doi et al. 2022</a>)</span> about some considerations when using a OR vs RR, namely the portability across trials (essentially how can apply these results to another sample/population). The point of this point was to not advocate for or against a specific measure but rather to highlight a key point that needs considering when interpreting results: is this a marginal estimate or a conditional estimate?</p>
+
 
 
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-daniel2021" class="csl-entry" role="doc-biblioentry">
+Daniel, Rhian, Jingjing Zhang, and Daniel Farewell. 2021. <span>“Making Apples from Oranges: Comparing Noncollapsible Effect Estimators and Their Standard Errors After Adjustment for Different Covariate Sets.”</span> <em>Biometrical Journal</em> 63 (3): 528–57.
+</div>
+<div id="ref-doi2022" class="csl-entry" role="doc-biblioentry">
+Doi, Suhail A, Luis Furuya-Kanamori, Chang Xu, Tawanda Chivese, Lifeng Lin, Omran AH Musa, George Hindy, Lukman Thalib, and Frank E Harrell Jr. 2022. <span>“The Odds Ratio Is <span>‘Portable’</span> Across Baseline Risk but Not the Relative Risk: Time to Do Away with the Log Link in Binomial Regression.”</span> <em>Journal of Clinical Epidemiology</em> 142: 288–93.
+</div>
+<div id="ref-greenland2011" class="csl-entry" role="doc-biblioentry">
+Greenland, Sander, and Judea Pearl. 2011. <span>“Adjustments and Their Consequences—Collapsibility Analysis Using Graphical Models.”</span> <em>International Statistical Review</em> 79 (3): 401–26.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

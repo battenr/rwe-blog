@@ -1,0 +1,21 @@
+---
+title: "Instrumental Variable Estimation"
+---
+
+## IV? Like Intravenous?
+
+No, not intravenous, IV as in instrumental variable. An instrumental variable is
+
+## IV Methods
+
+To perform their magic, IV methods need an instrumental variable or an instrument. It needs to meet three instrumental conditions:
+
+1.  *Z* is associated with *A*
+
+2.  *Z* does not affect *Y* except through its potential affect on *A*
+
+3.  *Z* and *Y* do not share causes
+
+For example, in a double-blind trial, the randomization is an instrument because: i) trial participants are more likely to receive treatment if they were assigned to treatment, ii) expected by double-blind design, iii) random assignment of Z.
+
+using Hernan & Robins Ch 16 and can perhaps use Ding et al. 2017

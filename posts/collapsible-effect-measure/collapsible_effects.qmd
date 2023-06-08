@@ -2,8 +2,9 @@
 title: "Collapsibility/Non-collapsibility" 
 subtitle: "TBD"
 author: "Ryan Batten"
-date: "2023-03-02"
-categories: [Nested Models, G-Estimation]
+date: "2023-06-08"
+categories: [OR, GLM, Collapsibility]
+bibliography: collapsible.bib
 # image : "standards.png"
 draft: true
 format: 
@@ -15,74 +16,100 @@ format:
     code-fold: true
 ---
 
-## Title Options (Delete)
+## Measures of Effect 
 
-Title options (from ChatGPT)
+Epidemiologists and clinical researchers use different metrics to quantify the relationship between the exposure and outcome. Commonly used measures include the risk ratio (RR), risk difference (RD), odds ratio (OR) and hazard ratio (HR). Each one of these has benefits and drawbacks, including the type of outcome (binary, continuous, time-to-event), how these can apply to other samples/populations (often referred to as transportability or portability) and collapsibility. For this post, we're going to focus on the last one.
 
-1.  "In a Game of Statistical Jenga, Odds Ratios and Hazard Ratios Never Collapse!"
+## Example time! 
 
-2.  "Non-Collapsible Ratios: When Your Statistics Have Better Posture Than You!"
+Rather than bore you with a bunch of jargon up front, it's always better to work through an example first (at least in my opinion) and then bore you with jargon (just kidding!....maybe...maybe not).
 
-3.  "Non-Collapsible Effect Measures: Because Some Ratios Just Won't Fold Under Pressure!"
+Let's say that we have two animal types (turtles and lions) and whether they caught a ball (yes/no). There is also sometimes a zookeeper that is around. Now this zookeeper can throw the animals a ball, which makes a difference on if they catch it or not. \
 
-4.  "Odds Ratios and Hazard Ratios: The Non-Collapsible Chairs of Epidemiology."
+```{r, message = FALSE, warning = FALSE}
 
-## Collapsible?
-
-\
-\#
-
-## Ratios
-
-Odds ratios (OR) and hazard ratios (HR) are two types of effect measures used in epidemiology and statistics to compare the risk or odds of an event happening in two different groups. They are considered non-collapsible effect measures because they can change when additional variables are adjusted for in a model, even if these variables do not interact with the exposure variable.
-
-Non-collapsibility refers to the property that the measure of effect for a particular exposure can change when a variable that is not a confounder is added to the model.
-
-1.  **Odds Ratios**: Odds ratios are calculated as the odds of an event occurring in the exposed group divided by the odds of the event occurring in the unexposed group. They are non-collapsible because the odds ratio calculated in a simple unadjusted analysis can be different from the odds ratio calculated in a multivariable model that adjusts for other variables. This is a consequence of the mathematical properties of the odds ratio.
-
-2.  **Hazard Ratios**: Hazard ratios are used in survival analysis and are calculated as the hazard (or risk) of an event in the exposed group divided by the hazard in the unexposed group. They are also non-collapsible because the hazard ratio can change when other variables are added to a Cox proportional hazards model, even if these variables are not confounders.
-
-This feature of ORs and HRs is important to consider in statistical analysis, as it can lead to different interpretations of the data depending on what variables are included in the model. It's also a key reason why researchers carefully consider which variables to include in their models.
-
-In contrast, other measures of effect like risk ratios or risk differences are collapsible, meaning they remain the same whether or not non-confounding variables are adjusted for in the model.
-
-## Simulated Data
-
-```{r}
-
-# From ChatGPT
-
-# Load required library
-
-library(dplyr)
-
-# Set seed for reproducibility
+library(tidyverse)
 
 set.seed(123)
 
-# Simulate data
+n = 500
 
-N <- 10000 # Number of observations
+animal_type <- rbinom(n, size = 1, prob = 0.5) # 0 for turtle, 1 for lion
+zookeeper_present <- rbinom(n, size = 1, prob = 0.5) # 0 for absent, 1 for present
+ball_catch <- rbinom(n, 1, plogis(-1 + 2*animal_type + zookeeper_present))
 
-z <- rbinom(N, 1, 0.5) # Covariate (not a confounder)
-
-x <- rbinom(N, 1, 0.5 + 0.3*z) # Exposure
-
-y <- rbinom(N, 1, 0.5 + 0.3*x + 0.3*z) # Outcome
-
-# Combine into a data frame
-
-data <- data.frame(y = y, x = x, z = z)
-
-# Calculate the crude (unadjusted) odds ratio
-
-crude_or <- exp(coef(glm(y ~ x, data = data, family = "binomial"))["x"])
-
-# Calculate the adjusted odds ratio
-
-adj_or <- exp(coef(glm(y ~ x + z, data = data, family = "binomial"))["x"])
-
-print(paste("Crude Odds Ratio: ", crude_or))
-
-print(paste("Adjusted Odds Ratio: ", adj_or))
+df <- data.frame(animal_type, zookeeper_present, ball_catch)
 ```
+
+The first thing to do is to look at our fancy pants data we have. Let's separate it by whether a zookeeper was present or not.
+
+|             | Ball Not Caught | Ball Caught  | **Total** |
+|-------------|-----------------|--------------|-----------|
+| **Turtle**  | 65              | 70           | **135**   |
+| **Lion**    | 13              | 110          | **123**   |
+| **Total**   | **78**          | **180**      | **258**   |
+
+: **Zookeeper Present**
+
+|             | Ball Not Caught  | Ball Caught  | **Total** |
+|-------------|------------------|--------------|-----------|
+| **Turtle**  | 95               | 35           | **130**   |
+| **Lion**    | 30               | 82           | **112**   |
+| **Total**   | 125              | 117          | **242**   |
+
+: **Zookeeper Absent**
+
+|            | Ball Not Caught | Ball Caught  | **Total** |
+|------------|-----------------|--------------|-----------|
+| **Turtle** | 160             | 105          | **265**   |
+| **Lion**   | 43              | 192          | **235**   |
+| **Total**  | **203**         | **197**      | **500**   |
+
+: **Overall**
+
+Now let's get down to some analysis using the odds ratio (OR). If we calculate the odds ratio for each of these tables, we'd find ORs of: 7.86 for when the zookeeper is present, 7.42 when the zookeeper is absent and 6.80 overall. You may be wondering why there is such a difference. Perhaps these are just different numbers and we should expect this? At first, you'd be tempted to think that it's just a difference and perhaps if we average them it'll fix it. However that's not the case, the weighted average of 7.86 and 7.42 won't give us 6.80. So what do we do? Maybe we'll try a GLM.
+
+## What if we use a GLM? 
+
+```{r}
+
+fit1 <- glm(ball_catch ~ animal_type, 
+            family = binomial(link = "logit"), 
+            data = df)
+
+fit2 <- glm(ball_catch ~ animal_type + zookeeper_present, 
+            family = binomial(link = "logit"),
+            data = df)
+
+exp(coef(fit1)['animal_type'])
+
+exp(coef(fit2)['animal_type'])
+```
+
+Dammit, must be some sort of sorcery you blurt out with an exasperated look on your face. "Gotta be confounding...or...some weird magical bias or...". If you're thinking that, relax. It's a known "issue" (more on if it's an issue later), that happens with odds ratios as a measure. We have simulated the data so we know it's not due to confounding (zookeeper being present isn't a confounder but is predictive of the outcome). What is happening here is something called *non-collapsibility*.
+
+## What exactly do we mean by collapsible? 
+
+Greenland and Pearl define collapsibility as "when an adjustment does not alter a measure, the measure is said to be collapsible over C or invariant with respect to the adjustment. Conversely, if an adjustment alters a measure the measure is said to be non-collapsible over C" [@greenland2011]. So what exactly does this mean?
+
+Well it means that even when there is no confounding whether we include a covariate in our model matters for the magnitude of our treatment (if that covariate impacts the outcome) [@daniel2021]. The aforementioned paper, illustrates a good way to tell if we should expect a measure to be collapsible or not. I won't go into the mathematics behind this. Just keep in mind that odds ratios and hazard ratios are non-collapsible.
+
+::: callout-note
+## Bore you about statistics?
+
+If you are actually interested in what I'm referring to, here's the nitty gritty (keep in mind it's a very, very brief summary). For GLMs, an important component is the link function. In the paper they highlight five: identity, log, logit, complementary log-log and probit. They use a function called the *characteristic collapsibility function* which can be used to explain the difference in collapsible vs noncollapsible measures. \
+\
+$$
+g_\nu(.) = f^{-1}{f(.) + \nu}
+$$\
+\
+This shows that what is a super helpful property: not allowing models to predict probabilites outside the range of \[0, 1\]. To do this, the function needed to be bended. These bendy bits result in an inevitable consequence: noncollapsibility.
+:::
+
+## So what's the problem?
+
+As Frank Harrell points out in his blog post, this isn't necessarily undesirable (link: https://www.fharrell.com/post/marg/). It's a known issue, but as long as we know it we can be aware of it. Adjusting for any covariates will result in improved estimation and power compared to an unadjusted marginal treatment effect. I work mostly with observational data, where not adjusting for covariates isn't an option whether it be through weighting, matching or outcome regression.
+
+Another issue is that pooled marginal estimates are difficult to interpret. For example, who exactly does this estimate apply to? Yet another issue is that marginal ORs do not transport to populations with a different ratio than the sample you are analyzing.
+
+There are differing views on the correct approach and boils down to opinion of the analyst. There is a great article by [@doi2022] about some considerations when using a OR vs RR, namely the portability across trials (essentially how can apply these results to another sample/population). The point of this post was to not advocate for or against a specific measure but rather to highlight a key point that needs considering when interpreting results: is this a marginal estimate or a conditional estimate?

@@ -74,7 +74,7 @@ $$
 Y^{a = 0} = Y - \psi_1A
 $$
 
-Now, if this were correct and we knew the value of $\psi_1$ then we could calculate the counterfactual outcome under no treatment for each individual in the study popluation, except that we don't know $\psi_1$. Estimating this is exactly what we want to do. \
+Now, if this were correct and we knew the value of $\psi_1$ then we could calculate the counterfactual outcome under no treatment for each individual in the study popluation, except that we don't know $\psi_1$. Estimating this is exactly what we want to do.\
 \
 
 Now how exactly will we do this? Well we can fit a logistic model, using different values. Say for each option we do:
@@ -95,17 +95,17 @@ One thing about this, is that we can only search for so many values at a time. I
 
 We need to determine the uncertainty around this estimate. One way is to check different values and find out where the thresholds are to keep P \> 0.05. Another option is to use bootstrapping.
 
-It's worth noting here that if we had to use IP weighting to adjust for censoring, it would've meant we had to use a robust variance estimator to adjust for the IP weights. In that case, the 95% CI is conservative in large samples (i.e., will trap the true value *at least* 95% of the time). \
+It's worth noting here that if we had to use IP weighting to adjust for censoring, it would've meant we had to use a robust variance estimator to adjust for the IP weights. In that case, the 95% CI is conservative in large samples (i.e., will trap the true value *at least* 95% of the time).\
 \
 If we have a large sample (note how large is vague here, long story), then bootstrapping would result in non-conservation values, therefore possibly narrower 95% CIs for the g-estimate.
 
 ## What about our rank preservation assumption?
 
-At this point you may be thinking back to the unreasonable rank preservation assumption. "Well? What about it Ryan?"...glad you remembered! The g-estimation algorithm (fancy way of saying our iterations/guess and check method) gives us a consistent estimate of the parameter $\beta_1$ of the mean model, assuming the mean model is correctly specified. This is true whether rank preservation holds up or not. It only requires that $H(\beta_1)$ and $Y^{a = 0}$ have the same conditional mean given L. \
+At this point you may be thinking back to the unreasonable rank preservation assumption. "Well? What about it Ryan?"...glad you remembered! The g-estimation algorithm (fancy way of saying our iterations/guess and check method) gives us a consistent estimate of the parameter $\beta_1$ of the mean model, assuming the mean model is correctly specified. This is true whether rank preservation holds up or not. It only requires that $H(\beta_1)$ and $Y^{a = 0}$ have the same conditional mean given L.\
 \
 Interestingly it can be modified to incorporate a sensivity for unmeasured confounding (upcoming post to keep an eye out for, if interested).
 
-## Multiple Parameters 
+## Multiple Parameters
 
 By now, you may be wondering how useful this actually is, if we can only do one parameter. Fear not! By definition, structural nested models estimate, by definition, the average causal effect within levels of the confounders *L*, not the average causal effect in the population. Ommitting product terms can lead to bias, it generally does, due to model misspecification.
 
@@ -113,7 +113,7 @@ In this case, we can consider the model $E[Y^a - Y^{a = 0}|A=a, L] = \beta_1a+\b
 
 Now we need to find the combination of these two parameters that make both $\alpha_1$ and $\alpha_2$ equal to 0.
 
-## So how useful is this anyways? 
+## So how useful is this anyways?
 
 Unfortunately it isn't really. In fact, it's rarely used but they can be used in general settings such as when there is time-varying treatment (a common occurence for RWE).
 

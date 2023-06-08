@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-03-02">
 
-<title>Ryan’s Real-World Evidence - Hot Diggity DAG</title>
+<title>Ryan’s Real-World Evidence - Instrumental Variable Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +62,7 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -104,31 +102,14 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Hot Diggity DAG</h1>
-            <p class="subtitle lead">An introduction to DAGs</p>
-                                <div class="quarto-categories">
-                <div class="quarto-category">DAGs</div>
-                <div class="quarto-category">Causal Diagrams</div>
-              </div>
-                  </div>
+      <h1 class="title">Instrumental Variable Estimation</h1>
+                      </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Ryan Batten </p>
-            </div>
-    </div>
       
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">March 2, 2023</p>
-      </div>
-    </div>
     
       
     </div>
@@ -137,45 +118,27 @@ ul.task-list li input[type="checkbox"] {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Contents</h2>
-   
-  <ul>
-  <li><a href="#dont-analyze-graphs" id="toc-dont-analyze-graphs" class="nav-link active" data-scroll-target="#dont-analyze-graphs">“Don’t Analyze Graphs?”</a></li>
-  <li><a href="#why-do-we-need-a-dag" id="toc-why-do-we-need-a-dag" class="nav-link" data-scroll-target="#why-do-we-need-a-dag">Why do we need a DAG?</a></li>
-  <li><a href="#simple-dag" id="toc-simple-dag" class="nav-link" data-scroll-target="#simple-dag">Simple DAG</a></li>
-  <li><a href="#think-of-water-flowing-in-a-pipe.what" id="toc-think-of-water-flowing-in-a-pipe.what" class="nav-link" data-scroll-target="#think-of-water-flowing-in-a-pipe.what">“Think of Water Flowing in a Pipe”….What?</a></li>
-  <li><a href="#title-ideas-from-chatgpt" id="toc-title-ideas-from-chatgpt" class="nav-link" data-scroll-target="#title-ideas-from-chatgpt">Title ideas (from ChatGPT)</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
-<section id="dont-analyze-graphs" class="level2">
-<h2 class="anchored" data-anchor-id="dont-analyze-graphs">“Don’t Analyze Graphs?”</h2>
-<p>Yes..well no…well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that’s not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn’t have put it better myself, “Draw your assumptions before your conclusions”.</p>
+<section id="iv-like-intravenous" class="level2">
+<h2 class="anchored" data-anchor-id="iv-like-intravenous">IV? Like Intravenous?</h2>
+<p>No, not intravenous, IV as in instrumental variable. An instrumental variable is</p>
 </section>
-<section id="why-do-we-need-a-dag" class="level2">
-<h2 class="anchored" data-anchor-id="why-do-we-need-a-dag">Why do we need a DAG?</h2>
-<p>Before we get started into what it actually is and the rules, it’s always a good idea to review the why.</p>
-<p>(can ref/talk about riley2022 12 days of christmas statisitician article)</p>
-</section>
-<section id="simple-dag" class="level2">
-<h2 class="anchored" data-anchor-id="simple-dag">Simple DAG</h2>
-</section>
-<section id="think-of-water-flowing-in-a-pipe.what" class="level2">
-<h2 class="anchored" data-anchor-id="think-of-water-flowing-in-a-pipe.what">“Think of Water Flowing in a Pipe”….What?</h2>
-<p>One of the peskiest biases</p>
-</section>
-<section id="title-ideas-from-chatgpt" class="level2">
-<h2 class="anchored" data-anchor-id="title-ideas-from-chatgpt">Title ideas (from ChatGPT)</h2>
-<p>Sure, how about “Don’t Analyze Graphs”? It’s a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.</p>
-<p>How about “Dramatic Action Graph”? It’s not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!</p>
+<section id="iv-methods" class="level2">
+<h2 class="anchored" data-anchor-id="iv-methods">IV Methods</h2>
+<p>To perform their magic, IV methods need an instrumental variable or an instrument. It needs to meet three instrumental conditions:</p>
+<ol type="1">
+<li><p><em>Z</em> is associated with <em>A</em></p></li>
+<li><p><em>Z</em> does not affect <em>Y</em> except through its potential affect on <em>A</em></p></li>
+<li><p><em>Z</em> and <em>Y</em> do not share causes</p></li>
+</ol>
+<p>For example, in a double-blind trial, the randomization is an instrument because: i) trial participants are more likely to receive treatment if they were assigned to treatment, ii) expected by double-blind design, iii) random assignment of Z.</p>
+<p>using Hernan &amp; Robins Ch 16 and can perhaps use Ding et al.&nbsp;2017</p>
 
 
 </section>

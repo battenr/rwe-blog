@@ -20,7 +20,11 @@ format:
 
 Yes..well no...well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that's not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn't have put it better myself, "Draw your assumptions before your conclusions".
 
-A DAG can help contain information
+## Why do we need a DAG?
+
+Before we get started into what it actually is and the rules, it's always a good idea to review the why.
+
+(can ref/talk about riley2022 12 days of christmas statisitician article)
 
 ## Simple DAG
 
