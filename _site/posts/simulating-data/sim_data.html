@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-06-09">
+<meta name="dcterms.date" content="2023-03-02">
 
-<title>Ryan’s Real-World Evidence - IV Methods</title>
+<title>Ryan’s Real-World Evidence - Simulating Data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,25 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
+}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -104,11 +123,10 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">IV Methods</h1>
+      <h1 class="title">Simulating Data</h1>
             <p class="subtitle lead">TBD</p>
                                 <div class="quarto-categories">
-                <div class="quarto-category">OR</div>
-                <div class="quarto-category">Collapsibility</div>
+                <div class="quarto-category">Simulating Data</div>
               </div>
                   </div>
   </div>
@@ -126,7 +144,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 9, 2023</p>
+        <p class="date">March 2, 2023</p>
       </div>
     </div>
     
@@ -142,8 +160,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#iv-like-intravenous" id="toc-iv-like-intravenous" class="nav-link active" data-scroll-target="#iv-like-intravenous">IV? Like Intravenous?</a></li>
-  <li><a href="#iv-methods" id="toc-iv-methods" class="nav-link" data-scroll-target="#iv-methods">IV Methods</a></li>
+  <li><a href="#why-simulate" id="toc-why-simulate" class="nav-link active" data-scroll-target="#why-simulate">Why Simulate?</a></li>
+  <li><a href="#steps-to-simulate" id="toc-steps-to-simulate" class="nav-link" data-scroll-target="#steps-to-simulate">Steps to Simulate</a></li>
+  <li><a href="#monte-carlo-simulation" id="toc-monte-carlo-simulation" class="nav-link" data-scroll-target="#monte-carlo-simulation">Monte Carlo Simulation</a></li>
+  <li><a href="#resources-for-simulating" id="toc-resources-for-simulating" class="nav-link" data-scroll-target="#resources-for-simulating">Resources for Simulating</a></li>
+  <li><a href="#why-simulate-data" id="toc-why-simulate-data" class="nav-link" data-scroll-target="#why-simulate-data">Why simulate data?</a></li>
+  <li><a href="#tips-for-generating-data" id="toc-tips-for-generating-data" class="nav-link" data-scroll-target="#tips-for-generating-data">Tips for generating data</a></li>
   </ul>
 </nav>
     </div>
@@ -153,25 +175,42 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="iv-like-intravenous" class="level2">
-<h2 class="anchored" data-anchor-id="iv-like-intravenous">IV? Like Intravenous?</h2>
-<p>No, not intravenous, IV as in instrumental variable. An instrumental variable is</p>
+<p>Learning to simulate data was one of the best things that I’ve stumbled into. It can help improve your knowledge of statistics and inform decision making. One of the things I found difficult when starting was for a resource that gave some examples of what I really wanted to know. Hopefully this post will provide a decent start to someone.</p>
+<section id="why-simulate" class="level2">
+<h2 class="anchored" data-anchor-id="why-simulate">Why Simulate?</h2>
+<p>At first, I had heard about simulation studies but wasn’t exactly sure the purpose of them.</p>
 </section>
-<section id="iv-methods" class="level2">
-<h2 class="anchored" data-anchor-id="iv-methods">IV Methods</h2>
-<p>To perform their magic, IV methods need an instrumental variable or an instrument. It needs to meet three instrumental conditions:</p>
-<ol type="1">
-<li><p><em>Z</em> is associated with <em>A</em></p></li>
-<li><p><em>Z</em> does not affect <em>Y</em> except through its potential affect on <em>A</em></p></li>
-<li><p><em>Z</em> and <em>Y</em> do not share causes</p></li>
-</ol>
-<p>For example, in a double-blind trial, the randomization is an instrument because: i) trial participants are more likely to receive treatment if they were assigned to treatment, ii) expected by double-blind design, iii) random assignment of Z.</p>
-<p>using Hernan &amp; Robins Ch 16 and can perhaps use Ding et al.&nbsp;2017</p>
+<section id="steps-to-simulate" class="level2">
+<h2 class="anchored" data-anchor-id="steps-to-simulate">Steps to Simulate</h2>
+<p><span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span> use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we’l’’ break down a little bit .</p>
+</section>
+<section id="monte-carlo-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="monte-carlo-simulation">Monte Carlo Simulation</h2>
+<p>Monte Carlo simulation is</p>
+</section>
+<section id="resources-for-simulating" class="level2">
+<h2 class="anchored" data-anchor-id="resources-for-simulating">Resources for Simulating</h2>
+<p>There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="burton2006">Burton et al. (<a href="#ref-burton2006" role="doc-biblioref">2006</a>)</span>.</p>
+</section>
+<section id="why-simulate-data" class="level2">
+<h2 class="anchored" data-anchor-id="why-simulate-data">Why simulate data?</h2>
+</section>
+<section id="tips-for-generating-data" class="level2">
+<h2 class="anchored" data-anchor-id="tips-for-generating-data">Tips for generating data</h2>
+<p>(RYAN ADD REF THAT TALKS ABOUT SIMULATING DATA)</p>
+
 
 
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-burton2006" class="csl-entry" role="doc-biblioentry">
+Burton, Andrea, Douglas G Altman, Patrick Royston, and Roger L Holder. 2006. <span>“The Design of Simulation Studies in Medical Statistics.”</span> <em>Statistics in Medicine</em> 25 (24): 4279–92.
+</div>
+<div id="ref-morris2019" class="csl-entry" role="doc-biblioentry">
+Morris, Tim P, Ian R White, and Michael J Crowther. 2019. <span>“Using Simulation Studies to Evaluate Statistical Methods.”</span> <em>Statistics in Medicine</em> 38 (11): 2074–2102.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
