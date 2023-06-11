@@ -1,5 +1,5 @@
 ---
-title: "RWE Blog"
+title: "Causally Curious in the Real World"
 listing:
   contents: posts
   sort: "date desc"

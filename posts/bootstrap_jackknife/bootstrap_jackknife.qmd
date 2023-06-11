@@ -1,14 +1,31 @@
 ---
-title: "Bootstrap Bill & Jackknnife Sparrow"
+title: "Resampling Magic"
+subtitle: "The Wonders of Bootstrapping and Jackknifing Explained"
 author: "Ryan Batten"
-date: "2022-09-26"
-categories: [Resampling]
+date: "2023-07-06"
+categories: [Resampling, Bootstrapping, Jackknifing]
 bibliography: bootstrap-jackknife.bib
 draft: true
 format: 
   html:
     code-fold: true
 ---
+
+## Uncertainty
+
+A key part of any analysis is to determine the uncertainty associated with an estimate.
+
+## Bootstrapping: the Magic Bag Trick
+
+Imagine you're a magician with a bag full of different colored marbles. You want to know what the average color looks like, but you can only pull out one marble at a time, look at it, then put it back. Bootstrapping is like doing this over and over again, taking notes each time, and then using those notes to make a pretty good guess about the average color.
+
+Bootstrapping is a statistical method that helps us understand the uncertainty of our estimates. By creating many "resamples" from our original data, we can calculate the standard errors, confidence intervals, and even perform hypothesis testing!
+
+Here's a simple R code example using bootstrapping to estimate the average height of kids:
+
+## Ol' Faithful
+
+Bootstrapping comes up a lot. It's very useful, altho it can't solve every problem, it can work in a lot of scenarios where potentially other methods don't work.
 
 ## Pirates of the Caribbean?
 

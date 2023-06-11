@@ -4,11 +4,17 @@ website:
   title: "Ryan's Real-World Evidence"
   navbar:
     right:
-      - about.qmd
-      - icon: github
-        href: https://github.com/battenr
+     # - text: "Consulting/Freelance"
+     #   href: consulting.html
+      - text: "About Me"
+        href: about.qmd
+      - icon: linkedin
+        href: https://www.linkedin.com/in/ryan-batten-8a5224170/
       - icon: twitter
         href: https://twitter.com/rwe_ryan
+      - icon: github
+        href: https://github.com/battenr
+
 format:
   html:
     theme: flatly
