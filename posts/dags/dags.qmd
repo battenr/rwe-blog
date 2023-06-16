@@ -20,6 +20,20 @@ format:
 
 Yes..well no...well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that's not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn't have put it better myself, "Draw your assumptions before your conclusions".
 
+In this post, we're going to go over the basics of DAGs, however this isn't meant to encompass all aspects of causal diagrams. More of a "wetting your beak" if you will. There will be future posts that will build upon this. Without further ado, let's get into it.
+
+## Assumptions of DAGs
+
+The causal Markov assumption, implies that in a causal DAG, the common causes of any pair of variables must also be in the graph. The willingness to consider a causal diagram for an observational study is the graphical version of the conditional exchangeability assumption:\
+\
+given $L, Y^a \perp A|L$
+
+## Rules of DAGs
+
+There are some basic rules of DAGs:
+
+1.  
+
 ## Why do we need a DAG?
 
 Before we get started into what it actually is and the rules, it's always a good idea to review the why.

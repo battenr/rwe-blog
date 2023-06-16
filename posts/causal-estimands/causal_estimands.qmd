@@ -1,0 +1,61 @@
+---
+title: "Causal Estimands" 
+subtitle: "Who does this apply too?"
+author: "Ryan Batten"
+date: "2023-06-22"
+categories: [Estimands, ATE, ATT, ATU]
+# image : "standards.png"
+bibliography: estimands.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Who does this apply too? 
+
+A key part of any research question is to determine who this applies too. There are several different ways to determine this but this post will focus on the causal estimand. Specifically, who does this result apply to? \
+
+## Example
+
+As per usual, time for an example! Say that we have magical water gun that makes you grow taller. Before we do any analyses we need to setup our research question. In clinical epidemiology this is typically PICO(S): population, intervention, comparators, outcome and sometimes study design (altho that's inherent to your study). The causal estimand gets at this first letter, I.
+
+## Types of Estimands
+
+We'll focus on four causal estimands, in no particular order:
+
+-   Average treatment effect in the population (ATE)
+
+-   Average treatment effect in the treated (ATT)
+
+-   Average treatment effect in the untreated (ATU)
+
+-   Average treatment effect in the overlap (ATO)
+
+### ATE
+
+The ATE asks "What would happen on average to all kids if every kid got sprayed with the Magic Growth Water, compared to if no kid got sprayed at all?" Essentially, it's the difference in average height between a world where everyone gets sprayed and a world where no one gets sprayed.
+
+In IPTW terms, both patients are reweighted. We can do that using
+
+### ATT
+
+In IPTW terms, those that received treatment receive a weight of 1.0 and those that received control they
+
+Here, we're focusing on the kids who chose to get sprayed. So we ask, "What is the average effect on those kids who actually got sprayed with the Magic Growth Water?" That is, among kids who are already getting sprayed, how much taller are they on average because of the Magic Growth Water?
+
+### ATU
+
+In IPTW terms, those that received placebo (control) receive a weight of 1.0 and those that were treated are weighted.
+
+This is the opposite of ATT. It's like asking, "What would be the average effect on those kids who didn't get sprayed if they started getting sprayed?" So, among kids who don't currently get sprayed, how much taller would they be on average if they started getting sprayed?
+
+### ATO
+
+ATO is the average treatment in the overalp.
+
+## Adjustment Techniques

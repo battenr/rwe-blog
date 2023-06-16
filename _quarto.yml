@@ -1,15 +1,17 @@
 project:
   type: website
 website: 
-  title: "Ryan's Real-World Evidence"
+  title: "Blog Posts"
   navbar:
     right:
      # - text: "Consulting/Freelance"
      #   href: consulting.html
       - text: "About Me"
         href: about.qmd
+      - text: "Consulting"
+        href: freelance.qmd
       - icon: linkedin
-        href: https://www.linkedin.com/in/ryan-batten-8a5224170/
+        href: https://www.linkedin.com/in/rwe-ryan
       - icon: twitter
         href: https://twitter.com/rwe_ryan
       - icon: github

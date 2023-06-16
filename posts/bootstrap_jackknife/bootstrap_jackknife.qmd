@@ -13,7 +13,11 @@ format:
 
 ## Uncertainty
 
-A key part of any analysis is to determine the uncertainty associated with an estimate.
+A key part of any analysis is to determine the uncertainty associated with an estimate. Sometimes this can be especially tricky with certain methods such as
+
+## Vary Away!
+
+So what you're telling me is I can just use bootstrapping all the time for every test? Well I guess you could but I'm going to say nah. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.
 
 ## Bootstrapping: the Magic Bag Trick
 
@@ -79,26 +83,4 @@ what is jackknife resampling
 
 Jackknife resampling is a statistical technique used to estimate the bias and standard error of a statistic. It involves repeatedly leaving out one observation from a dataset and calculating the statistic of interest on the remaining data. The results are then averaged to obtain an estimate of the statistic's bias and standard error.
 
-## Bootstrapping
-
-what is bootstrap resampling
-
-Bootstrap resampling is a statistical technique used to estimate the sampling distribution of an estimator by resampling a dataset with replacement. It is a type of resampling method that is used to estimate the sampling distribution of a statistic by resampling a dataset with replacement. The bootstrap method is used to estimate the standard errors of a statistic, to estimate confidence intervals, and to construct hypothesis tests.
-
-simulate data in R about pirates of the carribeans
-
-simulate data in R about pirates of the carribeans
-
-```{r}
-#set seed
-set.seed(123)
-
-#create data frame
-pirates <- data.frame(
-  name = c("Jack Sparrow", "Will Turner", "Elizabeth Swann", "Hector Barbossa", "Davy Jones"),
-  age = c(45, 28, 25, 55, 300),
-  ship = c("The Black Pearl", "The Flying Dutchman", "The Interceptor", "The Black Pearl", "The Flying Dutchman"),
-  weapon = c("Sword", "Sword", "Sword", "Pistol", "Kraken")
-)
-
-```
+## 

@@ -1,1 +1,1 @@
-Sitemap: https://quartopub.com/sites/battenr/rwe-blog/sitemap.xml
+Sitemap: https://battenr.quarto.pub/rwe-blog/sitemap.xml
