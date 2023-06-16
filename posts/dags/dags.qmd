@@ -30,9 +30,17 @@ given $L, Y^a \perp A|L$
 
 ## Rules of DAGs
 
-There are some basic rules of DAGs:
+There are some basic rules of DAGs. We call these d-seperation [@hernanwhatif, pp. 76] :
 
-1.  
+1.  If no variables are being conditioned on (aka included in our model), a path is blocked if and *only if* two arrowheads on the path collide at some variable on the path. (that variable is known as a collider)
+
+2.  Any path than contains a non-collider that has been conditioned on is blocked. We show this by putting a square box around a variable to indicate we are conditioning on it.
+
+3.  A collider that has been conditioned on does not block a path.
+
+4.  A collider that has a descendant that has been conditioned on does not block a path.
+
+We can summarize it like this: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or contains a collider that hasn't been conditioned on and ha sno descendants that have been conditioned on.
 
 ## Why do we need a DAG?
 
