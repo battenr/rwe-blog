@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,7 +22,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -57,8 +76,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
@@ -185,10 +203,14 @@ given <span class="math inline">\(L, Y^a \perp A|L\)</span></p>
 </section>
 <section id="rules-of-dags" class="level2">
 <h2 class="anchored" data-anchor-id="rules-of-dags">Rules of DAGs</h2>
-<p>There are some basic rules of DAGs:</p>
+<p>There are some basic rules of DAGs. We call these d-seperation <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 76</a>)</span> :</p>
 <ol type="1">
-<li></li>
+<li><p>If no variables are being conditioned on (aka included in our model), a path is blocked if and <em>only if</em> two arrowheads on the path collide at some variable on the path. (that variable is known as a collider)</p></li>
+<li><p>Any path than contains a non-collider that has been conditioned on is blocked. We show this by putting a square box around a variable to indicate we are conditioning on it.</p></li>
+<li><p>A collider that has been conditioned on does not block a path.</p></li>
+<li><p>A collider that has a descendant that has been conditioned on does not block a path.</p></li>
 </ol>
+<p>We can summarize it like this: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or contains a collider that hasn’t been conditioned on and ha sno descendants that have been conditioned on.</p>
 </section>
 <section id="why-do-we-need-a-dag" class="level2">
 <h2 class="anchored" data-anchor-id="why-do-we-need-a-dag">Why do we need a DAG?</h2>
@@ -208,9 +230,14 @@ given <span class="math inline">\(L, Y^a \perp A|L\)</span></p>
 <p>How about “Dramatic Action Graph”? It’s not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!</p>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-hernanwhatif" class="csl-entry" role="listitem">
+Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Textbook.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

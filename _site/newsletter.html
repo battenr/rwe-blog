@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-03-02">
 
-<title>Blog Posts - Mastering Statistics Through Make-Believe</title>
+<title>Blog Posts - Causally Curious in the Real World</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,44 +20,24 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -83,14 +61,14 @@ div.csl-indent {
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Blog Posts</span>
     </a>
   </div>
@@ -101,12 +79,16 @@ div.csl-indent {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
+    <a class="nav-link" href="./about.html" rel="" target="">
  <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../freelance.html" rel="" target="">
+    <a class="nav-link" href="./freelance.html" rel="" target="">
  <span class="menu-text">Consulting</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./newsletter.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Newsletter</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.linkedin.com/in/rwe-ryan" rel="" target=""><i class="bi bi-linkedin" role="img">
@@ -131,97 +113,40 @@ div.csl-indent {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Mastering Statistics Through Make-Believe</h1>
-            <p class="subtitle lead">Simulated Data in R</p>
-                                <div class="quarto-categories">
-                <div class="quarto-category">Simulating Data</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Ryan Batten </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">March 2, 2023</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Contents</h2>
-   
-  <ul>
-  <li><a href="#why-simulate" id="toc-why-simulate" class="nav-link active" data-scroll-target="#why-simulate">Why Simulate?</a></li>
-  <li><a href="#steps-to-simulate" id="toc-steps-to-simulate" class="nav-link" data-scroll-target="#steps-to-simulate">Steps to Simulate</a></li>
-  <li><a href="#monte-carlo-simulation" id="toc-monte-carlo-simulation" class="nav-link" data-scroll-target="#monte-carlo-simulation">Monte Carlo Simulation</a></li>
-  <li><a href="#resources-for-simulating" id="toc-resources-for-simulating" class="nav-link" data-scroll-target="#resources-for-simulating">Resources for Simulating</a></li>
-  <li><a href="#why-simulate-data" id="toc-why-simulate-data" class="nav-link" data-scroll-target="#why-simulate-data">Why simulate data?</a></li>
-  <li><a href="#tips-for-generating-data" id="toc-tips-for-generating-data" class="nav-link" data-scroll-target="#tips-for-generating-data">Tips for generating data</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
-
-
-
-
-<p>Learning to simulate data was one of the best things that I’ve stumbled into. It can help improve your knowledge of statistics and inform decision making. One of the things I found difficult when starting was for a resource that gave some examples of what I really wanted to know. Hopefully this post will provide a decent start to someone.</p>
-<section id="why-simulate" class="level2">
-<h2 class="anchored" data-anchor-id="why-simulate">Why Simulate?</h2>
-<p>At first, I had heard about simulation studies but wasn’t exactly sure the purpose of them.</p>
-</section>
-<section id="steps-to-simulate" class="level2">
-<h2 class="anchored" data-anchor-id="steps-to-simulate">Steps to Simulate</h2>
-<p><span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span> use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we’l’’ break down a little bit .</p>
-</section>
-<section id="monte-carlo-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="monte-carlo-simulation">Monte Carlo Simulation</h2>
-<p>Monte Carlo simulation is</p>
-</section>
-<section id="resources-for-simulating" class="level2">
-<h2 class="anchored" data-anchor-id="resources-for-simulating">Resources for Simulating</h2>
-<p>There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="burton2006">Burton et al. (<a href="#ref-burton2006" role="doc-biblioref">2006</a>)</span>.</p>
-</section>
-<section id="why-simulate-data" class="level2">
-<h2 class="anchored" data-anchor-id="why-simulate-data">Why simulate data?</h2>
-</section>
-<section id="tips-for-generating-data" class="level2">
-<h2 class="anchored" data-anchor-id="tips-for-generating-data">Tips for generating data</h2>
-<p>(RYAN ADD REF THAT TALKS ABOUT SIMULATING DATA)</p>
-
-
-
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-burton2006" class="csl-entry" role="listitem">
-Burton, Andrea, Douglas G Altman, Patrick Royston, and Roger L Holder. 2006. <span>“The Design of Simulation Studies in Medical Statistics.”</span> <em>Statistics in Medicine</em> 25 (24): 4279–92.
+<div class="quarto-about-jolla">
+ <header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Causally Curious in the Real World</h1>
 </div>
-<div id="ref-morris2019" class="csl-entry" role="listitem">
-Morris, Tim P, Ian R White, and Michael J Crowther. 2019. <span>“Using Simulation Studies to Evaluate Statistical Methods.”</span> <em>Statistics in Medicine</em> 38 (11): 2074–2102.
+<div class="quarto-title-meta">
+  </div>
+</header><main class="content" id="quarto-document-content">
+<p>The goal of my newsletter is to provide some insight and hopefully useful information the following:</p>
+<section id="sign-up-below" class="level2">
+<h2 data-anchor-id="sign-up-below">Sign up below!</h2>
+<p><a href="https://calendly.com/ryanbatten/15min" title="Get in Touch">15 minute free consult</a></p>
+
+
+</section>
+</main> 
+  <hr class="about-sep">
+   <div class="about-links">
+  <a href="https://www.linkedin.com/in/rwe-ryan" class="about-link" rel="" target="">
+    <i class="bi bi-linkedin"></i>
+     <span class="about-link-text">LinkedIn</span>
+  </a>
+  <a href="https://twitter.com/rwe_ryan" class="about-link" rel="" target="">
+    <i class="bi bi-twitter"></i>
+     <span class="about-link-text">Twitter</span>
+  </a>
 </div>
-</div></section></div></main> <!-- /main -->
+</div>
+ <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -242,13 +167,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
   const isCodeAnnotation = (el) => {
     for (const clz of el.classList) {
       if (clz.startsWith('code-annotation-')) {                     

@@ -10,6 +10,8 @@ website:
         href: about.qmd
       - text: "Consulting"
         href: freelance.qmd
+      - text: "Newsletter"
+        href: newsletter.qmd
       - icon: linkedin
         href: https://www.linkedin.com/in/rwe-ryan
       - icon: twitter

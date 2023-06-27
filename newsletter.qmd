@@ -1,0 +1,19 @@
+---
+title: "Causally Curious in the Real World"
+draft: true
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/rwe-ryan
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/rwe_ryan
+---
+
+The goal of my newsletter is to provide some insight and hopefully useful information the following:
+
+## Sign up below!
+
+[15 minute free consult](https://calendly.com/ryanbatten/15min "Get in Touch")
