@@ -39,7 +39,7 @@ set.seed(135451)
 
 monsters <- data.frame(
   eyes = runif(n.monsters, min = 1, max = 5),
-  age = rnorm(n.monsters, mean = 200, sd = 50),
+  age = rnorm(n.monsters, mean = 100, sd = 5), # need some other metric
   group = 1
   # group = "monsters"
 ) %>% 
@@ -68,12 +68,12 @@ df <- rbind(
 
 ```
 
-|                             | Monsters (n = 135) | Kids ( n = 452)  |
-|:---------------------------:|:------------------:|:----------------:|
-|  Number of eyes, mean (SD)  |    2.99 (1.22)     |      2 (0)       |
-|       Age, mean (SD)        |   206.90 (45.78)   |   5.16 (1.92)    |
-| Sprayed by water gun, n (%) |    123 (91.1%)     |   328 (72.6%)    |
-| Height (in feet), mean (SD) |    1.70 (0.61)     |   1.51 (0.19)    |
+|                             | Monsters (n = 135) | Kids ( n = 452) |
+|:---------------------------:|:------------------:|:---------------:|
+|  Number of eyes, mean (SD)  |    2.99 (1.22)     |      2 (0)      |
+|       Age, mean (SD)        |   206.90 (45.78)   |   5.16 (1.92)   |
+| Sprayed by water gun, n (%) |    123 (91.1%)     |   328 (72.6%)   |
+| Height (in feet), mean (SD) |    1.70 (0.61)     |   1.51 (0.19)   |
 
 : **Characteristics of Monsters and Kids**
 
@@ -94,9 +94,15 @@ One important thing to note here is that all of these estimands would be the sam
 ## Potential Outcomes
 
 ::: callout-note
-An important part here is the potential outcomes framework. The potential outcomes can be written as $Y_0$ and $Y_i$. For a binary treatment, like in our case, we can think of it as each person has two potential outcomes (one if they get sprayed by the water gun, one if not). Depending on what happens, one of the outcomes is observed. \
+An important part here is the potential outcomes framework. The potential outcomes can be written as $Y_0$ and $Y_i$. For a binary treatment, like in our case, we can think of it as each person has two potential outcomes (one if they get sprayed by the water gun, one if not). Depending on what happens, one of the outcomes is observed.\
 \
 Now, the individual causal effect is $Y_1$ - $Y_0$ for each person. We can't know this for each person, so instead we take an average (if we assume certain things). In math terms, we show this as $E[Y_{1} - Y_{0}]$.
+:::
+
+::: callout-note
+## Propensity Score
+
+We will be using propensity scores to estimate each of these estimands. A brief overview of the propensity is that it's the conditional probability of treatment conditional on covariate. More simply put: it's the probability of being a monster based on the number of yours eyes.
 :::
 
 ### ATE
@@ -111,34 +117,28 @@ To estimate the ATE, we can use inverse probability weights.
 
 library(WeightIt)
 
-mod <- glm()
-
-w <- WeightIt::weightit(
-  data = df,
-  group ~ age + eyes, 
-  method = "glm", 
-  estimand = "ATE", 
-  stabilize = FALSE
-)
+# work through an example in a side script (aka not here)
 
 ```
 
+Ta da! Now we know \[INSERT\]
+
 ### ATT
 
-In IPTW terms, those that received treatment receive a weight of 1.0 and those that received control they
-
-Here, we're focusing on the kids who chose to get sprayed. So we ask, "What is the average effect on those kids who actually got sprayed with the Magic Growth Water?" That is, among kids who are already getting sprayed, how much taller are they on average because of the Magic Growth Water?
+The ATT is the effect of the treatment for a population of patients *like* those who actually received the treatment in the study [@greifer2021choosing] (note: this is the population, not the actual sample we have here). For our study the question would be "How would monsters outcomes differ on average, had they not been sprayed with the height water gun?" \
+\
+We can think of the ATT as the effect of withholding treatment from those who would otherwise receive it. In term of weights, all of the patients in the treated group get a value of 1 while those in the control get a value of PS/1-PS.
 
 ### ATU
 
-In IPTW terms, those that received placebo (control) receive a weight of 1.0 and those that were treated are weighted.
+The ATU is similar to the ATT except opposite (okay admittedly that sentence isn't fully coherent). The ATU is asking how would untreated patients differ if they had actually received treatment? That is, what would be the effect of expanding the treatment to those who haven't had it yet?
 
-This is the opposite of ATT. It's like asking, "What would be the average effect on those kids who didn't get sprayed if they started getting sprayed?" So, among kids who don't currently get sprayed, how much taller would they be on average if they started getting sprayed?
+In terms of weights it's the opposite of the ATT: 1 for those in the control group and (1-PS)/PS for the treated group.
 
 ### ATO
 
-ATO is the average treatment in the overalp.
+ATO is the average effect of the treatment in the overlap. Those patients who it's unclear if the benefits would outweigh the costs [@greifer2021choosing]. These patients are very similar to each other but less similar for patients who the treatment decisions are more "clear cut" so to say [@greifer2021choosing].
 
-## Adjustment Techniques
+## Choose Your Adjustment Technique Wisely!
 
 Picking the estimand of interest isn't just important for the target population but also for the adjustment technique selected. Certain ones can only target certain estimands. This becomes even more important when you are comparing methods. For example, IPW and PSM do not target the same estimand [@greifer2021choosing].

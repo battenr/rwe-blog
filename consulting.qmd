@@ -1,0 +1,26 @@
+---
+title: "Consulting | Ryan Batten"
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/rwe-ryan
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/rwe_ryan
+---
+
+My goal is to ensure that the research you want to conduct provides meaningful, actionable real-world evidence while being methodologically sound. Whether it's designing a study, analyzing data, or explaining complex concepts in an easy-to-understand manner, I'm committed to delivering high-quality work that meets your specific need.
+
+## Services I Offer
+
+**Study Design:** Crafting an effective research study requires a thorough understanding of your specific objectives. I specialize in designing robust, efficient studies that consider all these aspects, utilizing appropriate methodologies and rigorous statistical models to ensure the integrity of the research and its findings.
+
+**Statistical Analysis**: I offer comprehensive statistical analysis services, applying appropriate statistical methods to real-world data to identify patterns and extract meaningful insights. This approach to data analysis allows for accurate interpretation that can inform decisions.
+
+**Clear Communication of Complex Topics**: Understanding complex statistical data and epidemiological findings is crucial in translating research into actionable insights. However, the complexity of these topics can often be a barrier. I have a talent for conveying intricate subjects in a concise and easy to understand manner. This facilitates better understanding and application of research findings.
+
+## Reach Out!
+
+[Free 15-Minute Consultation](https://calendly.com/ryanbatten/15min "Get in Touch")

@@ -1,0 +1,24 @@
+---
+title: "Resampling Magic"
+subtitle: "The Wonders of Bootstrapping and Jackknifing Explained"
+author: "Ryan Batten"
+date: "2023-07-06"
+categories: [Resampling, Bootstrapping, Jackknifing]
+bibliography: bootstrap.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+## Uncertainty
+
+A key part of any analysis is to determine the uncertainty associated with an estimate. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate the uncertainty nonparametrically, that is without assuming anything about the distribution, is bootstrapping.
+
+## Vary Away!
+
+"So what you're telling me is I can just use bootstrapping all the time for every test?" Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.
+
+## Coffee Beans
+
+Imagine that we have a bag of coffee beans. They can vary in shape and size
