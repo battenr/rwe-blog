@@ -38,7 +38,7 @@ n.kids = 452
 set.seed(135451)
 
 monsters <- data.frame(
-  eyes = runif(n.monsters, min = 1, max = 5),
+  eyes = sample(x = c(1,2,3,4,5), size = n.monsters, replace = TRUE),
   age = rnorm(n.monsters, mean = 100, sd = 5), # need some other metric
   group = 1
   # group = "monsters"
@@ -49,7 +49,7 @@ monsters <- data.frame(
   )
 
 kids <- data.frame(
-  eyes = runif(n.kids, min = 2, max = 4), # some kids may be called "four eyes"
+  eyes = sample(x = c(1,2,4), size = n.kids, replace = TRUE), # some kids may be called "four eyes"
   age = rnorm(n.kids, mean = 5, sd = 1),
   group = 0
   # group = "kids"
@@ -107,7 +107,9 @@ We will be using propensity scores to estimate each of these estimands. A brief 
 
 ### ATE
 
-The ATE is the the average treatment effect among all eligible patients in the study population (i.e., difference were they all to be treated vs were they all not to be treated) [@greifer2021choosing]. For our example, it would be the difference were all the monsters and kids sprayed with the water gun versus were the monster and kids not sprayed.
+The ATE is the the average treatment effect among all eligible patients in the study population (i.e., difference were they all to be treated vs were they all not to be treated) [@greifer2021choosing]. For our example, it would be the difference were all the monsters and kids sprayed with the water gun versus were all the monsters and kids not sprayed. In mathematical notation it's:
+
+$$E[Y_{1}-Y_{0}]$$
 
 To estimate the ATE, we can use inverse probability weights.
 
@@ -125,19 +127,27 @@ Ta da! Now we know \[INSERT\]
 
 ### ATT
 
-The ATT is the effect of the treatment for a population of patients *like* those who actually received the treatment in the study [@greifer2021choosing] (note: this is the population, not the actual sample we have here). For our study the question would be "How would monsters outcomes differ on average, had they not been sprayed with the height water gun?" \
-\
-We can think of the ATT as the effect of withholding treatment from those who would otherwise receive it. In term of weights, all of the patients in the treated group get a value of 1 while those in the control get a value of PS/1-PS.
+The ATT is the effect of the treatment for a population of patients *like* those who actually received the treatment in the study [@greifer2021choosing] (note: this is the population, not the actual sample we have here). For our study, the question would be "In all the kids and monsters who have been sprayed, what's the effect of the water gun?". In mathematical notation:
+
+$$E[Y_{1}-Y_{0}|T = 1]$$
+
+In term of weights, all of the patients in the treated group get a value of 1 while those in the control get a value of PS/1-PS.
 
 ### ATU
 
-The ATU is similar to the ATT except opposite (okay admittedly that sentence isn't fully coherent). The ATU is asking how would untreated patients differ if they had actually received treatment? That is, what would be the effect of expanding the treatment to those who haven't had it yet?
+The ATU is similar to the ATT except opposite (okay admittedly that sentence isn't fully coherent). For our study the question would be "In all the kids and monsters who were not sprayed, what's the effect of not being sprayed?". In mathematical notation:
+
+$$E[Y_{1}-Y_{0}|T = 0]$$
 
 In terms of weights it's the opposite of the ATT: 1 for those in the control group and (1-PS)/PS for the treated group.
 
 ### ATO
 
-ATO is the average effect of the treatment in the overlap. Those patients who it's unclear if the benefits would outweigh the costs [@greifer2021choosing]. These patients are very similar to each other but less similar for patients who the treatment decisions are more "clear cut" so to say [@greifer2021choosing].
+ATO is the average effect of the treatment in the overlap. Those patients who it's unclear if the benefits would outweigh the costs [@greifer2021choosing]. These patients are very similar to each other but less similar for patients who the treatment decisions are more "clear cut" so to say [@greifer2021choosing]. In mathematical notation:
+
+$$E[Y_{1}-Y_{0}]$$
+
+Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it's because we are still reweighing both the treated and control groups but it's a different target population. Instead of it being "everyone" like above, it's the people who are in the uncertain group. WE weight them as
 
 ## Choose Your Adjustment Technique Wisely!
 
