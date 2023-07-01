@@ -1,12 +1,10 @@
 ---
-title: "Causal Estimands" 
-subtitle: "Who does this apply too?"
+title: "How I Met Your Causal Estimand" 
 author: "Ryan Batten"
-date: "2023-06-22"
+date: "2023-07-01"
 categories: [Estimands, ATE, ATT, ATU, ATO]
-# image : "standards.png"
+image : "height_dag.png"
 bibliography: estimands.bib
-draft: true
 format: 
   html:
     toc: true
@@ -18,19 +16,21 @@ format:
 
 ## Who does this apply too?
 
-A key part of any research question is to figure out who our *target population* is. These are the people we want to study. For example, is it 85 year olds who play american football? Is it children between 5-11 years of age using the swings at the park? Figuring this out, allows us to figure out who to sample but also who our results will apply too. The best way to explain this is through an example, so without further ado let's get started!
+A key part of any research question is to figure out who our *target population* is. These are the people we want to study. For example, is it 85 year olds who play american football? Is it children between 5-11 years of age using the swings at the park? Determining this allows us to figure out who to sample but also who our results will be applicable to. The best way show this is through an example, so without further ado let's get started!
 
 ## Magical Water Gun for Height?
 
-Say that we have a magical water gun that makes you grow taller. Before we do any analyses, we need to setup our research question. In clinical epidemiology, this is typically PICO(S): **p**opulation, **i**ntervention, **c**omparators, **o**utcome and sometimes **s**tudy design (I say sometimes because it's not always clearly defined, but can be figured out based on looking at the type of study).
-
-The causal estimand helps us with the first letter: P by asking "who does this apply too?". Now the who refers to the *target* population, that is the people we are...well targeting.
+Imagine that monsters came out of your closet, Monsters Inc. style, and claimed that they have a magical water gun that makes you grow taller. We want to know if they are telling the truth or if they are fibbing, but first we need to figure out who exactly they are claiming this will work on.\
+\
+In clinical epidemiology, we determine this by following the **PICO** acronym: **P**opulation, **I**ntervention, **C**omparator and **O**utcome(s). For this situation, our research question would look something like this: "Does being sprayed with a water gun increased your height, compared to not being sprayed?". \
+\
+Now this is a good start but who exactly are we referring too? Who do we want to know if it works for? Everyone in the world? Just children? Short adults? The causal estimand helps us with this part.
 
 ![Monsters](kids_monsters.png){#fig-sample}
 
-Imagine that there is a magical water gun that monsters from space (aka aliens) have shown up to earth with. They've sprayed some of themselves with it, and some kids who want to grow taller. We want to know if this will actually work! Why? Well both monsters and kids are pretty short, their friends want to know if they will grow! (cue the monstars from Space Jam). @fig-sample shows what our sample looks like. As you can see, there's a mixture of monsters and kids in each group.\
+These monsters that have shown up all of a sudden say they've sprayed some of themselves with the water gun and it's worked! Some kids who want to grow have eagerly signed up and been sprayed as well. The effect has varied individual by individual so we need to know: who's this actually working for, if at all? Why? Well both monsters and kids are pretty short, their friends want to know if it will work on them! (cue the monstars from Space Jam). @fig-sample shows what our sample looks like. As you can see, there's a mixture of monsters and kids in each group which will make it harder to determine if the magical water gun is actually working, or if monsters just grow taller than kids. \
 \
-The figure is illustrative. Let's look at the actual characteristics from the individuals we will be studying outlined in @tbl-characteristics.
+The figure is just illustrative. Let's look at the actual characteristics from the individuals we will be studying outlined in @tbl-characteristics.
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 
@@ -116,31 +116,33 @@ We'll focus on four causal estimands, in no particular order:
 
 -   Average treatment effect in the overlap (ATO)
 
-One important thing to note here is that all of these estimands would be the same in a randomized trial because the characteristics will be the same (at least in theory). Therefore the ATT, ATU and ATE will be the same. However, not so in observational data.
+One important thing to note here is that all of these estimands would be the same in a randomized trial because the characteristics will be the same (at least in theory). Therefore, the ATT, ATU, ATE and ATO will be the same. However, not so in observational data.
 
-## Potential Outcomes
+Like many, almost all, areas of science, there are several assumptions that must be met. For causal inference, these assumptions are exchangeability, positivity, consistency, no versions of treatment and no interference. I suggest checking out the appendix in @greifer2021choosing since these can vary by the estimand selected.
 
 ::: callout-note
-An important part here is the potential outcomes framework. The potential outcomes can be written as $Y_0$ and $Y_i$. For a binary treatment, like in our case, we can think of it as each person has two potential outcomes (one if they get sprayed by the water gun, one if not). Depending on what happens, one of the outcomes is observed.\
+## Potential Outcomes
+
+An important component here is the concept of potential outcomes. These can be written as $Y_0$ and $Y_i$ [@greifer2021choosing]. For a binary treatment, like in our case, we can think of it as each person has two *potential* outcomes **prior** to them getting the treatment or not. After they receive the treatment, only one of them is revealed [@greifer2021choosing].\
 \
-Now, the individual causal effect is $Y_1$ - $Y_0$ for each person. We can't know this for each person, so instead we take an average (if we assume certain things). In math terms, we show this as $E[Y_{1} - Y_{0}]$.
+Now, the individual causal effect is $Y_1$ - $Y_0$ for each person. In a perfect world, we'd know this however the world isn't perfect. Instead, we take an average (if we assume certain things, described in @greifer2021choosing ). In math terms, we show this as $E[Y_{1} - Y_{0}]$.
 :::
 
 ::: callout-note
 ## Propensity Score
 
-We will be using propensity scores to estimate each of these estimands. A brief overview of the propensity is that it's the conditional probability of treatment conditional on covariate. More simply put: it's the probability of being a monster based on the number of yours eyes.
+We will be using propensity scores to estimate each of these estimands. A brief overview of the propensity score is that it's the conditional probability of treatment. More simply put, it's the probability of being sprayed by the water gun based on your number of eyes and if you're a monster or not.
 :::
 
 ### ATE
 
-Ask yourself: would it be feasible to treat all eligible people included in the study (in this case all the monsters and kids) with the treatment of interest? If yes, then we could look at the ATE [@desai2019].
+Ask yourself: would it be feasible to spray all eligible people in this study with the magical water gun? If we assume yes, then we could look at the ATE [@desai2019].
 
-The ATE is the the average treatment effect among all eligible patients in the study population (i.e., difference were they all to be treated vs were they all not to be treated) [@greifer2021choosing]. For our example, it would be the difference were all the monsters and kids sprayed with the water gun versus were all the monsters and kids not sprayed. In mathematical notation it's:
+The ATE is the effect of the treatment for the entire study population [@greifer2021choosing]. Another way of thinking of this is to ask how would height change if *everyone* was sprayed with the water gun versus if *no one* was sprayed with the water gun. If we write it in math terms, it's:
 
 $$E[Y_{1}-Y_{0}]$$
 
-To estimate the ATE, we can use inverse probability weights. To calculate these, we need the propensity score (PS). Once we have it, the equation is $1/{PS}$ for the treated group and $1/(1-{PS})$ for the control group. Then we can plug these weights into the outcome model and away we go!
+Now, how do we estimate this? One way is to use inverse probability weights. To calculate these, we need the propensity score (PS). Once we know the PS, we can calculate these weights as $1/{PS}$ for the treated group and $1/(1-{PS})$ for the control group. Then we can plug these weights into the outcome model and away we go!
 
 ```{r, message=FALSE, warning =FALSE}
 
@@ -180,18 +182,18 @@ outcome <- broom::tidy(outcome.mod) |>
    lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
   )
 
-paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+paste0("Average Height Difference: ", round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
 ```
 
-Ta da! Now we know that being sprayed with a water gun doesn't affect the height in our ATE population (that is if everyone was sprayed compared to if everyone was not sprayed). But what about if not everyone is eligible for the treatment?
+Ta da! Now we know that being sprayed with a water gun doesn't affect the height in our ATE population. But what about if not everyone is eligible for the treatment?
 
 ### ATT
 
-Now we ask, would the treatment only be given to patients with certain characteristics? If yes, then the ATT might be of interest [@desai2019]. For example, what if only individuals over the age of 5 could be treated? Would it work in them? In mathematical notation:
+Now we ask, would the treatment only be given to patients with certain characteristics? If yes, then the ATT might be of interest [@desai2019]. This is also useful when considering the harmful effects of a treatment [@greifer2021choosing]. For our example, we want to know what the effects of the water gun are in those receiving it. If it doesn't work in the people getting sprayed, then why are we spraying them? Would we be better off not soaking them? In mathematical notation:
 
 $$E[Y_{1}-Y_{0}|T = 1]$$
 
-In term of weights, all of the patients in the treated group get a value of $1$ while those in the control get a value of $PS / (1-PS)$. This is known as standardized mortality ratio weights.
+In term of weights, all of the patients in the treated group get a value of $1$ while those in the control get a value of $PS / (1-PS)$. These are known as standardized mortality ratio weights.
 
 ```{r}
 
@@ -223,20 +225,20 @@ outcome <- broom::tidy(outcome.mod) |>
    lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
   )
 
-paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+paste0("Average Height Difference: ", round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
   
 
 ```
 
-Our results are similar but not the same as those for the ATE!
+Our results are similar but not the same as those for the ATE! In this case they are close but often that isn't true.
 
 ### ATU
 
-The ATU is similar to the ATT except opposite (okay admittedly that sentence isn't fully coherent). For our study the question would be "Are there people who would not be treated? For example, what about in those individuals under 5?". In mathematical notation:
+The ATU is similar to the ATT except opposite (okay admittedly that sentence doesn't make a lot of sense). The ATU is asking how would the height be different if the monsters and kids who didn't get sprayed, got sprayed? In mathematical notation:
 
 $$E[Y_{1}-Y_{0}|T = 0]$$
 
-In terms of weights it's the opposite of the ATT: $1$ for those in the control group and $(1-PS)/PS$ for the treated group.
+How do we calculate the ATU? You guessed it! The opposite of the ATT...well kind of. It's $1$ for those in the control group and $(1-PS)/PS$ for the treated group.
 
 ```{r}
 
@@ -268,7 +270,7 @@ outcome <- broom::tidy(outcome.mod) |>
    lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
   )
 
-paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+paste0("Average Height Difference: ", round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
   
 
 ```
@@ -279,7 +281,7 @@ ATO is the average effect of the treatment in the overlap. Those patients who it
 
 $$E[Y_{1}-Y_{0}]$$
 
-Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it's because we are still reweighing both the treated and control groups but it's a different target population. Instead of it being "everyone" like above, it's the people who are in the uncertain group. We weight them as $PS$ for the sprayed group and $1-PS$ for the not sprayed group.
+Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it's because we are still reweighing both the treated and control groups but it's a different target population. Instead of it being "everyone" like above, it's the people who are in the uncertain group. We weigh them as $PS$ for the sprayed group and $1-PS$ for the not sprayed group.
 
 ```{r}
 
@@ -311,13 +313,15 @@ outcome <- broom::tidy(outcome.mod) |>
    lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
   )
 
-paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+paste0("Average Height Difference: ", round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
 
 ```
 
 ## Choose Your Adjustment Technique Wisely!
 
-Picking the estimand of interest isn't just important for the target population but also for the adjustment technique selected. Certain ones can only target certain estimands. This becomes even more important when you are comparing methods. For example, IPW and PSM do not target the same estimand [@greifer2021choosing]. There is a great flowchart for the steps involved by @desai2019, I highly recommend it if you are trying to determine the appropriate adjustment techinque.
+Picking the estimand of interest isn't just important for the *target population* but also for the adjustment technique selected. Certain adjustment techniques can only target certain estimands \[@greifer2021choosing\]. This becomes even more important when you are comparing methods.
+
+For example, IPW and PSM do not target the same estimand \[@greifer2021choosing\]. There is a great flowchart for the steps involved by @desai2019 when trying to decide on the technique. Additionally, @greifer2021choosing have a good table for selecting the technique based on the causal estimand.
 
 ## Next Steps
 

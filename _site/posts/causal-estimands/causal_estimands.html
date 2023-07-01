@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-06-22">
+<meta name="dcterms.date" content="2023-07-01">
 
-<title>Blog Posts - Causal Estimands</title>
+<title>Blog Posts - How I Met Your Causal Estimand</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -145,10 +145,6 @@ div.csl-indent {
     <a class="nav-link" href="../../freelance.html" rel="" target="">
  <span class="menu-text">Consulting</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../newsletter.html" rel="" target="">
- <span class="menu-text">Newsletter</span></a>
-  </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.linkedin.com/in/rwe-ryan" rel="" target=""><i class="bi bi-linkedin" role="img">
 </i> 
@@ -175,8 +171,7 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Causal Estimands</h1>
-            <p class="subtitle lead">Who does this apply too?</p>
+      <h1 class="title">How I Met Your Causal Estimand</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Estimands</div>
                 <div class="quarto-category">ATE</div>
@@ -200,7 +195,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 22, 2023</p>
+        <p class="date">July 1, 2023</p>
       </div>
     </div>
     
@@ -218,8 +213,7 @@ div.csl-indent {
   <ul>
   <li><a href="#who-does-this-apply-too" id="toc-who-does-this-apply-too" class="nav-link active" data-scroll-target="#who-does-this-apply-too">Who does this apply too?</a></li>
   <li><a href="#magical-water-gun-for-height" id="toc-magical-water-gun-for-height" class="nav-link" data-scroll-target="#magical-water-gun-for-height">Magical Water Gun for Height?</a></li>
-  <li><a href="#types-of-estimands" id="toc-types-of-estimands" class="nav-link" data-scroll-target="#types-of-estimands">Types of Estimands</a></li>
-  <li><a href="#potential-outcomes" id="toc-potential-outcomes" class="nav-link" data-scroll-target="#potential-outcomes">Potential Outcomes</a>
+  <li><a href="#types-of-estimands" id="toc-types-of-estimands" class="nav-link" data-scroll-target="#types-of-estimands">Types of Estimands</a>
   <ul>
   <li><a href="#ate" id="toc-ate" class="nav-link" data-scroll-target="#ate">ATE</a></li>
   <li><a href="#att" id="toc-att" class="nav-link" data-scroll-target="#att">ATT</a></li>
@@ -239,21 +233,24 @@ div.csl-indent {
 
 <section id="who-does-this-apply-too" class="level2">
 <h2 class="anchored" data-anchor-id="who-does-this-apply-too">Who does this apply too?</h2>
-<p>A key part of any research question is to figure out who our <em>target population</em> is. These are the people we want to study. For example, is it 85 year olds who play american football? Is it children between 5-11 years of age using the swings at the park? Figuring this out, allows us to figure out who to sample but also who our results will apply too. The best way to explain this is through an example, so without further ado let’s get started!</p>
+<p>A key part of any research question is to figure out who our <em>target population</em> is. These are the people we want to study. For example, is it 85 year olds who play american football? Is it children between 5-11 years of age using the swings at the park? Figuring this out, allows us to figure out who to sample but also who our results will be applicable to. The best way show this is through an example, so without further ado let’s get started!</p>
 </section>
 <section id="magical-water-gun-for-height" class="level2">
 <h2 class="anchored" data-anchor-id="magical-water-gun-for-height">Magical Water Gun for Height?</h2>
-<p>Say that we have a magical water gun that makes you grow taller. Before we do any analyses, we need to setup our research question. In clinical epidemiology this is typically PICO(S): <strong>p</strong>opulation, <strong>i</strong>ntervention, <strong>c</strong>omparators, <strong>o</strong>utcome and sometimes <strong>s</strong>tudy design (I say sometimes because it’s not always clearly defined, but can be figured out based on looking at the type of study).</p>
-<p>The causal estimand helps us with the first letter: P by asking “who does this apply too?”. Now the who refers to the <em>target</em> population, that is the people we are…well targeting.</p>
+<p>Imagine that monsters came out of your closet, Monsters Inc.&nbsp;style, and claimed that they have a magical water gun that makes you grow taller. We want to know if they are telling the truth or if they are fibbing, but first we need to figure out who exactly they are claiming this will work on.<br>
+<br>
+In clinical epidemiology, we determine this by following the <strong>PICO</strong> acronym: <strong>P</strong>opulation, <strong>I</strong>ntervention, <strong>C</strong>omparator and <strong>O</strong>utcome(s). For this situation, our research question would look something like this: “Does being sprayed with a water gun increased your height, compared to not being sprayed?”.<br>
+<br>
+Now this is a good start but who exactly are we referring too? Who do we want to know if it works for? Everyone in the world? Just children? Short adults? The causal estimand helps us with this part.</p>
 <div id="fig-sample" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="kids_monsters.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;1: Monsters</figcaption>
 </figure>
 </div>
-<p>Imagine that there is a magical water gun that monsters from space (aka aliens) have shown up to earth with. They’ve sprayed some of themselves with it, and some kids who want to grow taller. We want to know if this will actually work! Why? Well both monsters and kids are pretty short, their friends want to know if they will grow! (cue the monstars from Space Jam). <a href="#fig-sample">Figure&nbsp;1</a> shows what our sample looks like. As you can see, there’s a mixture of monsters and kids in each group.<br>
+<p>These monsters that have shown up all of a sudden say they’ve sprayed some of themselves with the water gun and it’s worked! Some kids who want to grow have eagerly signed up and been sprayed as well. The effect has varied individual by individual so we need to know: who’s this actually working for, if at all? Why? Well both monsters and kids are pretty short, their friends want to know if it will work on them! (cue the monstars from Space Jam). <a href="#fig-sample">Figure&nbsp;1</a> shows what our sample looks like. As you can see, there’s a mixture of monsters and kids in each group which will make it harder to determine if the magical water gun is actually working, or if monsters just grow taller than kids.<br>
 <br>
-The figure is illustrative. Let’s look at the actual characteristics from the individuals we will be studying outlined in <a href="#tbl-characteristics">Table&nbsp;1</a>.</p>
+The figure is just illustrative. Let’s look at the actual characteristics from the individuals we will be studying outlined in <a href="#tbl-characteristics">Table&nbsp;1</a>.</p>
 <div id="tbl-characteristics" class="anchored">
 <table class="table">
 <caption>Table&nbsp;1: Characteristics</caption>
@@ -295,7 +292,7 @@ The figure is illustrative. Let’s look at the actual characteristics from the 
 </tbody>
 </table>
 </div>
-<p>There were 458 individuals sprayed by the water gun, while 129 were not sprayed. There’s differences in age (as we’d expect with monsters!) and percentage of monsters. Looking at just height, you could think that this magical water gun works! However….and a big however…does it? Or is it just that it works better on monsters? Or that monsters are taller?<br>
+<p>There were 458 individuals sprayed by the water gun, while 129 were not sprayed. There’s differences in age and percentage of monsters. Looking at just height, you could think that this magical water gun works! However….and a <strong><em>big</em></strong> however…does it? Or is it just that it works better on monsters? Or that monsters are taller?<br>
 <br>
 Now, confounding aside, what do we want to know? Who to spray with this gun! It’s not quite as simple and straightforward as that. Let’s briefly go over the four estimands we’ll be talking about in this case.</p>
 </section>
@@ -308,23 +305,21 @@ Now, confounding aside, what do we want to know? Who to spray with this gun! It�
 <li><p>Average treatment effect in the untreated (ATU)</p></li>
 <li><p>Average treatment effect in the overlap (ATO)</p></li>
 </ul>
-<p>One important thing to note here is that all of these estimands would be the same in a randomized trial because the characteristics will be the same (at least in theory). Therefore the ATT, ATU and ATE will be the same. However, not so in observational data.</p>
-</section>
-<section id="potential-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="potential-outcomes">Potential Outcomes</h2>
+<p>One important thing to note here is that all of these estimands would be the same in a randomized trial because the characteristics will be the same (at least in theory). Therefore, the ATT, ATU, ATE and ATO will be the same. However, not so in observational data.</p>
+<p>Like many, almost all, areas of science, there are several assumptions that must be met: exchangeability, positivity and the stable unit treatment value assumption. I suggest checking out the appendix in <span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span> since these can vary by the estimand selected.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Potential Outcomes
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>An important part here is the potential outcomes framework. The potential outcomes can be written as <span class="math inline">\(Y_0\)</span> and <span class="math inline">\(Y_i\)</span>. For a binary treatment, like in our case, we can think of it as each person has two potential outcomes (one if they get sprayed by the water gun, one if not). Depending on what happens, one of the outcomes is observed.<br>
+<p>An important part here is the potential outcomes framework. The potential outcomes can be written as <span class="math inline">\(Y_0\)</span> and <span class="math inline">\(Y_i\)</span> <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. For a binary treatment, like in our case, we can think of it as each person has two <em>potential</em> outcomes (one if they get sprayed by the water gun, one if not). Depending on what happens, one of the outcomes is observed but not both.<br>
 <br>
-Now, the individual causal effect is <span class="math inline">\(Y_1\)</span> - <span class="math inline">\(Y_0\)</span> for each person. We can’t know this for each person, so instead we take an average (if we assume certain things). In math terms, we show this as <span class="math inline">\(E[Y_{1} - Y_{0}]\)</span>.</p>
+Now, the individual causal effect is <span class="math inline">\(Y_1\)</span> - <span class="math inline">\(Y_0\)</span> for each person. We can’t know this for each person, so instead we take an average (if we assume certain things, described in <span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span> ). In math terms, we show this as <span class="math inline">\(E[Y_{1} - Y_{0}]\)</span>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -337,15 +332,15 @@ Propensity Score
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We will be using propensity scores to estimate each of these estimands. A brief overview of the propensity is that it’s the conditional probability of treatment conditional on covariate. More simply put: it’s the probability of being a monster based on the number of yours eyes.</p>
+<p>We will be using propensity scores to estimate each of these estimands. A brief overview of the propensity score is that it’s the conditional probability of treatment. More simply put, it’s the probability of being sprayed by the water gun based on your number of eyes and if you’re a monster or not.</p>
 </div>
 </div>
 <section id="ate" class="level3">
 <h3 class="anchored" data-anchor-id="ate">ATE</h3>
-<p>Ask yourself: would it be feasible to treat all eligible people included in the study (in this case all the monsters and kids) with the treatment of interest? If yes, then we could look at the ATE <span class="citation" data-cites="desai2019">(<a href="#ref-desai2019" role="doc-biblioref">Desai and Franklin 2019</a>)</span>.</p>
-<p>The ATE is the the average treatment effect among all eligible patients in the study population (i.e., difference were they all to be treated vs were they all not to be treated) <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. For our example, it would be the difference were all the monsters and kids sprayed with the water gun versus were all the monsters and kids not sprayed. In mathematical notation it’s:</p>
+<p>Ask yourself: would it be feasible to spray all eligible people in this study with the magical water gun? If we assume yes, then we could look at the ATE <span class="citation" data-cites="desai2019">(<a href="#ref-desai2019" role="doc-biblioref">Desai and Franklin 2019</a>)</span>.</p>
+<p>The ATE is the effect of the treatment for the entire study population <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. Another way of thinking of this is to ask how would height change if <em>everyone</em> was sprayed with the water gun versus if <em>no one</em> was sprayed with the water gun. If we write it in math terms, it’s:</p>
 <p><span class="math display">\[E[Y_{1}-Y_{0}]\]</span></p>
-<p>To estimate the ATE, we can use inverse probability weights. To calculate these, we need the propensity score (PS). Once we have it, the equation is <span class="math inline">\(1/{PS}\)</span> for the treated group and <span class="math inline">\(1/(1-{PS})\)</span> for the control group. Then we can plug these weights into the outcome model and away we go!</p>
+<p>Now, how do we estimate it? One way is to use inverse probability weights. To calculate these, we need the propensity score (PS). Once we have know the PS, we can calculate these weights as <span class="math inline">\(1/{PS}\)</span> for the treated group and <span class="math inline">\(1/(1-{PS})\)</span> for the control group. Then we can plug these weights into the outcome model and away we go!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -385,17 +380,17 @@ Propensity Score
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>   <span class="at">lower.ci =</span> estimate <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>sandwich_se[<span class="dv">2</span>], </span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Average Height Difference: "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "0.022 95% CI (-0.109 to 0.154)"</code></pre>
+<pre><code>[1] "Average Height Difference: 0.022 95% CI (-0.109 to 0.154)"</code></pre>
 </div>
 </div>
-<p>Ta da! Now we know that being sprayed with a water gun doesn’t affect the height in our ATE population (that is if everyone was sprayed compared to if everyone was not sprayed). But what about if not everyone is eligible for the treatment?</p>
+<p>Ta da! Now we know that being sprayed with a water gun doesn’t affect the height in our ATE population. But what about if not everyone is eligible for the treatment?</p>
 </section>
 <section id="att" class="level3">
 <h3 class="anchored" data-anchor-id="att">ATT</h3>
-<p>Now we ask, would the treatment only be given to patients with certain characteristics? If yes, then the ATT might be of interest <span class="citation" data-cites="desai2019">(<a href="#ref-desai2019" role="doc-biblioref">Desai and Franklin 2019</a>)</span>. For example, what if only individuals over the age of 5 could be treated? Would it work in them? In mathematical notation:</p>
+<p>Now we ask, would the treatment only be given to patients with certain characteristics? If yes, then the ATT might be of interest <span class="citation" data-cites="desai2019">(<a href="#ref-desai2019" role="doc-biblioref">Desai and Franklin 2019</a>)</span>. This is also useful when considering the harmful effects of a treatment <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. For our example, we want to know what the effects of the water gun are in those receiving it. If it doesn’t work in the people getting sprayed, then why are we spraying them? Would we be better off not soaking them? In mathematical notation:</p>
 <p><span class="math display">\[E[Y_{1}-Y_{0}|T = 1]\]</span></p>
 <p>In term of weights, all of the patients in the treated group get a value of <span class="math inline">\(1\)</span> while those in the control get a value of <span class="math inline">\(PS / (1-PS)\)</span>. This is known as standardized mortality ratio weights.</p>
 <div class="cell">
@@ -429,19 +424,19 @@ Propensity Score
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>   <span class="at">lower.ci =</span> estimate <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>sandwich_se[<span class="dv">2</span>], </span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Average Height Difference: "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "0.022 95% CI (-0.11 to 0.154)"</code></pre>
+<pre><code>[1] "Average Height Difference: 0.022 95% CI (-0.11 to 0.154)"</code></pre>
 </div>
 </div>
-<p>Our results are similar but not the same as those for the ATE!</p>
+<p>Our results are similar but not the same as those for the ATE! In this case they are close but often that isn’t true.</p>
 </section>
 <section id="atu" class="level3">
 <h3 class="anchored" data-anchor-id="atu">ATU</h3>
-<p>The ATU is similar to the ATT except opposite (okay admittedly that sentence isn’t fully coherent). For our study the question would be “Are there people who would not be treated? For example, what about in those individuals under 5?”. In mathematical notation:</p>
+<p>The ATU is similar to the ATT except opposite (okay admittedly that sentence doesn’t make a lot of sense). The ATU is asking how would the height be different if the monsters and kids who didn’t get sprayed, got sprayed? In mathematical notation:</p>
 <p><span class="math display">\[E[Y_{1}-Y_{0}|T = 0]\]</span></p>
-<p>In terms of weights it’s the opposite of the ATT: <span class="math inline">\(1\)</span> for those in the control group and <span class="math inline">\((1-PS)/PS\)</span> for the treated group.</p>
+<p>How do we calculate the ATU? You guessed it! The opposite of the ATT…well kind of. It’s <span class="math inline">\(1\)</span> for those in the control group and <span class="math inline">\((1-PS)/PS\)</span> for the treated group.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -473,10 +468,10 @@ Propensity Score
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>   <span class="at">lower.ci =</span> estimate <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>sandwich_se[<span class="dv">2</span>], </span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Average Height Difference: "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "0.023 95% CI (-0.104 to 0.15)"</code></pre>
+<pre><code>[1] "Average Height Difference: 0.023 95% CI (-0.104 to 0.15)"</code></pre>
 </div>
 </div>
 </section>
@@ -484,7 +479,7 @@ Propensity Score
 <h3 class="anchored" data-anchor-id="ato">ATO</h3>
 <p>ATO is the average effect of the treatment in the overlap. Those patients who it’s unclear if the benefits would outweigh the costs <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. These patients are very similar to each other but less similar for patients who the treatment decisions are more “clear cut” so to say <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. In mathematical notation:</p>
 <p><span class="math display">\[E[Y_{1}-Y_{0}]\]</span></p>
-<p>Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it’s because we are still reweighing both the treated and control groups but it’s a different target population. Instead of it being “everyone” like above, it’s the people who are in the uncertain group. We weight them as <span class="math inline">\(PS\)</span> for the sprayed group and <span class="math inline">\(1-PS\)</span> for the not sprayed group.</p>
+<p>Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it’s because we are still reweighing both the treated and control groups but it’s a different target population. Instead of it being “everyone” like above, it’s the people who are in the uncertain group. We weigh them as <span class="math inline">\(PS\)</span> for the sprayed group and <span class="math inline">\(1-PS\)</span> for the not sprayed group.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -516,17 +511,18 @@ Propensity Score
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>   <span class="at">lower.ci =</span> estimate <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>sandwich_se[<span class="dv">2</span>], </span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Average Height Difference: "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>estimate, <span class="dv">3</span>), <span class="st">" 95% CI ("</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>lower.ci,<span class="dv">3</span>), <span class="st">" to "</span>, <span class="fu">round</span>(outcome<span class="sc">$</span>upper.ci, <span class="dv">3</span>), <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "0.022 95% CI (-0.106 to 0.151)"</code></pre>
+<pre><code>[1] "Average Height Difference: 0.022 95% CI (-0.106 to 0.151)"</code></pre>
 </div>
 </div>
 </section>
 </section>
 <section id="choose-your-adjustment-technique-wisely" class="level2">
 <h2 class="anchored" data-anchor-id="choose-your-adjustment-technique-wisely">Choose Your Adjustment Technique Wisely!</h2>
-<p>Picking the estimand of interest isn’t just important for the target population but also for the adjustment technique selected. Certain ones can only target certain estimands. This becomes even more important when you are comparing methods. For example, IPW and PSM do not target the same estimand <span class="citation" data-cites="greifer2021choosing">(<a href="#ref-greifer2021choosing" role="doc-biblioref">Greifer and Stuart 2021</a>)</span>. There is a great flowchart for the steps involved by <span class="citation" data-cites="desai2019">Desai and Franklin (<a href="#ref-desai2019" role="doc-biblioref">2019</a>)</span>, I highly recommend it if you are trying to determine the appropriate adjustment techinque.</p>
+<p>Picking the estimand of interest isn’t just important for the target population but also for the adjustment technique selected. Certain adjustment techniques can only target certain estimands [<span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span>]. This becomes even more important when you are comparing methods.</p>
+<p>For example, IPW and PSM do not target the same estimand [<span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span>]. There is a great flowchart for the steps involved by <span class="citation" data-cites="desai2019">Desai and Franklin (<a href="#ref-desai2019" role="doc-biblioref">2019</a>)</span>, I highly recommend it if you are trying to determine the appropriate adjustment technique.</p>
 </section>
 <section id="next-steps" class="level2">
 <h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
