@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-03-02">
+<meta name="dcterms.date" content="2023-07-15">
 
 <title>Blog Posts - Hot Diggity DAG</title>
 <style>
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 /* CSS for citations */
 div.csl-bib-body { }
@@ -159,7 +193,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">March 2, 2023</p>
+        <p class="date">July 15, 2023</p>
       </div>
     </div>
     
@@ -176,6 +210,8 @@ div.csl-indent {
    
   <ul>
   <li><a href="#dont-analyze-graphs" id="toc-dont-analyze-graphs" class="nav-link active" data-scroll-target="#dont-analyze-graphs">“Don’t Analyze Graphs?”</a></li>
+  <li><a href="#why-should-i" id="toc-why-should-i" class="nav-link" data-scroll-target="#why-should-i">Why should I?</a></li>
+  <li><a href="#does-coffee-increase-my-alertness" id="toc-does-coffee-increase-my-alertness" class="nav-link" data-scroll-target="#does-coffee-increase-my-alertness">Does Coffee Increase My Alertness?</a></li>
   <li><a href="#assumptions-of-dags" id="toc-assumptions-of-dags" class="nav-link" data-scroll-target="#assumptions-of-dags">Assumptions of DAGs</a></li>
   <li><a href="#rules-of-dags" id="toc-rules-of-dags" class="nav-link" data-scroll-target="#rules-of-dags">Rules of DAGs</a></li>
   <li><a href="#why-do-we-need-a-dag" id="toc-why-do-we-need-a-dag" class="nav-link" data-scroll-target="#why-do-we-need-a-dag">Why do we need a DAG?</a></li>
@@ -193,7 +229,39 @@ div.csl-indent {
 
 <section id="dont-analyze-graphs" class="level2">
 <h2 class="anchored" data-anchor-id="dont-analyze-graphs">“Don’t Analyze Graphs?”</h2>
-<p>Yes..well no…well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that’s not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn’t have put it better myself, “Draw your assumptions before your conclusions”.</p>
+<p>Yes..well no…well kinda. DAG in this case, stands for Directed Acyclic Graph. Simply put, it is a graph that is directed and acyclic…alright that’s not much of an explanation. Let’s try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn’t have said it better myself, “Draw your assumptions before your conclusions”.</p>
+</section>
+<section id="why-should-i" class="level2">
+<h2 class="anchored" data-anchor-id="why-should-i">Why should I?</h2>
+<p>A perfectly valid question at this point is “Why should I? I don’t need these”. The phrase a picture is worth a thousand words applies here too.</p>
+</section>
+<section id="does-coffee-increase-my-alertness" class="level2">
+<h2 class="anchored" data-anchor-id="does-coffee-increase-my-alertness">Does Coffee Increase My Alertness?</h2>
+<p>I’m an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew…you name it, I’m in (unless it’s bad coffee). Something I often wonder is if drinking a lot of coffee actually improves my alertness or not. That is, does coffee cause my alertness? Let’s start here. We’ll assume that coffee does cause alertness and draw a line between the two.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>coffee_dag <span class="ot">&lt;-</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  alert <span class="sc">~</span> coffee, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"coffee"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"alert"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">coffee =</span> <span class="st">"Coffee"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">alert =</span> <span class="st">"Alertness"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag</span>(coffee_dag, <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="dags_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>, simply put it is a graph that is directed and acyclic. Okay, that’s not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn’t have put it better myself, “Draw your assumptions before your conclusions”.</p>
 <p>In this post, we’re going to go over the basics of DAGs, however this isn’t meant to encompass all aspects of causal diagrams. More of a “wetting your beak” if you will. There will be future posts that will build upon this. Without further ado, let’s get into it.</p>
 </section>
 <section id="assumptions-of-dags" class="level2">

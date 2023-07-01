@@ -22,13 +22,13 @@ A key part of any research question is to figure out who our *target population*
 
 Imagine that monsters came out of your closet, Monsters Inc. style, and claimed that they have a magical water gun that makes you grow taller. We want to know if they are telling the truth or if they are fibbing, but first we need to figure out who exactly they are claiming this will work on.\
 \
-In clinical epidemiology, we determine this by following the **PICO** acronym: **P**opulation, **I**ntervention, **C**omparator and **O**utcome(s). For this situation, our research question would look something like this: "Does being sprayed with a water gun increased your height, compared to not being sprayed?". \
+In clinical epidemiology, we determine this by following the **PICO** acronym: **P**opulation, **I**ntervention, **C**omparator and **O**utcome(s). For this situation, our research question would look something like this: "Does being sprayed with a water gun increased your height, compared to not being sprayed?".\
 \
 Now this is a good start but who exactly are we referring too? Who do we want to know if it works for? Everyone in the world? Just children? Short adults? The causal estimand helps us with this part.
 
 ![Monsters](kids_monsters.png){#fig-sample}
 
-These monsters that have shown up all of a sudden say they've sprayed some of themselves with the water gun and it's worked! Some kids who want to grow have eagerly signed up and been sprayed as well. The effect has varied individual by individual so we need to know: who's this actually working for, if at all? Why? Well both monsters and kids are pretty short, their friends want to know if it will work on them! (cue the monstars from Space Jam). @fig-sample shows what our sample looks like. As you can see, there's a mixture of monsters and kids in each group which will make it harder to determine if the magical water gun is actually working, or if monsters just grow taller than kids. \
+These monsters that have shown up all of a sudden say they've sprayed some of themselves with the water gun and it's worked! Some kids who want to grow have eagerly signed up and been sprayed as well. The effect has varied individual by individual so we need to know: who's this actually working for, if at all? Why? Well both monsters and kids are pretty short, their friends want to know if it will work on them! (cue the monstars from Space Jam). @fig-sample shows what our sample looks like. As you can see, there's a mixture of monsters and kids in each group which will make it harder to determine if the magical water gun is actually working, or if monsters just grow taller than kids.\
 \
 The figure is just illustrative. Let's look at the actual characteristics from the individuals we will be studying outlined in @tbl-characteristics.
 
@@ -84,19 +84,19 @@ df |>
 
 ```
 
-+-----------------------------+----------------------+----------------+
-|                             | Sprayed by Water Gun | Not Sprayed    |
-|                             |                      |                |
-|                             | (n = 458)            | (n = 129)      |
-+:===========================:+:====================:+:==============:+
-| Number of eyes, mean (SD)   | 2.59 (1.31)          | 2.38 (1.29)    |
-+-----------------------------+----------------------+----------------+
-| Age, mean (SD)              | 27.75 (40.4)         | 23.27 (37.83)  |
-+-----------------------------+----------------------+----------------+
-| Monsters, n (%)             | 110 (24.0%)          | 25 (19.4%)     |
-+-----------------------------+----------------------+----------------+
-| Height (in feet), mean (SD) | 1.71 (0.65)          | 1.60 (0.66)    |
-+-----------------------------+----------------------+----------------+
++-----------------------------+----------------------+---------------+
+|                             | Sprayed by Water Gun | Not Sprayed   |
+|                             |                      |               |
+|                             | (n = 458)            | (n = 129)     |
++:===========================:+:====================:+:=============:+
+| Number of eyes, mean (SD)   | 2.59 (1.31)          | 2.38 (1.29)   |
++-----------------------------+----------------------+---------------+
+| Age, mean (SD)              | 27.75 (40.4)         | 23.27 (37.83) |
++-----------------------------+----------------------+---------------+
+| Monsters, n (%)             | 110 (24.0%)          | 25 (19.4%)    |
++-----------------------------+----------------------+---------------+
+| Height (in feet), mean (SD) | 1.71 (0.65)          | 1.60 (0.66)   |
++-----------------------------+----------------------+---------------+
 
 : Characteristics {#tbl-characteristics}
 
@@ -319,9 +319,9 @@ paste0("Average Height Difference: ", round(outcome$estimate, 3), " 95% CI (", r
 
 ## Choose Your Adjustment Technique Wisely!
 
-Picking the estimand of interest isn't just important for the *target population* but also for the adjustment technique selected. Certain adjustment techniques can only target certain estimands \[@greifer2021choosing\]. This becomes even more important when you are comparing methods.
+Picking the estimand of interest isn't just important for the *target population* but also for the adjustment technique selected. Certain adjustment techniques can only target certain estimands [@greifer2021choosing]. This becomes even more important when you are comparing methods.
 
-For example, IPW and PSM do not target the same estimand \[@greifer2021choosing\]. There is a great flowchart for the steps involved by @desai2019 when trying to decide on the technique. Additionally, @greifer2021choosing have a good table for selecting the technique based on the causal estimand.
+For example, IPW and PSM do not target the same estimand [@greifer2021choosing]. There is a great flowchart for the steps involved by @desai2019 when trying to decide on the technique. Additionally, @greifer2021choosing have a good table for selecting the technique based on the causal estimand.
 
 ## Next Steps
 

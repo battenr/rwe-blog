@@ -2,7 +2,7 @@
 title: "Hot Diggity DAG" 
 subtitle: "An introduction to DAGs"
 author: "Ryan Batten"
-date: "2023-03-02"
+date: "2023-07-15"
 categories: [DAGs, Causal Diagrams]
 # image : "standards.png"
 bibliography: dags.bib
@@ -18,11 +18,43 @@ format:
 
 ## "Don't Analyze Graphs?"
 
-Yes..well no...well kinda. DAG stands for Directed Acyclic Graph, simply put it is a graph that is directed and acyclic. Okay, that's not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn't have put it better myself, "Draw your assumptions before your conclusions".
+Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. Simply put, it is a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn't have said it better myself, "Draw your assumptions before your conclusions".
 
-In this post, we're going to go over the basics of DAGs, however this isn't meant to encompass all aspects of causal diagrams. More of a "wetting your beak" if you will. There will be future posts that will build upon this. Without further ado, let's get into it.
+## Why should I? 
+
+A perfectly valid question at this point is "Why should I? I don't need these". The phrase a picture is worth a thousand words applies here too.
+
+## Does Coffee Increase My Alertness? 
+
+I'm an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew...you name it, I'm in (unless it's bad coffee). Something I often wonder is if drinking a lot of coffee actually improves my alertness or not. That is, does coffee cause my alertness? Let's start here. We'll assume that coffee does cause alertness and draw a line between the two.
+
+```{r, message=FALSE}
+
+library(tidyverse)
+library(ggdag)
+theme_set(theme_dag())
+
+coffee_dag <- ggdag::dagify(
+  alert ~ coffee, 
+  exposure = "coffee",
+  outcome = "alert",
+  labels = c(
+    coffee = "Coffee",
+    alert = "Alertness"
+  )
+)
+
+ggdag::ggdag(coffee_dag, text = FALSE, use_labels = "label")
+
+```
+
+This looks great but there's one glaring problem....there are many, many, MANY variables that affect both of these variables. How much you've slept, stress and hunger just to name a few. Not to mention that each of those variables are related. \
+\
+So our DAG needs some editing, but first we need to go over some assumptions or "house rules" per say.
 
 ## Assumptions of DAGs
+
+## 
 
 The causal Markov assumption, implies that in a causal DAG, the common causes of any pair of variables must also be in the graph. The willingness to consider a causal diagram for an observational study is the graphical version of the conditional exchangeability assumption:\
 \
@@ -41,6 +73,10 @@ There are some basic rules of DAGs. We call these d-seperation [@hernanwhatif, p
 4.  A collider that has a descendant that has been conditioned on does not block a path.
 
 We can summarize it like this: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or contains a collider that hasn't been conditioned on and ha sno descendants that have been conditioned on.
+
+## Uses of DAGs
+
+Great, so we now know how to draw a DAG but is this even useful? Absolutely! It can be used for variable selection, etc, etc.
 
 ## Why do we need a DAG?
 

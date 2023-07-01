@@ -2,7 +2,7 @@
 title: "Resampling Magic"
 subtitle: "The Wonders of Bootstrapping and Jackknifing Explained"
 author: "Ryan Batten"
-date: "2023-07-06"
+date: "2023-08-01"
 categories: [Resampling, Bootstrapping, Jackknifing]
 bibliography: bootstrap.bib
 draft: true
