@@ -46,6 +46,8 @@ We can summarize it like this: a path is blocked if and only if, it contains a n
 
 Before we get started into what it actually is and the rules, it's always a good idea to review the why.
 
+You should
+
 (can ref/talk about riley2022 12 days of christmas statisitician article)
 
 ## Simple DAG

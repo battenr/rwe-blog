@@ -3,7 +3,7 @@ title: "Causal Estimands"
 subtitle: "Who does this apply too?"
 author: "Ryan Batten"
 date: "2023-06-22"
-categories: [Estimands, ATE, ATT, ATU]
+categories: [Estimands, ATE, ATT, ATU, ATO]
 # image : "standards.png"
 bibliography: estimands.bib
 draft: true
@@ -18,17 +18,21 @@ format:
 
 ## Who does this apply too?
 
-A key part of any research question is to determine who this applies too. There are several different ways to determine this but this post will focus on the causal estimand. Specifically, who does this result apply to? It's even more important when we have secondary data where patients aren't randomized to a treatment/group. Let's start with an example\
+A key part of any research question is to figure out who our *target population* is. These are the people we want to study. For example, is it 85 year olds who play american football? Is it children between 5-11 years of age using the swings at the park? Figuring this out, allows us to figure out who to sample but also who our results will apply too. The best way to explain this is through an example, so without further ado let's get started!
 
-## Example
+## Magical Water Gun for Height?
 
-As per usual, time for an example! Say that we have a magical water gun that makes you grow taller. Before we do any analyses we need to setup our research question. In clinical epidemiology this is typically PICO(S): population, intervention, comparators, outcome and sometimes study design. The causal estimand helps us with the first letter: P by asking "who does this apply too?". Now the who refers to the target population, that is the people we are...well targeting (not necessarily those we sample and study).
+Say that we have a magical water gun that makes you grow taller. Before we do any analyses, we need to setup our research question. In clinical epidemiology, this is typically PICO(S): **p**opulation, **i**ntervention, **c**omparators, **o**utcome and sometimes **s**tudy design (I say sometimes because it's not always clearly defined, but can be figured out based on looking at the type of study).
 
-For our study, we have two groups: monsters and kids. We want to figure out who the magically water gun will work on. Why? Well both monsters and kids are pretty short, their friends want to know if they will grow!
+The causal estimand helps us with the first letter: P by asking "who does this apply too?". Now the who refers to the *target* population, that is the people we are...well targeting.
 
-![**Kids and Monsters**](kids_monsters.png)
+![Monsters](kids_monsters.png){#fig-sample}
 
-```{r, message = FALSE, warning = FALSE}
+Imagine that there is a magical water gun that monsters from space (aka aliens) have shown up to earth with. They've sprayed some of themselves with it, and some kids who want to grow taller. We want to know if this will actually work! Why? Well both monsters and kids are pretty short, their friends want to know if they will grow! (cue the monstars from Space Jam). @fig-sample shows what our sample looks like. As you can see, there's a mixture of monsters and kids in each group.\
+\
+The figure is illustrative. Let's look at the actual characteristics from the individuals we will be studying outlined in @tbl-characteristics.
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
 
 library(tidyverse)
 
@@ -40,8 +44,8 @@ set.seed(135451)
 monsters <- data.frame(
   eyes = sample(x = c(1,2,3,4,5), size = n.monsters, replace = TRUE),
   age = rnorm(n.monsters, mean = 100, sd = 5), # need some other metric
-  group = 1
-  # group = "monsters"
+  # group = 1
+  group = "monsters"
 ) %>% 
   dplyr::mutate(
   height = eyes*0.5 + age/1000,
@@ -51,8 +55,8 @@ monsters <- data.frame(
 kids <- data.frame(
   eyes = sample(x = c(1,2,4), size = n.kids, replace = TRUE), # some kids may be called "four eyes"
   age = rnorm(n.kids, mean = 5, sd = 1),
-  group = 0
-  # group = "kids"
+  # group = 0
+  group = "kids"
 ) %>% 
   dplyr::mutate(
   height = eyes*0.5 + age/10,
@@ -64,18 +68,41 @@ df <- rbind(
   kids
 )
 
+# Summary Characteristics
+
+df |> 
+  group_by(sprayed) |> 
+  summarise(
+    n = n(),
+    eyes = paste0(round(mean(eyes), 2), " (", round(sd(eyes),2), ")"),
+    age = paste0(round(mean(age), 2), " (", round(sd(age),2), ")"),
+    monsters = paste0(sum(group == "monsters"), " (", round(sum(group == "monsters")/n() * 100,1), "%)"),
+    height = paste0(round(mean(height), 2), " (", round(sd(height),2), ")")
+  ) |> view()
+
 
 
 ```
 
-|                             | Monsters (n = 135) | Kids ( n = 452) |
-|:---------------------------:|:------------------:|:---------------:|
-|  Number of eyes, mean (SD)  |    2.99 (1.22)     |      2 (0)      |
-|       Age, mean (SD)        |   206.90 (45.78)   |   5.16 (1.92)   |
-| Sprayed by water gun, n (%) |    123 (91.1%)     |   328 (72.6%)   |
-| Height (in feet), mean (SD) |    1.70 (0.61)     |   1.51 (0.19)   |
++-----------------------------+----------------------+----------------+
+|                             | Sprayed by Water Gun | Not Sprayed    |
+|                             |                      |                |
+|                             | (n = 458)            | (n = 129)      |
++:===========================:+:====================:+:==============:+
+| Number of eyes, mean (SD)   | 2.59 (1.31)          | 2.38 (1.29)    |
++-----------------------------+----------------------+----------------+
+| Age, mean (SD)              | 27.75 (40.4)         | 23.27 (37.83)  |
++-----------------------------+----------------------+----------------+
+| Monsters, n (%)             | 110 (24.0%)          | 25 (19.4%)     |
++-----------------------------+----------------------+----------------+
+| Height (in feet), mean (SD) | 1.71 (0.65)          | 1.60 (0.66)    |
++-----------------------------+----------------------+----------------+
 
-: **Characteristics of Monsters and Kids**
+: Characteristics {#tbl-characteristics}
+
+There were 458 individuals sprayed by the water gun, while 129 were not sprayed. There's differences in age and percentage of monsters. Looking at just height, you could think that this magical water gun works! However....and a ***big*** however...does it? Or is it just that it works better on monsters? Or that monsters are taller?\
+\
+Now, confounding aside, what do we want to know? Who to spray with this gun! It's not quite as simple and straightforward as that. Let's briefly go over the four estimands we'll be talking about in this case.
 
 ## Types of Estimands
 
@@ -89,7 +116,7 @@ We'll focus on four causal estimands, in no particular order:
 
 -   Average treatment effect in the overlap (ATO)
 
-One important thing to note here is that all of these estimands would be the same in a randomized trial because the characteristics will be the same (at least in theory) Therefore the ATT, ATU and ATE will be the same. However, not so in observational data.
+One important thing to note here is that all of these estimands would be the same in a randomized trial because the characteristics will be the same (at least in theory). Therefore the ATT, ATU and ATE will be the same. However, not so in observational data.
 
 ## Potential Outcomes
 
@@ -107,39 +134,144 @@ We will be using propensity scores to estimate each of these estimands. A brief 
 
 ### ATE
 
+Ask yourself: would it be feasible to treat all eligible people included in the study (in this case all the monsters and kids) with the treatment of interest? If yes, then we could look at the ATE [@desai2019].
+
 The ATE is the the average treatment effect among all eligible patients in the study population (i.e., difference were they all to be treated vs were they all not to be treated) [@greifer2021choosing]. For our example, it would be the difference were all the monsters and kids sprayed with the water gun versus were all the monsters and kids not sprayed. In mathematical notation it's:
 
 $$E[Y_{1}-Y_{0}]$$
 
-To estimate the ATE, we can use inverse probability weights.
+To estimate the ATE, we can use inverse probability weights. To calculate these, we need the propensity score (PS). Once we have it, the equation is $1/{PS}$ for the treated group and $1/(1-{PS})$ for the control group. Then we can plug these weights into the outcome model and away we go!
 
 ```{r, message=FALSE, warning =FALSE}
 
-# Note to self: example needs work. Weights are just proportions of each group (n.kids/n.total)
+# First, fit a model for the treatment (in this case our water gun)
 
-library(WeightIt)
+ps.mod <- glm(sprayed ~ eyes + group, 
+              family = binomial(link = "logit"), 
+              data = df)
 
-# work through an example in a side script (aka not here)
+# Use 
 
+df.ps <- df %>% 
+  dplyr::mutate(
+    ps = predict(ps.mod, type = "response"), 
+    weights_ate = dplyr::case_when(
+      
+      # Note: for simplicity using unstabilized weights 
+      
+      sprayed == 1 ~ 1/ps, 
+      sprayed == 0 ~ 1/(1-ps)
+    )
+  )
+
+outcome.mod <- glm(height ~ as.character(sprayed),
+                   family = gaussian(link = "identity"),
+                   weights = weights_ate, 
+                   data = df.ps)
+
+sandwich_se <- diag(sandwich::vcovHC(outcome.mod, type = "HC"))^0.5
+
+outcome <- broom::tidy(outcome.mod) |> 
+  dplyr::filter(
+    term == "as.character(sprayed)1"
+  ) |> 
+  dplyr::mutate(
+   upper.ci = estimate + qnorm(0.975)*sandwich_se[2],
+   lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
+  )
+
+paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
 ```
 
-Ta da! Now we know \[INSERT\]
+Ta da! Now we know that being sprayed with a water gun doesn't affect the height in our ATE population (that is if everyone was sprayed compared to if everyone was not sprayed). But what about if not everyone is eligible for the treatment?
 
 ### ATT
 
-The ATT is the effect of the treatment for a population of patients *like* those who actually received the treatment in the study [@greifer2021choosing] (note: this is the population, not the actual sample we have here). For our study, the question would be "In all the kids and monsters who have been sprayed, what's the effect of the water gun?". In mathematical notation:
+Now we ask, would the treatment only be given to patients with certain characteristics? If yes, then the ATT might be of interest [@desai2019]. For example, what if only individuals over the age of 5 could be treated? Would it work in them? In mathematical notation:
 
 $$E[Y_{1}-Y_{0}|T = 1]$$
 
-In term of weights, all of the patients in the treated group get a value of 1 while those in the control get a value of PS/1-PS.
+In term of weights, all of the patients in the treated group get a value of $1$ while those in the control get a value of $PS / (1-PS)$. This is known as standardized mortality ratio weights.
+
+```{r}
+
+df.ps <- df %>% 
+  dplyr::mutate(
+    ps = predict(ps.mod, type = "response"), 
+    weights_att = dplyr::case_when(
+      
+      # Note: for simplicity using unstabilized weights 
+      
+      sprayed == 1 ~ 1, 
+      sprayed == 0 ~ ps/(1-ps)
+    )
+  )
+
+outcome.mod <- glm(height ~ as.character(sprayed),
+                   family = gaussian(link = "identity"),
+                   weights = weights_att, 
+                   data = df.ps)
+
+sandwich_se <- diag(sandwich::vcovHC(outcome.mod, type = "HC"))^0.5
+
+outcome <- broom::tidy(outcome.mod) |> 
+  dplyr::filter(
+    term == "as.character(sprayed)1"
+  ) |> 
+  dplyr::mutate(
+   upper.ci = estimate + qnorm(0.975)*sandwich_se[2],
+   lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
+  )
+
+paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+  
+
+```
+
+Our results are similar but not the same as those for the ATE!
 
 ### ATU
 
-The ATU is similar to the ATT except opposite (okay admittedly that sentence isn't fully coherent). For our study the question would be "In all the kids and monsters who were not sprayed, what's the effect of not being sprayed?". In mathematical notation:
+The ATU is similar to the ATT except opposite (okay admittedly that sentence isn't fully coherent). For our study the question would be "Are there people who would not be treated? For example, what about in those individuals under 5?". In mathematical notation:
 
 $$E[Y_{1}-Y_{0}|T = 0]$$
 
-In terms of weights it's the opposite of the ATT: 1 for those in the control group and (1-PS)/PS for the treated group.
+In terms of weights it's the opposite of the ATT: $1$ for those in the control group and $(1-PS)/PS$ for the treated group.
+
+```{r}
+
+df.ps <- df |> 
+  dplyr::mutate(
+    ps = predict(ps.mod, type = "response"), 
+    weights_atu = dplyr::case_when(
+      
+      # Note: for simplicity using unstabilized weights 
+      
+      sprayed == 1 ~ (1-ps)/ps, 
+      sprayed == 0 ~ 1
+    )
+  )
+
+outcome.mod <- glm(height ~ as.character(sprayed),
+                   family = gaussian(link = "identity"),
+                   weights = weights_atu, 
+                   data = df.ps)
+
+sandwich_se <- diag(sandwich::vcovHC(outcome.mod, type = "HC"))^0.5
+
+outcome <- broom::tidy(outcome.mod) |> 
+  dplyr::filter(
+    term == "as.character(sprayed)1"
+  ) |> 
+  dplyr::mutate(
+   upper.ci = estimate + qnorm(0.975)*sandwich_se[2],
+   lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
+  )
+
+paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+  
+
+```
 
 ### ATO
 
@@ -147,8 +279,46 @@ ATO is the average effect of the treatment in the overlap. Those patients who it
 
 $$E[Y_{1}-Y_{0}]$$
 
-Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it's because we are still reweighing both the treated and control groups but it's a different target population. Instead of it being "everyone" like above, it's the people who are in the uncertain group. WE weight them as
+Now something you might notice here is that the equation is the same as above for the ATE. Why is that? Well it's because we are still reweighing both the treated and control groups but it's a different target population. Instead of it being "everyone" like above, it's the people who are in the uncertain group. We weight them as $PS$ for the sprayed group and $1-PS$ for the not sprayed group.
+
+```{r}
+
+df.ps <- df |> 
+  dplyr::mutate(
+    ps = predict(ps.mod, type = "response"), 
+    weights_ato = dplyr::case_when(
+      
+      # Note: for simplicity using unstabilized weights 
+      
+      sprayed == 1 ~ (1-ps), 
+      sprayed == 0 ~ ps
+    )
+  )
+
+outcome.mod <- glm(height ~ as.character(sprayed),
+                   family = gaussian(link = "identity"),
+                   weights = weights_ato, 
+                   data = df.ps)
+
+sandwich_se <- diag(sandwich::vcovHC(outcome.mod, type = "HC"))^0.5
+
+outcome <- broom::tidy(outcome.mod) |> 
+  dplyr::filter(
+    term == "as.character(sprayed)1"
+  ) |> 
+  dplyr::mutate(
+   upper.ci = estimate + qnorm(0.975)*sandwich_se[2],
+   lower.ci = estimate - qnorm(0.975)*sandwich_se[2], 
+  )
+
+paste0(round(outcome$estimate, 3), " 95% CI (", round(outcome$lower.ci,3), " to ", round(outcome$upper.ci, 3), ")")
+
+```
 
 ## Choose Your Adjustment Technique Wisely!
 
-Picking the estimand of interest isn't just important for the target population but also for the adjustment technique selected. Certain ones can only target certain estimands. This becomes even more important when you are comparing methods. For example, IPW and PSM do not target the same estimand [@greifer2021choosing].
+Picking the estimand of interest isn't just important for the target population but also for the adjustment technique selected. Certain ones can only target certain estimands. This becomes even more important when you are comparing methods. For example, IPW and PSM do not target the same estimand [@greifer2021choosing]. There is a great flowchart for the steps involved by @desai2019, I highly recommend it if you are trying to determine the appropriate adjustment techinque.
+
+## Next Steps
+
+What's next? Well know you can go out into the world and answer all your burning questions like "Does this magical water gun actually work?" and followup with "Who exactly does it work on?"
