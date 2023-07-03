@@ -20,11 +20,11 @@ format:
 
 Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. Simply put, it is a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn't have said it better myself, "Draw your assumptions before your conclusions".
 
-## Why should I? 
+## Why should I?
 
 A perfectly valid question at this point is "Why should I? I don't need these". The phrase a picture is worth a thousand words applies here too.
 
-## Does Coffee Increase My Alertness? 
+## Does Coffee Increase My Alertness?
 
 I'm an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew...you name it, I'm in (unless it's bad coffee). Something I often wonder is if drinking a lot of coffee actually improves my alertness or not. That is, does coffee cause my alertness? Let's start here. We'll assume that coffee does cause alertness and draw a line between the two.
 
@@ -48,31 +48,39 @@ ggdag::ggdag(coffee_dag, text = FALSE, use_labels = "label")
 
 ```
 
-This looks great but there's one glaring problem....there are many, many, MANY variables that affect both of these variables. How much you've slept, stress and hunger just to name a few. Not to mention that each of those variables are related. \
+This looks great but there's one glaring problem....there are many, many, MANY variables that affect both of these variables. How much you've slept, stress and hunger just to name a few. Not to mention that each of those variables are related.\
 \
 So our DAG needs some editing, but first we need to go over some assumptions or "house rules" per say.
 
 ## Assumptions of DAGs
 
-## 
+Let's start with the acronym. They are called DAGs because they have a direction and cannot have a variable that causes itself, either directly or through another variable [@hernanwhatif, pp. 72].
 
-The causal Markov assumption, implies that in a causal DAG, the common causes of any pair of variables must also be in the graph. The willingness to consider a causal diagram for an observational study is the graphical version of the conditional exchangeability assumption:\
+Another key component is the causal Markov assumption, which put simply is that a variable is independent of any variable that it isn't a cause for (for more details about this check out @hernanwhatif, pp. 72). This assumption means that in a causal DAG, the common causes of any pair of variables in the graph must also be in the graph.\
 \
-given $L, Y^a \perp A|L$
+For example,
 
-## Rules of DAGs
+### D-Separation
 
-There are some basic rules of DAGs. We call these d-seperation [@hernanwhatif, pp. 76] :
+The rules are like so [@hernanwhatif, pp. 78]:
 
-1.  If no variables are being conditioned on (aka included in our model), a path is blocked if and *only if* two arrowheads on the path collide at some variable on the path. (that variable is known as a collider)
+1.  If no variables are being conditioned on, a path is blocked if and only if two arrowheads on the path collide at some variable on the path.
 
-2.  Any path than contains a non-collider that has been conditioned on is blocked. We show this by putting a square box around a variable to indicate we are conditioning on it.
+2.  Any path that contains a non-collider that has been conditioned on is blocked.
 
 3.  A collider that has been conditioned on does not block a path.
 
 4.  A collider that has a descendant that has been conditioned on does not block a path.
 
-We can summarize it like this: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or contains a collider that hasn't been conditioned on and ha sno descendants that have been conditioned on.
+::: callout-note
+## Causal Graph Theory
+
+There is some complex math behind these rules that I won't go into here. If you are interested, I recommend checking out the work of Judea Pearl, or some sections of @hernanwhatif.
+:::
+
+We will summarize d-separation like so: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on [@hernanwhatif, pp. 78].
+
+Two variables are d-separated if all paths between them are blocked (otherwise we say they're d-connected) [@hernanwhatif, pp. 78].
 
 ## Uses of DAGs
 
