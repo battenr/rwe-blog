@@ -20,6 +20,12 @@ format:
 
 Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. Simply put, it is a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn't have said it better myself, "Draw your assumptions before your conclusions".
 
+::: callout-note
+## This post is an introduction
+
+One small note before we continue. This post is meant to be an introduction to DAGs, however there will be lots of posts in the future using DAGs (i.e., for identifying selection bias, confounding, etc).
+:::
+
 ## Why should I?
 
 A perfectly valid question at this point is "Why should I? I don't need these". The phrase a picture is worth a thousand words applies here too.
@@ -75,12 +81,74 @@ The rules are like so [@hernanwhatif, pp. 78]:
 ::: callout-note
 ## Causal Graph Theory
 
-There is some complex math behind these rules that I won't go into here. If you are interested, I recommend checking out the work of Judea Pearl, or some sections of @hernanwhatif.
+There is some complex math, nonparametric structural equation models to be exact, behind these rules that I won't go into here. If you are interested, I recommend checking out the work of Judea Pearl, or some sections of @hernanwhatif.
 :::
 
 We will summarize d-separation like so: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on [@hernanwhatif, pp. 78].
 
 Two variables are d-separated if all paths between them are blocked (otherwise we say they're d-connected) [@hernanwhatif, pp. 78].
+
+## Water Flowing in a Pipe? 
+
+To borrow a concept from Judea Pearl, think of water flowing in a pipe. For association, it can flow both ways but for causality it cannot. For the rules outlined for d-separation about think about it like water. If there is a collider, then water cannot flow there. If the collider is conditioned on, its like we moved the dam and water can now flow.
+
+## Effect Modification
+
+Let's look at the below DAG.
+
+```{r}
+
+coffee_dag <- ggdag::dagify(
+  alert ~ coffee + deep_breaths, 
+  exposure = "coffee",
+  outcome = "alert",
+  labels = c(
+    coffee = "Coffee",
+    alert = "Alertness",
+    deep_breaths = "Deep Breathing"
+  )
+)
+
+ggdag::ggdag(coffee_dag, 
+             layout = "circle", 
+             text = FALSE, use_labels = "label")
+```
+
+We see that deep breathing affects alertness but not drinking coffee. Now, if we didn't include deep breathing it would still be a valid causal diagram because deep breathing isn't a common cause of coffee and alertness. We'd only need to include if it was part of our causal question (e.g., what is the average causal effect of coffee on alterness *within levels of deep breathing?)*.
+
+Now, another point is that including it in our causal diagram doesn't distinguish which of the following three ways that alertness could modify the effect of coffee on alertness:
+
+1.  The causal effect of coffee on alertness is in the same direction in both stratum deep breathing = yes and deep breathing = no
+
+2.  The direction fo the causal effect of coffee on alertness in stratum deep breathing = yes is opposite of that in stratum deep breathing = no (sometimes referred to as Simpson's paradox).
+
+3.  Coffee has a causal effect on alertness in one stratum of deep breathing but no causal effect in the other stratum.
+
+Now, our DAG fails to distinguish which of these is the type of effect modification. Additionally, many effect modifiers do not have a causal effect on the outcome. Instead, they are surrogates for variable that have a causal effect on the outcome.
+
+For example, let's look at deep breathing again.
+
+```{r}
+
+coffee_dag <- ggdag::dagify(
+  alert ~ coffee + stress, 
+  deep_breaths ~ stress,
+  exposure = "coffee",
+  outcome = "alert",
+  labels = c(
+    coffee = "Coffee",
+    alert = "Alertness",
+    deep_breaths = "Deep Breathing",
+    stress = "Stress"
+  )
+)
+
+ggdag::ggdag(coffee_dag, 
+             layout = "circle", 
+             text = FALSE, use_labels = "label")
+```
+
+In this DAG, we see deep breathing is actually a surrogate for a variable that has a causal effect. Deep breathing is a *surrogate effect modifier* whereas stress is a *causal effect modifier*. Both of these are often indistinguishable in practice, so the concept of effect modification encompasses both [@hernanwhatif, pp. 81].
 
 ## Uses of DAGs
 
@@ -94,14 +162,6 @@ You should
 
 (can ref/talk about riley2022 12 days of christmas statisitician article)
 
-## Simple DAG
+## 
 
-## "Think of Water Flowing in a Pipe"....What?
-
-One of the peskiest biases
-
-## Title ideas (from ChatGPT)
-
-Sure, how about "Don't Analyze Graphs"? It's a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.
-
-How about "Dramatic Action Graph"? It's not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!
+## 
