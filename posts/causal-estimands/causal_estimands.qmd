@@ -124,7 +124,7 @@ Like many, almost all, areas of science, there are several assumptions that must
 ::: callout-note
 ## Potential Outcomes
 
-An important component here is the concept of potential outcomes. These can be written as $Y_0$ and $Y_i$ [@greifer2021choosing]. For a binary treatment, like in our case, we can think of it as each person has two *potential* outcomes **prior** to them getting the treatment or not. After they receive the treatment, only one of them is revealed [@greifer2021choosing].\
+An important component here is the concept of potential outcomes. These can be written as $Y_0$ and $Y_1$ for each person [@greifer2021choosing]. For a binary treatment, like in our case, we can think of it as each person has two *potential* outcomes **prior** to them getting the treatment or not. After they receive the treatment, only one of them is revealed [@greifer2021choosing].\
 \
 Now, the individual causal effect is $Y_1$ - $Y_0$ for each person. In a perfect world, we'd know this however the world isn't perfect. Instead, we take an average (if we assume certain things, described in @greifer2021choosing ). In math terms, we show this as $E[Y_{1} - Y_{0}]$.
 :::
@@ -326,4 +326,4 @@ For example, IPW and PSM do not target the same estimand [@greifer2021choosing].
 
 ## Next Steps
 
-What's next? Well know you can go out into the world and answer all your burning questions like "Does this magical water gun actually work?" and followup with "Who exactly does it work on?"
+What's next? Well know you can go out into the world and answer all your burning questions like "Does this magical water gun actually work?" and follow-up with "Who exactly does it work on?"

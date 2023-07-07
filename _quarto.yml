@@ -8,8 +8,8 @@ website:
      #   href: consulting.html
       - text: "About Me"
         href: about.qmd
-      - text: "Consulting"
-        href: freelance.qmd
+     #  - text: "Consulting"
+     #  href: freelance.qmd
       # - text: "Newsletter"
       #   href: newsletter.qmd
       - icon: linkedin

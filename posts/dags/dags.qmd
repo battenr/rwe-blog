@@ -88,7 +88,7 @@ We will summarize d-separation like so: a path is blocked if and only if, it con
 
 Two variables are d-separated if all paths between them are blocked (otherwise we say they're d-connected) [@hernanwhatif, pp. 78].
 
-## Water Flowing in a Pipe? 
+## Water Flowing in a Pipe?
 
 To borrow a concept from Judea Pearl, think of water flowing in a pipe. For association, it can flow both ways but for causality it cannot. For the rules outlined for d-separation about think about it like water. If there is a collider, then water cannot flow there. If the collider is conditioned on, its like we moved the dam and water can now flow.
 
