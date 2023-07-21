@@ -114,8 +114,6 @@ div.csl-indent {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -207,12 +205,16 @@ div.csl-indent {
   <li><a href="#dont-analyze-graphs" id="toc-dont-analyze-graphs" class="nav-link active" data-scroll-target="#dont-analyze-graphs">“Don’t Analyze Graphs?”</a></li>
   <li><a href="#why-should-i" id="toc-why-should-i" class="nav-link" data-scroll-target="#why-should-i">Why should I?</a></li>
   <li><a href="#does-coffee-increase-my-alertness" id="toc-does-coffee-increase-my-alertness" class="nav-link" data-scroll-target="#does-coffee-increase-my-alertness">Does Coffee Increase My Alertness?</a></li>
-  <li><a href="#assumptions-of-dags" id="toc-assumptions-of-dags" class="nav-link" data-scroll-target="#assumptions-of-dags">Assumptions of DAGs</a></li>
-  <li><a href="#rules-of-dags" id="toc-rules-of-dags" class="nav-link" data-scroll-target="#rules-of-dags">Rules of DAGs</a></li>
+  <li><a href="#assumptions-of-dags" id="toc-assumptions-of-dags" class="nav-link" data-scroll-target="#assumptions-of-dags">Assumptions of DAGs</a>
+  <ul>
+  <li><a href="#d-separation" id="toc-d-separation" class="nav-link" data-scroll-target="#d-separation">D-Separation</a></li>
+  </ul></li>
+  <li><a href="#water-flowing-in-a-pipe" id="toc-water-flowing-in-a-pipe" class="nav-link" data-scroll-target="#water-flowing-in-a-pipe">Water Flowing in a Pipe?</a></li>
+  <li><a href="#effect-modification" id="toc-effect-modification" class="nav-link" data-scroll-target="#effect-modification">Effect Modification</a></li>
+  <li><a href="#uses-of-dags" id="toc-uses-of-dags" class="nav-link" data-scroll-target="#uses-of-dags">Uses of DAGs</a></li>
   <li><a href="#why-do-we-need-a-dag" id="toc-why-do-we-need-a-dag" class="nav-link" data-scroll-target="#why-do-we-need-a-dag">Why do we need a DAG?</a></li>
-  <li><a href="#simple-dag" id="toc-simple-dag" class="nav-link" data-scroll-target="#simple-dag">Simple DAG</a></li>
-  <li><a href="#think-of-water-flowing-in-a-pipe.what" id="toc-think-of-water-flowing-in-a-pipe.what" class="nav-link" data-scroll-target="#think-of-water-flowing-in-a-pipe.what">“Think of Water Flowing in a Pipe”….What?</a></li>
-  <li><a href="#title-ideas-from-chatgpt" id="toc-title-ideas-from-chatgpt" class="nav-link" data-scroll-target="#title-ideas-from-chatgpt">Title ideas (from ChatGPT)</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1"></a></li>
   </ul>
 </nav>
     </div>
@@ -225,6 +227,19 @@ div.csl-indent {
 <section id="dont-analyze-graphs" class="level2">
 <h2 class="anchored" data-anchor-id="dont-analyze-graphs">“Don’t Analyze Graphs?”</h2>
 <p>Yes..well no…well kinda. DAG in this case, stands for Directed Acyclic Graph. Simply put, it is a graph that is directed and acyclic…alright that’s not much of an explanation. Let’s try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn’t have said it better myself, “Draw your assumptions before your conclusions”.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+This post is an introduction
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>One small note before we continue. This post is meant to be an introduction to DAGs, however there will be lots of posts in the future using DAGs (i.e., for identifying selection bias, confounding, etc).</p>
+</div>
+</div>
 </section>
 <section id="why-should-i" class="level2">
 <h2 class="anchored" data-anchor-id="why-should-i">Why should I?</h2>
@@ -256,25 +271,109 @@ div.csl-indent {
 <p><img src="dags_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>, simply put it is a graph that is directed and acyclic. Okay, that’s not much of an explanation. To explain it a bit further before adding any images (there will be lots of pictures this post, yippee!), a DAG is a great way to depict how your variables are related. To quote Miguel Hernan, since I couldn’t have put it better myself, “Draw your assumptions before your conclusions”.</p>
-<p>In this post, we’re going to go over the basics of DAGs, however this isn’t meant to encompass all aspects of causal diagrams. More of a “wetting your beak” if you will. There will be future posts that will build upon this. Without further ado, let’s get into it.</p>
+<p>This looks great but there’s one glaring problem….there are many, many, MANY variables that affect both of these variables. How much you’ve slept, stress and hunger just to name a few. Not to mention that each of those variables are related.<br>
+<br>
+So our DAG needs some editing, but first we need to go over some assumptions or “house rules” per say.</p>
 </section>
 <section id="assumptions-of-dags" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-of-dags">Assumptions of DAGs</h2>
-<p>The causal Markov assumption, implies that in a causal DAG, the common causes of any pair of variables must also be in the graph. The willingness to consider a causal diagram for an observational study is the graphical version of the conditional exchangeability assumption:<br>
+<p>Let’s start with the acronym. They are called DAGs because they have a direction and cannot have a variable that causes itself, either directly or through another variable <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 72</a>)</span>.</p>
+<p>Another key component is the causal Markov assumption, which put simply is that a variable is independent of any variable that it isn’t a cause for (for more details about this check out <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span>, pp.&nbsp;72). This assumption means that in a causal DAG, the common causes of any pair of variables in the graph must also be in the graph.<br>
 <br>
-given <span class="math inline">\(L, Y^a \perp A|L\)</span></p>
-</section>
-<section id="rules-of-dags" class="level2">
-<h2 class="anchored" data-anchor-id="rules-of-dags">Rules of DAGs</h2>
-<p>There are some basic rules of DAGs. We call these d-seperation <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 76</a>)</span> :</p>
+For example,</p>
+<section id="d-separation" class="level3">
+<h3 class="anchored" data-anchor-id="d-separation">D-Separation</h3>
+<p>The rules are like so <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 78</a>)</span>:</p>
 <ol type="1">
-<li><p>If no variables are being conditioned on (aka included in our model), a path is blocked if and <em>only if</em> two arrowheads on the path collide at some variable on the path. (that variable is known as a collider)</p></li>
-<li><p>Any path than contains a non-collider that has been conditioned on is blocked. We show this by putting a square box around a variable to indicate we are conditioning on it.</p></li>
+<li><p>If no variables are being conditioned on, a path is blocked if and only if two arrowheads on the path collide at some variable on the path.</p></li>
+<li><p>Any path that contains a non-collider that has been conditioned on is blocked.</p></li>
 <li><p>A collider that has been conditioned on does not block a path.</p></li>
 <li><p>A collider that has a descendant that has been conditioned on does not block a path.</p></li>
 </ol>
-<p>We can summarize it like this: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or contains a collider that hasn’t been conditioned on and ha sno descendants that have been conditioned on.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Causal Graph Theory
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There is some complex math, nonparametric structural equation models to be exact, behind these rules that I won’t go into here. If you are interested, I recommend checking out the work of Judea Pearl, or some sections of <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span>.</p>
+</div>
+</div>
+<p>We will summarize d-separation like so: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 78</a>)</span>.</p>
+<p>Two variables are d-separated if all paths between them are blocked (otherwise we say they’re d-connected) <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 78</a>)</span>.</p>
+</section>
+</section>
+<section id="water-flowing-in-a-pipe" class="level2">
+<h2 class="anchored" data-anchor-id="water-flowing-in-a-pipe">Water Flowing in a Pipe?</h2>
+<p>To borrow a concept from Judea Pearl, think of water flowing in a pipe. For association, it can flow both ways but for causality it cannot. For the rules outlined for d-separation about think about it like water. If there is a collider, then water cannot flow there. If the collider is conditioned on, its like we moved the dam and water can now flow.</p>
+</section>
+<section id="effect-modification" class="level2">
+<h2 class="anchored" data-anchor-id="effect-modification">Effect Modification</h2>
+<p>Let’s look at the below DAG.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>coffee_dag <span class="ot">&lt;-</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  alert <span class="sc">~</span> coffee <span class="sc">+</span> deep_breaths, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"coffee"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"alert"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">coffee =</span> <span class="st">"Coffee"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">alert =</span> <span class="st">"Alertness"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">deep_breaths =</span> <span class="st">"Deep Breathing"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag</span>(coffee_dag, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">layout =</span> <span class="st">"circle"</span>, </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="dags_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that deep breathing affects alertness but not drinking coffee. Now, if we didn’t include deep breathing it would still be a valid causal diagram because deep breathing isn’t a common cause of coffee and alertness. We’d only need to include if it was part of our causal question (e.g., what is the average causal effect of coffee on alterness <em>within levels of deep breathing?)</em>.</p>
+<p>Now, another point is that including it in our causal diagram doesn’t distinguish which of the following three ways that alertness could modify the effect of coffee on alertness:</p>
+<ol type="1">
+<li><p>The causal effect of coffee on alertness is in the same direction in both stratum deep breathing = yes and deep breathing = no</p></li>
+<li><p>The direction fo the causal effect of coffee on alertness in stratum deep breathing = yes is opposite of that in stratum deep breathing = no (sometimes referred to as Simpson’s paradox).</p></li>
+<li><p>Coffee has a causal effect on alertness in one stratum of deep breathing but no causal effect in the other stratum.</p></li>
+</ol>
+<p>Now, our DAG fails to distinguish which of these is the type of effect modification. Additionally, many effect modifiers do not have a causal effect on the outcome. Instead, they are surrogates for variable that have a causal effect on the outcome.</p>
+<p>For example, let’s look at deep breathing again.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>coffee_dag <span class="ot">&lt;-</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  alert <span class="sc">~</span> coffee <span class="sc">+</span> stress, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  deep_breaths <span class="sc">~</span> stress,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"coffee"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"alert"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">coffee =</span> <span class="st">"Coffee"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">alert =</span> <span class="st">"Alertness"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">deep_breaths =</span> <span class="st">"Deep Breathing"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">stress =</span> <span class="st">"Stress"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag</span>(coffee_dag, </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">layout =</span> <span class="st">"circle"</span>, </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="dags_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In this DAG, we see deep breathing is actually a surrogate for a variable that has a causal effect. Deep breathing is a <em>surrogate effect modifier</em> whereas stress is a <em>causal effect modifier</em>. Both of these are often indistinguishable in practice, so the concept of effect modification encompasses both <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 81</a>)</span>.</p>
+</section>
+<section id="uses-of-dags" class="level2">
+<h2 class="anchored" data-anchor-id="uses-of-dags">Uses of DAGs</h2>
+<p>Great, so we now know how to draw a DAG but is this even useful? Absolutely! It can be used for variable selection, etc, etc.</p>
 </section>
 <section id="why-do-we-need-a-dag" class="level2">
 <h2 class="anchored" data-anchor-id="why-do-we-need-a-dag">Why do we need a DAG?</h2>
@@ -282,17 +381,11 @@ given <span class="math inline">\(L, Y^a \perp A|L\)</span></p>
 <p>You should</p>
 <p>(can ref/talk about riley2022 12 days of christmas statisitician article)</p>
 </section>
-<section id="simple-dag" class="level2">
-<h2 class="anchored" data-anchor-id="simple-dag">Simple DAG</h2>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
 </section>
-<section id="think-of-water-flowing-in-a-pipe.what" class="level2">
-<h2 class="anchored" data-anchor-id="think-of-water-flowing-in-a-pipe.what">“Think of Water Flowing in a Pipe”….What?</h2>
-<p>One of the peskiest biases</p>
-</section>
-<section id="title-ideas-from-chatgpt" class="level2">
-<h2 class="anchored" data-anchor-id="title-ideas-from-chatgpt">Title ideas (from ChatGPT)</h2>
-<p>Sure, how about “Don’t Analyze Graphs”? It’s a bit tongue-in-cheek, implying that you should just trust the Directed Acyclic Graph (DAG) without over-analyzing it. Of course, in reality, careful analysis is often necessary to ensure the accuracy and validity of DAGs used in various applications such as machine learning.</p>
-<p>How about “Dramatic Action Graph”? It’s not necessarily hilarious, but it adds a bit of flair to the otherwise technical-sounding term DAG!</p>
+<section id="section-1" class="level2">
+
 
 
 

@@ -16,19 +16,19 @@ format:
     code-fold: true
 ---
 
-## "Don't Analyze Graphs?"
+## Don't Analyze Graphs?
 
-Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. Simply put, it is a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn't have said it better myself, "Draw your assumptions before your conclusions".
+Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. It's a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn't have said it better myself, "Draw your assumptions before your conclusions".
 
 ::: callout-note
 ## This post is an introduction
 
-One small note before we continue. This post is meant to be an introduction to DAGs, however there will be lots of posts in the future using DAGs (i.e., for identifying selection bias, confounding, etc).
+One small note before we continue. This post is meant to be an introduction to DAGs, however there will be lots of posts in the future using DAGs (i.e., for identifying selection bias, confounding, for missingness, etc).
 :::
 
 ## Why should I?
 
-A perfectly valid question at this point is "Why should I? I don't need these". The phrase a picture is worth a thousand words applies here too.
+A perfectly valid question at this point is "Why should I? I don't need these". The phrase a picture is worth a thousand words applies here too. As a side note,
 
 ## Does Coffee Increase My Alertness?
 
@@ -87,6 +87,14 @@ There is some complex math, nonparametric structural equation models to be exact
 We will summarize d-separation like so: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on [@hernanwhatif, pp. 78].
 
 Two variables are d-separated if all paths between them are blocked (otherwise we say they're d-connected) [@hernanwhatif, pp. 78].
+
+## Some Terms 
+
+-   Moderator
+
+-   Mediator
+
+-   Ancestors
 
 ## Water Flowing in a Pipe?
 
