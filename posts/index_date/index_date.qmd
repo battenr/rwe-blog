@@ -1,0 +1,25 @@
+---
+title: "Selecting an Index Date"
+subtitle: "An introduction to DAGs"
+author: "Ryan Batten"
+date: "2023-08-01"
+categories: [RWE, Index Date]
+# image : "standards.png"
+# bibliography: index_date.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## What the hell is an index date?
+
+An index date, also known as time zero, is the timepoint where you start measuring from. For example, in a clinical trial setting this could be the date that the patient receives treatment or if you are doing an intention to treat analysis it
+
+## Can I pick any date?
+
+Technically yes, but no. Only if you want to have a lot of biases in your study.

@@ -1,8 +1,8 @@
 ---
 title: "Hot Diggity DAG" 
-subtitle: "An introduction to DAGs"
+subtitle: "An Introduction to DAGs"
 author: "Ryan Batten"
-date: "2023-07-15"
+date: "2023-08-01"
 categories: [DAGs, Causal Diagrams]
 # image : "standards.png"
 bibliography: dags.bib
@@ -18,21 +18,29 @@ format:
 
 ## Don't Analyze Graphs?
 
-Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. It's a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG shows how your variables are related. To quote Miguel Hernan, since I couldn't have said it better myself, "Draw your assumptions before your conclusions".
+Yes..well no...well kinda. DAG in this case, stands for Directed Acyclic Graph. It's a graph that is directed and acyclic...alright that's not much of an explanation. Let's try again: a causal DAG is used to show how your variables are causally related.\
+\
+Of course to show these variables, we are inherently making assumptions. For example, assuming that X causes Y. We always make assumptions in science, since the real world is complicated. These assumptions are sometimes made implicitly, making it difficult to address for reviewers or people reading the paper.\
+\
+Alternatively, if we show them explicitly then it makes the assumptions clear. To quote Miguel Hernán, since I couldn't put it better myself, "Draw your assumptions before your conclusions".
 
 ::: callout-note
 ## This post is an introduction
 
-One small note before we continue. This post is meant to be an introduction to DAGs, however there will be lots of posts in the future using DAGs (i.e., for identifying selection bias, confounding, for missingness, etc).
+A minor note before we continue: this post is meant to be an introduction. DAGs can get quite complicated, especially is you add a lot fo variables, and have a variety of uses (i.e., selection of variables, identifying potential biases, guiding simulations, for missingness, etc). Future posts will delve more into these use cases but for now, it's just meant to be a gentle intro.
 :::
 
 ## Why should I?
 
-A perfectly valid question at this point is "Why should I? I don't need these". The phrase a picture is worth a thousand words applies here too. As a side note,
+A perfectly valid question at this point is "Why should I? I don't need these. I know what assumptions I'm making". While this may be true, a picture is worth a thousand words. It's much, MUCH easier to identify biases visually than abstractly. \
+\
+An equally, perhaps even more important point, is by using DAGs it is more clear for your reader to interpret/assess your assumptions. For example, confounding bias occurs when there's a variable that affects both the exposure and the outcome. This is pretty straightforward to view.
+
+A slightly more complicated version is collider bias. This occurs when ends of two different arrows meet at a variable. Collider bias is easy to identify visually but can be more difficult to identify abstractly, especially the more variables you add. Rather than just speaking abstractly, time for an example!
 
 ## Does Coffee Increase My Alertness?
 
-I'm an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew...you name it, I'm in (unless it's bad coffee). Something I often wonder is if drinking a lot of coffee actually improves my alertness or not. That is, does coffee cause my alertness? Let's start here. We'll assume that coffee does cause alertness and draw a line between the two.
+I'm an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew...you name it, I'm in (unless it's bad coffee). Something I often wonder is if drinking a lot of coffee actually increases my alertness or not. That is, does coffee cause my alertness? Let's start here. We'll assume that coffee does cause alertness and draw a line between the two.
 
 ```{r, message=FALSE}
 
@@ -54,21 +62,19 @@ ggdag::ggdag(coffee_dag, text = FALSE, use_labels = "label")
 
 ```
 
-This looks great but there's one glaring problem....there are many, many, MANY variables that affect both of these variables. How much you've slept, stress and hunger just to name a few. Not to mention that each of those variables are related.\
-\
-So our DAG needs some editing, but first we need to go over some assumptions or "house rules" per say.
+This looks great but there's one glaring problem....there are many, many, MANY variables that affect both of these variables. How much you've slept, stress and hunger just to name a few. Not to mention that each of those variables are related. So our DAG needs some editing, but first we need to go over some assumptions or "house rules" per say.
 
 ## Assumptions of DAGs
 
 Let's start with the acronym. They are called DAGs because they have a direction and cannot have a variable that causes itself, either directly or through another variable [@hernanwhatif, pp. 72].
 
-Another key component is the causal Markov assumption, which put simply is that a variable is independent of any variable that it isn't a cause for (for more details about this check out @hernanwhatif, pp. 72). This assumption means that in a causal DAG, the common causes of any pair of variables in the graph must also be in the graph.\
-\
-For example,
+Another key component is the causal Markov assumption, which put simply is that a variable is independent of any variable that it isn't a cause for (for more details about this check out @hernanwhatif, pp. 72). This assumption means that in a causal DAG, the common causes of any pair of variables in the graph must also be in the graph.
+
+This means that not every variable needs to be in the graph, just those that are common causes of any pair of variables.
 
 ### D-Separation
 
-The rules are like so [@hernanwhatif, pp. 78]:
+The d in d-separation stands for directionally separated. If all paths between two variables are blocked then we say that variables are d-separated (others they are d-connected). To decide if a path is blocked or open, we use the following rules [@hernanwhatif, pp. 78]:
 
 1.  If no variables are being conditioned on, a path is blocked if and only if two arrowheads on the path collide at some variable on the path.
 
@@ -81,28 +87,52 @@ The rules are like so [@hernanwhatif, pp. 78]:
 ::: callout-note
 ## Causal Graph Theory
 
-There is some complex math, nonparametric structural equation models to be exact, behind these rules that I won't go into here. If you are interested, I recommend checking out the work of Judea Pearl, or some sections of @hernanwhatif.
+There is some complex math, nonparametric structural equation models to be exact, behind these rules that I won't go into here. If you are interested, I recommend checking out the work of Judea Pearl, or Chapter 6 of @hernanwhatif.
 :::
 
 We will summarize d-separation like so: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on [@hernanwhatif, pp. 78].
 
-Two variables are d-separated if all paths between them are blocked (otherwise we say they're d-connected) [@hernanwhatif, pp. 78].
-
-## Some Terms 
-
--   Moderator
-
--   Mediator
-
--   Ancestors
-
 ## Water Flowing in a Pipe?
 
-To borrow a concept from Judea Pearl, think of water flowing in a pipe. For association, it can flow both ways but for causality it cannot. For the rules outlined for d-separation about think about it like water. If there is a collider, then water cannot flow there. If the collider is conditioned on, its like we moved the dam and water can now flow.
+A useful way to think of this, to borrow a concept from Judea Pearl, is to think of water flowing in a pipe. For associations, this can flow both ways however when determining causality it cannot. Applying this thinking to the rules for d-separation think about it like water. If there is a collider, then water cannot flow there like a dam. If the collider is conditioned on, its like we moved the dam and water can now flow.
+
+## Variables to Include
+
+Let's return to our original DAG with just coffee and alertness. We need to include some more variables here, but which ones? Let's assume that we have some other things we think can be important to include: deep breathing and sleep.
+
+Sleep definitely affects coffee consumption and alertness. This we need to add to our graph because it's a common cause of coffee consumption and alertness. \
+\
+
+```{r, message = FALSE}
+
+coffee_dag <- ggdag::dagify(
+  alert ~ coffee + sleep, 
+  coffee ~ sleep,
+  exposure = "coffee",
+  outcome = "alert",
+  labels = c(
+    coffee = "Coffee",
+    alert = "Alertness",
+    sleep = "Sleep"
+  )
+)
+
+ggdag::ggdag(coffee_dag, text = FALSE, use_labels = "label")
+
+```
+
+Now, we can see here that sleep is a confounder. This also shows, using our new found fancy DAGs method, that coffee and alertness are d-connected through sleep.
+
+```{r}
+
+ggdag::ggdag_paths(coffee_dag)
+ggdag::ggdag_adjustment_set(coffee_dag)
+```
+
+\
+Now we can move onto deep breathing. Deep breathing only affects alertness, or so we assume, this is an example of effect modification (spoiler alert: we can include if we want but the DAG is perfectly valid if not since deep breathing isn't a common cause of A and Y)
 
 ## Effect Modification
-
-Let's look at the below DAG.
 
 ```{r}
 
@@ -160,16 +190,10 @@ In this DAG, we see deep breathing is actually a surrogate for a variable that h
 
 ## Uses of DAGs
 
-Great, so we now know how to draw a DAG but is this even useful? Absolutely! It can be used for variable selection, etc, etc.
+Great, so we now know how to draw a DAG but is this even useful? Absolutely! It can be used for identifying biases, variable selection, working through missingness, and other things!
 
-## Why do we need a DAG?
+## What Next? 
 
-Before we get started into what it actually is and the rules, it's always a good idea to review the why.
-
-You should
-
-(can ref/talk about riley2022 12 days of christmas statisitician article)
-
-## 
+Now you've grasped the basics of DAGs! You can use these to help answer all your causally related questions! Personally, I mostly use them for variable selection. It's extremely helpful in analyses for real-world data when deciding which variables require adjustment. Hope you had as much fun reading it as I did writing it!
 
 ## 
