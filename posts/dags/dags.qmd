@@ -32,7 +32,7 @@ A minor note before we continue: this post is meant to be an introduction. DAGs 
 
 ## Why should I?
 
-A perfectly valid question at this point is "Why should I? I don't need these. I know what assumptions I'm making". While this may be true, a picture is worth a thousand words. It's much, MUCH easier to identify biases visually than abstractly. \
+A perfectly valid question at this point is "Why should I? I don't need these. I know what assumptions I'm making". While this may be true, a picture is worth a thousand words. It's much, MUCH easier to identify biases visually than abstractly.\
 \
 An equally, perhaps even more important point, is by using DAGs it is more clear for your reader to interpret/assess your assumptions. For example, confounding bias occurs when there's a variable that affects both the exposure and the outcome. This is pretty straightforward to view.
 
@@ -100,7 +100,7 @@ A useful way to think of this, to borrow a concept from Judea Pearl, is to think
 
 Let's return to our original DAG with just coffee and alertness. We need to include some more variables here, but which ones? Let's assume that we have some other things we think can be important to include: deep breathing and sleep.
 
-Sleep definitely affects coffee consumption and alertness. This we need to add to our graph because it's a common cause of coffee consumption and alertness. \
+Sleep definitely affects coffee consumption and alertness. This we need to add to our graph because it's a common cause of coffee consumption and alertness.\
 \
 
 ```{r, message = FALSE}
@@ -192,7 +192,7 @@ In this DAG, we see deep breathing is actually a surrogate for a variable that h
 
 Great, so we now know how to draw a DAG but is this even useful? Absolutely! It can be used for identifying biases, variable selection, working through missingness, and other things!
 
-## What Next? 
+## What Next?
 
 Now you've grasped the basics of DAGs! You can use these to help answer all your causally related questions! Personally, I mostly use them for variable selection. It's extremely helpful in analyses for real-world data when deciding which variables require adjustment. Hope you had as much fun reading it as I did writing it!
 

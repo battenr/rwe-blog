@@ -18,7 +18,13 @@ format:
 
 ## What the hell is an index date?
 
-An index date, also known as time zero, is the timepoint where you start measuring from. For example, in a clinical trial setting this could be the date that the patient receives treatment or if you are doing an intention to treat analysis it
+An index date, also known as time zero, is the time-point where you start measuring from. For example, in a clinical trial setting this is typically the date that the patient receives treatment or can be the date the patient is treated (if you are doing an intention to treat analysis).
+
+For real-world evidence it isn't so straightforward. Picking the wrong date can result in some unnecessary, self-imposed biases. So how do we pick a date? Just pick a random date? Not exactly.
+
+## Emulating a Target Trial
+
+A separate post will cover this more in depth, however a good place to start is trying to emulate
 
 ## Can I pick any date?
 
