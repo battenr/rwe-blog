@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/dags/dags.html",
       "/posts/causal-estimands/causal_estimands.html",
       "/posts/collapsible-effect-measure/collapsible_effects.html",
       "/posts/standardization/standardization.html",

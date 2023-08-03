@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-08-01">
+<meta name="dcterms.date" content="2023-08-03">
 
 <title>Blog Posts - Hot Diggity DAG</title>
 <style>
@@ -110,8 +110,7 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
@@ -138,6 +137,10 @@ div.csl-indent {
   <li class="nav-item">
     <a class="nav-link" href="../../about.html" rel="" target="">
  <span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consulting.html" rel="" target="">
+ <span class="menu-text">Consulting</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.linkedin.com/in/rwe-ryan" rel="" target=""><i class="bi bi-linkedin" role="img">
@@ -187,7 +190,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 1, 2023</p>
+        <p class="date">August 3, 2023</p>
       </div>
     </div>
     
@@ -213,8 +216,7 @@ div.csl-indent {
   <li><a href="#water-flowing-in-a-pipe" id="toc-water-flowing-in-a-pipe" class="nav-link" data-scroll-target="#water-flowing-in-a-pipe">Water Flowing in a Pipe?</a></li>
   <li><a href="#variables-to-include" id="toc-variables-to-include" class="nav-link" data-scroll-target="#variables-to-include">Variables to Include</a></li>
   <li><a href="#effect-modification" id="toc-effect-modification" class="nav-link" data-scroll-target="#effect-modification">Effect Modification</a></li>
-  <li><a href="#uses-of-dags" id="toc-uses-of-dags" class="nav-link" data-scroll-target="#uses-of-dags">Uses of DAGs</a></li>
-  <li><a href="#what-next" id="toc-what-next" class="nav-link" data-scroll-target="#what-next">What Next?</a></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s Next?</a></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   </ul>
 </nav>
@@ -227,18 +229,18 @@ div.csl-indent {
 
 <section id="dont-analyze-graphs" class="level2">
 <h2 class="anchored" data-anchor-id="dont-analyze-graphs">Don’t Analyze Graphs?</h2>
-<p>Yes..well no…well kinda. DAG in this case, stands for Directed Acyclic Graph. It’s a graph that is directed and acyclic…alright that’s not much of an explanation. Let’s try again: a causal DAG is used to show how your variables are causally related.<br>
+<p>Yes..well no…well kinda. DAG in this case, stands for Directed Acyclic Graph. It’s a graph that is directed and acyclic…alright that’s not much of an explanation. Let’s try again: a causal DAG is used to show the causal relationship between your variables.<br>
 <br>
-Of course to show these variables, we are inherently making assumptions. For example, assuming that X causes Y. We always make assumptions in science, since the real world is complicated. These assumptions are sometimes made implicitly, making it difficult to address for reviewers or people reading the paper.<br>
+Of course to show these variables, we are inherently making assumptions. For example, assuming that X causes Y. We always make assumptions in science, since the real world is complicated. These assumptions are sometimes made implicitly, making it difficult to address for reviewers or people reading your work.<br>
 <br>
-Alternatively, if we show them explicitly then it makes the assumptions clear. To quote Miguel Hernán, since I couldn’t put it better myself, “Draw your assumptions before your conclusions”.</p>
+Alternatively, if we show our assumptions explicitly then it makes the assumptions more obvious. To quote Miguel Hernán, since I couldn’t put it better myself, “Draw your assumptions before your conclusions”.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-This post is an introduction
+This post is meant to be an introduction
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -250,13 +252,12 @@ This post is an introduction
 <h2 class="anchored" data-anchor-id="why-should-i">Why should I?</h2>
 <p>A perfectly valid question at this point is “Why should I? I don’t need these. I know what assumptions I’m making”. While this may be true, a picture is worth a thousand words. It’s much, MUCH easier to identify biases visually than abstractly.<br>
 <br>
-An equally, perhaps even more important point, is by using DAGs it is more clear for your reader to interpret/assess your assumptions. For example, confounding bias occurs when there’s a variable that affects both the exposure and the outcome. This is pretty straightforward to view.</p>
-<p>A slightly more complicated version is collider bias. This occurs when ends of two different arrows meet at a variable. Collider bias is easy to identify visually but can be more difficult to identify abstractly, especially the more variables you add.</p>
-<p>Rather than just speaking abstractly, time for an example!</p>
+An equally, perhaps even more important point, is by using DAGs it is more clear for others to interpret/assess your assumptions. For example, confounding bias occurs when there’s a variable that affects both the exposure and the outcome. This is pretty straightforward to view.</p>
+<p>A slightly more challenging example is collider bias. This occurs when ends of two different arrows meet at a variable. Collider bias is easy to identify visually but can be more difficult to identify abstractly, especially the more variables you add. Rather than just speaking, time for an example!</p>
 </section>
 <section id="does-coffee-increase-my-alertness" class="level2">
 <h2 class="anchored" data-anchor-id="does-coffee-increase-my-alertness">Does Coffee Increase My Alertness?</h2>
-<p>I’m an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew…you name it, I’m in (unless it’s bad coffee). Something I often wonder is if drinking a lot of coffee actually increases my alertness or not. That is, does coffee cause my alertness? Let’s start here. We’ll assume that coffee does cause alertness and draw a line between the two.</p>
+<p>I’m an avid coffee drinker. I love hot coffee, iced coffee, cold brew, nitro cold brew…you name it, I’m in (unless it’s bad coffee). Something I often wonder is if drinking a lot of coffee actually increases my alertness or not. That is, does coffee cause increased alertness? Let’s start here. We’ll assume that coffee does cause alertness and draw a line between the two.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -280,13 +281,12 @@ An equally, perhaps even more important point, is by using DAGs it is more clear
 <p><img src="dags_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>This looks great but there’s one glaring problem….there are many, many, MANY variables that affect both of these variables. How much you’ve slept, stress and hunger just to name a few. Not to mention that each of those variables are related. So our DAG needs some editing, but first we need to go over some assumptions or “house rules” per say.</p>
+<p>This looks great but there’s one glaring problem….there are many, many, MANY variables that affect coffee and alertness. How much you’ve slept, stress and hunger just to name a few. Not to mention that each of those variables are related. So our DAG needs some editing, but first we need to go over some assumptions or “house rules” per say.</p>
 </section>
 <section id="assumptions-of-dags" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-of-dags">Assumptions of DAGs</h2>
 <p>Let’s start with the acronym. They are called DAGs because they have a direction and cannot have a variable that causes itself, either directly or through another variable <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 72</a>)</span>.</p>
 <p>Another key component is the causal Markov assumption, which put simply is that a variable is independent of any variable that it isn’t a cause for (for more details about this check out <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span>, pp.&nbsp;72). This assumption means that in a causal DAG, the common causes of any pair of variables in the graph must also be in the graph.</p>
-<p>This means that not every variable needs to be in the graph, just those that are common causes of any pair of variables.</p>
 <section id="d-separation" class="level3">
 <h3 class="anchored" data-anchor-id="d-separation">D-Separation</h3>
 <p>The d in d-separation stands for directionally separated. If all paths between two variables are blocked then we say that variables are d-separated (others they are d-connected). To decide if a path is blocked or open, we use the following rules <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 78</a>)</span>:</p>
@@ -309,19 +309,17 @@ Causal Graph Theory
 <p>There is some complex math, nonparametric structural equation models to be exact, behind these rules that I won’t go into here. If you are interested, I recommend checking out the work of Judea Pearl, or Chapter 6 of <span class="citation" data-cites="hernanwhatif">Hernan and Robins (<a href="#ref-hernanwhatif" role="doc-biblioref">2021</a>)</span>.</p>
 </div>
 </div>
-<p>We will summarize d-separation like so: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 78</a>)</span>.</p>
+<p>To summarize d-seperation in a few sentences: a path is blocked if and only if, it contains a non-collider that has been conditioned on, or it contains a collider that has not been conditioned on and has no descendants that have been conditioned on <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 78</a>)</span>.</p>
 </section>
 </section>
 <section id="water-flowing-in-a-pipe" class="level2">
 <h2 class="anchored" data-anchor-id="water-flowing-in-a-pipe">Water Flowing in a Pipe?</h2>
-<p>A useful way to think of this, to borrow a concept from Judea Pearl, is to think of water flowing in a pipe. For associations, this can flow both ways however when determining causality it cannot. Applying this thinking to the rules for d-separation think about it like water. If there is a collider, then water cannot flow there like a dam. If the collider is conditioned on, its like we moved the dam and water can now flow.</p>
+<p>A useful way to think of this, to borrow a concept from Judea Pearl, is to think of water flowing in a pipe. For associations, this can flow both ways however when determining causality it cannot. Applying this thinking to the rules for d-separation think about it like water. If there is a collider, then water cannot flow like there is a dam. If the collider is conditioned on, its like we moved the dam and water can now flow.</p>
 </section>
 <section id="variables-to-include" class="level2">
 <h2 class="anchored" data-anchor-id="variables-to-include">Variables to Include</h2>
 <p>Let’s return to our original DAG with just coffee and alertness. We need to include some more variables here, but which ones? Let’s assume that we have some other things we think can be important to include: deep breathing and sleep.</p>
-<p>Sleep definitely affects coffee consumption and alertness. This we need to add to our graph because it’s a common cause of coffee consumption and alertness.<br>
-<br>
-</p>
+<p>Sleep definitely affects coffee consumption and alertness. This we need to add to our graph because it’s a common cause of coffee consumption and alertness.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -343,25 +341,30 @@ Causal Graph Theory
 <p><img src="dags_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Now, we can see here that sleep is a confounder. This also shows, using our new found fancy DAGs method, that coffee and alertness are d-connected through sleep.</p>
+<p>Now, we can see here that sleep is a confounder. We can use our fancy new DAG to identify which variables are d-connected.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag_paths</span>(coffee_dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag_paths</span>(coffee_dag, <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="dags_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
+</div>
+<p>We can see that there are two paths between the variables. There is the first path between coffee and alertness, which we’d expect. The second path, is between coffee and alertness through sleep. This is not what we’d want and in this case would result in confounding bias if we don’t fix it. How do we fix it? By including it as an adjustment variable.</p>
+<p>We can use the <em>ggdag_adjustment_set()</em> function from the <em>ggdag</em>&nbsp;package.</p>
+<div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag_adjustment_set</span>(coffee_dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag_adjustment_set</span>(coffee_dag, <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="dags_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+<p><img src="dags_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>We can see that we need to adjust for sleep to close the opened path, which is what we’d expect. Now we can move onto deep breathing and find out whether we need to adjust for deep breathing or not.</p>
 <p><br>
-Now we can move onto deep breathing. Deep breathing only affects alertness, or so we assume, this is an example of effect modification (spoiler alert: we can include if we want but the DAG is perfectly valid if not since deep breathing isn’t a common cause of A and Y)</p>
+Deep breathing only affects alertness, or so we assume, this is an example of effect modification (spoiler alert: we can include if we want but the DAG is perfectly valid if not since deep breathing isn’t a common cause of A and Y)</p>
 </section>
 <section id="effect-modification" class="level2">
 <h2 class="anchored" data-anchor-id="effect-modification">Effect Modification</h2>
@@ -384,17 +387,17 @@ Now we can move onto deep breathing. Deep breathing only affects alertness, or s
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="dags_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="dags_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>We see that deep breathing affects alertness but not drinking coffee. Now, if we didn’t include deep breathing it would still be a valid causal diagram because deep breathing isn’t a common cause of coffee and alertness. We’d only need to include if it was part of our causal question (e.g., what is the average causal effect of coffee on alterness <em>within levels of deep breathing?)</em>.</p>
+<p>We see that deep breathing affects alertness but not drinking coffee. Now, if we didn’t include deep breathing it would still be a valid causal diagram because deep breathing isn’t a common cause of coffee and alertness. We’d only need to include if it was part of our causal question (e.g., what is the average causal effect of coffee on alertness <em>within levels of deep breathing?)</em>.</p>
 <p>Now, another point is that including it in our causal diagram doesn’t distinguish which of the following three ways that alertness could modify the effect of coffee on alertness:</p>
 <ol type="1">
-<li><p>The causal effect of coffee on alertness is in the same direction in both stratum deep breathing = yes and deep breathing = no</p></li>
-<li><p>The direction fo the causal effect of coffee on alertness in stratum deep breathing = yes is opposite of that in stratum deep breathing = no (sometimes referred to as Simpson’s paradox).</p></li>
+<li><p>The causal effect of coffee on alertness is in the same direction in both deep breathing = yes and deep breathing = no</p></li>
+<li><p>The direction of the causal effect of coffee on alertness in deep breathing = yes is opposite of that in stratum deep breathing = no</p></li>
 <li><p>Coffee has a causal effect on alertness in one stratum of deep breathing but no causal effect in the other stratum.</p></li>
 </ol>
-<p>Now, our DAG fails to distinguish which of these is the type of effect modification. Additionally, many effect modifiers do not have a causal effect on the outcome. Instead, they are surrogates for variable that have a causal effect on the outcome.</p>
+<p>In the DAG, it fails to distinguish which of these is the type of effect modification. Additionally, many effect modifiers do not have a causal effect on the outcome. Instead, they are surrogates for variables that have a causal effect on the outcome.</p>
 <p>For example, let’s look at deep breathing again.</p>
 <div class="cell">
 <details>
@@ -417,17 +420,13 @@ Now we can move onto deep breathing. Deep breathing only affects alertness, or s
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="dags_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="dags_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>In this DAG, we see deep breathing is actually a surrogate for a variable that has a causal effect. Deep breathing is a <em>surrogate effect modifier</em> whereas stress is a <em>causal effect modifier</em>. Both of these are often indistinguishable in practice, so the concept of effect modification encompasses both <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 81</a>)</span>.</p>
 </section>
-<section id="uses-of-dags" class="level2">
-<h2 class="anchored" data-anchor-id="uses-of-dags">Uses of DAGs</h2>
-<p>Great, so we now know how to draw a DAG but is this even useful? Absolutely! It can be used for identifying biases, variable selection, working through missingness, and other things!</p>
-</section>
-<section id="what-next" class="level2">
-<h2 class="anchored" data-anchor-id="what-next">What Next?</h2>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
 <p>Now you’ve grasped the basics of DAGs! You can use these to help answer all your causally related questions! Personally, I mostly use them for variable selection. It’s extremely helpful in analyses for real-world data when deciding which variables require adjustment. Hope you had as much fun reading it as I did writing it!</p>
 </section>
 <section id="section" class="level2">
