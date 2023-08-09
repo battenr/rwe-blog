@@ -593,5 +593,26 @@
     "title": "Welcome To My Blog",
     "section": "",
     "text": "Overview\nThis is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to elaborate on methods I’ve come across while reading and hopefully be able to teach one person something new, or in a more intuitive way. A huge credit to the Count Bayesie blog (@willkurt on twitter). Reading his blog posts encouraged me to do the same.\nPlease note: we are all human. Sometimes due to a lack of sleep, caffeine, or being distracted everyone makes mistakes (myself included). If you notice a mistake on this blog, please reach out to me so I can correct it."
+  },
+  {
+    "objectID": "posts/test/Untitled.html",
+    "href": "posts/test/Untitled.html",
+    "title": "test",
+    "section": "",
+    "text": "test document\nQuarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "posts/test/Untitled.html#quarto",
+    "href": "posts/test/Untitled.html#quarto",
+    "title": "test",
+    "section": "",
+    "text": "test document\nQuarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "posts/test/Untitled.html#running-code",
+    "href": "posts/test/Untitled.html#running-code",
+    "title": "test",
+    "section": "Running Code",
+    "text": "Running Code\nWhen you click the Render button a document will be generated that includes both content and the output of embedded code. You can embed code like this:\n\n1 + 1\n\n[1] 2\n\n\nYou can add options to executable code like this\n\n\n[1] 4\n\n\nThe echo: false option disables the printing of code (only output is displayed)."
   }
 ]

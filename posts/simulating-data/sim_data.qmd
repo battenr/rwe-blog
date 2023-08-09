@@ -16,6 +16,44 @@ format:
     code-fold: true
 ---
 
+## Simulating Data, Why?
+
+Simulating data wasn't something that I was taught in school. I've learned it since graduating/during my PhD, in my pursuit of improving my stats knowledge (the more I learn the more I feel I don't know, weird feeling). It's been unbelievably useful.
+
+Some use case:
+
+I wanted to write this blog to help anyone else who isn't familiar with simulating data. Before, I just want to give a sliver of uses where I've found simulating data helpful:
+
+-   Showing bias (confounder, collider, etc)
+
+-   Understanding how methods work
+
+-   Comparing difference methods (1:1 matching vs IPTW, etc)
+
+-   Understand data generating mechanisms
+
+-   
+
+::: callout-note
+## Stats for non-stats
+
+I'm a tradesman biostatistician \[NOTE: RYAN CHECK THIS TERM FROM HIS TWEET\] (credit to PhDemetri for this term). Basically, I've done a few statistics courses but don't have a degree in it (I do in clinical epidemiology which overlaps substantially with biostatistics).
+
+If you do, hopefully this is a good refresher. If you don't, don't worry! I don't either so hopefully this helps out a little as an intro.
+:::
+
+## Basics
+
+Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring. Alright, let's get started
+
+Imagine we have a bag of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, doees this mean
+
+NOTE TO SELF: explain that regression is finding the mean (keith mcnulty's post)
+
+Now, if we pick one
+
+# Old Text
+
 Learning to simulate data was one of the best things that I've stumbled into. It can help improve your knowledge of statistics and inform decision making. One of the things I found difficult when starting was for a resource that gave some examples of what I really wanted to know. Hopefully this post will provide a decent start to someone.
 
 ## Why Simulate?
@@ -24,7 +62,7 @@ At first, I had heard about simulation studies but wasn't exactly sure the purpo
 
 ## Steps to Simulate
 
-@morris2019 use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we'l'' break down a little bit .
+\@morris2019 use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we'l'' break down a little bit .
 
 ## Monte Carlo Simulation
 
@@ -32,7 +70,7 @@ Monte Carlo simulation is
 
 ## Resources for Simulating
 
-There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are @morris2019 and @burton2006.
+There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are \@morris2019 and \@burton2006.
 
 ## Why simulate data?
 
