@@ -46,7 +46,17 @@ If you do, hopefully this is a good refresher. If you don't, don't worry! I don'
 
 Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring. Alright, let's get started
 
-Imagine we have a bag of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, doees this mean
+Imagine we have a bag of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, does this mean that every bean will be that? Let's pull one out and see
+
+## Simulating Data
+
+We'll start with continuous data. To simulate this we need two pieces of information, also known as parameters: mean and standard deviation.
+
+::: callout-note
+## TTE Outcome
+
+This post will focus on continuous and binary outcomes. A future blog post will go over how to simulate time-to-event, sometimes called survival, data.
+:::
 
 NOTE TO SELF: explain that regression is finding the mean (keith mcnulty's post)
 
