@@ -20,9 +20,7 @@ format:
 
 Simulating data wasn't something that I was taught in school. I've learned it since graduating/during my PhD, in my pursuit of improving my stats knowledge (the more I learn the more I feel I don't know, weird feeling). It's been unbelievably useful.
 
-Some use case:
-
-I wanted to write this blog to help anyone else who isn't familiar with simulating data. Before, I just want to give a sliver of uses where I've found simulating data helpful:
+I wanted to write this post to help anyone else who isn't familiar with simulating data. Before, I just want to give a sliver of uses where I've found simulating data helpful:
 
 -   Showing bias (confounder, collider, etc)
 
