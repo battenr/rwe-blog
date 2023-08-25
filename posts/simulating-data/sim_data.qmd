@@ -2,7 +2,7 @@
 title: "Mastering Statistics Through Make-Believe" 
 subtitle: "Simulated Data in R"
 author: "Ryan Batten"
-date: "2023-03-02"
+date: "2023-09-02"
 categories: [Simulating Data]
 bibliography: sim_data.bib
 # image : "standards.png"
