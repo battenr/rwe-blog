@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-03-02">
+<meta name="dcterms.date" content="2023-09-02">
 
 <title>Blog Posts - Mastering Statistics Through Make-Believe</title>
 <style>
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -137,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">March 2, 2023</p>
+        <p class="date">September 2, 2023</p>
       </div>
     </div>
     
@@ -153,12 +187,22 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#why-simulate" id="toc-why-simulate" class="nav-link active" data-scroll-target="#why-simulate">Why Simulate?</a></li>
+  <li><a href="#simulating-data-why" id="toc-simulating-data-why" class="nav-link active" data-scroll-target="#simulating-data-why">Simulating Data, Why?</a></li>
+  <li><a href="#basics" id="toc-basics" class="nav-link" data-scroll-target="#basics">Basics</a></li>
+  <li><a href="#showing-confounding" id="toc-showing-confounding" class="nav-link" data-scroll-target="#showing-confounding">Showing Confounding</a>
+  <ul>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  </ul></li>
+  <li><a href="#simulating-data" id="toc-simulating-data" class="nav-link" data-scroll-target="#simulating-data">Simulating Data</a></li>
+  <li><a href="#old-text" id="toc-old-text" class="nav-link" data-scroll-target="#old-text">Old Text</a>
+  <ul>
+  <li><a href="#why-simulate" id="toc-why-simulate" class="nav-link" data-scroll-target="#why-simulate">Why Simulate?</a></li>
   <li><a href="#steps-to-simulate" id="toc-steps-to-simulate" class="nav-link" data-scroll-target="#steps-to-simulate">Steps to Simulate</a></li>
-  <li><a href="#monte-carlo-simulation" id="toc-monte-carlo-simulation" class="nav-link" data-scroll-target="#monte-carlo-simulation">Monte Carlo Simulation</a></li>
+  <li><a href="#over-and-over-and-over-again" id="toc-over-and-over-and-over-again" class="nav-link" data-scroll-target="#over-and-over-and-over-again">Over and Over and Over Again</a></li>
   <li><a href="#resources-for-simulating" id="toc-resources-for-simulating" class="nav-link" data-scroll-target="#resources-for-simulating">Resources for Simulating</a></li>
   <li><a href="#why-simulate-data" id="toc-why-simulate-data" class="nav-link" data-scroll-target="#why-simulate-data">Why simulate data?</a></li>
   <li><a href="#tips-for-generating-data" id="toc-tips-for-generating-data" class="nav-link" data-scroll-target="#tips-for-generating-data">Tips for generating data</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -168,6 +212,137 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<section id="simulating-data-why" class="level2">
+<h2 class="anchored" data-anchor-id="simulating-data-why">Simulating Data, Why?</h2>
+<p>Simulating data wasn’t something that I was taught in school. I’ve learned it since graduating/during my PhD, in my pursuit of improving my stats knowledge (the more I learn the more I feel I don’t know, weird feeling). It’s been unbelievably useful.</p>
+<p>I wanted to write this post to help anyone else who isn’t familiar with simulating data. Before, I just want to give a few use cases where I’ve found simulating data helpful:</p>
+<ul>
+<li><p>Showing bias (confounder, collider, etc)</p></li>
+<li><p>Understanding how methods work</p></li>
+<li><p>Comparing different methods (1:1 matching vs IPTW, etc)</p></li>
+<li><p>Understand data generating mechanisms</p></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Stats for non-stats
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I’m a tradesman biostatistician [NOTE: RYAN CHECK THIS TERM FROM HIS TWEET] (credit to PhDemetri for this term). Basically, I’ve done a few statistics courses but don’t have a degree in it (I do in clinical epidemiology which overlaps substantially with biostatistics).</p>
+<p>If you do, hopefully this is a good refresher. If you don’t, don’t worry! I don’t either so hopefully this helps out a little as an intro.</p>
+</div>
+</div>
+</section>
+<section id="basics" class="level2">
+<h2 class="anchored" data-anchor-id="basics">Basics</h2>
+<p>Before we dive into some R code, which I do love, it’s useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn’t going to be technical or boring. Alright, let’s get started.</p>
+</section>
+<section id="showing-confounding" class="level2">
+<h2 class="anchored" data-anchor-id="showing-confounding">Showing Confounding</h2>
+<p>Let’s assume that we want to test how not adjusting for a confounder can lead to confounding bias. For this situation let’s look at hot coffee and rainbows. We can draw a DAG, including our confounder which is weather.</p>
+<p>For this, our question is “does hot coffee cause rainbows?”. Rainy days lead to drinking more coffee, but rainy days also lead to rainbows.<br>
+<br>
+</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'ggdag'
+
+The following object is masked from 'package:stats':
+
+    filter</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">=</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  hot_coffee <span class="sc">~</span> rain, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  rainbow <span class="sc">~</span> rain <span class="sc">+</span> hot_coffee, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"hot_coffee"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"rainbow"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hot_coffee =</span> <span class="st">"Hot</span><span class="sc">\n</span><span class="st">Coffee"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">rainbow =</span> <span class="st">"Rainbow"</span>, </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rain =</span> <span class="st">"Rain"</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ggdag<span class="sc">::</span><span class="fu">ggdag</span>(<span class="at">layout =</span> <span class="st">"tree"</span>, </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">text =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="sim_data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>g at how long goldfish grow as an example. There’s a few factors that affect the size (in this example length and size will be used interchangeably): feeding_frequency (number of times per day), water temperate, and how much food.</p>
+<p># Simulate data for 100 goldfish</p>
+<p>set.seed(123)</p>
+<p>n &lt;- 100</p>
+<p># Nutritional factors</p>
+<p>food_quality &lt;- rnorm(n, mean = 5, sd = 1)</p>
+<p>feeding_frequency &lt;- rnorm(n, mean = 3, sd = 0.5)</p>
+<p># Environmental factors</p>
+<p>water_quality &lt;- rnorm(n, mean = 7, sd = 1)</p>
+<p>water_temp &lt;- rnorm(n, mean = 20, sd = 2)</p>
+<p># Growth rate as the dependent variable</p>
+<p>growth_rate &lt;- 0.5 + 0.2*food_quality + 0.1*feeding_frequency + 0.3*water_quality + 0.4*water_temp + rnorm(n, mean = 0, sd = 0.5)</p>
+<p># Combine into a data frame</p>
+<p>goldfish_data &lt;- data.frame(food_quality, feeding_frequency, water_quality, water_temp, growth_rate)</p>
+<p>Let’s use how long goldfish grow as an example. For ease of this example, let’s</p>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
+<p>This type of simulation is called a Monte Carlo Simulation. The reason it’s so useful is because</p>
+<p>of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, does this mean that every bean will be that? Let’s pull one out and see</p>
+</section>
+</section>
+<section id="simulating-data" class="level2">
+<h2 class="anchored" data-anchor-id="simulating-data">Simulating Data</h2>
+<p>We’ll start with continuous data. To simulate this we need two pieces of information, also known as parameters: mean and standard deviation.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TTE Outcome
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This post will focus on continuous and binary outcomes. A future blog post will go over how to simulate time-to-event, sometimes called survival, data.</p>
+</div>
+</div>
+<p>NOTE TO SELF: explain that regression is finding the mean (keith mcnulty’s post)</p>
+<p>Now, if we pick one</p>
+</section>
+<section id="old-text" class="level1">
+<h1>Old Text</h1>
 <p>Learning to simulate data was one of the best things that I’ve stumbled into. It can help improve your knowledge of statistics and inform decision making. One of the things I found difficult when starting was for a resource that gave some examples of what I really wanted to know. Hopefully this post will provide a decent start to someone.</p>
 <section id="why-simulate" class="level2">
 <h2 class="anchored" data-anchor-id="why-simulate">Why Simulate?</h2>
@@ -177,8 +352,22 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="steps-to-simulate">Steps to Simulate</h2>
 <p>@morris2019 use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we’l’’ break down a little bit .</p>
 </section>
-<section id="monte-carlo-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="monte-carlo-simulation">Monte Carlo Simulation</h2>
+<section id="over-and-over-and-over-again" class="level2">
+<h2 class="anchored" data-anchor-id="over-and-over-and-over-again">Over and Over and Over Again</h2>
+<p>Now we’ve simulated data. Great! But how can we trust this? We only did it once. What if the sample of the same size (N = X [RYAN: INSERT NUMBER]) gave a different answer? To account for this, we need to repeat this multiple times. So, let’s do that!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Selecting n for Monte Carlo simulation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To select the n required, there are several resources. I won’t go into detail here, but some personal references I use are [INSERT Morris et al.&nbsp;and others]</p>
+</div>
+</div>
 <p>Monte Carlo simulation is</p>
 </section>
 <section id="resources-for-simulating" class="level2">
@@ -193,6 +382,7 @@ ul.task-list li input[type="checkbox"] {
 <p>(RYAN ADD REF THAT TALKS ABOUT SIMULATING DATA)</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

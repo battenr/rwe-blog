@@ -20,17 +20,15 @@ format:
 
 Simulating data wasn't something that I was taught in school. I've learned it since graduating/during my PhD, in my pursuit of improving my stats knowledge (the more I learn the more I feel I don't know, weird feeling). It's been unbelievably useful.
 
-I wanted to write this post to help anyone else who isn't familiar with simulating data. Before, I just want to give a sliver of uses where I've found simulating data helpful:
+I wanted to write this post to help anyone else who isn't familiar with simulating data. Before, I just want to give a few use cases where I've found simulating data helpful:
 
 -   Showing bias (confounder, collider, etc)
 
 -   Understanding how methods work
 
--   Comparing difference methods (1:1 matching vs IPTW, etc)
+-   Comparing different methods (1:1 matching vs IPTW, etc)
 
 -   Understand data generating mechanisms
-
--   
 
 ::: callout-note
 ## Stats for non-stats
@@ -40,11 +38,109 @@ I'm a tradesman biostatistician \[NOTE: RYAN CHECK THIS TERM FROM HIS TWEET\] (c
 If you do, hopefully this is a good refresher. If you don't, don't worry! I don't either so hopefully this helps out a little as an intro.
 :::
 
-## Basics
+## How to Simulate Data in R
 
-Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring. Alright, let's get started
+Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring. Alright, let's get started.
 
-Imagine we have a bag of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, does this mean that every bean will be that? Let's pull one out and see
+### Continuous Outcomes
+
+To simulate data in R, we can use a
+
+ideas for topics: baby's sleep and pacifiers
+
+### Binary Outcomes
+
+## Showing Confounding
+
+Let's assume that we want to test how not adjusting for a confounder can lead to confounding bias. For this situation let's look at the number of pacifiers in a babies crib and the hours slept. We can draw a DAG, including our confounder which is weather.
+
+\# Set seed for reproducibility
+
+set.seed(111)
+
+\# Number of observations
+
+n \<- 100
+
+\# Generate confounder - Baby's Age in months
+
+baby_age \<- rnorm(n, mean = 6, sd = 2)
+
+\# Generate number of pacifiers influenced by Baby's Age
+
+num_pacifiers \<- 1 + 0.3 \* baby_age + rnorm(n, mean = 0, sd = 0.2)
+
+\# Generate hours slept influenced by Baby's Age
+
+hours_slept \<- 10 + 0.5 \* baby_age + rnorm(n, mean = 0, sd = 1)
+
+\# Combine into a data frame
+
+data \<- data.frame(baby_age, num_pacifiers, hours_slept)
+
+For this, our question is "does hot coffee cause rainbows?". Rainy days lead to drinking more coffee, but rainy days also lead to rainbows. \
+\
+
+```{r}
+library(tidyverse)
+library(ggdag)
+
+theme_set(theme_dag())
+
+dag = ggdag::dagify(
+  hot_coffee ~ rain, 
+  rainbow ~ rain + hot_coffee, 
+  exposure = "hot_coffee",
+  outcome = "rainbow",
+  labels = c(
+    hot_coffee = "Hot\nCoffee",
+    rainbow = "Rainbow", 
+    rain = "Rain"
+  )
+) 
+
+dag %>% 
+  ggdag::ggdag(layout = "tree", 
+               text = FALSE,
+               use_labels = "label")
+
+```
+
+g at how long goldfish grow as an example. There's a few factors that affect the size (in this example length and size will be used interchangeably): feeding_frequency (number of times per day), water temperate, and how much food.
+
+\# Simulate data for 100 goldfish
+
+set.seed(123)
+
+n \<- 100
+
+\# Nutritional factors
+
+food_quality \<- rnorm(n, mean = 5, sd = 1)
+
+feeding_frequency \<- rnorm(n, mean = 3, sd = 0.5)
+
+\# Environmental factors
+
+water_quality \<- rnorm(n, mean = 7, sd = 1)
+
+water_temp \<- rnorm(n, mean = 20, sd = 2)
+
+\# Growth rate as the dependent variable
+
+growth_rate \<- 0.5 + 0.2\*food_quality + 0.1\*feeding_frequency + 0.3\*water_quality + 0.4\*water_temp + rnorm(n, mean = 0, sd = 0.5)
+
+\# Combine into a data frame
+
+goldfish_data \<- data.frame(food_quality, feeding_frequency, water_quality, water_temp, growth_rate)
+
+Let's use how long goldfish grow as an example. For ease of this example, let's
+
+### 
+
+This type of simulation is called a Monte Carlo Simulation. The reason it's so useful is because
+
+of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, does this mean that every bean will be that? Let's pull one out and see
 
 ## Simulating Data
 
@@ -72,16 +168,18 @@ At first, I had heard about simulation studies but wasn't exactly sure the purpo
 
 \@morris2019 use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we'l'' break down a little bit .
 
-## Monte Carlo Simulation
+## Over and Over and Over Again
+
+Now we've simulated data. Great! But how can we trust this? We only did it once. What if the sample of the same size (N = X \[RYAN: INSERT NUMBER\]) gave a different answer? To account for this, we need to repeat this multiple times. So, let's do that!
+
+::: callout-note
+## Selecting n for Monte Carlo simulation
+
+To select the n required, there are several resources. I won't go into detail here, but some personal references I use are \[INSERT Morris et al. and others\]
+:::
 
 Monte Carlo simulation is
 
 ## Resources for Simulating
 
 There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are \@morris2019 and \@burton2006.
-
-## Why simulate data?
-
-## Tips for generating data
-
-(RYAN ADD REF THAT TALKS ABOUT SIMULATING DATA)
