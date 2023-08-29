@@ -44,7 +44,7 @@ Before we dive into some R code, which I do love, it's useful to first understan
 
 ### Continuous Outcomes
 
-To simulate data in R, we can use a
+To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the *rnorm* function. Let's simulate an outcome and exposure.
 
 ideas for topics: baby's sleep and pacifiers
 
