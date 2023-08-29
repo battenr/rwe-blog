@@ -78,7 +78,7 @@ hours_slept \<- 10 + 0.5 \* baby_age + rnorm(n, mean = 0, sd = 1)
 
 data \<- data.frame(baby_age, num_pacifiers, hours_slept)
 
-For this, our question is "does hot coffee cause rainbows?". Rainy days lead to drinking more coffee, but rainy days also lead to rainbows. \
+For this, our question is "does hot coffee cause rainbows?". Rainy days lead to drinking more coffee, but rainy days also lead to rainbows.\
 \
 
 ```{r}
