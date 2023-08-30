@@ -46,9 +46,22 @@ Before we dive into some R code, which I do love, it's useful to first understan
 
 To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the *rnorm* function. Let's simulate an outcome and exposure.
 
+Let's use hours that a four month old slept as the outcome and number of pacifiers in their bed.
+
+```{r}
+
+set.seed(123)
+hours_slept = rnorm(n = 128, mean = 6, sd = 2)
+num_pacifiers = rnorm(n = 128, mean = )
+```
+
+We could have used a different distribution for this as well. For example, a uniform distribution (*runif*) a
+
 ideas for topics: baby's sleep and pacifiers
 
 ### Binary Outcomes
+
+Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption and cold room (yes/no)
 
 ## Showing Confounding
 
