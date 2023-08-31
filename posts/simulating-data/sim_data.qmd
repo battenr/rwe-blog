@@ -44,24 +44,64 @@ Before we dive into some R code, which I do love, it's useful to first understan
 
 ### Continuous Outcomes
 
-To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the *rnorm* function. Let's simulate an outcome and exposure.
+To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the *rnorm* function. Let's simulate an outcome and exposure that we will assess with a generalized linear model.
 
 Let's use hours that a four month old slept as the outcome and number of pacifiers in their bed.
 
 ```{r}
+set.seed(123) # we need to set a seed prior to simulating data. This allows us to replicate the data. For more details check out this blog post: [insert blog post about using different seeds for simulations]
 
-set.seed(123)
-hours_slept = rnorm(n = 128, mean = 6, sd = 2)
-num_pacifiers = rnorm(n = 128, mean = )
+n.babies = 128
+
+num_pacifiers = rnorm(n = n.babies, mean = 8, sd = 3)
+age_months = rnorm(n.babies, mean = 9, sd = 2)
+hours_slept = 4 + 0.5*num_pacifiers + 0.25*age_months 
+
+df = data.frame(
+  num_pacifiers, 
+  age_months,
+  hours_slept
+)
 ```
 
-We could have used a different distribution for this as well. For example, a uniform distribution (*runif*) a
+Okay, so we have our data. Now let's do something with it! Let's try fitting a GLM
 
-ideas for topics: baby's sleep and pacifiers
+```{r}
+mod = glm(hours_slept ~ num_pacifiers + age_months, 
+          family = gaussian(), # we know this because we simulated the data. In reality, you have to use a combination of visualizing the data, understanding the data generating mechanism (aka what distribution it came from and the best model fit (i.e., Poisson vs negative binomial))
+          data = df 
+          )
+
+summary(mod)
+
+
+```
+
+Now, as you can see our estimates were pretty accurate. Let's try this again, but this time we'll assume that pacifiers doesn't matter, it's only the age. We can still adjust for both.
+
+Now you see how the impact of adjusting for a variable that doesn't affect the outcome, at least in this case.
+
+::: callout-note
+## Continuous Distributions distributions
+
+For the above example, we used a normal distribution. However, this doesn't need to be the case. If we are dealing with age we may want to use a uniform distribution (using runif) and specifying the minimum and maximum. For example, if we are thinking of a variable where it may not make sense to have a value below a certain value (i.e., age where people are between 18 and 65).
+
+For simplicity here, and because a number of statistical methods assume normality (*cough* also the central limit theorem *cough*), we will use *rnorm*.
+:::
 
 ### Binary Outcomes
 
 Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption and cold room (yes/no)
+
+## Causal Concepts
+
+Now, this blog is about causal inference! So let's incorporate some into this post shall we? Instead of looking at GLMs, let's demonstrate how confounding and colliders can introduce bias. We'll calculate bias as \[@morris2019\]:
+
+$$
+E[\hat{\theta}] - \theta
+$$
+
+where $E[\hat{\theta]}$ is the expected, or average, estimated value and $\theta$ is the "actual" value. I'll explain why we use the average later on in the Over and Over and Over Again section \[TRY TO ADD CROSS REFERENCE\]
 
 ## Showing Confounding
 
