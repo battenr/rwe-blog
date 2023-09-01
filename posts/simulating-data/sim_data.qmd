@@ -48,10 +48,13 @@ To simulate data in R, we can use a family of functions that start with r. For e
 
 Let's use hours that a four month old slept as the outcome and number of pacifiers in their bed.
 
-```{r}
+```{r, message = FALSE}
+
+library(tidyverse)
+
 set.seed(123) # we need to set a seed prior to simulating data. This allows us to replicate the data. For more details check out this blog post: [insert blog post about using different seeds for simulations]
 
-n.babies = 128
+n.babies = 128. # note to get this value I used runif(1, min = 100, max = 500) then picked closest number divisible by 2
 
 num_pacifiers = rnorm(n = n.babies, mean = 8, sd = 3)
 age_months = rnorm(n.babies, mean = 9, sd = 2)
@@ -66,7 +69,7 @@ df = data.frame(
 
 Okay, so we have our data. Now let's do something with it! Let's try fitting a GLM
 
-```{r}
+```{r, message = FALSE}
 mod = glm(hours_slept ~ num_pacifiers + age_months, 
           family = gaussian(), # we know this because we simulated the data. In reality, you have to use a combination of visualizing the data, understanding the data generating mechanism (aka what distribution it came from and the best model fit (i.e., Poisson vs negative binomial))
           data = df 
@@ -74,10 +77,9 @@ mod = glm(hours_slept ~ num_pacifiers + age_months,
 
 summary(mod)
 
-
 ```
 
-Now, as you can see our estimates were pretty accurate. Let's try this again, but this time we'll assume that pacifiers doesn't matter, it's only the age. We can still adjust for both.
+Now, as you can see our estimates were pretty accurate. Let's try this again, but this time we'll assume that pacifiers doesn't matter, it's only the age. We can still adjust for both. Let's try two models: one where we adjust for both variables and one where we adjust for only age
 
 Now you see how the impact of adjusting for a variable that doesn't affect the outcome, at least in this case.
 
@@ -95,7 +97,7 @@ Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption
 
 ## Causal Concepts
 
-Now, this blog is about causal inference! So let's incorporate some into this post shall we? Instead of looking at GLMs, let's demonstrate how confounding and colliders can introduce bias. We'll calculate bias as \[@morris2019\]:
+Now, this blog is about causal inference! So let's incorporate some into this post shall we? Instead of looking at GLMs, let's demonstrate how confounding and colliders can introduce bias. We'll calculate bias as [@morris2019]:
 
 $$
 E[\hat{\theta}] - \theta
