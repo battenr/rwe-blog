@@ -1,0 +1,17 @@
+---
+title: "Four Common Biases in Causal Inference" 
+subtitle: "How to Deal with Each One"
+author: "Ryan Batten"
+date: "2023-09-02"
+categories: [Bias]
+#bibliography: sim_data.bib
+# image : "standards.png"
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---

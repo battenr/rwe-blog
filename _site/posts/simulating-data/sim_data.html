@@ -56,7 +56,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -96,6 +115,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -188,7 +209,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#simulating-data-why" id="toc-simulating-data-why" class="nav-link active" data-scroll-target="#simulating-data-why">Simulating Data, Why?</a></li>
-  <li><a href="#basics" id="toc-basics" class="nav-link" data-scroll-target="#basics">Basics</a></li>
+  <li><a href="#how-to-simulate-data-in-r" id="toc-how-to-simulate-data-in-r" class="nav-link" data-scroll-target="#how-to-simulate-data-in-r">How to Simulate Data in R</a>
+  <ul>
+  <li><a href="#continuous-outcomes" id="toc-continuous-outcomes" class="nav-link" data-scroll-target="#continuous-outcomes">Continuous Outcomes</a></li>
+  <li><a href="#binary-outcomes" id="toc-binary-outcomes" class="nav-link" data-scroll-target="#binary-outcomes">Binary Outcomes</a></li>
+  </ul></li>
+  <li><a href="#simulating-causal-concepts" id="toc-simulating-causal-concepts" class="nav-link" data-scroll-target="#simulating-causal-concepts">Simulating Causal Concepts</a></li>
+  <li><a href="#causal-concepts" id="toc-causal-concepts" class="nav-link" data-scroll-target="#causal-concepts">Causal Concepts</a></li>
   <li><a href="#showing-confounding" id="toc-showing-confounding" class="nav-link" data-scroll-target="#showing-confounding">Showing Confounding</a>
   <ul>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
@@ -200,8 +227,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#steps-to-simulate" id="toc-steps-to-simulate" class="nav-link" data-scroll-target="#steps-to-simulate">Steps to Simulate</a></li>
   <li><a href="#over-and-over-and-over-again" id="toc-over-and-over-and-over-again" class="nav-link" data-scroll-target="#over-and-over-and-over-again">Over and Over and Over Again</a></li>
   <li><a href="#resources-for-simulating" id="toc-resources-for-simulating" class="nav-link" data-scroll-target="#resources-for-simulating">Resources for Simulating</a></li>
-  <li><a href="#why-simulate-data" id="toc-why-simulate-data" class="nav-link" data-scroll-target="#why-simulate-data">Why simulate data?</a></li>
-  <li><a href="#tips-for-generating-data" id="toc-tips-for-generating-data" class="nav-link" data-scroll-target="#tips-for-generating-data">Tips for generating data</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -237,68 +262,245 @@ Stats for non-stats
 </div>
 </div>
 </section>
-<section id="basics" class="level2">
-<h2 class="anchored" data-anchor-id="basics">Basics</h2>
+<section id="how-to-simulate-data-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-simulate-data-in-r">How to Simulate Data in R</h2>
 <p>Before we dive into some R code, which I do love, it’s useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn’t going to be technical or boring. Alright, let’s get started.</p>
+<section id="continuous-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="continuous-outcomes">Continuous Outcomes</h3>
+<p>To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the <em>rnorm</em> function. Let’s simulate an outcome and exposure that we will assess with a generalized linear model.</p>
+<p>Let’s use hours that a four month old slept as the outcome and number of pacifiers in their bed.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># we need to set a seed prior to simulating data. This allows us to replicate the data. For more details check out this blog post: [insert blog post about using different seeds for simulations]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n.babies <span class="ot">=</span> <span class="dv">128</span> <span class="co"># note to get this value I used runif(1, min = 100, max = 500) then picked closest number divisible by 2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>num_pacifiers <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.babies, <span class="at">mean =</span> <span class="dv">8</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>age_months <span class="ot">=</span> <span class="fu">rnorm</span>(n.babies, <span class="at">mean =</span> <span class="dv">9</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>hours_slept <span class="ot">=</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>num_pacifiers <span class="sc">+</span> <span class="fl">0.25</span><span class="sc">*</span>age_months </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  num_pacifiers, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  age_months,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  hours_slept</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Okay, so we have our data. Now let’s do something with it! Let’s try fitting a GLM</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">glm</span>(hours_slept <span class="sc">~</span> num_pacifiers <span class="sc">+</span> age_months, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="co"># we know this because we simulated the data. In reality, you have to use a combination of visualizing the data, understanding the data generating mechanism (aka what distribution it came from and the best model fit (i.e., Poisson vs negative binomial))</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = hours_slept ~ num_pacifiers + age_months, family = gaussian(), 
+    data = df)
+
+Coefficients:
+               Estimate Std. Error   t value Pr(&gt;|t|)    
+(Intercept)   4.000e+00  9.149e-16 4.372e+15   &lt;2e-16 ***
+num_pacifiers 5.000e-01  6.223e-17 8.034e+15   &lt;2e-16 ***
+age_months    2.500e-01  8.405e-17 2.974e+15   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 3.496232e-30)
+
+    Null deviance: 2.5793e+02  on 127  degrees of freedom
+Residual deviance: 4.3703e-28  on 125  degrees of freedom
+AIC: -8313.5
+
+Number of Fisher Scoring iterations: 1</code></pre>
+</div>
+</div>
+<p>Now, as you can see our estimates were pretty accurate. Let’s try this again, but this time we’ll assume that pacifiers doesn’t matter, it’s only the age. We can still adjust for both. Let’s try two models: one where we adjust for both variables and one where we adjust for only age.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>num_pacifiers <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.babies, <span class="at">mean =</span> <span class="dv">8</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>age_months <span class="ot">=</span> <span class="fu">rnorm</span>(n.babies, <span class="at">mean =</span> <span class="dv">9</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>hours_slept <span class="ot">=</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>num_pacifiers <span class="sc">+</span> <span class="fl">0.25</span><span class="sc">*</span>age_months </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  num_pacifiers, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  age_months,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  hours_slept</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Could alternatively try adjusting for the wrong variable (i.e., pacifiers but not age)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(hours_slept <span class="sc">~</span> age_months, </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(hours_slept <span class="sc">~</span> age_months <span class="sc">+</span> num_pacifiers, </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = hours_slept ~ age_months, family = gaussian(link = "identity"), 
+    data = df)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  7.85497    0.64176  12.240   &lt;2e-16 ***
+age_months   0.27997    0.06918   4.047    9e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 2.382045)
+
+    Null deviance: 339.15  on 127  degrees of freedom
+Residual deviance: 300.14  on 126  degrees of freedom
+AIC: 478.33
+
+Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = hours_slept ~ age_months + num_pacifiers, family = gaussian(link = "identity"), 
+    data = df)
+
+Coefficients:
+               Estimate Std. Error   t value Pr(&gt;|t|)    
+(Intercept)   4.000e+00  4.115e-15 9.719e+14   &lt;2e-16 ***
+age_months    2.500e-01  3.915e-16 6.386e+14   &lt;2e-16 ***
+num_pacifiers 5.000e-01  2.519e-16 1.985e+15   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 7.615348e-29)
+
+    Null deviance: 3.3915e+02  on 127  degrees of freedom
+Residual deviance: 9.5192e-27  on 125  degrees of freedom
+AIC: -7919.1
+
+Number of Fisher Scoring iterations: 1</code></pre>
+</div>
+</div>
+<p>Now you see how the impact of adjusting for a variable that doesn’t affect the outcome, at least in this case. For our model where we adjust for only age, the result is . When we adjust for the “correct” variables , we end up with a coefficient of 0.25.</p>
+<p>This is how you simulate a continuous outcome, but what about a binary outcome?</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Continuous Distributions distributions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the above example, we used a normal distribution. However, this doesn’t need to be the case. If we are dealing with age we may want to use a uniform distribution (using runif) and specifying the minimum and maximum. For example, if we are thinking of a variable where it may not make sense to have a value below a certain value (i.e., age where people are between 18 and 65).</p>
+<p>For simplicity here, and because a number of statistical methods assume normality (<em>cough</em> also the central limit theorem <em>cough</em>), we will use <em>rnorm</em>.</p>
+</div>
+</div>
+</section>
+<section id="binary-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="binary-outcomes">Binary Outcomes</h3>
+<p>Simulating a binary outcome is similar to simulating a continuous outcome except we need to put these variables in the probability argument. We can convert linear predictors to probabilities for the logistic distribution (since we’ll be fitting a logistic regression) using the <em>plogis</em> function.</p>
+<p>Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption and cold room (yes/no)</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>num_pacifiers <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.babies, <span class="at">mean =</span> <span class="dv">8</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>age_months <span class="ot">=</span> <span class="fu">rnorm</span>(n.babies, <span class="at">mean =</span> <span class="dv">9</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>hours_slept <span class="ot">=</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fl">0.25</span><span class="sc">*</span>age_months </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  num_pacifiers, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  age_months,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  hours_slept</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="simulating-causal-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="simulating-causal-concepts">Simulating Causal Concepts</h2>
+</section>
+<section id="causal-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="causal-concepts">Causal Concepts</h2>
+<p>Now, this blog is about causal inference! So let’s incorporate some into this post shall we? Instead of looking at GLMs, let’s demonstrate how confounding and colliders can introduce bias. We’ll calculate bias as <span class="citation" data-cites="morris2019">(<a href="#ref-morris2019" role="doc-biblioref">Morris, White, and Crowther 2019</a>)</span>:</p>
+<p><span class="math display">\[
+E[\hat{\theta}] - \theta
+\]</span></p>
+<p>where <span class="math inline">\(E[\hat{\theta]}\)</span> is the expected, or average, estimated value and <span class="math inline">\(\theta\)</span> is the “actual” value. I’ll explain why we use the average later on in the Over and Over and Over Again section [TRY TO ADD CROSS REFERENCE]</p>
 </section>
 <section id="showing-confounding" class="level2">
 <h2 class="anchored" data-anchor-id="showing-confounding">Showing Confounding</h2>
-<p>Let’s assume that we want to test how not adjusting for a confounder can lead to confounding bias. For this situation let’s look at hot coffee and rainbows. We can draw a DAG, including our confounder which is weather.</p>
+<p>Let’s assume that we want to test how not adjusting for a confounder can lead to confounding bias. For this situation let’s look at the number of pacifiers in a babies crib and the hours slept. We can draw a DAG, including our confounder which is weather.</p>
+<p># Set seed for reproducibility</p>
+<p>set.seed(111)</p>
+<p># Number of observations</p>
+<p>n &lt;- 100</p>
+<p># Generate confounder - Baby’s Age in months</p>
+<p>baby_age &lt;- rnorm(n, mean = 6, sd = 2)</p>
+<p># Generate number of pacifiers influenced by Baby’s Age</p>
+<p>num_pacifiers &lt;- 1 + 0.3 * baby_age + rnorm(n, mean = 0, sd = 0.2)</p>
+<p># Generate hours slept influenced by Baby’s Age</p>
+<p>hours_slept &lt;- 10 + 0.5 * baby_age + rnorm(n, mean = 0, sd = 1)</p>
+<p># Combine into a data frame</p>
+<p>data &lt;- data.frame(baby_age, num_pacifiers, hours_slept)</p>
 <p>For this, our question is “does hot coffee cause rainbows?”. Rainy days lead to drinking more coffee, but rainy days also lead to rainbows.<br>
 <br>
 </p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.2     ✔ readr     2.1.4
-✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.2     ✔ tibble    3.2.1
-✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Attaching package: 'ggdag'
-
-The following object is masked from 'package:stats':
+Attaching package: 'ggdag'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
 
     filter</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">=</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  hot_coffee <span class="sc">~</span> rain, </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  rainbow <span class="sc">~</span> rain <span class="sc">+</span> hot_coffee, </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"hot_coffee"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"rainbow"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hot_coffee =</span> <span class="st">"Hot</span><span class="sc">\n</span><span class="st">Coffee"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">rainbow =</span> <span class="st">"Rainbow"</span>, </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rain =</span> <span class="st">"Rain"</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ggdag<span class="sc">::</span><span class="fu">ggdag</span>(<span class="at">layout =</span> <span class="st">"tree"</span>, </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">text =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">=</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  hot_coffee <span class="sc">~</span> rain, </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  rainbow <span class="sc">~</span> rain <span class="sc">+</span> hot_coffee, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"hot_coffee"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"rainbow"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hot_coffee =</span> <span class="st">"Hot</span><span class="sc">\n</span><span class="st">Coffee"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">rainbow =</span> <span class="st">"Rainbow"</span>, </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rain =</span> <span class="st">"Rain"</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  ggdag<span class="sc">::</span><span class="fu">ggdag</span>(<span class="at">layout =</span> <span class="st">"tree"</span>, </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">text =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="sim_data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<p><img src="sim_data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>g at how long goldfish grow as an example. There’s a few factors that affect the size (in this example length and size will be used interchangeably): feeding_frequency (number of times per day), water temperate, and how much food.</p>
@@ -373,19 +575,17 @@ Selecting n for Monte Carlo simulation
 <section id="resources-for-simulating" class="level2">
 <h2 class="anchored" data-anchor-id="resources-for-simulating">Resources for Simulating</h2>
 <p>There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are @morris2019 and @burton2006.</p>
-</section>
-<section id="why-simulate-data" class="level2">
-<h2 class="anchored" data-anchor-id="why-simulate-data">Why simulate data?</h2>
-</section>
-<section id="tips-for-generating-data" class="level2">
-<h2 class="anchored" data-anchor-id="tips-for-generating-data">Tips for generating data</h2>
-<p>(RYAN ADD REF THAT TALKS ABOUT SIMULATING DATA)</p>
+
 
 
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-morris2019" class="csl-entry" role="listitem">
+Morris, Tim P, Ian R White, and Michael J Crowther. 2019. <span>“Using Simulation Studies to Evaluate Statistical Methods.”</span> <em>Statistics in Medicine</em> 38 (11): 2074–2102.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

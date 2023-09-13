@@ -92,9 +92,24 @@ df = data.frame(
   age_months,
   hours_slept
 )
+
+# Could alternatively try adjusting for the wrong variable (i.e., pacifiers but not age)
+
+mod1 <- glm(hours_slept ~ age_months, 
+            family = gaussian(link = "identity"), 
+            data = df)
+
+mod2 <- glm(hours_slept ~ age_months + num_pacifiers, 
+            family = gaussian(link = "identity"), 
+            data = df)
+
+summary(mod1)
+summary(mod2)
 ```
 
-Now you see how the impact of adjusting for a variable that doesn't affect the outcome, at least in this case.
+Now you see how the impact of adjusting for a variable that doesn't affect the outcome, at least in this case. For our model where we adjust for only age, the result is `r coef(mod1[2])`. When we adjust for the "correct" variables , we end up with a coefficient of `r coef(mod2)[2]`.
+
+This is how you simulate a continuous outcome, but what about a binary outcome?
 
 ::: callout-note
 ## Continuous Distributions distributions
@@ -106,7 +121,31 @@ For simplicity here, and because a number of statistical methods assume normalit
 
 ### Binary Outcomes
 
+Simulating a binary outcome is similar to simulating a continuous outcome except we need to put these variables in the probability argument. We can convert linear predictors to probabilities for the logistic distribution (since we'll be fitting a logistic regression) using the *plogis* function.
+
+```{r binary_outcome}
+
+
+
+```
+
 Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption and cold room (yes/no)
+
+```{r}
+
+num_pacifiers = rnorm(n = n.babies, mean = 8, sd = 3)
+age_months = rnorm(n.babies, mean = 9, sd = 2)
+hours_slept = 4 + 0.25*age_months 
+
+df = data.frame(
+  num_pacifiers, 
+  age_months,
+  hours_slept
+)
+
+```
+
+## Simulating Causal Concepts
 
 ## Causal Concepts
 
