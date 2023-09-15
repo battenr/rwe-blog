@@ -125,31 +125,39 @@ Simulating a binary outcome is similar to simulating a continuous outcome except
 
 ```{r binary_outcome}
 
+n.parents = n.babies*1.5
 
+coffee_consumption = rnorm(n = n.parents, mean = 3, sd = 0.5)
+hours_baby_slept = rnorm(n = n.parents, mean = 6, sd = 2)
+cold_room = rbinom(n = n.parents, size = 1, prob = 0.5)
 
-```
-
-Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption and cold room (yes/no)
-
-```{r}
-
-num_pacifiers = rnorm(n = n.babies, mean = 8, sd = 3)
-age_months = rnorm(n.babies, mean = 9, sd = 2)
-hours_slept = 4 + 0.25*age_months 
+prob_tired = plogis(0.5*hours_baby_slept + cold_room*1.5 + coffee_consumption*0.25)
+  
+tired_parents = rbinom(n = n.parents, size = 1, prob = prob_tired)
 
 df = data.frame(
-  num_pacifiers, 
-  age_months,
-  hours_slept
+  cold_room,
+  coffee_consumption,
+  hours_baby_slept,
+  tired_parents
 )
+ 
+```
 
+Now we can fit a logistic regression model
+
+```{r logistic_regression}
+
+mod = glm(tired_parents ~ coffee_consumption + hours_baby_slept + cold_room,
+          family = binomial(link = "logit"), 
+          data = )
 ```
 
 ## Simulating Causal Concepts
 
 ## Causal Concepts
 
-Now, this blog is about causal inference! So let's incorporate some into this post shall we? Instead of looking at GLMs, let's demonstrate how confounding and colliders can introduce bias. We'll calculate bias as [@morris2019]:
+Now, this is great and all but this blog is about causal inference! So let's incorporate some into this post shall we? Instead of looking at GLMs, let's demonstrate how confounding and colliders can introduce bias. We'll calculate bias as [@morris2019]:
 
 $$
 E[\hat{\theta}] - \theta
