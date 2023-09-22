@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-09-02">
+<meta name="dcterms.date" content="2023-09-20">
 
 <title>Blog Posts - Mastering Statistics Through Make-Believe</title>
 <style>
@@ -192,7 +192,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 2, 2023</p>
+        <p class="date">September 20, 2023</p>
       </div>
     </div>
     
@@ -216,17 +216,10 @@ div.csl-indent {
   </ul></li>
   <li><a href="#simulating-causal-concepts" id="toc-simulating-causal-concepts" class="nav-link" data-scroll-target="#simulating-causal-concepts">Simulating Causal Concepts</a></li>
   <li><a href="#causal-concepts" id="toc-causal-concepts" class="nav-link" data-scroll-target="#causal-concepts">Causal Concepts</a></li>
-  <li><a href="#showing-confounding" id="toc-showing-confounding" class="nav-link" data-scroll-target="#showing-confounding">Showing Confounding</a>
+  <li><a href="#showing-confounding" id="toc-showing-confounding" class="nav-link" data-scroll-target="#showing-confounding">Showing Confounding</a></li>
+  <li><a href="#other-use-cases" id="toc-other-use-cases" class="nav-link" data-scroll-target="#other-use-cases">Other Use Cases</a>
   <ul>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
-  </ul></li>
-  <li><a href="#simulating-data" id="toc-simulating-data" class="nav-link" data-scroll-target="#simulating-data">Simulating Data</a></li>
-  <li><a href="#old-text" id="toc-old-text" class="nav-link" data-scroll-target="#old-text">Old Text</a>
-  <ul>
-  <li><a href="#why-simulate" id="toc-why-simulate" class="nav-link" data-scroll-target="#why-simulate">Why Simulate?</a></li>
-  <li><a href="#steps-to-simulate" id="toc-steps-to-simulate" class="nav-link" data-scroll-target="#steps-to-simulate">Steps to Simulate</a></li>
-  <li><a href="#over-and-over-and-over-again" id="toc-over-and-over-and-over-again" class="nav-link" data-scroll-target="#over-and-over-and-over-again">Over and Over and Over Again</a></li>
-  <li><a href="#resources-for-simulating" id="toc-resources-for-simulating" class="nav-link" data-scroll-target="#resources-for-simulating">Resources for Simulating</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -417,21 +410,138 @@ Continuous Distributions distributions
 <section id="binary-outcomes" class="level3">
 <h3 class="anchored" data-anchor-id="binary-outcomes">Binary Outcomes</h3>
 <p>Simulating a binary outcome is similar to simulating a continuous outcome except we need to put these variables in the probability argument. We can convert linear predictors to probabilities for the logistic distribution (since we’ll be fitting a logistic regression) using the <em>plogis</em> function.</p>
-<p>Tired parent: yes/no. Depends on: how many hours baby slept, cofffee consumption and cold room (yes/no)</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>num_pacifiers <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.babies, <span class="at">mean =</span> <span class="dv">8</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>age_months <span class="ot">=</span> <span class="fu">rnorm</span>(n.babies, <span class="at">mean =</span> <span class="dv">9</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>hours_slept <span class="ot">=</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fl">0.25</span><span class="sc">*</span>age_months </span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Double check this example (using ChatGPT and another way/blog post/expert)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>n.parents <span class="ot">=</span> n.babies<span class="sc">*</span><span class="fl">1.5</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  num_pacifiers, </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  age_months,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  hours_slept</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents, <span class="at">mean =</span> <span class="dv">3</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>hours_baby_slept <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents, <span class="at">mean =</span> <span class="dv">4</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>cold_room <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>linpred <span class="ot">=</span> <span class="fl">0.25</span><span class="sc">*</span>hours_baby_slept </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>prob_tired <span class="ot">=</span> <span class="fu">plogis</span>(linpred)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># linpred = 3 + 0.25*hours_baby_slept + 0.005*cold_room + 0.05*coffee_consumption</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># prob_tired = plogis(linpred)</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>tired_parents <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob_tired)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  cold_room,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  coffee_consumption,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  hours_baby_slept,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  tired_parents</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Now we can fit a logistic regression model!</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">glm</span>(tired_parents <span class="sc">~</span> hours_baby_slept,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>          <span class="co"># tired_parents ~ coffee_consumption + hours_baby_slept + cold_room,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = tired_parents ~ hours_baby_slept, family = binomial(link = "logit"), 
+    data = df)
+
+Coefficients:
+                 Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)        0.1552     2.5939   0.060    0.952
+hours_baby_slept   0.2344     0.6437   0.364    0.716
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 215.94  on 191  degrees of freedom
+Residual deviance: 215.80  on 190  degrees of freedom
+AIC: 219.8
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>Based on this, we can see that our model doesn’t give a great example but if we increase the sample size, what happens?</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Double check this example (using ChatGPT and another way/blog post/expert)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>n.parents.large <span class="ot">=</span> n.parents<span class="sc">*</span><span class="dv">10</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents.large, <span class="at">mean =</span> <span class="dv">3</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>hours_baby_slept <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents.large, <span class="at">mean =</span> <span class="dv">4</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>cold_room <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents.large, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>linpred <span class="ot">=</span> <span class="fl">0.25</span><span class="sc">*</span>hours_baby_slept </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>prob_tired <span class="ot">=</span> <span class="fu">plogis</span>(linpred)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># linpred = 3 + 0.25*hours_baby_slept + 0.005*cold_room + 0.05*coffee_consumption</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># prob_tired = plogis(linpred)</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>tired_parents <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents.large, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob_tired)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  cold_room,</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  coffee_consumption,</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  hours_baby_slept,</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  tired_parents</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">glm</span>(tired_parents <span class="sc">~</span> hours_baby_slept,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>          <span class="co"># tired_parents ~ coffee_consumption + hours_baby_slept + cold_room,</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), </span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = tired_parents ~ hours_baby_slept, family = binomial(link = "logit"), 
+    data = df)
+
+Coefficients:
+                 Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)       -0.3543     0.8335  -0.425    0.671
+hours_baby_slept   0.3389     0.2087   1.624    0.104
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2236.9  on 1919  degrees of freedom
+Residual deviance: 2234.3  on 1918  degrees of freedom
+AIC: 2238.3
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>So if we include 10 times the people, our result gets closer! If we include 100 times the people, it gets even closer.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TTE Outcome
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At this point, you may be expecting a section on simulating TTE outcome. This will be the topics of a future blog post, since it’s not quite as straight forward as continuous and binary outcomes.</p>
+</div>
+</div>
+<p>You might be thinking “this is great and all, but how does this apply to causal inference?”</p>
 </section>
 </section>
 <section id="simulating-causal-concepts" class="level2">
@@ -439,35 +549,32 @@ Continuous Distributions distributions
 </section>
 <section id="causal-concepts" class="level2">
 <h2 class="anchored" data-anchor-id="causal-concepts">Causal Concepts</h2>
-<p>Now, this blog is about causal inference! So let’s incorporate some into this post shall we? Instead of looking at GLMs, let’s demonstrate how confounding and colliders can introduce bias. We’ll calculate bias as <span class="citation" data-cites="morris2019">(<a href="#ref-morris2019" role="doc-biblioref">Morris, White, and Crowther 2019</a>)</span>:</p>
+<p>Now, this is great and all but this blog is about causal inference! So let’s incorporate some into this post shall we? Instead of looking at GLMs, let’s demonstrate how confounding and colliders can introduce bias. We’ll calculate bias as <span class="citation" data-cites="morris2019">(<a href="#ref-morris2019" role="doc-biblioref">Morris, White, and Crowther 2019</a>)</span>:</p>
 <p><span class="math display">\[
 E[\hat{\theta}] - \theta
 \]</span></p>
-<p>where <span class="math inline">\(E[\hat{\theta]}\)</span> is the expected, or average, estimated value and <span class="math inline">\(\theta\)</span> is the “actual” value. I’ll explain why we use the average later on in the Over and Over and Over Again section [TRY TO ADD CROSS REFERENCE]</p>
+<p>where <span class="math inline">\(E[\hat{\theta]}\)</span> is the expected, or average, estimated value and <span class="math inline">\(\theta\)</span> is the “actual” value. I’ll explain why we use the average later on in the Over and Over and Over Again section [TRY TO ADD CROSS REFERENCE].</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Causal Estimand
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We need to make sure we are looking at the same causal estimand when comparing methods. For example, if we want to compare PSM to IPTW that would result in different answer…because they target different estimands!</p>
+</div>
+</div>
 </section>
 <section id="showing-confounding" class="level2">
 <h2 class="anchored" data-anchor-id="showing-confounding">Showing Confounding</h2>
-<p>Let’s assume that we want to test how not adjusting for a confounder can lead to confounding bias. For this situation let’s look at the number of pacifiers in a babies crib and the hours slept. We can draw a DAG, including our confounder which is weather.</p>
-<p># Set seed for reproducibility</p>
-<p>set.seed(111)</p>
-<p># Number of observations</p>
-<p>n &lt;- 100</p>
-<p># Generate confounder - Baby’s Age in months</p>
-<p>baby_age &lt;- rnorm(n, mean = 6, sd = 2)</p>
-<p># Generate number of pacifiers influenced by Baby’s Age</p>
-<p>num_pacifiers &lt;- 1 + 0.3 * baby_age + rnorm(n, mean = 0, sd = 0.2)</p>
-<p># Generate hours slept influenced by Baby’s Age</p>
-<p>hours_slept &lt;- 10 + 0.5 * baby_age + rnorm(n, mean = 0, sd = 1)</p>
-<p># Combine into a data frame</p>
-<p>data &lt;- data.frame(baby_age, num_pacifiers, hours_slept)</p>
-<p>For this, our question is “does hot coffee cause rainbows?”. Rainy days lead to drinking more coffee, but rainy days also lead to rainbows.<br>
-<br>
-</p>
+<p>Let’s assume that we want to demonstrate how confounding works. I’m an avid coffee lover, so let’s use an example with coffee! Suppose that our research question is “Does consuming coffee cause you to be happy?” We can start by drawing a DAG with our three variables: happy, coffee and sleep.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>
@@ -480,101 +587,159 @@ Attaching package: 'ggdag'</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">=</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  hot_coffee <span class="sc">~</span> rain, </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  rainbow <span class="sc">~</span> rain <span class="sc">+</span> hot_coffee, </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"hot_coffee"</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"rainbow"</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hot_coffee =</span> <span class="st">"Hot</span><span class="sc">\n</span><span class="st">Coffee"</span>,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">rainbow =</span> <span class="st">"Rainbow"</span>, </span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rain =</span> <span class="st">"Rain"</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  ggdag<span class="sc">::</span><span class="fu">ggdag</span>(<span class="at">layout =</span> <span class="st">"tree"</span>, </span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">text =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>coffee_dag <span class="ot">&lt;-</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  happy <span class="sc">~</span> coffee <span class="sc">+</span> sleep,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  coffee <span class="sc">~</span> sleep,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"coffee"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"happy"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">coffee =</span> <span class="st">"Coffee"</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">happy =</span> <span class="st">"Happiness"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">sleep =</span> <span class="st">"Sleep"</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag</span>(coffee_dag, <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="sim_data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<p><img src="sim_data_files/figure-html/dags-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>g at how long goldfish grow as an example. There’s a few factors that affect the size (in this example length and size will be used interchangeably): feeding_frequency (number of times per day), water temperate, and how much food.</p>
-<p># Simulate data for 100 goldfish</p>
-<p>set.seed(123)</p>
-<p>n &lt;- 100</p>
-<p># Nutritional factors</p>
-<p>food_quality &lt;- rnorm(n, mean = 5, sd = 1)</p>
-<p>feeding_frequency &lt;- rnorm(n, mean = 3, sd = 0.5)</p>
-<p># Environmental factors</p>
-<p>water_quality &lt;- rnorm(n, mean = 7, sd = 1)</p>
-<p>water_temp &lt;- rnorm(n, mean = 20, sd = 2)</p>
-<p># Growth rate as the dependent variable</p>
-<p>growth_rate &lt;- 0.5 + 0.2*food_quality + 0.1*feeding_frequency + 0.3*water_quality + 0.4*water_temp + rnorm(n, mean = 0, sd = 0.5)</p>
-<p># Combine into a data frame</p>
-<p>goldfish_data &lt;- data.frame(food_quality, feeding_frequency, water_quality, water_temp, growth_rate)</p>
-<p>Let’s use how long goldfish grow as an example. For ease of this example, let’s</p>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
-<p>This type of simulation is called a Monte Carlo Simulation. The reason it’s so useful is because</p>
-<p>of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, does this mean that every bean will be that? Let’s pull one out and see</p>
-</section>
-</section>
-<section id="simulating-data" class="level2">
-<h2 class="anchored" data-anchor-id="simulating-data">Simulating Data</h2>
-<p>We’ll start with continuous data. To simulate this we need two pieces of information, also known as parameters: mean and standard deviation.</p>
+<p>Now we have our DAG, let’s get to simulating some data!</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Look into Matthew Fox article for simulating data </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating Data, from ChatGPT</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Setting a seed for reproducibility</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of observations</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating sleep hours (normal distribution with mean=7 and sd=1.5)</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>sleep_hours <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">7</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating coffee consumption based on sleep (negative correlation: less sleep -&gt; more coffee)</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating happiness based on both sleep (positive correlation: more sleep -&gt; more happiness)</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># and coffee consumption (positive correlation: more coffee -&gt; more happiness)</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>happiness <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(<span class="fl">0.3</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> coffee_consumption <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)))</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a data frame to hold the variables</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sleep_hours, coffee_consumption, happiness)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Displaying the first few rows of the data</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  sleep_hours coffee_consumption happiness
+1    6.159287          0.9245580         1
+2    6.654734          0.6326781         1
+3    9.338062          0.3129885         1
+4    7.105763          1.3149436         1
+5    7.193932         -1.1463086         1
+6    9.572597          1.2542747         1</code></pre>
+</div>
+</div>
+<p>Now we have our data, let’s show some confounding. How? We’ll fit two models: 1) not adjusting for the confounder, 2) adjusting for the confounder.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> happiness <span class="sc">~</span> coffee_consumption,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> happiness <span class="sc">~</span> coffee_consumption <span class="sc">+</span> sleep_hours,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>bias1 <span class="ot">=</span> <span class="fu">coef</span>(mod1)[<span class="dv">2</span>] <span class="sc">-</span> <span class="fl">0.2</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>bias2 <span class="ot">=</span> <span class="fu">coef</span>(mod2)[<span class="dv">2</span>] <span class="sc">-</span> <span class="fl">0.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We can now calculate bias for each of these models. As we can see, the bias from model one (-0.1397736) is more than the bias from model two (0.0277288). But how can we trust this? We only did it once. What if a sample of the same size (N = 250) gave a different answer? To account for this, we need to repeat this multiple times. So, let’s do that! Let’s repeat it a thousand times</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Setting a seed for reproducibility</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>simulation <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Number of observations</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="dv">250</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Simulating sleep hours (normal distribution with mean=7 and sd=1.5)</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  sleep_hours <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">7</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Simulating coffee consumption based on sleep (negative correlation: less sleep -&gt; more coffee)</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  coffee_consumption <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Simulating happiness based on both sleep (positive correlation: more sleep -&gt; more happiness)</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># and coffee consumption (positive correlation: more coffee -&gt; more happiness)</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  happiness <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(<span class="fl">0.3</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> coffee_consumption <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)))</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Creating a data frame to hold the variables</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sleep_hours, coffee_consumption, happiness)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Building the models</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  mod1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> happiness <span class="sc">~</span> coffee_consumption,</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> happiness <span class="sc">~</span> coffee_consumption <span class="sc">+</span> sleep_hours,</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculating the biases</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  coef1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(mod1)[<span class="dv">2</span>] </span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>  coef2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(mod2)[<span class="dv">2</span>] </span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>  coef_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>    coef1, coef2</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Returning the biases as a named vector</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    coef_results</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Replicating the simulation 1000 times</span></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>output_list <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">expr =</span> <span class="fu">simulation</span>(), <span class="at">simplify =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Bind all data frames in the list into a single data frame</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>df.out <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, output_list)</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>bias1 <span class="ot">=</span> <span class="fu">mean</span>(df.out<span class="sc">$</span>coef1) <span class="sc">-</span> <span class="fl">0.2</span></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>bias2 <span class="ot">=</span> <span class="fu">mean</span>(df.out<span class="sc">$</span>coef2) <span class="sc">-</span> <span class="fl">0.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now we can look at</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-TTE Outcome
+Picking a number of simulations
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This post will focus on continuous and binary outcomes. A future blog post will go over how to simulate time-to-event, sometimes called survival, data.</p>
+<p>For our example we picked 1000 repetitions but where did this number come from? Truthfully, it was completely arbitrary. In practice, we need to carefully choose how many we need. I highly suggest <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span> as a reference for more information if you need to pick the number of simulations.</p>
 </div>
 </div>
-<p>NOTE TO SELF: explain that regression is finding the mean (keith mcnulty’s post)</p>
-<p>Now, if we pick one</p>
 </section>
-<section id="old-text" class="level1">
-<h1>Old Text</h1>
-<p>Learning to simulate data was one of the best things that I’ve stumbled into. It can help improve your knowledge of statistics and inform decision making. One of the things I found difficult when starting was for a resource that gave some examples of what I really wanted to know. Hopefully this post will provide a decent start to someone.</p>
-<section id="why-simulate" class="level2">
-<h2 class="anchored" data-anchor-id="why-simulate">Why Simulate?</h2>
-<p>At first, I had heard about simulation studies but wasn’t exactly sure the purpose of them.</p>
-</section>
-<section id="steps-to-simulate" class="level2">
-<h2 class="anchored" data-anchor-id="steps-to-simulate">Steps to Simulate</h2>
-<p>@morris2019 use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we’l’’ break down a little bit .</p>
-</section>
-<section id="over-and-over-and-over-again" class="level2">
-<h2 class="anchored" data-anchor-id="over-and-over-and-over-again">Over and Over and Over Again</h2>
-<p>Now we’ve simulated data. Great! But how can we trust this? We only did it once. What if the sample of the same size (N = X [RYAN: INSERT NUMBER]) gave a different answer? To account for this, we need to repeat this multiple times. So, let’s do that!</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Selecting n for Monte Carlo simulation
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To select the n required, there are several resources. I won’t go into detail here, but some personal references I use are [INSERT Morris et al.&nbsp;and others]</p>
-</div>
-</div>
-<p>Monte Carlo simulation is</p>
-</section>
-<section id="resources-for-simulating" class="level2">
-<h2 class="anchored" data-anchor-id="resources-for-simulating">Resources for Simulating</h2>
-<p>There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are @morris2019 and @burton2006.</p>
+<section id="other-use-cases" class="level1">
+<h1>Other Use Cases</h1>
+<p>We can use this to show other concepts as well, test new ideas or learn methods ourselves. Recently, I used it to demonstrate to myself how collider bias is. Another example, that I’m currently exploring, is how different the bias is from confounding versus a collider bias.</p>
+<p>or test them ourselves.</p>
+<p>For example: collider bias.</p>
+<section id="section" class="level2">
+
 
 
 

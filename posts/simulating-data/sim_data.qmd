@@ -125,13 +125,21 @@ Simulating a binary outcome is similar to simulating a continuous outcome except
 
 ```{r binary_outcome}
 
+# Double check this example (using ChatGPT and another way/blog post/expert)
+
 n.parents = n.babies*1.5
 
 coffee_consumption = rnorm(n = n.parents, mean = 3, sd = 0.5)
-hours_baby_slept = rnorm(n = n.parents, mean = 6, sd = 2)
+hours_baby_slept = rnorm(n = n.parents, mean = 4, sd = 0.25)
 cold_room = rbinom(n = n.parents, size = 1, prob = 0.5)
 
-prob_tired = plogis(0.5*hours_baby_slept + cold_room*1.5 + coffee_consumption*0.25)
+linpred = 0.25*hours_baby_slept 
+
+prob_tired = plogis(linpred)
+
+# linpred = 3 + 0.25*hours_baby_slept + 0.005*cold_room + 0.05*coffee_consumption
+# 
+# prob_tired = plogis(linpred)
   
 tired_parents = rbinom(n = n.parents, size = 1, prob = prob_tired)
 
@@ -144,14 +152,65 @@ df = data.frame(
  
 ```
 
-Now we can fit a logistic regression model
+Now we can fit a logistic regression model!
 
 ```{r logistic_regression}
 
-mod = glm(tired_parents ~ coffee_consumption + hours_baby_slept + cold_room,
+mod = glm(tired_parents ~ hours_baby_slept,
+          # tired_parents ~ coffee_consumption + hours_baby_slept + cold_room,
           family = binomial(link = "logit"), 
-          data = )
+          data = df)
+
+summary(mod)
 ```
+
+Based on this, we can see that our model doesn't give a great example but if we increase the sample size, what happens?
+
+```{r binary_outcome_large_sample}
+
+# Double check this example (using ChatGPT and another way/blog post/expert)
+
+n.parents.large = n.parents*10
+
+coffee_consumption = rnorm(n = n.parents.large, mean = 3, sd = 0.5)
+hours_baby_slept = rnorm(n = n.parents.large, mean = 4, sd = 0.25)
+cold_room = rbinom(n = n.parents.large, size = 1, prob = 0.5)
+
+linpred = 0.25*hours_baby_slept 
+
+prob_tired = plogis(linpred)
+
+# linpred = 3 + 0.25*hours_baby_slept + 0.005*cold_room + 0.05*coffee_consumption
+# 
+# prob_tired = plogis(linpred)
+  
+tired_parents = rbinom(n = n.parents.large, size = 1, prob = prob_tired)
+
+df = data.frame(
+  cold_room,
+  coffee_consumption,
+  hours_baby_slept,
+  tired_parents
+)
+
+
+mod = glm(tired_parents ~ hours_baby_slept,
+          # tired_parents ~ coffee_consumption + hours_baby_slept + cold_room,
+          family = binomial(link = "logit"), 
+          data = df)
+
+summary(mod)
+```
+
+So if we include 10 times the people, our result gets closer! If we include 100 times the people, it gets even closer.
+
+::: callout-note
+## TTE Outcome
+
+At this point, you may be expecting a section on simulating TTE outcome. This will be the topics of a future blog post, since it's not quite as straight forward as continuous and binary outcomes.
+:::
+
+You might be thinking "this is great and all, but how does this apply to causal inference?"
 
 ## Simulating Causal Concepts
 
@@ -163,138 +222,154 @@ $$
 E[\hat{\theta}] - \theta
 $$
 
-where $E[\hat{\theta]}$ is the expected, or average, estimated value and $\theta$ is the "actual" value. I'll explain why we use the average later on in the Over and Over and Over Again section \[TRY TO ADD CROSS REFERENCE\]
+where $E[\hat{\theta]}$ is the expected, or average, estimated value and $\theta$ is the "actual" value. I'll explain why we use the average later on in the Over and Over and Over Again section \[TRY TO ADD CROSS REFERENCE\].
+
+::: callout-important
+## Causal Estimand
+
+We need to make sure we are looking at the same causal estimand when comparing methods. For example, if we want to compare PSM to IPTW that would result in different answer...because they target different estimands!
+:::
 
 ## Showing Confounding
 
-Let's assume that we want to test how not adjusting for a confounder can lead to confounding bias. For this situation let's look at the number of pacifiers in a babies crib and the hours slept. We can draw a DAG, including our confounder which is weather.
+Let's assume that we want to demonstrate how confounding works. I'm an avid coffee lover, so let's use an example with coffee! Suppose that our research question is "Does consuming coffee cause you to be happy?" We can start by drawing a DAG with our three variables: happy, coffee and sleep.
 
-\# Set seed for reproducibility
-
-set.seed(111)
-
-\# Number of observations
-
-n \<- 100
-
-\# Generate confounder - Baby's Age in months
-
-baby_age \<- rnorm(n, mean = 6, sd = 2)
-
-\# Generate number of pacifiers influenced by Baby's Age
-
-num_pacifiers \<- 1 + 0.3 \* baby_age + rnorm(n, mean = 0, sd = 0.2)
-
-\# Generate hours slept influenced by Baby's Age
-
-hours_slept \<- 10 + 0.5 \* baby_age + rnorm(n, mean = 0, sd = 1)
-
-\# Combine into a data frame
-
-data \<- data.frame(baby_age, num_pacifiers, hours_slept)
-
-For this, our question is "does hot coffee cause rainbows?". Rainy days lead to drinking more coffee, but rainy days also lead to rainbows.\
-\
-
-```{r}
-library(tidyverse)
+```{r dags}
 library(ggdag)
-
 theme_set(theme_dag())
 
-dag = ggdag::dagify(
-  hot_coffee ~ rain, 
-  rainbow ~ rain + hot_coffee, 
-  exposure = "hot_coffee",
-  outcome = "rainbow",
+coffee_dag <- ggdag::dagify(
+  happy ~ coffee + sleep,
+  coffee ~ sleep,
+  exposure = "coffee",
+  outcome = "happy",
   labels = c(
-    hot_coffee = "Hot\nCoffee",
-    rainbow = "Rainbow", 
-    rain = "Rain"
+    coffee = "Coffee",
+    happy = "Happiness",
+    sleep = "Sleep"
   )
-) 
+)
 
-dag %>% 
-  ggdag::ggdag(layout = "tree", 
-               text = FALSE,
-               use_labels = "label")
+ggdag::ggdag(coffee_dag, text = FALSE, use_labels = "label")
+```
+
+Now we have our DAG, let's get to simulating some data!
+
+```{r}
+
+# Look into Matthew Fox article for simulating data 
+
+# Simulating Data, from ChatGPT
+
+set.seed(123) # Setting a seed for reproducibility
+
+# Number of observations
+n <- 1000
+
+# Simulating sleep hours (normal distribution with mean=7 and sd=1.5)
+sleep_hours <- rnorm(n, mean = 7, sd = 1.5)
+
+# Simulating coffee consumption based on sleep (negative correlation: less sleep -> more coffee)
+coffee_consumption <- 5 - 0.5 * sleep_hours + rnorm(n, mean = 0, sd = 1)
+
+# Simulating happiness based on both sleep (positive correlation: more sleep -> more happiness)
+# and coffee consumption (positive correlation: more coffee -> more happiness)
+happiness <- rbinom(n = n, size = 1, prob = plogis(0.3 * sleep_hours + 0.2 * coffee_consumption + rnorm(n, mean = 0, sd = 1)))
+
+# Creating a data frame to hold the variables
+df <- data.frame(sleep_hours, coffee_consumption, happiness)
+
+# Displaying the first few rows of the data
+head(df)
+```
+
+Now we have our data, let's show some confounding. How? We'll fit two models: 1) not adjusting for the confounder, 2) adjusting for the confounder.
+
+```{r confounder-models}
+
+mod1 <- glm(formula = happiness ~ coffee_consumption,
+            family = binomial(link = "logit"),
+            data = df)
+
+mod2 <- glm(formula = happiness ~ coffee_consumption + sleep_hours,
+            family = binomial(link = "logit"),
+            data = df)
+
+bias1 = coef(mod1)[2] - 0.2
+bias2 = coef(mod2)[2] - 0.2
 
 ```
 
-g at how long goldfish grow as an example. There's a few factors that affect the size (in this example length and size will be used interchangeably): feeding_frequency (number of times per day), water temperate, and how much food.
+We can now calculate bias for each of these models. As we can see, the bias from model one (`r bias1`) is more than the bias from model two (`r bias2`). But how can we trust this? We only did it once. What if a sample of the same size (N = 250) gave a different answer? To account for this, we need to repeat this multiple times. So, let's do that! Let's repeat it a thousand times
 
-\# Simulate data for 100 goldfish
+```{r}
 
-set.seed(123)
+set.seed(123) # Setting a seed for reproducibility
 
-n \<- 100
+simulation <- function() {
+  # Number of observations
+  n <- 250
+  
+  # Simulating sleep hours (normal distribution with mean=7 and sd=1.5)
+  sleep_hours <- rnorm(n, mean = 7, sd = 1.5)
+  
+  # Simulating coffee consumption based on sleep (negative correlation: less sleep -> more coffee)
+  coffee_consumption <- 5 - 0.5 * sleep_hours + rnorm(n, mean = 0, sd = 1)
+  
+  # Simulating happiness based on both sleep (positive correlation: more sleep -> more happiness)
+  # and coffee consumption (positive correlation: more coffee -> more happiness)
+  happiness <- rbinom(n = n, size = 1, prob = plogis(0.3 * sleep_hours + 0.2 * coffee_consumption + rnorm(n, mean = 0, sd = 1)))
+  
+  # Creating a data frame to hold the variables
+  df <- data.frame(sleep_hours, coffee_consumption, happiness)
+  
+  # Building the models
+  mod1 <- glm(formula = happiness ~ coffee_consumption,
+              family = binomial(link = "logit"),
+              data = df)
+  
+  mod2 <- glm(formula = happiness ~ coffee_consumption + sleep_hours,
+              family = binomial(link = "logit"),
+              data = df)
+  
+  # Calculating the biases
+  coef1 <- coef(mod1)[2] 
+  coef2 <- coef(mod2)[2] 
+  
+  coef_results <- data.frame(
+    coef1, coef2
+  )
+  
+  # Returning the biases as a named vector
+  return(
+    coef_results
+  )
+}
 
-\# Nutritional factors
+# Replicating the simulation 1000 times
+output_list <- replicate(n = 1000, expr = simulation(), simplify = FALSE) 
 
-food_quality \<- rnorm(n, mean = 5, sd = 1)
+# Bind all data frames in the list into a single data frame
+df.out <- do.call(rbind, output_list)
 
-feeding_frequency \<- rnorm(n, mean = 3, sd = 0.5)
+bias1 = mean(df.out$coef1) - 0.2
+bias2 = mean(df.out$coef2) - 0.2
+```
 
-\# Environmental factors
-
-water_quality \<- rnorm(n, mean = 7, sd = 1)
-
-water_temp \<- rnorm(n, mean = 20, sd = 2)
-
-\# Growth rate as the dependent variable
-
-growth_rate \<- 0.5 + 0.2\*food_quality + 0.1\*feeding_frequency + 0.3\*water_quality + 0.4\*water_temp + rnorm(n, mean = 0, sd = 0.5)
-
-\# Combine into a data frame
-
-goldfish_data \<- data.frame(food_quality, feeding_frequency, water_quality, water_temp, growth_rate)
-
-Let's use how long goldfish grow as an example. For ease of this example, let's
-
-### 
-
-This type of simulation is called a Monte Carlo Simulation. The reason it's so useful is because
-
-of coffee beans. These range in shape and size. Suppose we know that the average weight is 135 milligrams and 16 (10 to 22/64 of an inch). Now, does this mean that every bean will be that? Let's pull one out and see
-
-## Simulating Data
-
-We'll start with continuous data. To simulate this we need two pieces of information, also known as parameters: mean and standard deviation.
-
-::: callout-note
-## TTE Outcome
-
-This post will focus on continuous and binary outcomes. A future blog post will go over how to simulate time-to-event, sometimes called survival, data.
-:::
-
-NOTE TO SELF: explain that regression is finding the mean (keith mcnulty's post)
-
-Now, if we pick one
-
-# Old Text
-
-Learning to simulate data was one of the best things that I've stumbled into. It can help improve your knowledge of statistics and inform decision making. One of the things I found difficult when starting was for a resource that gave some examples of what I really wanted to know. Hopefully this post will provide a decent start to someone.
-
-## Why Simulate?
-
-At first, I had heard about simulation studies but wasn't exactly sure the purpose of them.
-
-## Steps to Simulate
-
-\@morris2019 use the acronym ADEMP: Aims, Data-generating mechanisms, Methods, Estimands and Performance measures. This is a great acronym which we'l'' break down a little bit .
-
-## Over and Over and Over Again
-
-Now we've simulated data. Great! But how can we trust this? We only did it once. What if the sample of the same size (N = X \[RYAN: INSERT NUMBER\]) gave a different answer? To account for this, we need to repeat this multiple times. So, let's do that!
+Now we can look at
 
 ::: callout-note
-## Selecting n for Monte Carlo simulation
+## Picking a number of simulations
 
-To select the n required, there are several resources. I won't go into detail here, but some personal references I use are \[INSERT Morris et al. and others\]
+For our example we picked 1000 repetitions but where did this number come from? Truthfully, it was completely arbitrary. In practice, we need to carefully choose how many we need. I highly suggest @morris2019 as a reference for more information if you need to pick the number of simulations.
 :::
 
-Monte Carlo simulation is
+# Other Use Cases
 
-## Resources for Simulating
+We can use this to show other concepts as well, test new ideas or learn methods ourselves. Recently, I used it to demonstrate to myself how collider bias is. Another example, that I'm currently exploring, is how different the bias is from confounding versus a collider bias.
 
-There are a ton of good resources when it comes to design aspects of simulation study. Two that help me think about simulation studies are \@morris2019 and \@burton2006.
+or test them ourselves.
+
+For example: collider bias.
+
+## 
