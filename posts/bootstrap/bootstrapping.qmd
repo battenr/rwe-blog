@@ -11,21 +11,133 @@ format:
     code-fold: true
 ---
 
-## Uncertainty
+## Certainly Uncertain
 
-A key part of any analysis is to determine the uncertainty associated with an estimate. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate the uncertainty nonparametrically, that is without assuming anything about the distribution, is bootstrapping.
+A key part of any analysis is to determine the uncertainty associated with an estimate. This has to do with determining the variance of the estimate, which we can use to calculate the standard error. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate this is using something called bootstrapping.
+
+## What is bootstrapping?
+
+No, not like Bootstrap Bill (Pirates of the Caribbean), bootstrapping is a statistical technique that can be quite useful. We can use is to estmate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?
+
+## How does it work?
+
+Bootstrapping works by drawing repeated samples, with replacement, from our observations. Imagine that we have have a big tub of ice cream that looks like a rainbow, with a bunch of colors all mixed together. We want to know what the whole tub looks like, so what we do is take one scoop and look at the colors in that scoop. Then we put it back, mix it up and take another scoop. We can do this over and over again to try and understand what the whole tub looks like!\
+\
+This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let's take a different example and put some numbers to it!
+
+## Mini-Golf Examples
+
+Let's use mini-golf as an example. Imagine that you play mini-golf with your friends 100 times over a summer. Each time you play, you get a different score (the lower the better). Sometimes you do well, sometimes you play awful.\
+\
+Now you want to know: "am I any good at mini-golf? What would my score be on average?" So you decide to use bootstrapping to answer this. Here's the following steps
+
+1.  Look at 10 scores on random days and write them down.
+2.  Put them back.
+3.  Draw another 10 scores and write them down.
+4.  Put them back.
+5.  Repeat steps 1-4
+
+Now we have our plan, let's start implementing!
+
+## Mini-Golf - Average Score
+
+So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it's sampling distribution. The sampling distribution is the probability distribution of a statistic. For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.
+
+```{r scores}
+
+library(tidyverse)
+
+# Your 100 mini-golf scores
+original_scores <- sample(40:60, 100, replace = TRUE)
+
+# Initialize a variable to store the bootstrap estimates
+bootstrap_estimates <- numeric()
+
+# Number of bootstraps
+n_bootstraps <- 1000
+
+# Bootstrapping
+for (i in 1:n_bootstraps) {
+  bootstrap_sample <- sample(original_scores, size = 10, replace = TRUE)
+  bootstrap_mean <- mean(bootstrap_sample)
+  bootstrap_estimates <- c(bootstrap_estimates, bootstrap_mean)
+}
+
+# Estimate the 95% confidence interval
+estimated_ci <- quantile(bootstrap_estimates, probs = c(0.05, 0.95))
+
+estimated_mean <- mean(original_scores)
+
+```
+
+Now we know that our average score is `r estimated_mean` and our confidence interval is `r estimated_ci`
+
+However, sometimes we want to look at results after adjusting for other characteristics.
+
+## Mini-Golf: GLM
+
+```{r golf-glm}
+set.seed(123) # For reproducibility
+
+# Number of games
+n_games <- 100
+
+# Number of obstacles (simulated)
+obstacles <- round(runif(n_games, 5, 15))
+
+# Weekend (1 if weekend, 0 otherwise)
+weekend <- sample(0:1, n_games, replace = TRUE)
+
+# Mini-golf scores (simulated)
+scores <- 50 + 2 * obstacles + 5 * weekend + rnorm(n_games, 0, 5)
+
+# Data frame
+mini_golf_data <- data.frame(scores, obstacles, weekend)
+
+```
+
+```{r bootstrap}
+# Initialize a matrix to store the bootstrap estimates
+n_bootstraps <- 1000
+glm_estimates <- matrix(0, nrow = n_bootstraps, ncol = 3) # Intercept, obstacles, weekend
+
+# Bootstrapping
+for (i in 1:n_bootstraps) {
+  bootstrap_indices <- sample(1:n_games, size = n_games, replace = TRUE)
+  bootstrap_data <- mini_golf_data[bootstrap_indices, ]
+  
+  glm_fit <- glm(scores ~ obstacles + weekend, data = bootstrap_data)
+  glm_estimates[i, ] <- coef(glm_fit)
+}
+
+```
+
+```{r boot-ci}
+# Calculate the 95% Confidence Interval
+conf_interval_glm <- apply(glm_estimates, 2, function(x) quantile(x, probs = c(0.025, 0.975)))
+# colnames(conf_interval_glm) <- c("2.5%", "97.5%")
+# rownames(conf_interval_glm) <- c("Intercept", "Obstacles", "Weekend")
+```
+
+## Why not use bootstrapping all the time?
+
+Like any method, bootstrapping isn't perfect. There's benefits and drawbacks to using it. For example, it can give different results depending on the seed that is chosen. Below are a list of pro/cons:
+
+Pros:
+
+-   
+
+Cons:
+
+-   While it's a nonparametric method, we are still assumption that the distribution is a certain shape. If it is skewed, then our result won't be correct. One way to solve this is to use a bias-corrected and accelerated bootstrap
 
 ## Vary Away!
 
 "So what you're telling me is I can just use bootstrapping all the time for every test?" Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.
 
-## Coffee Beans
-
-Imagine that we have a bag of coffee beans. They can vary in shape and size
-
 ## What's Next?
 
-Bootstrapping is a wide field. I highly recommend
+Bootstrapping is a wide field. I highly recommend the textbook by Hinkely et al. and to try using bootstrapping yourself!
 
 ## From ChatGPT \[Need to Edit\]
 
