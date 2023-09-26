@@ -37,11 +37,13 @@ Now you want to know: "am I any good at mini-golf? What would my score be on ave
 4.  Put them back.
 5.  Repeat steps 1-4
 
-Now we have our plan, let's start implementing!
+Now we have our plan, let's start implementing it!
 
 ## Mini-Golf - Average Score
 
-So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it's sampling distribution. The sampling distribution is the probability distribution of a statistic. For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.
+So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it's *sampling distribution*. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon. In simpler \[RYAN: consider adding a graph\]
+
+For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.
 
 ```{r scores}
 
@@ -72,9 +74,13 @@ estimated_mean <- mean(original_scores)
 
 Now we know that our average score is `r estimated_mean` and our confidence interval is `r estimated_ci`
 
-However, sometimes we want to look at results after adjusting for other characteristics.
+However, this is the mean. It doesn't account for the number of obstacles on the course or if it was a weekend (perhaps we'd feel more rushed if we were playing on the weekend). Let's do this example again but account for those additional variables.
 
 ## Mini-Golf: GLM
+
+We'll use a generalized linear model for our example. Side note: there is no rationale for picking a GLM, other than it's a method that I'm familiar with. In reality, picking the model to use isn't always so straightforward.\
+\
+Now, let's simulate some data!
 
 ```{r golf-glm}
 set.seed(123) # For reproducibility
@@ -96,27 +102,54 @@ mini_golf_data <- data.frame(scores, obstacles, weekend)
 
 ```
 
-```{r bootstrap}
-# Initialize a matrix to store the bootstrap estimates
-n_bootstraps <- 1000
-glm_estimates <- matrix(0, nrow = n_bootstraps, ncol = 3) # Intercept, obstacles, weekend
+Firs things first with our data, let's fit a GLM.
 
-# Bootstrapping
-for (i in 1:n_bootstraps) {
-  bootstrap_indices <- sample(1:n_games, size = n_games, replace = TRUE)
-  bootstrap_data <- mini_golf_data[bootstrap_indices, ]
-  
-  glm_fit <- glm(scores ~ obstacles + weekend, data = bootstrap_data)
-  glm_estimates[i, ] <- coef(glm_fit)
+Now that we have our data, we can create some bootstrap samples.
+
+```{r bootstrap}
+
+# We'll use the tidymodels package here
+
+library(tidymodels)
+
+boots <- bootstraps(mini_golf_data, times = 1000, apparent = TRUE)
+
+# Now we'll create a function for fitting our model. In this case a GLM
+
+fit_glm <- function(df){
+  glm(scores ~ obstacles + weekend, 
+      family = gaussian(link = "identity"),
+      data = df 
+      )
 }
+
+# Now let's fit this model for each bootstrap sample
+
+boot_glms <- boots %>% 
+  dplyr::mutate(
+    model = map(splits, fit_glm),
+    coef_into = map(model, tidy)
+  )
+
+
+boot_coefs <- 
+  boot_glms %>% 
+  unnest(coef_into)
+
+
+
+
+
+
+
 
 ```
 
 ```{r boot-ci}
-# Calculate the 95% Confidence Interval
-conf_interval_glm <- apply(glm_estimates, 2, function(x) quantile(x, probs = c(0.025, 0.975)))
-# colnames(conf_interval_glm) <- c("2.5%", "97.5%")
-# rownames(conf_interval_glm) <- c("Intercept", "Obstacles", "Weekend")
+
+# Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. 
+
+int_pctl(boot_glms, coef_into)
 ```
 
 ## Why not use bootstrapping all the time?
