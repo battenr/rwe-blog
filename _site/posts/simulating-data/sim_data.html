@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-09-20">
+<meta name="dcterms.date" content="2023-09-30">
 
 <title>Blog Posts - Mastering Statistics Through Make-Believe</title>
 <style>
@@ -192,7 +192,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 20, 2023</p>
+        <p class="date">September 30, 2023</p>
       </div>
     </div>
     
@@ -208,7 +208,7 @@ div.csl-indent {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#simulating-data-why" id="toc-simulating-data-why" class="nav-link active" data-scroll-target="#simulating-data-why">Simulating Data, Why?</a></li>
+  <li><a href="#why-simulate-data" id="toc-why-simulate-data" class="nav-link active" data-scroll-target="#why-simulate-data">Why Simulate Data?</a></li>
   <li><a href="#how-to-simulate-data-in-r" id="toc-how-to-simulate-data-in-r" class="nav-link" data-scroll-target="#how-to-simulate-data-in-r">How to Simulate Data in R</a>
   <ul>
   <li><a href="#continuous-outcomes" id="toc-continuous-outcomes" class="nav-link" data-scroll-target="#continuous-outcomes">Continuous Outcomes</a></li>
@@ -230,8 +230,8 @@ div.csl-indent {
 
 
 
-<section id="simulating-data-why" class="level2">
-<h2 class="anchored" data-anchor-id="simulating-data-why">Simulating Data, Why?</h2>
+<section id="why-simulate-data" class="level2">
+<h2 class="anchored" data-anchor-id="why-simulate-data">Why Simulate Data?</h2>
 <p>Simulating data wasn’t something that I was taught in school. I’ve learned it since graduating/during my PhD, in my pursuit of improving my stats knowledge (the more I learn the more I feel I don’t know, weird feeling). It’s been unbelievably useful.</p>
 <p>I wanted to write this post to help anyone else who isn’t familiar with simulating data. Before, I just want to give a few use cases where I’ve found simulating data helpful:</p>
 <ul>
@@ -240,24 +240,29 @@ div.csl-indent {
 <li><p>Comparing different methods (1:1 matching vs IPTW, etc)</p></li>
 <li><p>Understand data generating mechanisms</p></li>
 </ul>
+<p>Enough about how it’s helpful, how do we do it!</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Stats for non-stats
+R Code
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I’m a tradesman biostatistician [NOTE: RYAN CHECK THIS TERM FROM HIS TWEET] (credit to PhDemetri for this term). Basically, I’ve done a few statistics courses but don’t have a degree in it (I do in clinical epidemiology which overlaps substantially with biostatistics).</p>
-<p>If you do, hopefully this is a good refresher. If you don’t, don’t worry! I don’t either so hopefully this helps out a little as an intro.</p>
+<p>I primarily use R for my coding, so this post focuses on using R. However, the methodology apply to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although I’d suggest a different software.</p>
+<p>I’m more of a journeyman tradesman biostatistician. What I mean by that is that I’ve done a few statistics courses but don’t have a degree in it (my MSc and PhD are in clinical epidemiology).<br>
+<br>
+If you do have a background in statistics, hopefully this is a good refresher. If you don’t, don’t worry! I don’t either, so hopefulyl</p>
 </div>
 </div>
 </section>
 <section id="how-to-simulate-data-in-r" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-simulate-data-in-r">How to Simulate Data in R</h2>
-<p>Before we dive into some R code, which I do love, it’s useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn’t going to be technical or boring. Alright, let’s get started.</p>
+<p>Before we dive into some R code, which I do love, it’s useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn’t going to be technical or boring….or at least I’ll try my best to not make it boring.<br>
+<br>
+Alright, let’s get started.</p>
 <section id="continuous-outcomes" class="level3">
 <h3 class="anchored" data-anchor-id="continuous-outcomes">Continuous Outcomes</h3>
 <p>To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the <em>rnorm</em> function. Let’s simulate an outcome and exposure that we will assess with a generalized linear model.</p>
