@@ -171,7 +171,7 @@ div.csl-indent {
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Mastering Statistics Through Make-Believe</h1>
-            <p class="subtitle lead">Simulated Data in R</p>
+            <p class="subtitle lead">Simulating Data in R</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Simulating Data</div>
               </div>
@@ -231,15 +231,14 @@ div.csl-indent {
 
 <section id="why-simulate-data" class="level2">
 <h2 class="anchored" data-anchor-id="why-simulate-data">Why Simulate Data?</h2>
-<p>Simulating data wasn’t something that I was taught in school. I’ve learned it since graduating/during my PhD, in my pursuit of improving my stats knowledge (the more I learn the more I feel I don’t know, weird feeling). It’s been unbelievably useful.</p>
-<p>I wanted to write this post to help anyone else who isn’t familiar with simulating data. Before, I just want to give a few use cases where I’ve found simulating data helpful:</p>
+<p>Simulating data is something that I’ve learned since graduating from my masters. It’s helped me tremendously with comparing methods and proving concepts to me. It’s also helped me improve my statistics knowledge.</p>
+<p>I wanted to write this post to help anyone else who isn’t familiar with simulating data. Personally, I like to always see examples, below are a few:</p>
 <ul>
-<li><p>Showing bias (confounder, collider, etc)</p></li>
-<li><p>Understanding how methods work</p></li>
+<li><p>Demonstrating bias by including/excluding a variable (confounder, collider, etc)</p></li>
 <li><p>Comparing different methods (1:1 matching vs IPTW, etc)</p></li>
 <li><p>Understand data generating mechanisms</p></li>
 </ul>
-<p>Enough about how it’s helpful, how do we do it!</p>
+<p>Enough about how it’s helpful, how do we do it?!</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -250,22 +249,35 @@ R Code
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I primarily use R for my coding, so this post focuses on using R. However, the methodology apply to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although I’d suggest a different software.</p>
-<p>I’m more of a journeyman tradesman biostatistician. What I mean by that is that I’ve done a few statistics courses but don’t have a degree in it (my MSc and PhD are in clinical epidemiology).<br>
+<p>I primarily use R for coding, so this post focuses on using R. However, the methodology applies to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although it may not be the easiest.<br>
 <br>
-If you do have a background in statistics, hopefully this is a good refresher. If you don’t, don’t worry! I don’t either, so hopefulyl</p>
+If you’re looking to learn R, I can’t recommend R for Data Science by Hadley Wickham enough (plus it’s free!)</p>
 </div>
 </div>
 </section>
 <section id="how-to-simulate-data-in-r" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-simulate-data-in-r">How to Simulate Data in R</h2>
-<p>Before we dive into some R code, which I do love, it’s useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn’t going to be technical or boring….or at least I’ll try my best to not make it boring.<br>
+<p>Before we dive into some R code, which I do love, it’s useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn’t going to be technical or boring….or at least I’ll try my best to not make it boring.</p>
+<p>The way it works is we first assume a distribution (Gaussian, binomial, etc) that has some important pieces called parameters. You’re probably familiar with these for a Gaussian (sometimes called normal distribution), they’re the mean and standard deviation. These will determine the shape and probabilities of the distribution. So if we’re going to simulate a Gaussian distribution, we need to pick these numbers.<br>
 <br>
-For simplicity, we’ll categorize outcomes as continuous, binary or time-to-event (TTE). This post won’t tackle TTE, but a future blog post will! Alright, let’s get started.</p>
+Once we have that information we can start picking out random samples. For example, if we know the average age is 60 and the standard deviation is 10, we can pick a person out from this group and find out their age is 78. Now, how do we do this in R?</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Time-to-Event Outcome
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For simplicity, we’ll categorize outcomes into three categories as continuous, binary or time-to-event (TTE). This post won’t tackle TTE outcomes, but a future blog post will! It’s slightly more complicated, although nothing too tough to handle! Just would make for too long of a single post.</p>
+</div>
+</div>
 <section id="continuous-outcomes" class="level3">
 <h3 class="anchored" data-anchor-id="continuous-outcomes">Continuous Outcomes</h3>
-<p>To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the <em>rnorm</em> function. Let’s simulate an outcome and exposure that we will assess with a generalized linear model.</p>
-<p>Let’s use hours that a four month old slept as the outcome and number of pacifiers in their bed.</p>
+<p>To simulate data in R, we can use a family of functions that start with r. For example, if we want to simulate data from a normal distribution we can use the <em>rnorm</em> function. Let’s simulate an exposure and outcome. But first, we need a question! Our question will be “Do more pacifiers in a baby’s crib cause them to sleep longer?”</p>
+<p>We also need to decide what types of variables the exposure and the other variable are. Are they continuous, binary or some other type? For simplicity, we’ll assume both are variables that have a Gaussian/normal distribution. For our outcomes, it’s definitely continuous but how is it related to these other variables? We need an equation! We’ll use the following equation (that is completely made up): <span class="math inline">\(\text{hours slept} = 4 +0.5*\text{number of pacifiers} + 0.25* \text{age in months}\)</span></p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -286,41 +298,30 @@ For simplicity, we’ll categorize outcomes as continuous, binary or time-to-eve
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Okay, so we have our data. Now let’s do something with it! Let’s try fitting a GLM</p>
+<p>Okay, so we have our data. Now let’s do something with it! Let’s try fitting a generalized linear model (GLM)</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">glm</span>(hours_slept <span class="sc">~</span> num_pacifiers <span class="sc">+</span> age_months, </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="co"># we know this because we simulated the data. In reality, you have to use a combination of visualizing the data, understanding the data generating mechanism (aka what distribution it came from and the best model fit (i.e., Poisson vs negative binomial))</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>          )</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">glm</span>(hours_slept <span class="sc">~</span> num_pacifiers <span class="sc">+</span> age_months, </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">gaussian</span>(), <span class="co"># we know this because we simulated the data. In reality, you have to use a combination of visualizing the data, understanding the data generating mechanism (aka what distribution it came from and the best model fit (i.e., Poisson vs negative binomial))</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = hours_slept ~ num_pacifiers + age_months, family = gaussian(), 
-    data = df)
-
-Coefficients:
-               Estimate Std. Error   t value Pr(&gt;|t|)    
-(Intercept)   4.000e+00  9.149e-16 4.372e+15   &lt;2e-16 ***
-num_pacifiers 5.000e-01  6.223e-17 8.034e+15   &lt;2e-16 ***
-age_months    2.500e-01  8.405e-17 2.974e+15   &lt;2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for gaussian family taken to be 3.496232e-30)
-
-    Null deviance: 2.5793e+02  on 127  degrees of freedom
-Residual deviance: 4.3703e-28  on 125  degrees of freedom
-AIC: -8313.5
-
-Number of Fisher Scoring iterations: 1</code></pre>
+<pre><code># A tibble: 3 × 5
+  term          estimate std.error statistic p.value
+  &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)       4     9.15e-16   4.37e15       0
+2 num_pacifiers     0.5   6.22e-17   8.03e15       0
+3 age_months        0.25  8.41e-17   2.97e15       0</code></pre>
 </div>
 </div>
-<p>Now, as you can see our estimates were pretty accurate. Let’s try this again, but this time we’ll assume that pacifiers doesn’t matter, it’s only the age. We can still adjust for both. Let’s try two models: one where we adjust for both variables and one where we adjust for only age.</p>
+<p>Now, as you can see our estimates were pretty accurate. The intercept is 4, the coefficient for number of pacifiers is 0.5, and the coefficient for age is 0.25. These are exactly right, if we compare them to our equation above. Keep in mind, this makes sense because we included the two variables that we knew affected our outcome (hours slept).</p>
+<p>Let’s try this again, but this time we’ll assume that pacifiers doesn’t matter, it’s only the age. What will happen if we adjust for both variables still? Let’s find out! We’ll try two models and compare them. One where we adjust for both variables and one where we adjust for only age.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -406,41 +407,35 @@ Continuous Distributions distributions
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For the above example, we used a normal distribution. However, this doesn’t need to be the case. If we are dealing with age we may want to use a uniform distribution (using runif) and specifying the minimum and maximum. For example, if we are thinking of a variable where it may not make sense to have a value below a certain value (i.e., age where people are between 18 and 65).</p>
+<p>For the above example, we used a Gaussian/normal distribution. However, this doesn’t need to be the case. If we are dealing with age we may want to use a uniform distribution (using runif) and specifying the minimum and maximum. For example, if we are thinking of a variable where it may not make sense to have a value below a certain value (i.e., age where people are between 18 and 65).</p>
 <p>For simplicity here, and because a number of statistical methods assume normality (<em>cough</em> also the central limit theorem <em>cough</em>), we will use <em>rnorm</em>.</p>
 </div>
 </div>
 </section>
 <section id="binary-outcomes" class="level3">
 <h3 class="anchored" data-anchor-id="binary-outcomes">Binary Outcomes</h3>
-<p>Simulating a binary outcome is similar to simulating a continuous outcome except we need to put these variables in the probability argument. We can convert linear predictors to probabilities for the logistic distribution (since we’ll be fitting a logistic regression) using the <em>plogis</em> function.</p>
+<p>Simulating a binary outcome is similar to simulating a continuous outcome. A difference is that we need to convert the linear predictors (our equation) to the scale of choice. To do this, we’re going to use the logistic distribution, since we’re going to fit a logistic regression later. We can do this using the <em>plogis</em> function. Our question this time is “Does sleeping in a cold room cause a baby to sleep longer?”</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Double check this example (using ChatGPT and another way/blog post/expert)</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>n.parents <span class="ot">=</span> n.babies<span class="sc">*</span><span class="fl">1.5</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>n.parents <span class="ot">=</span> n.babies<span class="sc">*</span><span class="fl">1.5</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents, <span class="at">mean =</span> <span class="dv">3</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>hours_baby_slept <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents, <span class="at">mean =</span> <span class="dv">4</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>cold_room <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents, <span class="at">mean =</span> <span class="dv">3</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>hours_baby_slept <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.parents, <span class="at">mean =</span> <span class="dv">4</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>cold_room <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>linpred <span class="ot">=</span> <span class="fl">0.25</span><span class="sc">*</span>hours_baby_slept </span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>linpred <span class="ot">=</span> <span class="fl">0.25</span><span class="sc">*</span>hours_baby_slept </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>prob_tired <span class="ot">=</span> <span class="fu">plogis</span>(linpred) <span class="co"># converting the linear predictior to a probability on the logistic scale</span></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>prob_tired <span class="ot">=</span> <span class="fu">plogis</span>(linpred)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>tired_parents <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob_tired)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># linpred = 3 + 0.25*hours_baby_slept + 0.005*cold_room + 0.05*coffee_consumption</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># prob_tired = plogis(linpred)</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>tired_parents <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.parents, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob_tired)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  cold_room,</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  coffee_consumption,</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  hours_baby_slept,</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  tired_parents</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  cold_room,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  coffee_consumption,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  hours_baby_slept,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  tired_parents</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Now we can fit a logistic regression model!</p>
@@ -474,7 +469,7 @@ AIC: 219.8
 Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
-<p>Based on this, we can see that our model doesn’t give a great example but if we increase the sample size, what happens?</p>
+<p>Based on this, we can see that our model doesn’t give a great example but if we increase the sample size, what happens? What if we had 10 times the amount of people.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -531,7 +526,7 @@ AIC: 2238.3
 Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
-<p>So if we include 10 times the people, our result gets closer! If we include 100 times the people, it gets even closer.</p>
+<p>So if we include 10 times the people, our result gets closer! If we include 100 times the people, we’d expect it to get even closer.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -553,11 +548,11 @@ TTE Outcome
 </section>
 <section id="causal-concepts" class="level2">
 <h2 class="anchored" data-anchor-id="causal-concepts">Causal Concepts</h2>
-<p>Now, this is great and all but this blog is about causal inference! So let’s incorporate some into this post shall we? Instead of looking at GLMs, let’s demonstrate how confounding and colliders can introduce bias. We’ll calculate bias as <span class="citation" data-cites="morris2019">(<a href="#ref-morris2019" role="doc-biblioref">Morris, White, and Crowther 2019</a>)</span>:</p>
+<p>This blog is about causal inference! So let’s incorporate some into this post shall we? Instead of looking at GLMs, let’s demonstrate how unadjusted confounding can introduce bias. We’ll calculate bias as <span class="citation" data-cites="morris2019">(<a href="#ref-morris2019" role="doc-biblioref">Morris, White, and Crowther 2019</a>)</span>:</p>
 <p><span class="math display">\[
 E[\hat{\theta}] - \theta
 \]</span></p>
-<p>where <span class="math inline">\(E[\hat{\theta]}\)</span> is the expected, or average, estimated value and <span class="math inline">\(\theta\)</span> is the “actual” value. I’ll explain why we use the average later on in the Over and Over and Over Again section [TRY TO ADD CROSS REFERENCE].</p>
+<p>where <span class="math inline">\(E[\hat{\theta]}\)</span> is the expected, or average, estimated value and <span class="math inline">\(\theta\)</span> is the “actual” value. Later it will make more sense why we’re using the average. For now, just keep in mind it’s the average of all your estimated values. If you were to repeat this 1000 times, you’d have 1000 coefficients that you estimated and could take the average of those. Alright, let’s move along with an example!</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -568,13 +563,13 @@ Causal Estimand
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We need to make sure we are looking at the same causal estimand when comparing methods. For example, if we want to compare PSM to IPTW that would result in different answer…because they target different estimands!</p>
+<p>We need to make sure we are looking at the same causal estimand when comparing methods. For example, if we want to compare propensity score matching to inverse probability weighting that would result in a different answer…because they target different estimands!</p>
 </div>
 </div>
 </section>
 <section id="showing-confounding" class="level2">
 <h2 class="anchored" data-anchor-id="showing-confounding">Showing Confounding</h2>
-<p>Let’s assume that we want to demonstrate how confounding works. I’m an avid coffee lover, so let’s use an example with coffee! Suppose that our research question is “Does consuming coffee cause you to be happy?” We can start by drawing a DAG with our three variables: happy, coffee and sleep.</p>
+<p>Let’s assume that we want to demonstrate how unadjusted confounding can be problematic. I’m an avid coffee lover, so we’ll use an example with coffee! Suppose that our research question is “Does consuming coffee cause you to be happy?” We can start by drawing a DAG with our three variables: happy, coffee and sleep.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -611,34 +606,30 @@ Attaching package: 'ggdag'</code></pre>
 <p><img src="sim_data_files/figure-html/dags-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Now we have our DAG, let’s get to simulating some data!</p>
+<p>Now we have our DAG, you might be wondering how this has anything to do with simulating data. Well, it tells you which variables are related, and which ones cause the others. Time to simulate some data!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Look into Matthew Fox article for simulating data </span></span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Setting a seed for reproducibility</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating Data, from ChatGPT</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Setting a seed for reproducibility</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of observations</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating sleep hours (normal distribution with mean=7 and sd=1.5)</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>sleep_hours <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">7</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating coffee consumption based on sleep (negative correlation: less sleep -&gt; more coffee)</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of observations</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating sleep hours (normal distribution with mean=7 and sd=1.5)</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>sleep_hours <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">7</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating coffee consumption based on sleep (negative correlation: less sleep -&gt; more coffee)</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>coffee_consumption <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating happiness based on both sleep (positive correlation: more sleep -&gt; more happiness)</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># and coffee consumption (positive correlation: more coffee -&gt; more happiness)</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>happiness <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(<span class="fl">0.3</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> coffee_consumption <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)))</span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating happiness based on both sleep (positive correlation: more sleep -&gt; more happiness)</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># and coffee consumption (positive correlation: more coffee -&gt; more happiness)</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>happiness <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(<span class="fl">0.3</span> <span class="sc">*</span> sleep_hours <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> coffee_consumption <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)))</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a data frame to hold the variables</span></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sleep_hours, coffee_consumption, happiness)</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Displaying the first few rows of the data</span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a data frame to hold the variables</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sleep_hours, coffee_consumption, happiness)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Displaying the first few rows of the data</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  sleep_hours coffee_consumption happiness
@@ -650,7 +641,7 @@ Attaching package: 'ggdag'</code></pre>
 6    9.572597          1.2542747         1</code></pre>
 </div>
 </div>
-<p>Now we have our data, let’s show some confounding. How? We’ll fit two models: 1) not adjusting for the confounder, 2) adjusting for the confounder.</p>
+<p>Now we have our data. To show what happens when you don’t adjust for a confounder, we’ll fit two models: 1) not adjusting for the confounder, 2) adjusting for the confounder. We know what the “truth” is, because we decided it! The “truth” is a coefficient of 0.2. Let’s see what happens</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -666,7 +657,7 @@ Attaching package: 'ggdag'</code></pre>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>bias2 <span class="ot">=</span> <span class="fu">coef</span>(mod2)[<span class="dv">2</span>] <span class="sc">-</span> <span class="fl">0.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>We can now calculate bias for each of these models. As we can see, the bias from model one (-0.1397736) is more than the bias from model two (0.0277288). But how can we trust this? We only did it once. What if a sample of the same size (N = 250) gave a different answer? To account for this, we need to repeat this multiple times. So, let’s do that! Let’s repeat it a thousand times</p>
+<p>Now we have our two models, we can calculate bias for each of these models. As we can see, the bias from model one (-0.1397736) is more than the bias from model two (0.0277288). But how can we trust this? We only did it once. What if a sample of the same size (N = 250) gave a different answer? To account for this, we need to repeat this multiple times. So, let’s do that! Let’s repeat it a thousand times</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -722,7 +713,7 @@ Attaching package: 'ggdag'</code></pre>
 <span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>bias2 <span class="ot">=</span> <span class="fu">mean</span>(df.out<span class="sc">$</span>coef2) <span class="sc">-</span> <span class="fl">0.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Now we can look at</p>
+<p>Remember the mean from earlier? This is where it comes back up. We’ll use the mean of all of these 1000 estimates of our treatment coefficient. So how do they compare, well -0.216 is higher than -0.018 when you look at the absolute value. This is what we’d expect when dealing with a confounder that hasn’t been adjusted for.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -739,9 +730,7 @@ Picking a number of simulations
 </section>
 <section id="other-use-cases" class="level1">
 <h1>Other Use Cases</h1>
-<p>We can use this to show other concepts as well, test new ideas or learn methods ourselves. Recently, I used it to demonstrate to myself how collider bias is. Another example, that I’m currently exploring, is how different the bias is from confounding versus a collider bias.</p>
-<p>or test them ourselves.</p>
-<p>For example: collider bias.</p>
+<p>We can use this to show other concepts as well, test new ideas or learn methods ourselves. Recently, I used it to demonstrate to myself the bias when you include a collider. Another example, that I’m currently exploring comparing entropy balancing and inverse probability weighting (in terms of mean squared error, bias, etc). Hopefully you found this post helpful! Would love to hear any situations where you are using simulation. Happy simulating!</p>
 <section id="section" class="level2">
 
 
