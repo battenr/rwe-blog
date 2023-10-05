@@ -1,5 +1,5 @@
 ---
-title: "Mastering Statistics Through Make-Believe" 
+title: "Mastering Causal Inference Through Make-Believe" 
 subtitle: "Simulating Data in R"
 author: "Ryan Batten"
 date: "2023-09-30"
