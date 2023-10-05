@@ -5,8 +5,7 @@ author: "Ryan Batten"
 date: "2023-09-30"
 categories: [Simulating Data]
 bibliography: sim_data.bib
-# image : "standards.png" - use graphic from LinkedIn post about simulation
-draft: true
+image : sim_data.jpg
 format: 
   html:
     toc: true
@@ -37,14 +36,14 @@ Enough about how it's helpful, how do we do it!
 
 I primarily use R for my coding, so this post focuses on using R. However, the methodology apply to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although I'd suggest a different software.
 
-I'm more of a journeyman tradesman biostatistician. What I mean by that is that I've done a few statistics courses but don't have a degree in it (my MSc and PhD are in clinical epidemiology). \
+I'm more of a journeyman tradesman biostatistician. What I mean by that is that I've done a few statistics courses but don't have a degree in it (my MSc and PhD are in clinical epidemiology).\
 \
 If you do have a background in statistics, hopefully this is a good refresher. If you don't, don't worry! I don't either, so hopefulyl
 :::
 
 ## How to Simulate Data in R
 
-Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring....or at least I'll try my best to not make it boring. \
+Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring....or at least I'll try my best to not make it boring.\
 \
 For simplicity, we'll categorize outcomes as continuous, binary or time-to-event (TTE). This post won't tackle TTE, but a future blog post will! Alright, let's get started.
 
