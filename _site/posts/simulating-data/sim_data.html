@@ -345,54 +345,26 @@ Time-to-Event Outcome
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df)</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = hours_slept ~ age_months, family = gaussian(link = "identity"), 
-    data = df)
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  7.85497    0.64176  12.240   &lt;2e-16 ***
-age_months   0.27997    0.06918   4.047    9e-05 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for gaussian family taken to be 2.382045)
-
-    Null deviance: 339.15  on 127  degrees of freedom
-Residual deviance: 300.14  on 126  degrees of freedom
-AIC: 478.33
-
-Number of Fisher Scoring iterations: 2</code></pre>
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)    7.85     0.642      12.2  3.51e-23
+2 age_months     0.280    0.0692      4.05 9.00e- 5</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = hours_slept ~ age_months + num_pacifiers, family = gaussian(link = "identity"), 
-    data = df)
-
-Coefficients:
-               Estimate Std. Error   t value Pr(&gt;|t|)    
-(Intercept)   4.000e+00  4.115e-15 9.719e+14   &lt;2e-16 ***
-age_months    2.500e-01  3.915e-16 6.386e+14   &lt;2e-16 ***
-num_pacifiers 5.000e-01  2.519e-16 1.985e+15   &lt;2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for gaussian family taken to be 7.615348e-29)
-
-    Null deviance: 3.3915e+02  on 127  degrees of freedom
-Residual deviance: 9.5192e-27  on 125  degrees of freedom
-AIC: -7919.1
-
-Number of Fisher Scoring iterations: 1</code></pre>
+<pre><code># A tibble: 3 × 5
+  term          estimate std.error statistic p.value
+  &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)      4      4.12e-15   9.72e14       0
+2 age_months       0.25   3.91e-16   6.39e14       0
+3 num_pacifiers    0.500  2.52e-16   1.99e15       0</code></pre>
 </div>
 </div>
 <p>Now you see how the impact of adjusting for a variable that doesn’t affect the outcome, at least in this case. For our model where we adjust for only age, the result is . When we adjust for the “correct” variables , we end up with a coefficient of 0.25.</p>
@@ -447,26 +419,14 @@ Continuous Distributions distributions
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), </span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df)</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = tired_parents ~ hours_baby_slept, family = binomial(link = "logit"), 
-    data = df)
-
-Coefficients:
-                 Estimate Std. Error z value Pr(&gt;|z|)
-(Intercept)        0.1552     2.5939   0.060    0.952
-hours_baby_slept   0.2344     0.6437   0.364    0.716
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 215.94  on 191  degrees of freedom
-Residual deviance: 215.80  on 190  degrees of freedom
-AIC: 219.8
-
-Number of Fisher Scoring iterations: 4</code></pre>
+<pre><code># A tibble: 2 × 5
+  term             estimate std.error statistic p.value
+  &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)         0.155     2.59     0.0598   0.952
+2 hours_baby_slept    0.234     0.644    0.364    0.716</code></pre>
 </div>
 </div>
 <p>Based on this, we can see that our model doesn’t give a great example but if we increase the sample size, what happens? What if we had 10 times the amount of people.</p>
@@ -504,26 +464,14 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), </span>
 <span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> df)</span>
 <span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = tired_parents ~ hours_baby_slept, family = binomial(link = "logit"), 
-    data = df)
-
-Coefficients:
-                 Estimate Std. Error z value Pr(&gt;|z|)
-(Intercept)       -0.3543     0.8335  -0.425    0.671
-hours_baby_slept   0.3389     0.2087   1.624    0.104
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 2236.9  on 1919  degrees of freedom
-Residual deviance: 2234.3  on 1918  degrees of freedom
-AIC: 2238.3
-
-Number of Fisher Scoring iterations: 4</code></pre>
+<pre><code># A tibble: 2 × 5
+  term             estimate std.error statistic p.value
+  &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)        -0.354     0.834    -0.425   0.671
+2 hours_baby_slept    0.339     0.209     1.62    0.104</code></pre>
 </div>
 </div>
 <p>So if we include 10 times the people, our result gets closer! If we include 100 times the people, we’d expect it to get even closer.</p>
@@ -628,8 +576,7 @@ Attaching package: 'ggdag'</code></pre>
 <span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a data frame to hold the variables</span></span>
 <span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sleep_hours, coffee_consumption, happiness)</span>
 <span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Displaying the first few rows of the data</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  sleep_hours coffee_consumption happiness

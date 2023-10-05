@@ -117,8 +117,8 @@ mod2 <- glm(hours_slept ~ age_months + num_pacifiers,
             family = gaussian(link = "identity"), 
             data = df)
 
-summary(mod1)
-summary(mod2)
+broom::tidy(mod1)
+broom::tidy(mod2)
 ```
 
 Now you see how the impact of adjusting for a variable that doesn't affect the outcome, at least in this case. For our model where we adjust for only age, the result is `r coef(mod1[2])`. When we adjust for the "correct" variables , we end up with a coefficient of `r coef(mod2)[2]`.
@@ -170,7 +170,7 @@ mod = glm(tired_parents ~ hours_baby_slept,
           family = binomial(link = "logit"), 
           data = df)
 
-summary(mod)
+broom::tidy(mod)
 ```
 
 Based on this, we can see that our model doesn't give a great example but if we increase the sample size, what happens? What if we had 10 times the amount of people.
@@ -208,7 +208,7 @@ mod = glm(tired_parents ~ hours_baby_slept,
           family = binomial(link = "logit"), 
           data = df)
 
-summary(mod)
+broom::tidy(mod)
 ```
 
 So if we include 10 times the people, our result gets closer! If we include 100 times the people, we'd expect it to get even closer.
@@ -284,7 +284,6 @@ happiness <- rbinom(n = n, size = 1, prob = plogis(0.3 * sleep_hours + 0.2 * cof
 # Creating a data frame to hold the variables
 df <- data.frame(sleep_hours, coffee_consumption, happiness)
 
-# Displaying the first few rows of the data
 head(df)
 ```
 
