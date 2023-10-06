@@ -5,8 +5,7 @@ author: "Ryan Batten"
 date: "2023-09-30"
 categories: [Simulating Data]
 bibliography: sim_data.bib
-# image : "standards.png" - use graphic from LinkedIn post about simulation
-draft: true
+image : sim_data.jpg
 format: 
   html:
     toc: true
