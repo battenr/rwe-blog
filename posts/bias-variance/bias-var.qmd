@@ -3,14 +3,14 @@ title: "The Great Balancing Act"
 subtitle: "Bias-Variance Tradeoff"
 author: "Ryan Batten"
 date: "2023-08-01"
-categories: [Resampling, Bootstrapping, Jackknifing]
-bibliography: bootstrap.bib
+#categories: [Resampling, Bootstrapping, Jackknifing]
+# bibliography:  bootstrap.bib
 draft: true
 format: 
   html:
     code-fold: true
 ---
 
-## What exactly *is* the bias-variance tradeoff? 
+## What exactly *is* the bias-variance tradeoff?
 
-Before we get into the bias-variance tradeoff, we need to talk about the two concepts of bias and variance.
+Before we get into the bias-variance tradeoff, we need to talk about the two concepts of bias and variance. These

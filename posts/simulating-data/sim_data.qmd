@@ -32,27 +32,15 @@ Enough about how it's helpful, how do we do it?!
 ::: callout-note
 ## R Code
 
-<<<<<<< HEAD
-I primarily use R for my coding, so this post focuses on using R. However, the methodology apply to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although I'd suggest a different software.
-
-I'm more of a journeyman tradesman biostatistician. What I mean by that is that I've done a few statistics courses but don't have a degree in it (my MSc and PhD are in clinical epidemiology).\
-=======
-I primarily use R for coding, so this post focuses on using R. However, the methodology applies to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although it may not be the easiest.\
->>>>>>> eb7c3493e4823e21e6ca1e2d1e53f8c293c78497
-\
-If you're looking to learn R, I can't recommend R for Data Science by Hadley Wickham enough (plus it's free!)
+I primarily use R for coding, so this post focuses on using R. However, the methodology applies to whatever program you use for analysis. If you prefer to use MS Excel, you can do this using Excel as well, although it may not be the easiest. If you're looking to learn R, I can't recommend R for Data Science by Hadley Wickham enough (plus it's free!)
 :::
 
 ## How to Simulate Data in R
 
-<<<<<<< HEAD
-Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring....or at least I'll try my best to not make it boring.\
-=======
 Before we dive into some R code, which I do love, it's useful to first understand at a high level how this works. Before you scramble to close this, wait! I promise it isn't going to be technical or boring....or at least I'll try my best to not make it boring.
 
-The way it works is we first assume a distribution (Gaussian, binomial, etc) that has some important pieces called parameters. You're probably familiar with these for a Gaussian (sometimes called normal distribution), they're the mean and standard deviation. These will determine the shape and probabilities of the distribution. So if we're going to simulate a Gaussian distribution, we need to pick these numbers.\
->>>>>>> eb7c3493e4823e21e6ca1e2d1e53f8c293c78497
-\
+The way it works is we first assume a distribution (Gaussian, binomial, etc) that has some important pieces called parameters. You're probably familiar with these for a Gaussian (sometimes called normal distribution), they're the mean and standard deviation. These will determine the shape and probabilities of the distribution. So if we're going to simulate a Gaussian distribution, we need to pick these numbers.
+
 Once we have that information we can start picking out random samples. For example, if we know the average age is 60 and the standard deviation is 10, we can pick a person out from this group and find out their age is 78. Now, how do we do this in R?
 
 ::: callout-note
