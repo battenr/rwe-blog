@@ -1,0 +1,44 @@
+---
+title: "Missing Data" # November Post 
+subtitle: "The Where's Waldo of Causal Inference" # Titles are placeholders
+author: "Ryan Batten"
+date: "2023-08-01"
+categories: [Resampling, Bootstrapping, Jackknifing]
+bibliography: bootstrap.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+# Missing Data
+
+Missing data are inevitable when dealing with real-world data. Due to this, it's important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan.
+
+Before we get started, we need to go over the
+
+# Missing Data Mechanisms
+
+## Missing Completely at Random (MCAR)
+
+## Missing at Random (MAR)
+
+## Missing Not at Random (MNAR)
+
+# Picking a Method
+
+There are several methods which we'll go over below. The layout is as follows: overview of what the method is, assumptions (what's required of the method), use cases and then an example in R.
+
+# Multiple Imputation
+
+## How Does it Work?
+
+# K Nearest Neighbour Imputation
+
+# Regression Imputation
+
+# Last Observation Carried Forward
+
+# Summary of Methods
+
+It's important to remember there isn't
