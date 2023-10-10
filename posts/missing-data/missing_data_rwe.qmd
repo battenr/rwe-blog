@@ -15,7 +15,7 @@ format:
 
 Missing data are inevitable when dealing with real-world data. Due to this, it's important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan.
 
-Before we get started, we need to go over the
+Before we get started, we need to go over the different types of missing data mechanisms. Basically, what was the ways that data comes to be missing
 
 # Missing Data Mechanisms
 
