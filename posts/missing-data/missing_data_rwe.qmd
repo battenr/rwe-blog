@@ -2,9 +2,9 @@
 title: "Missing Data" # November Post 
 subtitle: "The Where's Waldo of Causal Inference" # Titles are placeholders
 author: "Ryan Batten"
-date: "2023-08-01"
-categories: [Resampling, Bootstrapping, Jackknifing]
-bibliography: bootstrap.bib
+date: "2023-11-15"
+categories: [Missing Data]
+# bibliography: bootstrap.bib
 draft: true
 format: 
   html:
@@ -15,11 +15,15 @@ format:
 
 Missing data are inevitable when dealing with real-world data. Due to this, it's important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan.
 
-Before we get started, we need to go over the different types of missing data mechanisms. Basically, what was the ways that data comes to be missing
+Before we get started, we need to go over the different types of missing data mechanisms. Basically, what are the ways that data comes to be missing.
 
 # Missing Data Mechanisms
 
+There are three types of missing data mechanism: missing completely at random (MCAR), missing at random (MAR) and missing not at random (MNAR). Each of these has different assumptions and needs to be handled accordingly. But what exactly are they? Without further ado, let's jump in!
+
 ## Missing Completely at Random (MCAR)
+
+Missing completely at random is the
 
 ## Missing at Random (MAR)
 
