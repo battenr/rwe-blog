@@ -23,7 +23,7 @@ There are three types of missing data mechanism: missing completely at random (M
 
 ## Missing Completely at Random (MCAR)
 
-Missing completely at random is the
+Missing completely at random is the just that. The key word is "completely". This means that it has nothing to do with the other variables that we are interested in. Let's use an example
 
 ## Missing at Random (MAR)
 
