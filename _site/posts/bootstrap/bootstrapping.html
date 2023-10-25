@@ -216,11 +216,12 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 <li>Put them back.</li>
 <li>Repeat steps 1-4</li>
 </ol>
-<p>Now we have our plan, let’s start implementing!</p>
+<p>Now we have our plan, let’s start implementing it!</p>
 </section>
 <section id="mini-golf---average-score" class="level2">
 <h2 class="anchored" data-anchor-id="mini-golf---average-score">Mini-Golf - Average Score</h2>
-<p>So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it’s sampling distribution. The sampling distribution is the probability distribution of a statistic. For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.</p>
+<p>So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it’s <em>sampling distribution</em>. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon. In simpler [RYAN: consider adding a graph]</p>
+<p>For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -230,9 +231,9 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.2     ✔ readr     2.1.4
 ✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
+✔ purrr     1.0.2     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -262,10 +263,14 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>estimated_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(original_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Now we know that our average score is 49.16 and our confidence interval is 45.9, 52.5</p>
+<p>Now we know that our average score is 50.72 and our confidence interval is 47.4, 53.8</p>
+<p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend). Let’s do this example again but account for those additional variables.</p>
 </section>
 <section id="mini-golf-glm" class="level2">
 <h2 class="anchored" data-anchor-id="mini-golf-glm">Mini-Golf: GLM</h2>
+<p>We’ll use a generalized linear model for our example. Side note: there is no rationale for picking a GLM, other than it’s a method that I’m familiar with. In reality, picking the model to use isn’t always so straightforward.<br>
+<br>
+Now, let’s simulate some data!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -287,31 +292,78 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>mini_golf_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(scores, obstacles, weekend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Firs things first with our data, let’s fit a GLM.</p>
+<p>Now that we have our data, we can create some bootstrap samples.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a matrix to store the bootstrap estimates</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>n_bootstraps <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>glm_estimates <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> n_bootstraps, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="co"># Intercept, obstacles, weekend</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrapping</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bootstraps) {</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  bootstrap_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_games, <span class="at">size =</span> n_games, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  bootstrap_data <span class="ot">&lt;-</span> mini_golf_data[bootstrap_indices, ]</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  glm_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(scores <span class="sc">~</span> obstacles <span class="sc">+</span> weekend, <span class="at">data =</span> bootstrap_data)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  glm_estimates[i, ] <span class="ot">&lt;-</span> <span class="fu">coef</span>(glm_fit)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll use the tidymodels package here</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ broom        1.0.5     ✔ rsample      1.2.0
+✔ dials        1.2.0     ✔ tune         1.1.2
+✔ infer        1.0.5     ✔ workflows    1.1.3
+✔ modeldata    1.2.0     ✔ workflowsets 1.0.1
+✔ parsnip      1.1.1     ✔ yardstick    1.2.0
+✔ recipes      1.0.8     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ scales::discard() masks purrr::discard()
+✖ dplyr::filter()   masks stats::filter()
+✖ recipes::fixed()  masks stringr::fixed()
+✖ dplyr::lag()      masks stats::lag()
+✖ yardstick::spec() masks readr::spec()
+✖ recipes::step()   masks stats::step()
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>boots <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(mini_golf_data, <span class="at">times =</span> <span class="dv">1000</span>, <span class="at">apparent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll create a function for fitting our model. In this case a GLM</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(scores <span class="sc">~</span> obstacles <span class="sc">+</span> weekend, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's fit this model for each bootstrap sample</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>boot_glms <span class="ot">&lt;-</span> boots <span class="sc">%&gt;%</span> </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(splits, fit_glm),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_into =</span> <span class="fu">map</span>(model, tidy)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>boot_coefs <span class="ot">&lt;-</span> </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  boot_glms <span class="sc">%&gt;%</span> </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the 95% Confidence Interval</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>conf_interval_glm <span class="ot">&lt;-</span> <span class="fu">apply</span>(glm_estimates, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(conf_interval_glm) &lt;- c("2.5%", "97.5%")</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># rownames(conf_interval_glm) &lt;- c("Intercept", "Obstacles", "Weekend")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">int_pctl</span>(boot_glms, coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  term        .lower .estimate .upper .alpha .method   
+  &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;     
+1 (Intercept)  45.5      49.2   52.9    0.05 percentile
+2 obstacles     1.72      2.05   2.37   0.05 percentile
+3 weekend       2.65      4.59   6.39   0.05 percentile</code></pre>
+</div>
 </div>
 </section>
 <section id="why-not-use-bootstrapping-all-the-time" class="level2">
@@ -329,10 +381,6 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 <section id="vary-away" class="level2">
 <h2 class="anchored" data-anchor-id="vary-away">Vary Away!</h2>
 <p>“So what you’re telling me is I can just use bootstrapping all the time for every test?” Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.</p>
-</section>
-<section id="coffee-beans" class="level2">
-<h2 class="anchored" data-anchor-id="coffee-beans">Coffee Beans</h2>
-<p>Imagine that we have a bag of coffee beans. They can vary in shape and size</p>
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>

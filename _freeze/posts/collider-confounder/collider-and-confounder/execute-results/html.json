@@ -1,0 +1,16 @@
+{
+  "hash": "f61647a94e16a654f6c0abd517b95c09",
+  "result": {
+    "markdown": "---\ntitle: \"Collider and Confounder\" # November Post\nsubtitle: \"To Adjust or Not Adjust?\"\nauthor: \"Ryan Batten\"\ndate: \"2023-10-26\"\ncategories: [Collider, Confounder]\nbibliography: collider-confounder.bib\ndraft: true\nformat: \n  html:\n    code-fold: true\n---\n\n\n# Why this post? \n\nIn causal inference, we know that not adjusting for a confounder can lead to a biased estimate. However, we also know that by adjusting for a collider this can equally introduce bias (or a descendant of a collider).\n\nThis is all great in theory, but what about if we have a variable that is both? Do we adjust or not adjust? How do we answer this question?\n\n# Simulate, Simulate, Simulate! \n\nOne way to answer this question is through simulation....which is exactly what we'll do! For this post, we'll just focus on one scenario but in reality we could test a bunch of different scenarios. With that in mind we need to setup some parameters. These include what we are going to call the variables, the DAG and how we're going to measure what happens for the two scenarios of adjusting versus' not adjusting for the variable \"c\".\n\n# Some Parameters\n\n## DAG\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(ggdag)\n\ntheme_set(theme_dag())\n\ndag = dagify(\n  x ~ c, \n  y ~ x + c,\n  c ~ a + b, \n  exposure = \"x\", \n  outcome = \"y\"\n)\n\ndag %>% \n  ggdag(layout = \"nicely\")\n```\n\n::: {.cell-output-display}\n![](collider-and-confounder_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\n## Measuring Difference Between Two Methods \n\nFor this idea we'll use empirical bias as calculated from @morris2019\n\n# Coding Time! \n\nAlright, let's get into coding!\n\n\n::: {.cell}\n\n```{.r .cell-code}\nset.seed(123)\n```\n:::\n\n\n## Repeat, Repeat, Repeat\n\n# Next Steps\n\nThis is just meant to be a starting point. There are a ton of variable components to this, including how strong of a variable the collider (or descendant of a collider) and confounder are, what about if they're continuous vs binary and more! If you expand on this or have any other ideas, I'd love to hear about it (through email or [LinkedIn](https://www.linkedin.com/in/rwe-ryan/))\n",
+    "supporting": [
+      "collider-and-confounder_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

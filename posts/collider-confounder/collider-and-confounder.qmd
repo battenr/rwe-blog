@@ -1,0 +1,81 @@
+---
+title: "Collider and Confounder" # November Post
+subtitle: "To Adjust or Not Adjust?"
+author: "Ryan Batten"
+date: "2023-10-26"
+categories: [Collider, Confounder]
+bibliography: collider-confounder.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+# Why this post? 
+
+In causal inference, we know that not adjusting for a confounder can lead to a biased estimate. However, we also know that by adjusting for a collider this can equally introduce bias (or a descendant of a collider).
+
+This is all great in theory, but what about if we have a variable that is both? Do we adjust or not adjust? How do we answer this question?
+
+# Simulate, Simulate, Simulate! 
+
+One way to answer this question is through simulation....which is exactly what we'll do! For this post, we'll just focus on one scenario but in reality we could test a bunch of different scenarios. With that in mind we need to setup some parameters. These include what we are going to call the variables, the DAG and how we're going to measure what happens for the two scenarios of adjusting versus' not adjusting for the variable that's both a confounder and collider.
+
+# Some Parameters
+
+## Variable Names 
+
+Let's come up with some variable names. We'll use X for the exposure/treatment, Y for the outcome and Z for this variable that's both a confounder and a collider. For the two variables that cause Z, let's call them A and B for simplicity. All of these are arbitrarily chosen names (although X Y and Z are common conventions)
+
+## DAG
+
+```{r, message = FALSE}
+library(tidyverse)
+library(ggdag)
+
+theme_set(theme_dag())
+
+dag = dagify(
+  x ~ c, 
+  y ~ x + c,
+  c ~ a + b, 
+  exposure = "x", 
+  outcome = "y"
+)
+
+dag %>% 
+  ggdag(layout = "nicely")
+```
+
+## Measuring Difference Between Two Methods 
+
+For this idea we'll use empirical bias as: [@morris2019]
+
+$$
+\frac{1} {n_{sim}}\sum_{i=1}^{n_{sim}}{\hat{\theta}_i - \theta}
+$$
+
+and we'll use the Monte Carlo standard error (also from @morris2019)
+
+$$
+\sqrt{\frac{1} {n_{sim} (n_{sim}-1)}\sum_{i=1}^{n_{sim}}{(\hat{\theta}_i - \overline{\theta}})^2}
+$$
+
+# Coding Time! 
+
+Alright, let's get into coding!
+
+```{r}
+
+set.seed(123)
+
+
+
+
+```
+
+## Repeat, Repeat, Repeat
+
+# Next Steps
+
+This is just meant to be a starting point. There are a ton of variable components to this, including how strong of a variable the collider (or descendant of a collider) and confounder are, what about if they're continuous vs binary and more! If you expand on this or have any other ideas, I'd love to hear about it (through email or [LinkedIn](https://www.linkedin.com/in/rwe-ryan/))
