@@ -114,6 +114,8 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -208,46 +210,61 @@ div.csl-indent {
 
 
 
-<section id="why-this-post" class="level1">
-<h1>Why this post?</h1>
-<p>In causal inference, we know that not adjusting for a confounder can lead to a biased estimate. However, we also know that by adjusting for a collider this can equally introduce bias (or a descendant of a collider).</p>
-<p>This is all great in theory, but what about if we have a variable that is both? Do we adjust or not adjust? How do we answer this question?</p>
+<section id="bias-if-we-do-bias-if-we-dont" class="level1">
+<h1>Bias if we do, bias if we don’t</h1>
+<p>For valid causal inference, we need adjust for confounders to block all backdoor paths. If we don’t, this can lead to bias. We also need to <strong>not</strong>&nbsp;adjust for colliders because that can open a backdoor path. In a perfect world, these two types of variables would never overlap however sometimes a variable is both a collider and a confounder. So what do we do in this case? How can we find a solution?</p>
 </section>
 <section id="simulate-simulate-simulate" class="level1">
 <h1>Simulate, Simulate, Simulate!</h1>
-<p>One way to answer this question is through simulation….which is exactly what we’ll do! For this post, we’ll just focus on one scenario but in reality we could test a bunch of different scenarios. With that in mind we need to setup some parameters. These include what we are going to call the variables, the DAG and how we’re going to measure what happens for the two scenarios of adjusting versus’ not adjusting for the variable “c”.</p>
+<p>One way to answer this question is through simulation….which is exactly what we’ll do! For this post, we’ll just focus on a simple scenario that we can build upon later. With that in mind we need to setup some parameters: what do we want to call the variables,how are these variables related (enter DAG), what types of variables are they (binary, continuous, time-to-event) and how are we going to compare the methods.</p>
 </section>
 <section id="some-parameters" class="level1">
 <h1>Some Parameters</h1>
-<section id="dag" class="level2">
-<h2 class="anchored" data-anchor-id="dag">DAG</h2>
+<section id="variable-names" class="level2">
+<h2 class="anchored" data-anchor-id="variable-names">Variable Names</h2>
+<p>Let’s come up with some variable names to keep track of things. We’ll use X for the exposure/treatment, Y for the outcome and CC for this variable that’s both a confounder and a collider (confounder/collider = cc). For the two variables that cause CC, let’s call them A and B for simplicity. All of these are arbitrarily chosen names (although X and Y are common conventions for exposure/outcome (and Z for confounders))</p>
+</section>
+<section id="what-a-beautiful-dag" class="level2">
+<h2 class="anchored" data-anchor-id="what-a-beautiful-dag">What a Beautiful DAG</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>()) <span class="co"># setting the theme </span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">=</span> <span class="fu">dagify</span>(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">~</span> c, </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> x <span class="sc">+</span> c,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  c <span class="sc">~</span> a <span class="sc">+</span> b, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">~</span> cc, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> x <span class="sc">+</span> cc, </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  cc <span class="sc">~</span> a <span class="sc">+</span> b,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"x"</span>, </span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"y"</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggdag</span>(<span class="at">layout =</span> <span class="st">"nicely"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggdag</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">layout =</span> <span class="st">"nicely"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="collider-and-confounder_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
+<section id="types-of-variables" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-variables">Types of Variables</h2>
+<p>For this example, we’ll assume that A is a binary variable, B is a continuous variable and CC is a continuous variable. Additionally, we’ll assume that X is a binary variable (yes/no for treatment) and Y is our continuous outcome variable. These were all arbitrarily chosen and can be changed for other scenarios. For this example, simplicity is key. We can always make it more complicated later.</p>
+</section>
 <section id="measuring-difference-between-two-methods" class="level2">
 <h2 class="anchored" data-anchor-id="measuring-difference-between-two-methods">Measuring Difference Between Two Methods</h2>
-<p>For this idea we’ll use empirical bias as calculated from <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span></p>
+<p>For this scenario, we’ll just look at bias. From <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span>, the equation for bias is:</p>
+<p><span class="math display">\[
+\frac{1} {n_{sim}}\sum_{i=1}^{n_{sim}}{\hat{\theta}_i - \theta}
+\]</span></p>
+<p>We’ll use the Monte Carlo standard error of the estimate as well (also from <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span>):</p>
+<p><span class="math display">\[
+\sqrt{\frac{1} {n_{sim} (n_{sim}-1)}\sum_{i=1}^{n_{sim}}{(\hat{\theta}_i - \overline{\theta}})^2}
+\]</span></p>
 </section>
 </section>
 <section id="coding-time" class="level1">
@@ -256,16 +273,156 @@ div.csl-indent {
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># First setting a seed for reproducibility </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading Libraries </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom) <span class="co"># for cleaning output of models </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">430</span> <span class="co"># setting our sample size </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.46</span>) <span class="co"># Simulating A from a binomial distribution</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">2</span>) <span class="co"># Simulating B from a normal distribution</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">=</span> <span class="fl">0.7</span><span class="sc">*</span>a <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>b <span class="co">#assuming that CC is caused by both A and B </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(<span class="fl">0.1</span><span class="sc">*</span>cc)) <span class="co"># Simulating X from a binomial distribution that is caused by CC</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n) <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>cc <span class="sc">+</span> <span class="fl">0.4</span><span class="sc">*</span>x <span class="co"># Assuming Y is caused by CC and X</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  a, </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  b, </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  cc, </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  x, </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  y</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>mod.adj <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> cc, </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> df)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>coeff.adj <span class="ot">=</span> broom<span class="sc">::</span><span class="fu">tidy</span>(mod.adj)[<span class="dv">2</span>,<span class="dv">2</span>]</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>mod.unadj <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x, </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> df)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>coeff.unadj <span class="ot">=</span> broom<span class="sc">::</span><span class="fu">tidy</span>(mod.unadj)[<span class="dv">2</span>, <span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Now we can see how they’d be different. Let’s look at both estimates. For the adjusted model we have 0.4195327 and for the unadjusted model we have 0.4206856. This is only after running it one time though! We need to re-run it more than once though. To do this, we can put our code from before into a function.</p>
+<section id="making-code-functional-pun-intended" class="level2">
+<h2 class="anchored" data-anchor-id="making-code-functional-pun-intended">Making Code Functional (Pun Intended!)</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll make a function that we can specifc the treatment effect, the strength of the confounder (on the outcome and exposure. Assuming that it affects both equally, which could also be changed/examind)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sim_col_con <span class="ot">&lt;-</span> <span class="cf">function</span>(trt_effect, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                        con_effect,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                        n.sample){</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.sample, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.46</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.sample, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  cc <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.7</span><span class="sc">*</span>a <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>b</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n.sample, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(con_effect<span class="sc">*</span>cc))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="dv">3</span> <span class="sc">+</span> con_effect<span class="sc">*</span>cc <span class="sc">+</span> trt_effect<span class="sc">*</span>x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n.sample, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    a, </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    b, </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    cc, </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    x, </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    y</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Adjusting for variable</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  mod.adj <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> cc, </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>                 <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  adj.trt.effect <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(mod.adj)<span class="sc">$</span>estimate[<span class="dv">2</span>]</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Not adjusting for variable </span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  mod.unadj <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x, </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>), </span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> df)</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  unadj.trt.effect <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(mod.unadj)<span class="sc">$</span>estimate[<span class="dv">2</span>]</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  df.trt.effects <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    adj.trt.effect,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    unadj.trt.effect</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    df.trt.effects</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Great now we have our function! Let’s do it a bunch of times.</p>
+</section>
 <section id="repeat-repeat-repeat" class="level2">
 <h2 class="anchored" data-anchor-id="repeat-repeat-repeat">Repeat, Repeat, Repeat</h2>
+<p>For this quick example, we’ll repeat it 1000 times. In reality, more thought should go into the number of simulations required. I would suggest <span class="citation" data-cites="morris2019">Morris, White, and Crowther (<a href="#ref-morris2019" role="doc-biblioref">2019</a>)</span> for more details regarding that. For now, let’s proceed with 1000.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeating 1000 times ----</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>output_list <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sim_col_con</span>(<span class="fl">0.4</span>, <span class="fl">0.3</span>, <span class="at">n.sample =</span> <span class="dv">430</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Bind all data frames in the list into a single data frame</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>df.out <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, output_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Great! Now we have our simulations, time to start calculating some results!</p>
 </section>
+<section id="bias-and-se-of-bias" class="level2">
+<h2 class="anchored" data-anchor-id="bias-and-se-of-bias">Bias and SE of Bias</h2>
+<p>We’ll calculated the estimated bias and the Monte Carlo standard error of the bias.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bias </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>bias.adjust <span class="ot">=</span> <span class="fu">round</span>((<span class="dv">1</span><span class="sc">/</span><span class="dv">430</span>)<span class="sc">*</span><span class="fu">sum</span>(df.out<span class="sc">$</span>adj.trt.effect <span class="sc">-</span> <span class="fl">0.4</span>),<span class="dv">3</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>bias.unadjust <span class="ot">=</span> <span class="fu">round</span>((<span class="dv">1</span><span class="sc">/</span><span class="dv">430</span>)<span class="sc">*</span><span class="fu">sum</span>(df.out<span class="sc">$</span>unadj.trt.effect <span class="sc">-</span> <span class="fl">0.4</span>),<span class="dv">3</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># SE of the bias </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>se.adjust <span class="ot">=</span> <span class="fu">round</span>((<span class="dv">1</span><span class="sc">/</span>(<span class="dv">429</span><span class="sc">*</span><span class="dv">430</span>)) <span class="sc">*</span> <span class="fu">sum</span>((df.out<span class="sc">$</span>adj.trt.effect <span class="sc">-</span> <span class="fu">mean</span>(df.out<span class="sc">$</span>adj.trt.effect))<span class="sc">^</span><span class="dv">2</span>),<span class="dv">3</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>se.unadjust <span class="ot">=</span> <span class="fu">round</span>((<span class="dv">1</span><span class="sc">/</span>(<span class="dv">429</span><span class="sc">*</span><span class="dv">430</span>)) <span class="sc">*</span> <span class="fu">sum</span>((df.out<span class="sc">$</span>unadj.trt.effect <span class="sc">-</span> <span class="fu">mean</span>(df.out<span class="sc">$</span>unadj.trt.effect))<span class="sc">^</span><span class="dv">2</span>),<span class="dv">3</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>results.adjust <span class="ot">=</span> <span class="fu">paste0</span>(bias.adjust, <span class="st">" ("</span>, se.adjust, <span class="st">")"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>results.unadjust <span class="ot">=</span> <span class="fu">paste0</span>(bias.unadjust, <span class="st">" ("</span>, se.unadjust, <span class="st">")"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Great! Now let’s interpret these results. For adjusted estimate, its -0.002 (0) and for the unadjusted estimate its 0.101 (0)</p>
+</section>
+</section>
+<section id="sodo-we-adjust-or-not" class="level1">
+<h1>So…do we adjust or not?</h1>
+<p>Based on our simple example, my takeaway would be to adjust for the confounder even if it is a collider. However…and a big however…this is under a lot of circumstances that we could build upon. What if both A and B were continuous? What if they were both binary? What if the outcome were binary? What if CC was binary? These are just a few places to start. The good news is that we have the simple scenario covered so we can easily try out these out scenarios and see what we’d do!</p>
 </section>
 <section id="next-steps" class="level1">
 <h1>Next Steps</h1>
-<p>This is just meant to be a starting point. There are a ton of variable components to this, including how strong of a variable the collider (or descendant of a collider) and confounder are, what about if they’re continuous vs binary and more! If you expand on this or have any other ideas, I’d love to hear about it (through email or <a href="https://www.linkedin.com/in/rwe-ryan/">LinkedIn</a>)</p>
+<p>This post was just meant to be a starting point. If you’re interested in different scenarios, I’d recommend you try altering pieces of the code and see how that impacts the results! If you’re new to simulating data, I’d also recommend perhaps starting with another post on my blog (<a href="https://causallycurious.com/posts/simulating-data/sim_data">Simulating Data</a>).<br>
+<br>
+If you do expand on this or have any ideas about it, I’d love to hear about them (either through email or <a href="https://www.linkedin.com/in/rwe-ryan/">LinkedIn</a>). Happy exploring!</p>
 
 
 

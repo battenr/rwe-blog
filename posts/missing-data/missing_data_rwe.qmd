@@ -19,6 +19,8 @@ Before we get started, we need to go over the different types of missing data me
 
 # Missing Data Mechanisms
 
+\[NOTE TO SELF: AUSTIN 2021 has some good definitions for MCAR, MAR and MNAR)
+
 There are three types of missing data mechanism: missing completely at random (MCAR), missing at random (MAR) and missing not at random (MNAR). Each of these has different assumptions and needs to be handled accordingly. But what exactly are they? Without further ado, let's jump in!
 
 ## Missing Completely at Random (MCAR)
@@ -38,6 +40,8 @@ There are several methods which we'll go over below. The layout is as follows: o
 ## How Does it Work?
 
 # K Nearest Neighbour Imputation
+
+K nearest neighbour imputation is a mouthful. So let's break it down. Essentially, what happens is you match people to the closest person. Based on this, you assume that their value is the same as this "closest" person. Why K? Well it's doesn't have to just be one person, it could be a couple (RYAN: how does this work)\>
 
 # Regression Imputation
 
