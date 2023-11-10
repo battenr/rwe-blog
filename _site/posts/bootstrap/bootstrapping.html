@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-08-01">
+<meta name="dcterms.date" content="2023-10-30">
 
 <title>Blog Posts - Resampling Magic</title>
 <style>
@@ -150,11 +150,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Resampling Magic</h1>
-            <p class="subtitle lead">The Wonders of Bootstrapping and Jackknifing Explained</p>
+            <p class="subtitle lead">The Wonders of Bootstrapping Explained</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Resampling</div>
                 <div class="quarto-category">Bootstrapping</div>
-                <div class="quarto-category">Jackknifing</div>
               </div>
                   </div>
   </div>
@@ -172,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 1, 2023</p>
+        <p class="date">October 30, 2023</p>
       </div>
     </div>
     
@@ -192,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="certainly-uncertain" class="level2">
 <h2 class="anchored" data-anchor-id="certainly-uncertain">Certainly Uncertain</h2>
-<p>A key part of any analysis is to determine the uncertainty associated with an estimate. This has to do with determining the variance of the estimate, which we can use to calculate the standard error. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate this is using something called bootstrapping.</p>
+<p>A key part of any analysis is to determine the uncertainty associated with an estimate. This has to do with determining the variance of the estimate, which we can use to derive the standard error. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate this is using something called bootstrapping.</p>
 </section>
 <section id="what-is-bootstrapping" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-bootstrapping">What is bootstrapping?</h2>
@@ -263,7 +262,7 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>estimated_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(original_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Now we know that our average score is 50.72 and our confidence interval is 47.4, 53.8</p>
+<p>Now we know that our average score is 51.1 and our confidence interval is 48, 54.1</p>
 <p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend). Let’s do this example again but account for those additional variables.</p>
 </section>
 <section id="mini-golf-glm" class="level2">
@@ -320,7 +319,7 @@ Now, let’s simulate some data!</p>
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
 </div>
 <details>
 <summary>Code</summary>

@@ -1,9 +1,9 @@
 ---
 title: "Resampling Magic" # October Post
-subtitle: "The Wonders of Bootstrapping and Jackknifing Explained"
+subtitle: "The Wonders of Bootstrapping Explained"
 author: "Ryan Batten"
-date: "2023-08-01"
-categories: [Resampling, Bootstrapping, Jackknifing]
+date: "2023-10-30"
+categories: [Resampling, Bootstrapping]
 bibliography: bootstrap.bib
 draft: true
 format: 
@@ -13,15 +13,17 @@ format:
 
 ## Certainly Uncertain
 
-A key part of any analysis is to determine the uncertainty associated with an estimate. This has to do with determining the variance of the estimate, which we can use to calculate the standard error. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate this is using something called bootstrapping.
+A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this, which requires the standard error. Sometimes deriving this, or rather the variance, is tricky with certain methods such as inverse probability weighting and standardization because the way it's normally calculated requires assumptions that aren't met. One way solution, in some circumstances, is to use something called bootstrapping.
 
 ## What is bootstrapping?
 
-No, not like Bootstrap Bill (Pirates of the Caribbean), bootstrapping is a statistical technique that can be quite useful. We can use is to estmate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?
+No, not like Bootstrap Bill (Pirates of the Caribbean ref), bootstrapping is a statistical technique that can be quite useful. We can use this to estate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?
 
 ## How does it work?
 
-Bootstrapping works by drawing repeated samples, with replacement, from our observations. Imagine that we have have a big tub of ice cream that looks like a rainbow, with a bunch of colors all mixed together. We want to know what the whole tub looks like, so what we do is take one scoop and look at the colors in that scoop. Then we put it back, mix it up and take another scoop. We can do this over and over again to try and understand what the whole tub looks like!\
+Bootstrapping works by drawing repeated samples from our observations. The beauty about bootstrapping is all we need is an estimate and a sampling distribution [@gelman2020regression].
+
+Imagine that we have have a big tub of ice cream that looks like a rainbow, with a bunch of colors all mixed together. We want to know what the whole tub looks like, so what we do is take one scoop and look at the colors in that scoop. Then we put it back, mix it up and take another scoop. We can do this over and over again to try and understand what the whole tub looks like!\
 \
 This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let's take a different example and put some numbers to it!
 
@@ -209,6 +211,8 @@ Bootstrapping is a widely-used technique in statistics for its simplicity and ve
 6.  **Boundary Estimates**: For some statistics, bootstrapping can produce biased confidence intervals that do not contain the true parameter value, especially for small sample sizes.
 
 7.  **Not a Substitute for Real Data**: While bootstrapping can enhance an analysis, it's not a substitute for collecting more or better-quality data.
+
+-   can lead to an inappropriately high level of certainty (ROS)
 
 ### **Conclusion**
 
