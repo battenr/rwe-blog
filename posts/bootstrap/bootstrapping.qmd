@@ -1,9 +1,10 @@
 ---
 title: "Resampling Magic" # October Post
-subtitle: "The Wonders of Bootstrapping Explained"
+subtitle: "Demystifying Bootstrapping"
+#subtitle: "The Wonders of Bootstrapping Explained"
 author: "Ryan Batten"
 date: "2023-10-30"
-categories: [Resampling, Bootstrapping]
+categories: [Resampling, Bootstrapping, Variance]
 bibliography: bootstrap.bib
 draft: true
 format: 
@@ -13,27 +14,27 @@ format:
 
 ## Certainly Uncertain
 
-A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this, which requires the standard error. Sometimes deriving this, or rather the variance, is tricky with certain methods such as inverse probability weighting and standardization because the way it's normally calculated requires assumptions that aren't met. One way solution, in some circumstances, is to use something called bootstrapping.
+A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this, which requires the standard error. Sometimes deriving this can be tricky with certain methods or when assumptions aren't met. For example, if we use propensity score matching and the fit a generalized linear model in this matched sample, the assumption about the cases being independent isn't true. So what do we do? We need a different way to calculate the standard error. Enter bootstrapping!
 
 ## What is bootstrapping?
 
-No, not like Bootstrap Bill (Pirates of the Caribbean ref), bootstrapping is a statistical technique that can be quite useful. We can use this to estate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?
+No, not like Bootstrap Bill (Pirates of the Caribbean reference), bootstrapping is a statistical technique that can be quite useful. We can use this to estate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?
 
 ## How does it work?
 
-Bootstrapping works by drawing repeated samples from our observations. The beauty about bootstrapping is all we need is an estimate and a sampling distribution [@gelman2020regression].
+Bootstrapping works by drawing repeated samples from our observations. The beauty about bootstrapping is all we need is an estimate and a sampling distribution [@gelman2020regression]. A better way to understand it is with a quick example.
 
-Imagine that we have have a big tub of ice cream that looks like a rainbow, with a bunch of colors all mixed together. We want to know what the whole tub looks like, so what we do is take one scoop and look at the colors in that scoop. Then we put it back, mix it up and take another scoop. We can do this over and over again to try and understand what the whole tub looks like!\
+Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream, but we're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it's 80% vanilla and 20% chocolate. If we do this over and over again, we can get an idea of what the big tub in the back looks like. \
 \
-This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let's take a different example and put some numbers to it!
+This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let's try another example with some actual numbers!
 
-## Mini-Golf Examples
+## Mini-Golf? 
 
-Let's use mini-golf as an example. Imagine that you play mini-golf with your friends 100 times over a summer. Each time you play, you get a different score (the lower the better). Sometimes you do well, sometimes you play awful.\
+Let's use mini-golf as an example. Imagine that you play mini-golf with your friends 100 times over a summer (yes you must really REALLY love mini-golf). Each time you play, you get a different score (the lower the better). Sometimes you do well, sometimes you play awful.\
 \
-Now you want to know: "am I any good at mini-golf? What would my score be on average?" So you decide to use bootstrapping to answer this. Here's the following steps
+You start to think: "I play a lot of mini-golf, but am I any good? What would my score be on average?" being the keen person that you are, you also wonder what kind of confidence intervals go with this average. So you decide to use bootstrapping to answer this, using these steps:
 
-1.  Look at 10 scores on random days and write them down.
+1.  Look at 10 scores on a random day and write them down.
 2.  Put them back.
 3.  Draw another 10 scores and write them down.
 4.  Put them back.
@@ -43,11 +44,13 @@ Now we have our plan, let's start implementing it!
 
 ## Mini-Golf - Average Score
 
-So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it's *sampling distribution*. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon. In simpler \[RYAN: consider adding a graph\]
+So we know our average score, if we just take the mean. But what is the confidence interval for this mean? To calculate this, we need the standard error. But what is the standard error? Is it the same as the standard deviation? Not quite.
 
-For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.
+The standard error is the standard deviation of the *sampling distribution*. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon, so instead let's use a visual.
 
-```{r scores}
+For our example, we are taking 10 scores over and over. Each time we take 10 scores, we calculate the mean. So for each time, we have the mean. Now, let's plot this.
+
+```{r scores, message = FALSE}
 
 library(tidyverse)
 
@@ -68,17 +71,30 @@ for (i in 1:n_bootstraps) {
 }
 
 # Estimate the 95% confidence interval
+
 estimated_ci <- quantile(bootstrap_estimates, probs = c(0.05, 0.95))
 
 estimated_mean <- mean(original_scores)
 
 ```
 
-Now we know that our average score is `r estimated_mean` and our confidence interval is `r estimated_ci`
+Great, now let's plot this
 
-However, this is the mean. It doesn't account for the number of obstacles on the course or if it was a weekend (perhaps we'd feel more rushed if we were playing on the weekend). Let's do this example again but account for those additional variables.
+```{r sampling distribution plot}
 
-## Mini-Golf: GLM
+df = bootstrap_estimates |> as.data.frame()
+
+ggplot(data = df, aes(x = bootstrap_estimates)) + 
+  geom_bar()
+  
+
+```
+
+Each of these is an estimate of the mean. This is a *sampling distribution.* We can now use this to determine our confidence intervals. If we're using a two-sided test and 95% CIs then can take the 2.5 and 97.5 quantiles! Now we know that our average score is `r estimated_mean` and our confidence interval is `r estimated_ci`
+
+However, this is the mean. It doesn't account for the number of obstacles on the course or if it was a weekend (perhaps we'd feel more rushed if we were playing on the weekend). So what if we want to fit a model and get 95% CIs for that model?
+
+## Mini-Golf: GLM Time
 
 We'll use a generalized linear model for our example. Side note: there is no rationale for picking a GLM, other than it's a method that I'm familiar with. In reality, picking the model to use isn't always so straightforward.\
 \
@@ -156,64 +172,41 @@ int_pctl(boot_glms, coef_into)
 
 ## Why not use bootstrapping all the time?
 
-Like any method, bootstrapping isn't perfect. There's benefits and drawbacks to using it. For example, it can give different results depending on the seed that is chosen. Below are a list of pro/cons:
+"So what you're telling me is I can just use bootstrapping all the time for every test?" Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.
+
+Like any method, bootstrapping isn't perfect. There are benefits and drawbacks. For example, it can give different results depending on the seed that is chosen. Below are a list of pro/cons:
 
 Pros:
 
--   
+-   Simplicity in it's approach
+
+-   Can be used in a variety of situations
+
+-   Simple to understand
+
+-   Can be used for validating models
+
+-   Automatic
+
+-   Flexible
+
+-   Fast coverage
 
 Cons:
 
 -   While it's a nonparametric method, we are still assumption that the distribution is a certain shape. If it is skewed, then our result won't be correct. One way to solve this is to use a bias-corrected and accelerated bootstrap
+-   Limited to only those values observed. In the ice cream example, our bowl may only have vanilla, chocolate and cotton candy. But what if in the "big tub" that we can't see there is bubblegum flavour? Bootstrapping wouldn't have the bubblegum flavor in any of those
+-   It can take a long time to perform, compared to other methods (i.e., sandwich estimators).
+-   Requires an additional level of thinking
+-   Not guaranteed to give the same results
+-   Computational intensive for large datasets [@hernanwhatif, pp. 174]
+-   Can be sensitive to outliers
+-   Can vary both in computation time and accuracy on the number of bootstraps.
+-   Requires the data to be independent
+-   Involves resampling with replacement so pseudo-replicates rather than true replicates, which might not fully capture the uncertainty in some cases.
 
-## Vary Away!
-
-"So what you're telling me is I can just use bootstrapping all the time for every test?" Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.
+Bootstrapping is a powerful tool but should be used thoughtfully. Understanding its limitations is crucial for interpreting the results correctly, especially in complex analyses like causal inference. Given its pros and cons, it often serves as a useful complement to other statistical methods.
 
 ## What's Next?
 
-Bootstrapping is a wide field. I highly recommend the textbook by Hinkely et al. and to try using bootstrapping yourself!
-
-## From ChatGPT \[Need to Edit\]
-
-## **Pros and Cons of Bootstrapping**
-
-Bootstrapping is a widely-used technique in statistics for its simplicity and versatility. However, like any method, it has its strengths and weaknesses. Below, we explore some of the pros and cons of using bootstrapping.
-
-### **Pros**
-
-1.  **Simplicity**: Bootstrapping is conceptually simple and easy to implement. It doesn't require strong assumptions about the underlying distribution of the data.
-
-2.  **Versatility**: It can be applied to a wide range of statistics and models, making it useful for various types of data analysis, including causal inference.
-
-3.  **Small Sample Sizes**: Bootstrapping can be particularly useful when you have a small sample size, as it allows you to make more robust inferences.
-
-4.  **Non-Parametric**: It's a non-parametric method, meaning it doesn't assume a specific form for the distribution of the data. This makes it flexible and widely applicable.
-
-5.  **Computational Efficiency**: With modern computing power, bootstrapping can be done quickly, even for large datasets.
-
-6.  **Confidence Intervals**: Easily compute confidence intervals for complex estimators where analytical solutions may not be available.
-
-7.  **Model Validation**: Can be used for internal validation of models, assessing the stability of results.
-
-### **Cons**
-
-1.  **Not Always Accurate**: The accuracy of bootstrapping depends on the data and the statistic being estimated. It may not perform well for highly skewed data or for statistics that are sensitive to outliers.
-
-2.  **Computational Cost**: While generally efficient, bootstrapping can be computationally expensive if the dataset is large or if a large number of bootstrap samples are needed.
-
-3.  **Independence Assumption**: Assumes that the observations are independent. If this assumption is violated (e.g., in time-series data), then bootstrapping may give misleading results.
-
-4.  **Limited External Validity**: Bootstrapping only resamples from the existing data, so it can't capture variations or features not present in the original sample. This limits its external validity.
-
-5.  **Pseudo-Replication**: Since bootstrapping involves resampling with replacement, it creates "pseudo-replicates" rather than true replicates, which may not fully capture the uncertainty in some cases.
-
-6.  **Boundary Estimates**: For some statistics, bootstrapping can produce biased confidence intervals that do not contain the true parameter value, especially for small sample sizes.
-
-7.  **Not a Substitute for Real Data**: While bootstrapping can enhance an analysis, it's not a substitute for collecting more or better-quality data.
-
--   can lead to an inappropriately high level of certainty (ROS)
-
-### **Conclusion**
-
-Bootstrapping is a powerful tool but should be used thoughtfully. Understanding its limitations is crucial for interpreting the results correctly, especially in complex analyses like causal inference. Given its pros and cons, it often serves as a useful complement to other statistical methods.
+Bootstrapping is a wide area, this post was meant to be an introduction. I highly recommend the textbook by Hinkely et al. and to try using bootstrapping yourself!

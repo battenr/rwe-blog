@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.361">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -56,7 +56,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -91,7 +110,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -150,10 +170,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Resampling Magic</h1>
-            <p class="subtitle lead">The Wonders of Bootstrapping Explained</p>
+            <p class="subtitle lead">Demystifying Bootstrapping</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Resampling</div>
                 <div class="quarto-category">Bootstrapping</div>
+                <div class="quarto-category">Variance</div>
               </div>
                   </div>
   </div>
@@ -191,25 +212,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="certainly-uncertain" class="level2">
 <h2 class="anchored" data-anchor-id="certainly-uncertain">Certainly Uncertain</h2>
-<p>A key part of any analysis is to determine the uncertainty associated with an estimate. This has to do with determining the variance of the estimate, which we can use to derive the standard error. Sometimes this can be especially tricky with certain methods such as inverse probability weighting and standardization. One way to estimate this is using something called bootstrapping.</p>
+<p>A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this, which requires the standard error. Sometimes deriving this can be tricky with certain methods or when assumptions aren’t met. For example, if we use propensity score matching and the fit a generalized linear model in this matched sample, the assumption about the cases being independent isn’t true. So what do we do? We need a different way to calculate the standard error. Enter bootstrapping!</p>
 </section>
 <section id="what-is-bootstrapping" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-bootstrapping">What is bootstrapping?</h2>
-<p>No, not like Bootstrap Bill (Pirates of the Caribbean), bootstrapping is a statistical technique that can be quite useful. We can use is to estmate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?</p>
+<p>No, not like Bootstrap Bill (Pirates of the Caribbean reference), bootstrapping is a statistical technique that can be quite useful. We can use this to estate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?</p>
 </section>
 <section id="how-does-it-work" class="level2">
 <h2 class="anchored" data-anchor-id="how-does-it-work">How does it work?</h2>
-<p>Bootstrapping works by drawing repeated samples, with replacement, from our observations. Imagine that we have have a big tub of ice cream that looks like a rainbow, with a bunch of colors all mixed together. We want to know what the whole tub looks like, so what we do is take one scoop and look at the colors in that scoop. Then we put it back, mix it up and take another scoop. We can do this over and over again to try and understand what the whole tub looks like!<br>
+<p>Bootstrapping works by drawing repeated samples from our observations. The beauty about bootstrapping is all we need is an estimate and a sampling distribution <span class="citation" data-cites="gelman2020regression">(<a href="#ref-gelman2020regression" role="doc-biblioref">Gelman, Hill, and Vehtari 2020</a>)</span>. A better way to understand it is with a quick example.</p>
+<p>Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream, but we’re curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it’s 80% vanilla and 20% chocolate. If we do this over and over again, we can get an idea of what the big tub in the back looks like.<br>
 <br>
-This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let’s take a different example and put some numbers to it!</p>
+This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let’s try another example with some actual numbers!</p>
 </section>
-<section id="mini-golf-examples" class="level2">
-<h2 class="anchored" data-anchor-id="mini-golf-examples">Mini-Golf Examples</h2>
-<p>Let’s use mini-golf as an example. Imagine that you play mini-golf with your friends 100 times over a summer. Each time you play, you get a different score (the lower the better). Sometimes you do well, sometimes you play awful.<br>
+<section id="mini-golf" class="level2">
+<h2 class="anchored" data-anchor-id="mini-golf">Mini-Golf?</h2>
+<p>Let’s use mini-golf as an example. Imagine that you play mini-golf with your friends 100 times over a summer (yes you must really REALLY love mini-golf). Each time you play, you get a different score (the lower the better). Sometimes you do well, sometimes you play awful.<br>
 <br>
-Now you want to know: “am I any good at mini-golf? What would my score be on average?” So you decide to use bootstrapping to answer this. Here’s the following steps</p>
+You start to think: “I play a lot of mini-golf, but am I any good? What would my score be on average?” being the keen person that you are, you also wonder what kind of confidence intervals go with this average. So you decide to use bootstrapping to answer this, using these steps:</p>
 <ol type="1">
-<li>Look at 10 scores on random days and write them down.</li>
+<li>Look at 10 scores on a random day and write them down.</li>
 <li>Put them back.</li>
 <li>Draw another 10 scores and write them down.</li>
 <li>Put them back.</li>
@@ -219,76 +241,77 @@ Now you want to know: “am I any good at mini-golf? What would my score be on a
 </section>
 <section id="mini-golf---average-score" class="level2">
 <h2 class="anchored" data-anchor-id="mini-golf---average-score">Mini-Golf - Average Score</h2>
-<p>So we know our average score, if we just take the mean. But what is the confidence interval for this mean? Well, from statistics we know that the standard error is the standard deviation of it’s <em>sampling distribution</em>. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon. In simpler [RYAN: consider adding a graph]</p>
-<p>For example, if we have a bunch of mean values (say 1000) then that is our sampling distribution.</p>
+<p>So we know our average score, if we just take the mean. But what is the confidence interval for this mean? To calculate this, we need the standard error. But what is the standard error? Is it the same as the standard deviation? Not quite.</p>
+<p>The standard error is the standard deviation of the <em>sampling distribution</em>. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon, so instead let’s use a visual.</p>
+<p>For our example, we are taking 10 scores over and over. Each time we take 10 scores, we calculate the mean. So for each time, we have the mean. Now, let’s plot this.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Your 100 mini-golf scores</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>original_scores <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">40</span><span class="sc">:</span><span class="dv">60</span>, <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a variable to store the bootstrap estimates</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>bootstrap_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of bootstraps</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>n_bootstraps <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrapping</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bootstraps) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  bootstrap_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(original_scores, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  bootstrap_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(bootstrap_sample)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  bootstrap_estimates <span class="ot">&lt;-</span> <span class="fu">c</span>(bootstrap_estimates, bootstrap_mean)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the 95% confidence interval</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>estimated_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(bootstrap_estimates, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>estimated_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(original_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.2     ✔ readr     2.1.4
-✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
+<p>Great, now let’s plot this</p>
+<div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your 100 mini-golf scores</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>original_scores <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">40</span><span class="sc">:</span><span class="dv">60</span>, <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a variable to store the bootstrap estimates</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>bootstrap_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>()</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of bootstraps</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>n_bootstraps <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrapping</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bootstraps) {</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  bootstrap_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(original_scores, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  bootstrap_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(bootstrap_sample)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  bootstrap_estimates <span class="ot">&lt;-</span> <span class="fu">c</span>(bootstrap_estimates, bootstrap_mean)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the 95% confidence interval</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>estimated_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(bootstrap_estimates, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>estimated_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(original_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> bootstrap_estimates <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> bootstrap_estimates)) <span class="sc">+</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output-display">
+<p><img src="bootstrapping_files/figure-html/sampling distribution plot-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>Now we know that our average score is 51.1 and our confidence interval is 48, 54.1</p>
-<p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend). Let’s do this example again but account for those additional variables.</p>
+</div>
+<p>Each of these is an estimate of the mean. This is a <em>sampling distribution.</em> We can now use this to determine our confidence intervals. If we’re using a two-sided test and 95% CIs then can take the 2.5 and 97.5 quantiles! Now we know that our average score is 49.94 and our confidence interval is 46.7, 53.2</p>
+<p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend). So what if we want to fit a model and get 95% CIs for that model?</p>
 </section>
-<section id="mini-golf-glm" class="level2">
-<h2 class="anchored" data-anchor-id="mini-golf-glm">Mini-Golf: GLM</h2>
+<section id="mini-golf-glm-time" class="level2">
+<h2 class="anchored" data-anchor-id="mini-golf-glm-time">Mini-Golf: GLM Time</h2>
 <p>We’ll use a generalized linear model for our example. Side note: there is no rationale for picking a GLM, other than it’s a method that I’m familiar with. In reality, picking the model to use isn’t always so straightforward.<br>
 <br>
 Now, let’s simulate some data!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># For reproducibility</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of games</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>n_games <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of obstacles (simulated)</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>obstacles <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_games, <span class="dv">5</span>, <span class="dv">15</span>))</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Weekend (1 if weekend, 0 otherwise)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>weekend <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, n_games, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mini-golf scores (simulated)</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> obstacles <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> weekend <span class="sc">+</span> <span class="fu">rnorm</span>(n_games, <span class="dv">0</span>, <span class="dv">5</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Data frame</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>mini_golf_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(scores, obstacles, weekend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># For reproducibility</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of games</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>n_games <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of obstacles (simulated)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>obstacles <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_games, <span class="dv">5</span>, <span class="dv">15</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Weekend (1 if weekend, 0 otherwise)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>weekend <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, n_games, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mini-golf scores (simulated)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> obstacles <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> weekend <span class="sc">+</span> <span class="fu">rnorm</span>(n_games, <span class="dv">0</span>, <span class="dv">5</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Data frame</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>mini_golf_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(scores, obstacles, weekend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Firs things first with our data, let’s fit a GLM.</p>
@@ -296,9 +319,9 @@ Now, let’s simulate some data!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll use the tidymodels package here</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll use the tidymodels package here</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</code></pre>
@@ -319,41 +342,41 @@ Now, let’s simulate some data!</p>
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>boots <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(mini_golf_data, <span class="at">times =</span> <span class="dv">1000</span>, <span class="at">apparent =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll create a function for fitting our model. In this case a GLM</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(scores <span class="sc">~</span> obstacles <span class="sc">+</span> weekend, </span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df </span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's fit this model for each bootstrap sample</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>boot_glms <span class="ot">&lt;-</span> boots <span class="sc">%&gt;%</span> </span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(splits, fit_glm),</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_into =</span> <span class="fu">map</span>(model, tidy)</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>boot_coefs <span class="ot">&lt;-</span> </span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  boot_glms <span class="sc">%&gt;%</span> </span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>boots <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(mini_golf_data, <span class="at">times =</span> <span class="dv">1000</span>, <span class="at">apparent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll create a function for fitting our model. In this case a GLM</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(scores <span class="sc">~</span> obstacles <span class="sc">+</span> weekend, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's fit this model for each bootstrap sample</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>boot_glms <span class="ot">&lt;-</span> boots <span class="sc">%&gt;%</span> </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(splits, fit_glm),</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_into =</span> <span class="fu">map</span>(model, tidy)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>boot_coefs <span class="ot">&lt;-</span> </span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  boot_glms <span class="sc">%&gt;%</span> </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. </span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">int_pctl</span>(boot_glms, coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">int_pctl</span>(boot_glms, coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 6
@@ -367,63 +390,49 @@ Now, let’s simulate some data!</p>
 </section>
 <section id="why-not-use-bootstrapping-all-the-time" class="level2">
 <h2 class="anchored" data-anchor-id="why-not-use-bootstrapping-all-the-time">Why not use bootstrapping all the time?</h2>
-<p>Like any method, bootstrapping isn’t perfect. There’s benefits and drawbacks to using it. For example, it can give different results depending on the seed that is chosen. Below are a list of pro/cons:</p>
+<p>“So what you’re telling me is I can just use bootstrapping all the time for every test?” Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.</p>
+<p>Like any method, bootstrapping isn’t perfect. There are benefits and drawbacks. For example, it can give different results depending on the seed that is chosen. Below are a list of pro/cons:</p>
 <p>Pros:</p>
 <ul>
-<li></li>
+<li><p>Simplicity in it’s approach</p></li>
+<li><p>Can be used in a variety of situations</p></li>
+<li><p>Simple to understand</p></li>
+<li><p>Can be used for validating models</p></li>
+<li><p>Automatic</p></li>
+<li><p>Flexible</p></li>
+<li><p>Fast coverage</p></li>
 </ul>
 <p>Cons:</p>
 <ul>
 <li>While it’s a nonparametric method, we are still assumption that the distribution is a certain shape. If it is skewed, then our result won’t be correct. One way to solve this is to use a bias-corrected and accelerated bootstrap</li>
+<li>Limited to only those values observed. In the ice cream example, our bowl may only have vanilla, chocolate and cotton candy. But what if in the “big tub” that we can’t see there is bubblegum flavour? Bootstrapping wouldn’t have the bubblegum flavor in any of those</li>
+<li>It can take a long time to perform, compared to other methods (i.e., sandwich estimators).</li>
+<li>Requires an additional level of thinking</li>
+<li>Not guaranteed to give the same results</li>
+<li>Computational intensive for large datasets <span class="citation" data-cites="hernanwhatif">(<a href="#ref-hernanwhatif" role="doc-biblioref">Hernan and Robins 2021, 174</a>)</span></li>
+<li>Can be sensitive to outliers</li>
+<li>Can vary both in computation time and accuracy on the number of bootstraps.</li>
+<li>Requires the data to be independent</li>
+<li>Involves resampling with replacement so pseudo-replicates rather than true replicates, which might not fully capture the uncertainty in some cases.</li>
 </ul>
-</section>
-<section id="vary-away" class="level2">
-<h2 class="anchored" data-anchor-id="vary-away">Vary Away!</h2>
-<p>“So what you’re telling me is I can just use bootstrapping all the time for every test?” Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.</p>
+<p>Bootstrapping is a powerful tool but should be used thoughtfully. Understanding its limitations is crucial for interpreting the results correctly, especially in complex analyses like causal inference. Given its pros and cons, it often serves as a useful complement to other statistical methods.</p>
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
-<p>Bootstrapping is a wide field. I highly recommend the textbook by Hinkely et al.&nbsp;and to try using bootstrapping yourself!</p>
-</section>
-<section id="from-chatgpt-need-to-edit" class="level2">
-<h2 class="anchored" data-anchor-id="from-chatgpt-need-to-edit">From ChatGPT [Need to Edit]</h2>
-</section>
-<section id="pros-and-cons-of-bootstrapping" class="level2">
-<h2 class="anchored" data-anchor-id="pros-and-cons-of-bootstrapping"><strong>Pros and Cons of Bootstrapping</strong></h2>
-<p>Bootstrapping is a widely-used technique in statistics for its simplicity and versatility. However, like any method, it has its strengths and weaknesses. Below, we explore some of the pros and cons of using bootstrapping.</p>
-<section id="pros" class="level3">
-<h3 class="anchored" data-anchor-id="pros"><strong>Pros</strong></h3>
-<ol type="1">
-<li><p><strong>Simplicity</strong>: Bootstrapping is conceptually simple and easy to implement. It doesn’t require strong assumptions about the underlying distribution of the data.</p></li>
-<li><p><strong>Versatility</strong>: It can be applied to a wide range of statistics and models, making it useful for various types of data analysis, including causal inference.</p></li>
-<li><p><strong>Small Sample Sizes</strong>: Bootstrapping can be particularly useful when you have a small sample size, as it allows you to make more robust inferences.</p></li>
-<li><p><strong>Non-Parametric</strong>: It’s a non-parametric method, meaning it doesn’t assume a specific form for the distribution of the data. This makes it flexible and widely applicable.</p></li>
-<li><p><strong>Computational Efficiency</strong>: With modern computing power, bootstrapping can be done quickly, even for large datasets.</p></li>
-<li><p><strong>Confidence Intervals</strong>: Easily compute confidence intervals for complex estimators where analytical solutions may not be available.</p></li>
-<li><p><strong>Model Validation</strong>: Can be used for internal validation of models, assessing the stability of results.</p></li>
-</ol>
-</section>
-<section id="cons" class="level3">
-<h3 class="anchored" data-anchor-id="cons"><strong>Cons</strong></h3>
-<ol type="1">
-<li><p><strong>Not Always Accurate</strong>: The accuracy of bootstrapping depends on the data and the statistic being estimated. It may not perform well for highly skewed data or for statistics that are sensitive to outliers.</p></li>
-<li><p><strong>Computational Cost</strong>: While generally efficient, bootstrapping can be computationally expensive if the dataset is large or if a large number of bootstrap samples are needed.</p></li>
-<li><p><strong>Independence Assumption</strong>: Assumes that the observations are independent. If this assumption is violated (e.g., in time-series data), then bootstrapping may give misleading results.</p></li>
-<li><p><strong>Limited External Validity</strong>: Bootstrapping only resamples from the existing data, so it can’t capture variations or features not present in the original sample. This limits its external validity.</p></li>
-<li><p><strong>Pseudo-Replication</strong>: Since bootstrapping involves resampling with replacement, it creates “pseudo-replicates” rather than true replicates, which may not fully capture the uncertainty in some cases.</p></li>
-<li><p><strong>Boundary Estimates</strong>: For some statistics, bootstrapping can produce biased confidence intervals that do not contain the true parameter value, especially for small sample sizes.</p></li>
-<li><p><strong>Not a Substitute for Real Data</strong>: While bootstrapping can enhance an analysis, it’s not a substitute for collecting more or better-quality data.</p></li>
-</ol>
-</section>
-<section id="conclusion" class="level3">
-<h3 class="anchored" data-anchor-id="conclusion"><strong>Conclusion</strong></h3>
-<p>Bootstrapping is a powerful tool but should be used thoughtfully. Understanding its limitations is crucial for interpreting the results correctly, especially in complex analyses like causal inference. Given its pros and cons, it often serves as a useful complement to other statistical methods.</p>
+<p>Bootstrapping is a wide area, this post was meant to be an introduction. I highly recommend the textbook by Hinkely et al.&nbsp;and to try using bootstrapping yourself!</p>
+
 
 
 </section>
-</section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-gelman2020regression" class="csl-entry" role="listitem">
+Gelman, Andrew, Jennifer Hill, and Aki Vehtari. 2020. <em>Regression and Other Stories</em>. Cambridge University Press.
+</div>
+<div id="ref-hernanwhatif" class="csl-entry" role="listitem">
+Hernan, M. A., and J. M. Robins. 2021. <span>“What If - Causal Inference.”</span> Textbook.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
