@@ -235,7 +235,7 @@ Estimating Variance
 <p>Bootstrapping works by drawing repeated samples, with replacement aka putting the observations we drew back, from our sample. The idea is that by resampling the data we can use this to imagine what a new sample (of the same size) would look like if we drew from our population again.</p>
 <p>The beauty about bootstrapping is all we need is an estimate and a sampling distribution <span class="citation" data-cites="gelman2020regression">(<a href="#ref-gelman2020regression" role="doc-biblioref">Gelman, Hill, and Vehtari 2020</a>)</span>. A better way to understand it is with a quick example.</p>
 <p>Imagine that you go to an ice cream store and order a bowl of ice cream. You get a bowl of ice cream that’s 80% vanilla and 20% chocolate but you’re curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? If you asked for another bowl from the same tub would you get the same proportion?</p>
-<p>To try and determine this, you take a spoonful from the bowl. It’s 60% chocolate and 40% vanilla. You put it back then take another spoonful and notice it’s 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.<br>
+<p>To try and determine this, you take a spoonful of ice cream randomly and put it in another bowl (of the same size). You do this over and over until you have a new bowl of ice cream. This is magical ice cream though, so once you take a spoonful, that same flavour and amount appears in the bowl again (aka it’s <em>replaced,</em> so it can appear more than once). This new bowl of ice cream is 60% chocolate and 40% vanilla. You put it back then do it all over again and notice it’s 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.<br>
 <br>
 This is bootstrapping. We take samples, with replacement, to try to understand what the whole picture looks like. Let’s try another example with some actual numbers!</p>
 </section>
@@ -245,9 +245,9 @@ This is bootstrapping. We take samples, with replacement, to try to understand w
 <br>
 You start to think: “I play a lot of mini-golf, but am I any good? What would my score be on average?” being the keen person that you are, you also wonder what kind of confidence intervals go with this average. So you decide to use bootstrapping to answer this, using these steps:</p>
 <ol type="1">
-<li>Draw 10 scores, from any day (randomly) and write them down.</li>
+<li>Draw 100 scores, from any day (randomly) and write them down. We are doing this with replacement, so the same observation can appear more than once.</li>
 <li>Put them back.</li>
-<li>Draw another 10 scores and write them down.</li>
+<li>Draw another 100 scores and write them down.</li>
 <li>Put them back.</li>
 <li>Repeat steps 1-4</li>
 </ol>
@@ -257,7 +257,7 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 <h2 class="anchored" data-anchor-id="mini-golf---average-score">Mini-Golf - Average Score</h2>
 <p>So we know our average score, if we just take the mean of all the scores. But what is the confidence interval for this mean? To calculate this we often use the standard error while assuming a normal distribution. But what is the standard error? Is it the same as the standard deviation? Not quite.</p>
 <p>The standard error is the standard deviation of the <em>sampling distribution</em>. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon, so instead let’s use a visual.</p>
-<p>For our example, we are taking 10 scores over and over. Each time we take 10 scores, we calculate the mean. So for each time, we have the mean. Let’s plot this!</p>
+<p>For our example, we are taking 100 scores over and over. Each time we take 100 scores, we calculate the mean. So for each time, we have the mean. Let’s plot this!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -287,7 +287,7 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Draw 10 samples from our original scores, with replacement. That </span></span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># way you have the same sample each time</span></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  bootstrap_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(original_scores, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  bootstrap_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(original_scores, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>) </span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate the mean for our new sample </span></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -326,7 +326,7 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 <p><img src="bootstrapping_files/figure-html/sampling distribution plot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Each of these is an estimate of the mean. This is a <em>sampling distribution.</em> We can now use this to determine our confidence intervals. We can calculate the standard error by calculating the standard deviation of this distribution or, we can do it using percentiles. If we’re using a two-sided test and 95% CIs then can take the 0.025 and 0.975 percentiles! Doing this, we now know our average score is 50.66 and our confidence interval is 47.0975, 53.9025!</p>
+<p>Each of these is an estimate of the mean. This is a <em>sampling distribution.</em> We can now use this to determine our confidence intervals. We can calculate the standard error by calculating the standard deviation of this distribution or, we can do it using percentiles. If we’re using a two-sided test and 95% CIs then can take the 0.025 and 0.975 percentiles! Doing this, we now know our average score is 50.66 and our confidence interval is 49.44975, 51.64!</p>
 <p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend, making us play worse). So what if we want to fit a model and get 95% CIs for that model?</p>
 </section>
 <section id="mini-golf-glm-time" class="level2">
@@ -425,7 +425,7 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
-<p>Bootstrapping is a wide area, this post was meant to be an introduction. There are a wide variety of use cases and types of bootstrapping, for example the bias-corrected and accelerated bootstrap. If you’re interested in learning more, there is an entire textbook on it <span class="citation" data-cites="davison1997bootstrap">(<a href="#ref-davison1997bootstrap" role="doc-biblioref">Davison and Hinkley 1997</a>)</span>. Happy bootstrapping!</p>
+<p>Bootstrapping is a wide area, this post was meant to be an introduction. There are a wide variety of use cases and types of bootstrapping, for example the bias-corrected and accelerated bootstrap. If you’re interested in learning more, there is an entire textbook on bootstrapping <span class="citation" data-cites="davison1997bootstrap">(<a href="#ref-davison1997bootstrap" role="doc-biblioref">Davison and Hinkley 1997</a>)</span>. Happy bootstrapping!</p>
 
 
 

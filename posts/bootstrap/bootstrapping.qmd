@@ -34,7 +34,7 @@ The beauty about bootstrapping is all we need is an estimate and a sampling dist
 
 Imagine that you go to an ice cream store and order a bowl of ice cream. You get a bowl of ice cream that's 80% vanilla and 20% chocolate but you're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? If you asked for another bowl from the same tub would you get the same proportion?
 
-To try and determine this, you take a spoonful of vanilla from the bowl then a spoonful of chocolate. You do this over and over until you have a new bowlful. This is magical ice cream, so once you take a spoonful, that same flavour and amount appears in the bowl again (aka it's *replaced*). This new bowl of ice cream is 60% chocolate and 40% vanilla. You put it back then do it all over again and notice it's 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.\
+To try and determine this, you take a spoonful of ice cream randomly and put it in another bowl (of the same size). You do this over and over until you have a new bowl of ice cream. This is magical ice cream though, so once you take a spoonful, that same flavour and amount appears in the bowl again (aka it's *replaced,* so it can appear more than once). This new bowl of ice cream is 60% chocolate and 40% vanilla. You put it back then do it all over again and notice it's 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.\
 \
 This is bootstrapping. We take samples, with replacement, to try to understand what the whole picture looks like. Let's try another example with some actual numbers!
 
@@ -44,7 +44,7 @@ Let's use mini-golf as an example. Imagine that you play mini-golf with your fri
 \
 You start to think: "I play a lot of mini-golf, but am I any good? What would my score be on average?" being the keen person that you are, you also wonder what kind of confidence intervals go with this average. So you decide to use bootstrapping to answer this, using these steps:
 
-1.  Draw 100 scores, from any day (randomly) and write them down. We are doing this with replacement, so the same score can appear twice.
+1.  Draw 100 scores, from any day (randomly) and write them down. We are doing this with replacement, so the same observation can appear more than once.
 2.  Put them back.
 3.  Draw another 100 scores and write them down.
 4.  Put them back.
@@ -221,4 +221,4 @@ Like any method, bootstrapping isn't perfect. There are benefits and drawbacks. 
 
 ## What's Next?
 
-Bootstrapping is a wide area, this post was meant to be an introduction. There are a wide variety of use cases and types of bootstrapping, for example the bias-corrected and accelerated bootstrap. If you're interested in learning more, there is an entire textbook on it [@davison1997bootstrap]. Happy bootstrapping!
+Bootstrapping is a wide area, this post was meant to be an introduction. There are a wide variety of use cases and types of bootstrapping, for example the bias-corrected and accelerated bootstrap. If you're interested in learning more, there is an entire textbook on bootstrapping [@davison1997bootstrap]. Happy bootstrapping!
