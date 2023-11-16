@@ -24,11 +24,11 @@ No, not like Bootstrap Bill (Pirates of the Caribbean reference), bootstrapping 
 
 Bootstrapping works by drawing repeated samples from our observations. The beauty about bootstrapping is all we need is an estimate and a sampling distribution [@gelman2020regression]. A better way to understand it is with a quick example.
 
-Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream, but we're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it's 80% vanilla and 20% chocolate. If we do this over and over again, we can get an idea of what the big tub in the back looks like. \
+Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream, but we're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it's 80% vanilla and 20% chocolate. If we do this over and over again, we can get an idea of what the big tub in the back looks like.\
 \
 This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let's try another example with some actual numbers!
 
-## Mini-Golf? 
+## Mini-Golf?
 
 Let's use mini-golf as an example. Imagine that you play mini-golf with your friends 100 times over a summer (yes you must really REALLY love mini-golf). Each time you play, you get a different score (the lower the better). Sometimes you do well, sometimes you play awful.\
 \
