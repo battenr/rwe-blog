@@ -34,7 +34,7 @@ The beauty about bootstrapping is all we need is an estimate and a sampling dist
 
 Imagine that you go to an ice cream store and order a bowl of ice cream. You get a bowl of ice cream that's 80% vanilla and 20% chocolate but you're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? If you asked for another bowl from the same tub would you get the same proportion?
 
-To try and determine this, you take a spoonful from the bowl. It's 60% chocolate and 40% vanilla. You put it back then take another spoonful and notice it's 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.\
+To try and determine this, you take a spoonful of vanilla from the bowl then a spoonful of chocolate. You do this over and over until you have a new bowlful. This is magical ice cream, so once you take a spoonful, that same flavour and amount appears in the bowl again (aka it's *replaced*). This new bowl of ice cream is 60% chocolate and 40% vanilla. You put it back then do it all over again and notice it's 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.\
 \
 This is bootstrapping. We take samples, with replacement, to try to understand what the whole picture looks like. Let's try another example with some actual numbers!
 
@@ -44,9 +44,9 @@ Let's use mini-golf as an example. Imagine that you play mini-golf with your fri
 \
 You start to think: "I play a lot of mini-golf, but am I any good? What would my score be on average?" being the keen person that you are, you also wonder what kind of confidence intervals go with this average. So you decide to use bootstrapping to answer this, using these steps:
 
-1.  Draw 10 scores, from any day (randomly) and write them down.
+1.  Draw 100 scores, from any day (randomly) and write them down. We are doing this with replacement, so the same score can appear twice.
 2.  Put them back.
-3.  Draw another 10 scores and write them down.
+3.  Draw another 100 scores and write them down.
 4.  Put them back.
 5.  Repeat steps 1-4
 
@@ -58,7 +58,7 @@ So we know our average score, if we just take the mean of all the scores. But wh
 
 The standard error is the standard deviation of the *sampling distribution*. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon, so instead let's use a visual.
 
-For our example, we are taking 10 scores over and over. Each time we take 10 scores, we calculate the mean. So for each time, we have the mean. Let's plot this!
+For our example, we are taking 100 scores over and over. Each time we take 100 scores, we calculate the mean. So for each time, we have the mean. Let's plot this!
 
 ```{r scores, message = FALSE}
 
@@ -88,7 +88,7 @@ for (i in 1:n_bootstraps) {
   # Draw 10 samples from our original scores, with replacement. That 
   # way you have the same sample each time
   
-  bootstrap_sample <- sample(original_scores, size = 10, replace = TRUE) 
+  bootstrap_sample <- sample(original_scores, size = 100, replace = TRUE) 
   
   # Calculate the mean for our new sample 
   
