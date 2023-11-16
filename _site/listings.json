@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/bootstrap/bootstrapping.html",
       "/posts/simulating-data/sim_data.html",
       "/posts/dags/dags.html",
       "/posts/causal-estimands/causal_estimands.html",

@@ -4,9 +4,8 @@ subtitle: "Demystifying Bootstrapping"
 #subtitle: "The Wonders of Bootstrapping Explained"
 author: "Ryan Batten"
 date: "2023-10-30"
-categories: [Resampling, Bootstrapping, Variance]
+categories: [Resampling, Bootstrapping, Variance Estimation]
 bibliography: bootstrap.bib
-draft: true
 format: 
   html:
     code-fold: true
@@ -14,17 +13,21 @@ format:
 
 ## Certainly Uncertain
 
-A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this, which requires the standard error. Sometimes deriving this can be tricky with certain methods or when assumptions aren't met. For example, if we use propensity score matching and the fit a generalized linear model in this matched sample, the assumption about the cases being independent isn't true. So what do we do? We need a different way to calculate the standard error. Enter bootstrapping!
+A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this. Sometimes deriving this can be tricky with certain methods or when assumptions aren't met. For example, if we use propensity score matching and then fit a generalized linear model in this matched sample, the assumption about the cases being independent isn't true. So what do we do? We need a different way to calculate the standard error. Enter bootstrapping!
 
-## What is bootstrapping?
+## What exactly *is* bootstrapping?
 
-No, not like Bootstrap Bill (Pirates of the Caribbean reference), bootstrapping is a statistical technique that can be quite useful. We can use this to estate confidence intervals, for hypothesis testing, model validation and estimating treatment effects just to name a few things. So how exactly does it work?
+No, not like Bootstrap Bill (Pirates of the Caribbean reference). Bootstrapping is a statistical technique that can be quite useful. It comes from the term "pull oneself up by their bootstraps" in the sense that we use our sample that we already have. We can use this to estimate confidence intervals! But can also use it for other things. So how exactly does it work?
 
 ## How does it work?
 
-Bootstrapping works by drawing repeated samples from our observations. The beauty about bootstrapping is all we need is an estimate and a sampling distribution [@gelman2020regression]. A better way to understand it is with a quick example.
+Bootstrapping works by drawing repeated samples, with replacement, from our sample. The idea is that by resampling data we can use this to imagine what a new sample (of the same size) would look like if we drew from our population again.
 
-Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream, but we're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it's 80% vanilla and 20% chocolate. If we do this over and over again, we can get an idea of what the big tub in the back looks like.\
+The beauty about bootstrapping is all we need is an estimate and a sampling distribution [@gelman2020regression]. A better way to understand it is with a quick example.
+
+Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream that's 80% vanilla and 20% chocolate but we're curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? If we asked for another bowl from the same tub would we get the same proportion?
+
+To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it's 80% vanilla and 20% chocolate. If we do this over and over again, we can use this to try and get an idea of what the big tub in the back looks like.\
 \
 This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let's try another example with some actual numbers!
 
@@ -34,7 +37,7 @@ Let's use mini-golf as an example. Imagine that you play mini-golf with your fri
 \
 You start to think: "I play a lot of mini-golf, but am I any good? What would my score be on average?" being the keen person that you are, you also wonder what kind of confidence intervals go with this average. So you decide to use bootstrapping to answer this, using these steps:
 
-1.  Look at 10 scores on a random day and write them down.
+1.  Draw 10 scores, from any day (randomly) and write them down.
 2.  Put them back.
 3.  Draw another 10 scores and write them down.
 4.  Put them back.
@@ -44,104 +47,139 @@ Now we have our plan, let's start implementing it!
 
 ## Mini-Golf - Average Score
 
-So we know our average score, if we just take the mean. But what is the confidence interval for this mean? To calculate this, we need the standard error. But what is the standard error? Is it the same as the standard deviation? Not quite.
+So we know our average score, if we just take the mean of all the scores. But what is the confidence interval for this mean? To calculate this we often use the standard error while assuming a normal distribution. But what is the standard error? Is it the same as the standard deviation? Not quite.
 
 The standard error is the standard deviation of the *sampling distribution*. The sampling distribution is the probability distribution of a statistic. This may sound like a bit of jargon, so instead let's use a visual.
 
-For our example, we are taking 10 scores over and over. Each time we take 10 scores, we calculate the mean. So for each time, we have the mean. Now, let's plot this.
+For our example, we are taking 10 scores over and over. Each time we take 10 scores, we calculate the mean. So for each time, we have the mean. Let's plot this!
 
 ```{r scores, message = FALSE}
 
-library(tidyverse)
+library(tidyverse) # Loading the tidyverse package
 
-# Your 100 mini-golf scores
+# Setting seed for reproduceability, arbitrarily chosen in this case
+
+set.seed(123)
+
+
+# Original mini-golf scores, one per day for 100 days. 
+
 original_scores <- sample(40:60, 100, replace = TRUE)
 
-# Initialize a variable to store the bootstrap estimates
+# Initalizing a variable to store the bootstrap estimates in 
+
 bootstrap_estimates <- numeric()
 
-# Number of bootstraps
+# Number of bootstraps. For this case, arbitrarily choosing 1000. In reality, need to consider what number to use
+
 n_bootstraps <- 1000
 
-# Bootstrapping
+# Time to do the bootstrapping!
+
 for (i in 1:n_bootstraps) {
-  bootstrap_sample <- sample(original_scores, size = 10, replace = TRUE)
+  
+  # Draw 10 samples from our original scores, with replacement. That 
+  # way you have the same sample each time
+  
+  bootstrap_sample <- sample(original_scores, size = 10, replace = TRUE) 
+  
+  # Calculate the mean for our new sample 
+  
   bootstrap_mean <- mean(bootstrap_sample)
+  
+  # Combine our new estimated mean 
+  
   bootstrap_estimates <- c(bootstrap_estimates, bootstrap_mean)
 }
 
-# Estimate the 95% confidence interval
+# We can calculate the 95% CI as either finding out the standard error (calculate the standard deviation of bootstrap_estimates) OR can use the corresponding quantiles. 
 
-estimated_ci <- quantile(bootstrap_estimates, probs = c(0.05, 0.95))
+# Estimating the 95% CI using the 0.025 and 0.975 quantiles (two-sided)
 
-estimated_mean <- mean(original_scores)
+estimated_ci <- quantile(bootstrap_estimates, probs = c(0.025, 0.975))
+
+estimated_mean <- mean(original_scores) # Calculating the mean
 
 ```
-
-Great, now let's plot this
 
 ```{r sampling distribution plot}
 
 df = bootstrap_estimates |> as.data.frame()
 
 ggplot(data = df, aes(x = bootstrap_estimates)) + 
-  geom_bar()
+  geom_bar() +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    text = element_text(size = 12)
+  ) +
+  ggtitle("Sampling Distribution of Mini-Golf Scores for the Mean") +
+  labs(x = "Bootstrap Sample Number (1 through n of number of bootstrap replicates)", y = "Mean of Sample")
   
 
 ```
 
-Each of these is an estimate of the mean. This is a *sampling distribution.* We can now use this to determine our confidence intervals. If we're using a two-sided test and 95% CIs then can take the 2.5 and 97.5 quantiles! Now we know that our average score is `r estimated_mean` and our confidence interval is `r estimated_ci`
+Each of these is an estimate of the mean. This is a *sampling distribution.* We can now use this to determine our confidence intervals. If we're using a two-sided test and 95% CIs then can take the 0.025 and 0.975 percentiles! Doing this, we now know our average score is `r estimated_mean` and our confidence interval is `r estimated_ci`!
 
 However, this is the mean. It doesn't account for the number of obstacles on the course or if it was a weekend (perhaps we'd feel more rushed if we were playing on the weekend). So what if we want to fit a model and get 95% CIs for that model?
 
 ## Mini-Golf: GLM Time
 
-We'll use a generalized linear model for our example. Side note: there is no rationale for picking a GLM, other than it's a method that I'm familiar with. In reality, picking the model to use isn't always so straightforward.\
-\
-Now, let's simulate some data!
+We'll use a generalized linear model for our example. Side note: there is no rationale for picking a GLM, other than it's a method that I'm familiar with. In reality, picking the model to use isn't always so straightforward. Now, let's simulate some data!
 
 ```{r golf-glm}
-set.seed(123) # For reproducibility
+
+# Setting seed for reproducibility, 
+
+set.seed(123) # Setting seed for reproduceability, arbitrarily chosen in this case
 
 # Number of games
+
 n_games <- 100
 
-# Number of obstacles (simulated)
+# Number of obstacles on the course that game
+
 obstacles <- round(runif(n_games, 5, 15))
 
-# Weekend (1 if weekend, 0 otherwise)
+# Is it a weekend? Yes/no (1 if weekend, 0 otherwise)
+
 weekend <- sample(0:1, n_games, replace = TRUE)
 
-# Mini-golf scores (simulated)
+# Mini-golf scores, dependent on the number of obstacles and whether it was a weekend or not
+
 scores <- 50 + 2 * obstacles + 5 * weekend + rnorm(n_games, 0, 5)
 
-# Data frame
+# Combining it all into a dataframe 
+
 mini_golf_data <- data.frame(scores, obstacles, weekend)
 
 ```
 
-Firs things first with our data, let's fit a GLM.
-
-Now that we have our data, we can create some bootstrap samples.
+We've got some data! Now, we want to calculate our 95% CIs from a GLM. To do this, we first need to sample some data, then fit a GLM and repeat, repeat, repeat as many times as we have chosen. So, let's do it!
 
 ```{r bootstrap}
 
-# We'll use the tidymodels package here
+# We'll use the tidymodels package here to get our multiple samples then fit a model to each sample. 
 
 library(tidymodels)
+
+# First, let's get 1000 bootstrapped samples.
 
 boots <- bootstraps(mini_golf_data, times = 1000, apparent = TRUE)
 
 # Now we'll create a function for fitting our model. In this case a GLM
 
 fit_glm <- function(df){
+  
+  # Fitting the glm
+  
   glm(scores ~ obstacles + weekend, 
       family = gaussian(link = "identity"),
       data = df 
       )
 }
 
-# Now let's fit this model for each bootstrap sample
+# Now let's fit this model for each of our 1000 bootstrap samples
 
 boot_glms <- boots %>% 
   dplyr::mutate(
@@ -149,17 +187,25 @@ boot_glms <- boots %>%
     coef_into = map(model, tidy)
   )
 
+# Now we can pull out our coefficients 
 
 boot_coefs <- 
   boot_glms %>% 
   unnest(coef_into)
 
+```
 
+```{r glm plot}
 
-
-
-
-
+ggplot(data = df, aes(x = bootstrap_estimates)) + 
+  geom_bar() +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    text = element_text(size = 12)
+  ) +
+  ggtitle("Sampling Distribution of Mini-Golf Scores for the Mean") +
+  labs(x = "Bootstrap Sample Number (1 through n of number of bootstrap replicates)", y = "Mean of Sample")
 
 ```
 
@@ -168,42 +214,17 @@ boot_coefs <-
 # Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. 
 
 int_pctl(boot_glms, coef_into)
+
+
 ```
+
+Just like that, we have our 95% CIs for our terms. In this case, if we look at the obstacles coefficient, we can see the estimate and upper/lower bounds.
 
 ## Why not use bootstrapping all the time?
 
 "So what you're telling me is I can just use bootstrapping all the time for every test?" Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.
 
-Like any method, bootstrapping isn't perfect. There are benefits and drawbacks. For example, it can give different results depending on the seed that is chosen. Below are a list of pro/cons:
-
-Pros:
-
--   Simplicity in it's approach
-
--   Can be used in a variety of situations
-
--   Simple to understand
-
--   Can be used for validating models
-
--   Automatic
-
--   Flexible
-
--   Fast coverage
-
-Cons:
-
--   While it's a nonparametric method, we are still assumption that the distribution is a certain shape. If it is skewed, then our result won't be correct. One way to solve this is to use a bias-corrected and accelerated bootstrap
--   Limited to only those values observed. In the ice cream example, our bowl may only have vanilla, chocolate and cotton candy. But what if in the "big tub" that we can't see there is bubblegum flavour? Bootstrapping wouldn't have the bubblegum flavor in any of those
--   It can take a long time to perform, compared to other methods (i.e., sandwich estimators).
--   Requires an additional level of thinking
--   Not guaranteed to give the same results
--   Computational intensive for large datasets [@hernanwhatif, pp. 174]
--   Can be sensitive to outliers
--   Can vary both in computation time and accuracy on the number of bootstraps.
--   Requires the data to be independent
--   Involves resampling with replacement so pseudo-replicates rather than true replicates, which might not fully capture the uncertainty in some cases.
+Like any method, bootstrapping isn't perfect. There are benefits and drawbacks. For example, it can give different results depending on the starting seed. It can also only draw observations from your data that has been observed. In our ice cream example, no bubble gum flavour would show because our bowl only has vanilla and chocolate. However, it's not all bad. Bootstrapping can be a solution in a variety of situations and is quite flexible. It's important to keep all of this in mind when considering using it.
 
 Bootstrapping is a powerful tool but should be used thoughtfully. Understanding its limitations is crucial for interpreting the results correctly, especially in complex analyses like causal inference. Given its pros and cons, it often serves as a useful complement to other statistical methods.
 
