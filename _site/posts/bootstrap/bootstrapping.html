@@ -212,6 +212,19 @@ div.csl-indent {
 <section id="certainly-uncertain" class="level2">
 <h2 class="anchored" data-anchor-id="certainly-uncertain">Certainly Uncertain</h2>
 <p>A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this. Sometimes deriving this can be tricky with certain methods or when assumptions aren’t met. For example, if we use propensity score matching and then fit a generalized linear model in this matched sample, the assumption about the cases being independent isn’t true. So what do we do? We need a different way to calculate the standard error. Enter bootstrapping!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Estimating Variance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This post will focus on bootstrapping but it’s important to note that it’s not the only solution. For example, a commonly used way to calculate variance with PS methods is the robust variance estimator <span class="citation" data-cites="austin2011introduction">(<a href="#ref-austin2011introduction" role="doc-biblioref">Austin 2011</a>)</span>. a</p>
+</div>
+</div>
 </section>
 <section id="what-exactly-is-bootstrapping" class="level2">
 <h2 class="anchored" data-anchor-id="what-exactly-is-bootstrapping">What exactly <em>is</em> bootstrapping?</h2>
@@ -219,12 +232,12 @@ div.csl-indent {
 </section>
 <section id="how-does-it-work" class="level2">
 <h2 class="anchored" data-anchor-id="how-does-it-work">How does it work?</h2>
-<p>Bootstrapping works by drawing repeated samples, with replacement, from our sample. The idea is that by resampling data we can use this to imagine what a new sample (of the same size) would look like if we drew from our population again.</p>
+<p>Bootstrapping works by drawing repeated samples, with replacement aka putting the observations we drew back, from our sample. The idea is that by resampling the data we can use this to imagine what a new sample (of the same size) would look like if we drew from our population again.</p>
 <p>The beauty about bootstrapping is all we need is an estimate and a sampling distribution <span class="citation" data-cites="gelman2020regression">(<a href="#ref-gelman2020regression" role="doc-biblioref">Gelman, Hill, and Vehtari 2020</a>)</span>. A better way to understand it is with a quick example.</p>
-<p>Imagine that go to an ice cream store and order a bowl of ice cream. We get a bowl of ice cream that’s 80% vanilla and 20% chocolate but we’re curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? If we asked for another bowl from the same tub would we get the same proportion?</p>
-<p>To try and determine this, we take a spoonful from our bowl. In our bowl, there is 60% chocolate and 40% vanilla. We try taking another spoonful and notice it’s 80% vanilla and 20% chocolate. If we do this over and over again, we can use this to try and get an idea of what the big tub in the back looks like.<br>
+<p>Imagine that you go to an ice cream store and order a bowl of ice cream. You get a bowl of ice cream that’s 80% vanilla and 20% chocolate but you’re curious what the big tub in the back of the store looks like. Is it mostly vanilla? Chocolate? Is it a 70/30 split of either? Are there other flavours? If you asked for another bowl from the same tub would you get the same proportion?</p>
+<p>To try and determine this, you take a spoonful from the bowl. It’s 60% chocolate and 40% vanilla. You put it back then take another spoonful and notice it’s 80% vanilla and 20% chocolate. If you do this over and over again, you can use this to try and get an idea of what the big tub in the back looks like.<br>
 <br>
-This is what bootstrapping it. We take repeated samples to try to understand what the whole picture looks like. Let’s try another example with some actual numbers!</p>
+This is bootstrapping. We take samples, with replacement, to try to understand what the whole picture looks like. Let’s try another example with some actual numbers!</p>
 </section>
 <section id="mini-golf" class="level2">
 <h2 class="anchored" data-anchor-id="mini-golf">Mini-Golf?</h2>
@@ -313,8 +326,8 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 <p><img src="bootstrapping_files/figure-html/sampling distribution plot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Each of these is an estimate of the mean. This is a <em>sampling distribution.</em> We can now use this to determine our confidence intervals. If we’re using a two-sided test and 95% CIs then can take the 0.025 and 0.975 percentiles! Doing this, we now know our average score is 50.66 and our confidence interval is 47.0975, 53.9025!</p>
-<p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend). So what if we want to fit a model and get 95% CIs for that model?</p>
+<p>Each of these is an estimate of the mean. This is a <em>sampling distribution.</em> We can now use this to determine our confidence intervals. We can calculate the standard error by calculating the standard deviation of this distribution or, we can do it using percentiles. If we’re using a two-sided test and 95% CIs then can take the 0.025 and 0.975 percentiles! Doing this, we now know our average score is 50.66 and our confidence interval is 47.0975, 53.9025!</p>
+<p>However, this is the mean. It doesn’t account for the number of obstacles on the course or if it was a weekend (perhaps we’d feel more rushed if we were playing on the weekend, making us play worse). So what if we want to fit a model and get 95% CIs for that model?</p>
 </section>
 <section id="mini-golf-glm-time" class="level2">
 <h2 class="anchored" data-anchor-id="mini-golf-glm-time">Mini-Golf: GLM Time</h2>
@@ -327,84 +340,72 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Setting seed for reproduceability, arbitrarily chosen in this case</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of games</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>n_games <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of obstacles (simulated)</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>obstacles <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_games, <span class="dv">5</span>, <span class="dv">15</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>n_games <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of obstacles on the course that game</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Weekend (1 if weekend, 0 otherwise)</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>weekend <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, n_games, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Mini-golf scores (simulated)</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> obstacles <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> weekend <span class="sc">+</span> <span class="fu">rnorm</span>(n_games, <span class="dv">0</span>, <span class="dv">5</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>obstacles <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_games, <span class="dv">5</span>, <span class="dv">15</span>))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Is it a weekend? Yes/no (1 if weekend, 0 otherwise)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>weekend <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, n_games, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Data frame</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>mini_golf_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(scores, obstacles, weekend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Mini-golf scores, dependent on the number of obstacles and whether it was a weekend or not</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> obstacles <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> weekend <span class="sc">+</span> <span class="fu">rnorm</span>(n_games, <span class="dv">0</span>, <span class="dv">5</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Combining it all into a dataframe </span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>mini_golf_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(scores, obstacles, weekend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Firs things first with our data, let’s fit a GLM.</p>
-<p>Now that we have our data, we can create some bootstrap samples.</p>
+<p>We’ve got some data! Now, we want to calculate our 95% CIs from a GLM. To do this, we first need to sample some data, then fit a GLM to that new dataset and repeat, repeat, repeat as many times as we have chosen. So, let’s do it!</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll use the tidymodels package here</span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll use the tidymodels package here to get our multiple samples then fit a model to each sample. </span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ broom        1.0.5     ✔ rsample      1.2.0
-✔ dials        1.2.0     ✔ tune         1.1.2
-✔ infer        1.0.5     ✔ workflows    1.1.3
-✔ modeldata    1.2.0     ✔ workflowsets 1.0.1
-✔ parsnip      1.1.1     ✔ yardstick    1.2.0
-✔ recipes      1.0.8     </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
-✖ scales::discard() masks purrr::discard()
-✖ dplyr::filter()   masks stats::filter()
-✖ recipes::fixed()  masks stringr::fixed()
-✖ dplyr::lag()      masks stats::lag()
-✖ yardstick::spec() masks readr::spec()
-✖ recipes::step()   masks stats::step()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>boots <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(mini_golf_data, <span class="at">times =</span> <span class="dv">1000</span>, <span class="at">apparent =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll create a function for fitting our model. In this case a GLM</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(scores <span class="sc">~</span> obstacles <span class="sc">+</span> weekend, </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df </span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's fit this model for each bootstrap sample</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>boot_glms <span class="ot">&lt;-</span> boots <span class="sc">%&gt;%</span> </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(splits, fit_glm),</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_into =</span> <span class="fu">map</span>(model, tidy)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>boot_coefs <span class="ot">&lt;-</span> </span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  boot_glms <span class="sc">%&gt;%</span> </span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># First, let's get 1000 bootstrapped samples.</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>boots <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(mini_golf_data, <span class="at">times =</span> <span class="dv">1000</span>, <span class="at">apparent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll create a function for fitting our model. In this case a GLM</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fitting the glm</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(scores <span class="sc">~</span> obstacles <span class="sc">+</span> weekend, </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's fit this model for each of our 1000 bootstrap samples</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>boot_glms <span class="ot">&lt;-</span> boots <span class="sc">%&gt;%</span> </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(splits, fit_glm),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_into =</span> <span class="fu">map</span>(model, tidy)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can pull out our coefficients </span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>boot_coefs <span class="ot">&lt;-</span> </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  boot_glms <span class="sc">%&gt;%</span> </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Now we can calculate the 95% confidence intervals based on the same percentile method as before.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. </span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">int_pctl</span>(boot_glms, coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can calculate the confidence interval by taking the 0.025 and 0.95 quantiles. </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">int_pctl</span>(boot_glms, coef_into)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 6
@@ -415,22 +416,28 @@ You start to think: “I play a lot of mini-golf, but am I any good? What would 
 3 weekend       2.65      4.59   6.39   0.05 percentile</code></pre>
 </div>
 </div>
+<p>Just like that, we have our 95% CIs for our terms. This method seemed to work pretty good and can be useful, so let’s just use it all the time! Well, not quite.</p>
 </section>
 <section id="why-not-use-bootstrapping-all-the-time" class="level2">
 <h2 class="anchored" data-anchor-id="why-not-use-bootstrapping-all-the-time">Why not use bootstrapping all the time?</h2>
-<p>“So what you’re telling me is I can just use bootstrapping all the time for every test?” Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.</p>
-<p>Like any method, bootstrapping isn’t perfect. There are benefits and drawbacks. For example, it can give different results depending on the starting seed. It can also only draw observations from your data that has been observed. In our ice cream example, no bubble gum flavour would show because our bowl only has vanilla and chocolate. However, it’s not all bad. Bootstrapping can be a solution in a variety of situations and is quite flexible. It’s important to keep all of this in mind when considering using it.</p>
-<p>Bootstrapping is a powerful tool but should be used thoughtfully. Understanding its limitations is crucial for interpreting the results correctly, especially in complex analyses like causal inference. Given its pros and cons, it often serves as a useful complement to other statistical methods.</p>
+<p>“So what you’re telling me is I can just use bootstrapping all the time for every situtation?” Well, no. It is a useful tool but like all tools, whether statistical or not, there is a time and a place to use them. Would you use a hammer as a fly swatter? I guess you could, but why not just use a fly swatter.</p>
+<p>Like any method, bootstrapping isn’t perfect. There are benefits and drawbacks. For example, it can give different results depending on the starting seed. It can also only draw observations from your data that has been observed. In our ice cream example, no bubble gum flavour would show because our bowl only has vanilla and chocolate. However, it’s not all bad. Bootstrapping can be a solution in a variety of situations and is quite flexible. It’s important to keep the benefits and drawbacks in mind when choosing it (these are only a few pros/cons).</p>
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
-<p>Bootstrapping is a wide area, this post was meant to be an introduction. I highly recommend the textbook by Hinkely et al.&nbsp;and to try using bootstrapping yourself!</p>
+<p>Bootstrapping is a wide area, this post was meant to be an introduction. There are a wide variety of use cases and types of bootstrapping, for example the bias-corrected and accelerated bootstrap. If you’re interested in learning more, there is an entire textbook on it <span class="citation" data-cites="davison1997bootstrap">(<a href="#ref-davison1997bootstrap" role="doc-biblioref">Davison and Hinkley 1997</a>)</span>. Happy bootstrapping!</p>
 
 
 
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-austin2011introduction" class="csl-entry" role="listitem">
+Austin, Peter C. 2011. <span>“An Introduction to Propensity Score Methods for Reducing the Effects of Confounding in Observational Studies.”</span> <em>Multivariate Behavioral Research</em> 46 (3): 399–424.
+</div>
+<div id="ref-davison1997bootstrap" class="csl-entry" role="listitem">
+Davison, Anthony Christopher, and David Victor Hinkley. 1997. <em>Bootstrap Methods and Their Application</em>. 1. Cambridge university press.
+</div>
 <div id="ref-gelman2020regression" class="csl-entry" role="listitem">
 Gelman, Andrew, Jennifer Hill, and Aki Vehtari. 2020. <em>Regression and Other Stories</em>. Cambridge University Press.
 </div>
