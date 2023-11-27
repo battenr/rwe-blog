@@ -15,3 +15,7 @@ format:
     toc-depth: 4
     code-fold: true
 ---
+
+# Bias, Bias Everywhere!
+
+Yup, there is bias everywhere! However, we can try to mitigate it as much as possible. This post will describe some \[RYAN update with the number of biases, i.e. 4\].

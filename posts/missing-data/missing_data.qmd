@@ -1,0 +1,273 @@
+---
+title: "Missing Data" # November Post 
+subtitle: "The Where's Waldo of Causal Inference" # Titles are placeholders
+author: "Ryan Batten"
+date: "2023-11-26"
+categories: [Missing Data, MCAR, MAR, MNAR]
+bibliography: missing-data.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+# Missing Data
+
+Missing data are inevitable when dealing with real-world data. Due to this, it's important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four different methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan for what to do with this missing data.
+
+Before we get started, we need to go over the different types of missing data mechanisms, arguably the most important aspect of dealing with missing data. Basically, what are the ways that data comes to be missing.
+
+# Missing Data Mechanisms
+
+"How did this data end up becoming missing?" is the best place to start. Was this just random? Or is there a reason? This can happen for a variety of reasons including the patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order. There are a myriad of reasons but these are commonly organized into three different types of data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR).
+
+Each one of these requires making different assumptions, which in turn needs different methods to deal with. Let's break down each one a little further. For each of these.
+
+## Missing Completely at Random (MCAR)
+
+Data are considered to be "missing completely at random" if the probability of a variable being missing for a given subject, is independent from both observed and unobserved variables for that subject [@austin2021missing].
+
+Missing completely at random is the just that. The key word is "completely". This means that it has nothing to do with the other variables that we are interested in. Let's use an example
+
+## Missing at Random (MAR)
+
+Data are considered to be "missing at random" if, after accounting for all the observed variables, the probability of a variable being missing is independent from the unobserved data [@austin2021missing].
+
+## Missing Not at Random (MNAR)
+
+Data are considered to be "missing not at random" if, they are neither MCAR or MAR. But that's not super helpful, let's try again. Data are MNAR if the probability of being missing, even after accounting for all the observevd variables, is based on the value of the missing variable [@austin2021missing].
+
+An example of MNAR wou
+
+::: callout-note
+## MAR vs MNAR
+
+Unfortunately, there is no way to test for MAR vs MNAR, so this needs to be based on expert knowledge [@austin2021missing].
+:::
+
+## Pirate Treasure?
+
+Imagine that we have a collection of pirate treasure maps. The missing data mechanisms could be thought of like this:\
+\
+**MCAR**: Some maps are missing because they were randomly lost during a storm at sea
+
+**MAR**: Maps are missing for treasures buried in a haunted island because superstitious pirates (whose superstitions are recorded) avoid those places.\
+\
+**MNAR**: Maps are missing for the most valuabel treasures because the pirates who buried them never shared the locations, fearing theft, and their level of paranoia isn't recorded. (So the most lucrative treasures are missing)
+
+# So...what do we do?
+
+Once we know, or think we know, what type of missing data mechanism we have we need to figure out how to deal with this! This post will go over five methods, although there a LOT more than that. These are just some common ones that I see/have come across in my field. Each section will cover: overview of what the method is, assumptions (what's required of the method), when to use it and then an example in R.
+
+::: callout-warning
+## Covariates vs Outcomes
+
+This post focuses on imputation for covariates, rather than outcomes. The methods are the same, but the plausibility may be different for an outcome variable. Furthermore, it depends on the audience. For example, certain regulatory bodies may prefer several scenarios such as best-case and worst-case imputation.
+:::
+
+::: callout-important
+## An Introduction to Methods for Missingness
+
+This is meant to be an introduction to some of these methods. A few of them shouldn't have much additional detail to learn about that, such as last observation carried forward or complete cases. However others, such as multiple imputation, there is a litany of information about them. For example, there are entire textbooks on multiple imputation.
+
+The goal of this post is more to be an introduction to missingness, and help identify some potential scenarios to use the different methods while avoiding pitfalls.
+:::
+
+# Pirate Treasure Example
+
+Let's simulate some data for our pirate treasure example. We'll assume that
+
+```{r, message = FALSE}
+library(tidyverse)
+
+# Simulate a dataset
+set.seed(123) # for reproducibility
+
+n = 322
+
+# Pirate Data
+
+df <- data.frame(
+  pirate_id = 1:n, 
+  treasure_value = runif(n = n, min = 1000, max = 5000), 
+  haunted_island = rbinom(n = n, size = 1, prob = 0.5),
+  pirate_superstition = rbinom(n = n, size = 1, prob = 0.5)
+) 
+
+# MCAR
+
+# Randomly select 50 observations
+
+mcar_indices <- sample(1:nrow(df), 50) # randomly select 20 indices
+df$treasure_value_mcar <- df$treasure_value
+df$treasure_value_mcar[mcar_indices] <- NA # set these values to NA
+
+
+
+# MAR (depends on the value of another variable)
+df$treasure_value_mar <- df$treasure_value
+is_mar <- df$haunted_island & df$pirate_superstition > 0.5
+df$treasure_value_mar[is_mar] <- NA
+
+# MNAR Variable 
+df$treasure_value_mnar <- df$treasure_value
+mnar_prob <- df$treasure_value / max(df$treasure_value) # higher value, higher chance of being NA
+df$treasure_value_mnar[runif(nrow(df)) < mnar_prob] <- NA
+
+# View the data
+head(df)
+
+# Writing a Function for Selecting Appropriate Data 
+
+df_missing <- function(type){
+  if(type == "mcar"){
+    df |> 
+      dplyr::select(
+        pirate_id, 
+        treasure_value, 
+        haunted_island, 
+        pirate_superstition,
+        treasure_value_mcar
+      )
+  } else if (type == "mar"){
+        df |> 
+      dplyr::select(
+        pirate_id, 
+        treasure_value, 
+        haunted_island, 
+        pirate_superstition,
+        treasure_value_mar
+      )
+  } else if (type == "mnar"){
+        df |> 
+      dplyr::select(
+        pirate_id, 
+        treasure_value, 
+        haunted_island, 
+        pirate_superstition,
+        treasure_value_mar
+      )
+  } else{
+    "Error please select one of the types of missing data mechnanism (MCAR, MAR, MNAR)"
+  }
+}
+
+```
+
+# Complete Cases (Exclude All Missing)
+
+## What is it?
+
+"Let's just get rid of the missing data! Then our problem will be solved!"...not quite. While getting rid of the missing data certainly is *a* way to deal with missing values, you are also losing good information. However, like any method, there is a time and place for it.
+
+## When to Use
+
+Complete case analysis can be valid when only the outcome variable is incomplete and we assume MAR [@austin2021missing], however when we are dealing with covariates there are several disadvantages to this approach.
+
+Unless the data are MAR, the estimated stats and regression coefficients may be biased [@austin2021missing]. Even if the data are MCAR, by reducing the sample size, we are reducing the precision (i.e., confidence intervals will be wider). Another problem is that by using
+
+## Example
+
+```{r}
+df.mar <- df_missing(type = "mar") 
+
+cc <- df.mar |> 
+  drop_na()
+
+mean(df.mar$treasure_value)
+mean(cc$treasure_value_mar)
+```
+
+We can see in this example, that removing all the missing values results in a difference of values. If you compare the datasets then you'll see the differences and the flaws in this. Futhermore, this can drastically reduce your dataset if you only keep the observations that has a value for every value (as a function of the number of variables in your dataset).
+
+## Pros/Cons
+
+Unfortunately there are more pros than cons for this one.
+
+Pros:
+
+-   Easy to implement
+
+-   Can be useful if only outcome
+
+Cons:
+
+-   Reduction in precision
+
+-   Now your sample looks different from the target population (this may differ quite a bit)
+
+-   
+
+# Last Observation Carried Forward
+
+## What is it? When to Use
+
+## Assumptions
+
+## Example
+
+## Pros/Cons
+
+# Mean Value Imputation
+
+Mean value imputation is just what it sounds like. You replace the missing values with the mean. Now, this fairly straightforward but there are some
+
+## What is it? When to Use
+
+Mean value imputation is where you...well impute
+
+## Assumptions
+
+## Example
+
+## Pros/Cons
+
+Pro
+
+-   Easy to implement
+
+-   Quick
+
+Con
+
+-   Artifically reduces variation in the data [@austin2021missing]
+
+-   Ignores relationships with other variables [@austin2021missing], which is often true in practice
+
+# Condition mean Imputation (aka using Regression)
+
+"Conditional mean imputation" is similar to mean imputation however, a regression model is used to impute a single value for each missing value [@austin2021missing].
+
+## When to Use
+
+## Assumptions
+
+## Example
+
+## Pros/Cons
+
+Pros:
+
+Cons:
+
+# Multiple Imputation
+
+## What is it?
+
+Multiple imputation is
+
+## When to use it?
+
+## Assumptions
+
+## Example
+
+Multiple imputation works by \[RYAN INSERT ABOUT MI\]
+
+# K Nearest Neighbour Imputation
+
+K nearest neighbour imputation is a mouthful. So let's break it down. Essentially, what happens is you match people to the closest person. Based on this, you assume that their value is the same as this "closest" person. Why K? Well it's doesn't have to just be one person, it could be a couple (RYAN: how does this work)\>
+
+# Summary of Methods
+
+It's important to remember there isn't
