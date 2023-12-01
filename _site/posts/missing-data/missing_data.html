@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ryan Batten">
+<meta name="dcterms.date" content="2023-11-26">
+
+<title>Blog Posts - Missing Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Blog Posts</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consulting.html" rel="" target="">
+ <span class="menu-text">Consulting</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/rwe-ryan" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/rwe_ryan" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/battenr" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Missing Data</h1>
+            <p class="subtitle lead">The Where’s Waldo of Causal Inference</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Missing Data</div>
+                <div class="quarto-category">MCAR</div>
+                <div class="quarto-category">MAR</div>
+                <div class="quarto-category">MNAR</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ryan Batten </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 26, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="missing-data" class="level1">
+<h1>Missing Data</h1>
+<p>Missing data are inevitable when dealing with real-world data. Due to this, it’s important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four different methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan for what to do with this missing data.</p>
+<p>Before we get started, we need to go over the different types of missing data mechanisms, arguably the most important aspect of dealing with missing data. Basically, what are the ways that data comes to be missing.</p>
+</section>
+<section id="missing-data-mechanisms" class="level1">
+<h1>Missing Data Mechanisms</h1>
+<p>“How did this data end up becoming missing?” is the best place to start. Was this just random? Or is there a reason? This can happen for a variety of reasons including the patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order. There are a myriad of reasons but these are commonly organized into three different types of data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR).</p>
+<p>Each one of these requires making different assumptions, which in turn needs different methods to deal with. Let’s break down each one a little further. For each of these.</p>
+<section id="missing-completely-at-random-mcar" class="level2">
+<h2 class="anchored" data-anchor-id="missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</h2>
+<p>Data are considered to be “missing completely at random” if the probability of a variable being missing for a given subject, is independent from both observed and unobserved variables for that subject <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+<p>Missing completely at random is the just that. The key word is “completely”. This means that it has nothing to do with the other variables that we are interested in. Let’s use an example</p>
+</section>
+<section id="missing-at-random-mar" class="level2">
+<h2 class="anchored" data-anchor-id="missing-at-random-mar">Missing at Random (MAR)</h2>
+<p>Data are considered to be “missing at random” if, after accounting for all the observed variables, the probability of a variable being missing is independent from the unobserved data <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+</section>
+<section id="missing-not-at-random-mnar" class="level2">
+<h2 class="anchored" data-anchor-id="missing-not-at-random-mnar">Missing Not at Random (MNAR)</h2>
+<p>Data are considered to be “missing not at random” if, they are neither MCAR or MAR. But that’s not super helpful, let’s try again. Data are MNAR if the probability of being missing, even after accounting for all the observevd variables, is based on the value of the missing variable <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+<p>An example of MNAR wou</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+MAR vs MNAR
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Unfortunately, there is no way to test for MAR vs MNAR, so this needs to be based on expert knowledge <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+</div>
+</div>
+</section>
+<section id="pirate-treasure" class="level2">
+<h2 class="anchored" data-anchor-id="pirate-treasure">Pirate Treasure?</h2>
+<p>Imagine that we have a collection of pirate treasure maps. The missing data mechanisms could be thought of like this:<br>
+<br>
+<strong>MCAR</strong>: Some maps are missing because they were randomly lost during a storm at sea</p>
+<p><strong>MAR</strong>: Maps are missing for treasures buried in a haunted island because superstitious pirates (whose superstitions are recorded) avoid those places.<br>
+<br>
+<strong>MNAR</strong>: Maps are missing for the most valuabel treasures because the pirates who buried them never shared the locations, fearing theft, and their level of paranoia isn’t recorded. (So the most lucrative treasures are missing)</p>
+</section>
+</section>
+<section id="sowhat-do-we-do" class="level1">
+<h1>So…what do we do?</h1>
+<p>Once we know, or think we know, what type of missing data mechanism we have we need to figure out how to deal with this! This post will go over five methods, although there a LOT more than that. These are just some common ones that I see/have come across in my field. Each section will cover: overview of what the method is, assumptions (what’s required of the method), when to use it and then an example in R.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Covariates vs Outcomes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This post focuses on imputation for covariates, rather than outcomes. The methods are the same, but the plausibility may be different for an outcome variable. Furthermore, it depends on the audience. For example, certain regulatory bodies may prefer several scenarios such as best-case and worst-case imputation.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+An Introduction to Methods for Missingness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is meant to be an introduction to some of these methods. A few of them shouldn’t have much additional detail to learn about that, such as last observation carried forward or complete cases. However others, such as multiple imputation, there is a litany of information about them. For example, there are entire textbooks on multiple imputation.</p>
+<p>The goal of this post is more to be an introduction to missingness, and help identify some potential scenarios to use the different methods while avoiding pitfalls.</p>
+</div>
+</div>
+</section>
+<section id="pirate-treasure-example" class="level1">
+<h1>Pirate Treasure Example</h1>
+<p>Let’s simulate some data for our pirate treasure example. We’ll assume that</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate a dataset</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># for reproducibility</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">322</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Pirate Data</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_id =</span> <span class="dv">1</span><span class="sc">:</span>n, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">treasure_value =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">1000</span>, <span class="at">max =</span> <span class="dv">5000</span>), </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">haunted_island =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_superstition =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># MCAR</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Randomly select 50 observations</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>mcar_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df), <span class="dv">50</span>) <span class="co"># randomly select 20 indices</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mcar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mcar[mcar_indices] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># set these values to NA</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># MAR (depends on the value of another variable)</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>is_mar <span class="ot">&lt;-</span> df<span class="sc">$</span>haunted_island <span class="sc">&amp;</span> df<span class="sc">$</span>pirate_superstition <span class="sc">&gt;</span> <span class="fl">0.5</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mar[is_mar] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># MNAR Variable </span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mnar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>mnar_prob <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value <span class="sc">/</span> <span class="fu">max</span>(df<span class="sc">$</span>treasure_value) <span class="co"># higher value, higher chance of being NA</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mnar[<span class="fu">runif</span>(<span class="fu">nrow</span>(df)) <span class="sc">&lt;</span> mnar_prob] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># View the data</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  pirate_id treasure_value haunted_island pirate_superstition
+1         1       2150.310              0                   0
+2         2       4153.221              1                   1
+3         3       2635.908              0                   1
+4         4       4532.070              0                   0
+5         5       4761.869              1                   0
+6         6       1182.226              0                   1
+  treasure_value_mcar treasure_value_mar treasure_value_mnar
+1            2150.310           2150.310                  NA
+2            4153.221                 NA                  NA
+3            2635.908           2635.908                  NA
+4                  NA           4532.070                  NA
+5            4761.869           4761.869            4761.869
+6            1182.226           1182.226            1182.226</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Writing a Function for Selecting Appropriate Data </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df_missing <span class="ot">&lt;-</span> <span class="cf">function</span>(type){</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(type <span class="sc">==</span> <span class="st">"mcar"</span>){</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        treasure_value_mcar</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">"mar"</span>){</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        df <span class="sc">|&gt;</span> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        treasure_value_mar</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">"mnar"</span>){</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        df <span class="sc">|&gt;</span> </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        treasure_value_mar</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span>{</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Error please select one of the types of missing data mechnanism (MCAR, MAR, MNAR)"</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="complete-cases-exclude-all-missing" class="level1">
+<h1>Complete Cases (Exclude All Missing)</h1>
+<section id="what-is-it" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it">What is it?</h2>
+<p>“Let’s just get rid of the missing data! Then our problem will be solved!”…not quite. While getting rid of the missing data certainly is <em>a</em> way to deal with missing values, you are also losing good information. However, like any method, there is a time and place for it.</p>
+</section>
+<section id="when-to-use" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use">When to Use</h2>
+<p>Complete case analysis can be valid when only the outcome variable is incomplete and we assume MAR <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>, however when we are dealing with covariates there are several disadvantages to this approach.</p>
+<p>Unless the data are MAR, the estimated stats and regression coefficients may be biased <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. Even if the data are MCAR, by reducing the sample size, we are reducing the precision (i.e., confidence intervals will be wider). Another problem is that by using</p>
+</section>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note to self: maybe this should be MCAR? </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df.mar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mar"</span>) </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> df.mar <span class="sc">|&gt;</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df.mar<span class="sc">$</span>treasure_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2995.293</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(cc<span class="sc">$</span>treasure_value_mar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3017.684</code></pre>
+</div>
+</div>
+<p>We can see in this example, that removing all the missing values results in a difference of values. If you compare the datasets then you’ll see the differences and the flaws in this. Futhermore, this can drastically reduce your dataset if you only keep the observations that has a value for every value (as a function of the number of variables in your dataset).</p>
+</section>
+<section id="considerations" class="level2">
+<h2 class="anchored" data-anchor-id="considerations">Considerations</h2>
+<p>Complete case analysis can be convenient from a data quality point of view, however it can cause some issues. For example, is the missing data are MCAR the analysis will have reduced precision due to the reduced sample size but the observed data will not be biased <span class="citation" data-cites="jakobsen2017">(<a href="#ref-jakobsen2017" role="doc-biblioref">Jakobsen et al. 2017</a>)</span>. If the missing data are not MCAR, the estimate of the effect may be biased <span class="citation" data-cites="jakobsen2017">(<a href="#ref-jakobsen2017" role="doc-biblioref">Jakobsen et al. 2017</a>)</span>.</p>
+<p>It’s also important to consider which patients are being removed and how many. Is this now the same target population that it was originally? Imagine if ended up removing 25% of our sample! How would that affect our generalizability?<br>
+<br>
+Complete cases can be used in the right context (i.e., if &lt;5% of sample is missing and data is MCAR [RYAN ADD REF]) however it requires some careful thought.</p>
+</section>
+</section>
+<section id="last-observation-carried-forward" class="level1">
+<h1>Last Observation Carried Forward</h1>
+<section id="what-is-it-1" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it-1">What is it?</h2>
+<p>Last observation carried forward (LOCF) is very much what it sounds like. We take the last value that was observed and use it.</p>
+</section>
+<section id="when-to-use-1" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-1">When to Use</h2>
+<p>LOCF assumes that the data is MCAR (REF?). If the data are MCAR, the absence of data is unrelated to the study question or the values of the missing data themselves. It can be quite useful when it is plausible, for example when we need to carry through the value of sex (male/female).</p>
+</section>
+<section id="example-1" class="level2">
+<h2 class="anchored" data-anchor-id="example-1">Example</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mar"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="considerations-1" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-1">Considerations</h2>
+<p>The plausibility of LOCF needs to be considered. For example, if we are studying pirates and have two categories: monsters vs humans, we can safely assume that the monster will still be a monster. An example where this might be a problem is a lab value. Is a lab value that is 30 days prior okay? What about 60, 90 or 400?</p>
+<p>Other assumptions include:</p>
+<ul>
+<li><p>No dropout</p></li>
+<li><p>Stability of the condition over time</p></li>
+</ul>
+</section>
+</section>
+<section id="mean-value-imputation" class="level1">
+<h1>Mean Value Imputation</h1>
+<section id="what-is-it-2" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it-2">What is it?</h2>
+<p>We impute the missing values with the mean of the values that we do have. This is done to replace the missing values, but requires some assumptions.</p>
+</section>
+<section id="when-to-use-2" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-2">When to Use</h2>
+</section>
+<section id="example-2" class="level2">
+<h2 class="anchored" data-anchor-id="example-2">Example</h2>
+</section>
+<section id="considerations-2" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-2">Considerations</h2>
+<p>Mean value imputation is just what it sounds like. You replace the missing values with the mean. Now, this fairly straightforward but there are some</p>
+</section>
+<section id="what-is-it-when-to-use" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it-when-to-use">What is it? When to Use</h2>
+<p>Mean value imputation is where you…well impute</p>
+</section>
+<section id="assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="assumptions">Assumptions</h2>
+</section>
+<section id="example-3" class="level2">
+<h2 class="anchored" data-anchor-id="example-3">Example</h2>
+</section>
+<section id="proscons" class="level2">
+<h2 class="anchored" data-anchor-id="proscons">Pros/Cons</h2>
+<p>Pro</p>
+<ul>
+<li><p>Easy to implement</p></li>
+<li><p>Quick</p></li>
+</ul>
+<p>Con</p>
+<ul>
+<li><p>Artifically reduces variation in the data <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span></p></li>
+<li><p>Ignores relationships with other variables <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>, which is often true in practice</p></li>
+</ul>
+</section>
+</section>
+<section id="condition-mean-imputation-aka-using-regression" class="level1">
+<h1>Condition mean Imputation (aka using Regression)</h1>
+<section id="what-is-it-3" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it-3">What is it?</h2>
+<p>Conditional mean imputation is very similar to</p>
+</section>
+<section id="when-to-use-3" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-3">When to Use</h2>
+</section>
+<section id="example-4" class="level2">
+<h2 class="anchored" data-anchor-id="example-4">Example</h2>
+</section>
+<section id="considerations-3" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-3">Considerations</h2>
+<p>“Conditional mean imputation” is similar to mean imputation however, a regression model is used to impute a single value for each missing value <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+</section>
+</section>
+<section id="multiple-imputation" class="level1">
+<h1>Multiple Imputation</h1>
+<section id="what-is-it-4" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it-4">What is it?</h2>
+</section>
+<section id="when-to-use-4" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-4">When to Use</h2>
+</section>
+<section id="example-5" class="level2">
+<h2 class="anchored" data-anchor-id="example-5">Example</h2>
+</section>
+<section id="considerations-4" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-4">Considerations</h2>
+</section>
+</section>
+<section id="k-nearest-neighbour-imputation" class="level1">
+<h1>K Nearest Neighbour Imputation</h1>
+<section id="what-is-it-5" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-it-5">What is it?</h2>
+</section>
+<section id="when-to-use-5" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-5">When to Use</h2>
+</section>
+<section id="example-6" class="level2">
+<h2 class="anchored" data-anchor-id="example-6">Example</h2>
+</section>
+<section id="considerations-5" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-5">Considerations</h2>
+<p>K nearest neighbour imputation is a mouthful. So let’s break it down. Essentially, what happens is you match people to the closest person. Based on this, you assume that their value is the same as this “closest” person. Why K? Well it’s doesn’t have to just be one person, it could be a couple (RYAN: how does this work)&gt;</p>
+</section>
+</section>
+<section id="summary-of-methods" class="level1">
+<h1>Summary of Methods</h1>
+<p>These are a few of the missing data methods that you may come across, however there is a VAST number of methods for missing data. The key takeaway should be to consider these, regardless of the method:</p>
+<ul>
+<li><p>What kind of assumptions does it make? (i.e., MCAR, MNAR, MAR)</p></li>
+<li><p>What are the tradeoffs? For example, increase in data quality but decreased in precision and generalizibility? Or increase in precision but decrease in replicability?</p></li>
+<li><p>Practically speaking: is this the right use case for the audience? For example, a regulatory body may have different wants than an eighth grader wanting her help with analyzing her missing pets data.</p></li>
+</ul>
+<p>Hope this blog post was useful as an introduction to five methods to start, but this is only the beginning! Happy missing data exploring!</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-austin2021missing" class="csl-entry" role="listitem">
+Austin, Peter C, Ian R White, Douglas S Lee, and Stef van Buuren. 2021. <span>“Missing Data in Clinical Research: A Tutorial on Multiple Imputation.”</span> <em>Canadian Journal of Cardiology</em> 37 (9): 1322–31.
+</div>
+<div id="ref-jakobsen2017" class="csl-entry" role="listitem">
+Jakobsen, Janus Christian, Christian Gluud, Jørn Wetterslev, and Per Winkel. 2017. <span>“When and How Should Multiple Imputation Be Used for Handling Missing Data in Randomised Clinical Trials–a Practical Guide with Flowcharts.”</span> <em>BMC Medical Research Methodology</em> 17 (1): 1–10.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

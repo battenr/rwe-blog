@@ -13,7 +13,7 @@ format:
 
 # Missing Data
 
-Missing data are inevitable when dealing with real-world data. Due to this, it's important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four different methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan for what to do with this missing data.
+Missing data are unavoidable when dealing with real-world data. Due to this, it's important to have a plan for dealing with missing data. There are tons of different methods that can be used for missing data but this post will focus on four different methods: multiple imputation, k nearest neighbour imputation, regression imputation and last observation carried forward. In order to make a valid causal inference we need to have an appropriate plan for what to do with this missing data.
 
 Before we get started, we need to go over the different types of missing data mechanisms, arguably the most important aspect of dealing with missing data. Basically, what are the ways that data comes to be missing.
 
@@ -169,6 +169,9 @@ Unless the data are MAR, the estimated stats and regression coefficients may be 
 ## Example
 
 ```{r}
+
+# Note to self: maybe this should be MCAR? 
+
 df.mar <- df_missing(type = "mar") 
 
 cc <- df.mar |> 
@@ -180,47 +183,107 @@ mean(cc$treasure_value_mar)
 
 We can see in this example, that removing all the missing values results in a difference of values. If you compare the datasets then you'll see the differences and the flaws in this. Futhermore, this can drastically reduce your dataset if you only keep the observations that has a value for every value (as a function of the number of variables in your dataset).
 
-## Pros/Cons
+## Considerations
 
-Unfortunately there are more pros than cons for this one.
+Complete case analysis can be convenient from a data quality point of view, however it can cause some issues. For example, is the missing data are MCAR the analysis will have reduced precision due to the reduced sample size but the observed data will not be biased [@jakobsen2017]. If the missing data are not MCAR, the estimate of the effect may be biased [@jakobsen2017].
 
-Pros:
-
--   Easy to implement
-
--   Can be useful if only outcome
-
-Cons:
-
--   Reduction in precision
-
--   Now your sample looks different from the target population (this may differ quite a bit)
-
--   
+It's also important to consider which patients are being removed and how many. Is this now the same target population that it was originally? Imagine if ended up removing 25% of our sample! How would that affect our generalizability?\
+\
+Complete cases can be used in the right context (i.e., if \<5% of sample is missing and data is MCAR \[RYAN ADD REF\]) however it requires some careful thought.
 
 # Last Observation Carried Forward
 
-## What is it? When to Use
+## What is it?
 
-## Assumptions
+Last observation carried forward (LOCF) is very much what it sounds like. We take the last value that was observed and use it.
+
+## When to Use
+
+LOCF assumes that the data is MCAR (REF?). If the data are MCAR, the absence of data is unrelated to the study question or the values of the missing data themselves. It can be quite useful when it is plausible, for example when we need to carry through the value of sex (male/female).
 
 ## Example
 
-## Pros/Cons
+```{r}
+
+# Here we need to have multiple measurements per pirate
+
+# FROM CHATGPT
+
+n_pirates <- 10   # Number of unique pirates
+n_measurements <- 5  # Number of measurements per pirate
+
+# Create the data frame
+df <- expand.grid(
+  pirate_id = 1:n_pirates,
+  measurement_id = 1:n_measurements
+) %>%
+  mutate(
+    treasure_value = runif(n = n_pirates * n_measurements, min = 1000, max = 5000),
+    haunted_island = rbinom(n = n_pirates * n_measurements, size = 1, prob = 0.5),
+    pirate_superstition = rbinom(n = n_pirates * n_measurements, size = 1, prob = 0.5)
+  )
+
+# View the dataframe
+head(df)
+
+
+# MY CODE
+
+df.mcar <- df_missing(type = "mcar")
+
+# RYAN: NEED to ADD MORE ROWS, multiple per pirate_id
+
+df.locf <- df.mcar %>% 
+  group_by(pirate_id) %>% 
+  dplyr::mutate(
+    treasure_value = ifelse(is.na(treasure_value_mcar), lag(treasure_value_mcar), treasure_value_mcar)
+  )
+```
+
+## Considerations
+
+The plausibility of LOCF needs to be considered. For example, if we are studying pirates and have two categories: monsters vs humans, we can safely assume that the monster will still be a monster. An example where this might be a problem is a lab value. Is a lab value that is 30 days prior okay? What about 60, 90 or 400?
+
+Other assumptions include:
+
+-   No dropout
+
+-   Stability of the condition over time
 
 # Mean Value Imputation
 
-Mean value imputation is just what it sounds like. You replace the missing values with the mean. Now, this fairly straightforward but there are some
+## What is it?
 
-## What is it? When to Use
+Mean value imputation takes the mean of the values that we *do* have and uses this wherever there are missing values. As a side note, the mean is sometimes called the expected value in statistics.
 
-Mean value imputation is where you...well impute
+## When to Use
 
-## Assumptions
+You probably guessed this already, but we can use it when we have a mean! So this can be used for
 
 ## Example
 
-## Pros/Cons
+```{r}
+
+df.mcar <- df_missing(type = "mcar")
+
+mean(df.mcar$treasure_value_mcar, na.rm = TRUE)
+
+df.mean.imputation <- df.mcar %>% 
+  dplyr::mutate(
+    new_treasure_value = dplyr::case_when(
+      is.na(treasure_value_mcar) ~ mean(df.mcar$treasure_value_mcar, na.rm = TRUE),
+      !is.na(treasure_value_mcar) ~ treasure_value_mcar
+    )
+  )
+```
+
+## Considerations
+
+This method is easy to implement and quick but there are some things we need to consider.
+
+Mean value imputation is just what it sounds like. You replace the missing values with the mean. Now, this fairly straightforward but there are some assumptions that we need to consider. This method assumes that the data is MCAR \[REF?\]. Using the mean can
+
+It can be easy to implement
 
 Pro
 
@@ -236,38 +299,50 @@ Con
 
 # Condition mean Imputation (aka using Regression)
 
-"Conditional mean imputation" is similar to mean imputation however, a regression model is used to impute a single value for each missing value [@austin2021missing].
+## What is it?
+
+Conditional mean imputation is very similar to mean imputation but instead of using the mean, we'll use the conditional mean. How do we know the conditional mean? It's basically the result from our regression.\
+\
+Basically, you fit a regression model and then use this to predict what the value would be. A perk of this method is that you can fit a regression model including the variables that are associated with other variables.
 
 ## When to Use
 
-## Assumptions
-
 ## Example
 
-## Pros/Cons
+## Considerations
 
-Pros:
-
-Cons:
+"Conditional mean imputation" is similar to mean imputation however, a regression model is used to impute a single value for each missing value [@austin2021missing].
 
 # Multiple Imputation
 
 ## What is it?
 
-Multiple imputation is
-
-## When to use it?
-
-## Assumptions
+## When to Use
 
 ## Example
 
-Multiple imputation works by \[RYAN INSERT ABOUT MI\]
+## Considerations
 
 # K Nearest Neighbour Imputation
+
+## What is it?
+
+## When to Use
+
+## Example
+
+## Considerations
 
 K nearest neighbour imputation is a mouthful. So let's break it down. Essentially, what happens is you match people to the closest person. Based on this, you assume that their value is the same as this "closest" person. Why K? Well it's doesn't have to just be one person, it could be a couple (RYAN: how does this work)\>
 
 # Summary of Methods
 
-It's important to remember there isn't
+These are a few of the missing data methods that you may come across, however there is a VAST number of methods for missing data. The key takeaway should be to consider these, regardless of the method:
+
+-   What kind of assumptions does it make? (i.e., MCAR, MNAR, MAR)
+
+-   What are the tradeoffs? For example, increase in data quality but decreased in precision and generalizibility? Or increase in precision but decrease in replicability?
+
+-   Practically speaking: is this the right use case for the audience? For example, a regulatory body may have different wants than an eighth grader wanting her help with analyzing her missing pets data.
+
+Hope this blog post was useful as an introduction to five methods to start, but this is only the beginning! Happy missing data exploring!
