@@ -13,7 +13,7 @@ format:
 
 # Missing Data
 
-Missing data are unavoidable when dealing data in general, but even more so with real-world data. Soooo it's important to have a plan on what to do! To make valid causal inferences, we need to have a solution for this data, so what options do we have? Well, there a BUNCH of different methods that can be used but this post will focus on introducing five:
+Missing data are unavoidable when dealing data in general, but even more so with real-world data. So it's important to have a plan on what to do! To make valid causal inferences, we need to have a solution but what options do we have? A BUNCH! This post will focus on introducing five common methods:
 
 -   Complete Case
 
@@ -29,19 +29,21 @@ Before we dive into these exciting methods, first we need to go over the differe
 
 # Missing Data Mechanisms
 
-"How did this data end up becoming missing?" is essentially what we are asking. Was this just random? Or is there a reason? Data can go missing for a variety of reasons. Some examples: a patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order.
+"How did this data end up becoming missing?" is essentially what we are asking. Was this just random? Or is there a reason? Data can go missing for a variety of reasons. A patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order to name just a few.
 
-There are a myriad of reasons but these are commonly organized into three different types of missing data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR). Let's break down each one a little further.
+Typically missing data are organized into three types of missing data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR) [@austin2021missing] . Let's break down each one a little further.
 
 ## Missing Completely at Random (MCAR)
 
-Data are considered to be "missing completely at random" if the probability of a variable being missing for a given subject, is independent from both observed and unobserved variables for that subject [@austin2021missing].
+Data are "missing completely at random" if the probability of a variable being missing is independent from both observed and unobserved variables for that person [@austin2021missing]. The key word here is "completely", implying that it has nothing to do with the other variables that we are interested in.
 
-Missing completely at random is the just that. The key word is "completely". This means that it has nothing to do with the other variables that we are interested in. Let's use an example
+Let's use an example. Imagine that we are taking a survey of a class of kindergarten children on what type of ice cream they ate. One day a mischievous puppy runs into the classroom and knocks over the box, and eats the surveys that fall out. The surveys that are missing are MCAR because it the dog didn't choose which ones to eat! It was just an accident.
 
 ## Missing at Random (MAR)
 
-Data are considered to be "missing at random" if, after accounting for all the observed variables, the probability of a variable being missing is independent from the unobserved data [@austin2021missing].
+Data are "missing at random" if the probability of a variable being missing, after accounting for **all** the observed variables is independent from the unobserved data [@austin2021missing]. So basically it can depend on the observed variables but has nothing to do with the unobserved variables.
+
+Using our same example, imagine that kids who prefer mint or vanilla, decide to skip school and go to the beach.
 
 ## Missing Not at Random (MNAR)
 
