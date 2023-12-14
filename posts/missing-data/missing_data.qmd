@@ -329,7 +329,7 @@ MI, based on @austin2021missing, can be used when the data are assumed to be MCA
 
 ## Example
 
-```{r multiple_imputation}
+```{r multiple_imputation, message = FALSE, output = FALSE}
 
 library(mice) # package used for multiple imputation using chained equations
 
