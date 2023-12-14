@@ -239,7 +239,7 @@ div.csl-indent {
   <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2">Example</a></li>
   <li><a href="#considerations-2" id="toc-considerations-2" class="nav-link" data-scroll-target="#considerations-2">Considerations</a></li>
   </ul></li>
-  <li><a href="#condition-mean-imputation-aka-using-regression" id="toc-condition-mean-imputation-aka-using-regression" class="nav-link" data-scroll-target="#condition-mean-imputation-aka-using-regression">Condition mean Imputation (aka using Regression)</a>
+  <li><a href="#conditional-mean-imputation-aka-using-regression" id="toc-conditional-mean-imputation-aka-using-regression" class="nav-link" data-scroll-target="#conditional-mean-imputation-aka-using-regression">Conditional Mean Imputation (aka using Regression)</a>
   <ul>
   <li><a href="#what-is-it-3" id="toc-what-is-it-3" class="nav-link" data-scroll-target="#what-is-it-3">What is it?</a></li>
   <li><a href="#when-to-use-3" id="toc-when-to-use-3" class="nav-link" data-scroll-target="#when-to-use-3">When to Use</a></li>
@@ -610,8 +610,8 @@ An Introduction to Methods for Missingness
 <p>This method is easy to implement and quick but there are some things we need to consider. First, the effect should be unbiased however the standard errors aren’t necessarily. This is due to this method artificially reducing the variation in the data set <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. It also ignores relationships with other variables which be might be true, but the plausibility of this needs to be considered <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. These imputed values end up being treated as equal to the values that aren’t missing <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>, which may be incorrect since we know the observed values were recorded and not imputed.</p>
 </section>
 </section>
-<section id="condition-mean-imputation-aka-using-regression" class="level1">
-<h1>Condition mean Imputation (aka using Regression)</h1>
+<section id="conditional-mean-imputation-aka-using-regression" class="level1">
+<h1>Conditional Mean Imputation (aka using Regression)</h1>
 <section id="what-is-it-3" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-it-3">What is it?</h2>
 <p>Conditional mean imputation is very similar to mean imputation but instead of using the mean, we’ll use the conditional mean. How do we know the conditional mean? By predicting the result based on a model that we’ve fit to the data that we <em>do</em> have.</p>

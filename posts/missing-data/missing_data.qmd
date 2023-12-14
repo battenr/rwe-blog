@@ -269,7 +269,7 @@ df.mean.imputation <- df.mcar %>%
 
 This method is easy to implement and quick but there are some things we need to consider. First, the effect should be unbiased however the standard errors aren't necessarily. This is due to this method artificially reducing the variation in the data set [@austin2021missing]. It also ignores relationships with other variables which be might be true, but the plausibility of this needs to be considered [@austin2021missing]. These imputed values end up being treated as equal to the values that aren't missing [@austin2021missing], which may be incorrect since we know the observed values were recorded and not imputed.
 
-# Condition mean Imputation (aka using Regression)
+# Conditional Mean Imputation (aka using Regression)
 
 ## What is it?
 
