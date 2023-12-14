@@ -212,7 +212,7 @@ div.csl-indent {
 
 <section id="missing-data" class="level1">
 <h1>Missing Data</h1>
-<p>Missing data are unavoidable when dealing data in general, but even more so with real-world data. Soooo it’s important to have a plan on what to do! To make valid causal inferences, we need to have a solution for this data, so what options do we have? Well, there a BUNCH of different methods that can be used but this post will focus on introducing five:</p>
+<p>Missing data are unavoidable when dealing with data, especially with real-world data. So it’s important to have a plan on what to do with missing data! To make valid causal inferences, we need to have a solution but what options do we have? A BUNCH! This post will focus on introducing five common methods:</p>
 <ul>
 <li><p>Complete Case</p></li>
 <li><p>Last Observation Carried Forward</p></li>
@@ -220,25 +220,26 @@ div.csl-indent {
 <li><p>Conditional Mean Imputation (aka using regression)</p></li>
 <li><p>Multiple Imputation</p></li>
 </ul>
-<p>Before we dive into these exciting methods, first we need to go over the different types of missing data mechanisms. Arguably the most important aspect of dealing with missing data is figuring this part out.</p>
+<p>Before we dive into these, first we need to go over the different types of missing data mechanisms. Arguably the most important aspect of dealing with missing data is figuring this part out.</p>
 </section>
 <section id="missing-data-mechanisms" class="level1">
 <h1>Missing Data Mechanisms</h1>
-<p>“How did this data end up becoming missing?” is essentially what we are asking. Was this just random? Or is there a reason? Data can go missing for a variety of reasons. Some examples: a patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order.</p>
-<p>There are a myriad of reasons but these are commonly organized into three different types of missing data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR). Let’s break down each one a little further.</p>
+<p>“How did this data end up becoming missing?” is basically what we are trying to figure out. Was this just random? Or is there a reason? Data can go missing for a variety of reasons. A patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order to name just a few.</p>
+<p>Typically missing data are grouped into three types of missing data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR) <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span> . Let’s break down each one a little further.</p>
 <section id="missing-completely-at-random-mcar" class="level2">
 <h2 class="anchored" data-anchor-id="missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</h2>
-<p>Data are considered to be “missing completely at random” if the probability of a variable being missing for a given subject, is independent from both observed and unobserved variables for that subject <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
-<p>Missing completely at random is the just that. The key word is “completely”. This means that it has nothing to do with the other variables that we are interested in. Let’s use an example</p>
+<p>Data are “missing completely at random” if the probability of a variable being missing is independent from both observed and unobserved variables for that person <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. The key word here is “completely”, implying that it has nothing to do with the other variables that we are interested in.</p>
+<p>Let’s use an example. Imagine that we are taking a survey of a class of kindergarten children on what type of ice cream they ate. One day a mischievous puppy runs into the classroom and knocks over the box, and eats the surveys that fall out. The surveys that are missing are MCAR because it the dog didn’t choose which ones to eat! It was just an accident.</p>
 </section>
 <section id="missing-at-random-mar" class="level2">
 <h2 class="anchored" data-anchor-id="missing-at-random-mar">Missing at Random (MAR)</h2>
-<p>Data are considered to be “missing at random” if, after accounting for all the observed variables, the probability of a variable being missing is independent from the unobserved data <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+<p>Data are “missing at random” if the probability of a variable being missing, after accounting for <strong>all</strong> the observed variables is independent from the unobserved data <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. So basically it can depend on the observed variables but has nothing to do with the unobserved variables.</p>
+<p>Using our same example, imagine that kids who prefer mint or vanilla, decide to skip school and go to the beach. On those days when the teacher does the survey, the missing responses are more likely to be from kids who prefer those flavors. This would be MAR because it’s dependent on the fact that these kids are more likely to be absent when it’s hot.</p>
 </section>
 <section id="missing-not-at-random-mnar" class="level2">
 <h2 class="anchored" data-anchor-id="missing-not-at-random-mnar">Missing Not at Random (MNAR)</h2>
-<p>Data are considered to be “missing not at random” if, they are neither MCAR or MAR. But that’s not super helpful, let’s try again. Data are MNAR if the probability of being missing, even after accounting for all the observevd variables, is based on the value of the missing variable <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
-<p>An example of MNAR wou</p>
+<p>Data are considered to be “missing not at random” if, they are neither MCAR or MAR. But that’s not super helpful, let’s try again. Data are MNAR if the probability of being missing, even after accounting for all the observed variables, is based on the value of the missing variable <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>.</p>
+<p>Using our example again, imagine that some kids like a rare flavor like blueberry-cucumber. These kids are afraid that others might find it strange so whenever the survey is handed out they don’t submit their surveys. This would be MNAR because it’s directly related to the data itself.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -253,19 +254,107 @@ MAR vs MNAR
 </div>
 </div>
 </section>
-<section id="pirate-treasure" class="level2">
-<h2 class="anchored" data-anchor-id="pirate-treasure">Pirate Treasure?</h2>
-<p>Imagine that we have a collection of pirate treasure maps. The missing data mechanisms could be thought of like this:<br>
+</section>
+<section id="pirate-treasure" class="level1">
+<h1>Pirate Treasure?</h1>
+<p>In order to illustrate how these data may look, we need to simulate some data! Imagine that we have a collection of pirate treasure maps. The missing data mechanisms could be thought of like this:<br>
 <br>
 <strong>MCAR</strong>: Some maps are missing because they were randomly lost during a storm at sea</p>
 <p><strong>MAR</strong>: Maps are missing for treasures buried in a haunted island because superstitious pirates (whose superstitions are recorded) avoid those places.<br>
 <br>
-<strong>MNAR</strong>: Maps are missing for the most valuabel treasures because the pirates who buried them never shared the locations, fearing theft, and their level of paranoia isn’t recorded. (So the most lucrative treasures are missing)</p>
-</section>
+<strong>MNAR</strong>: Maps are missing for the most valuable treasures because the pirates who buried them never shared the locations, fearing theft, and their level of paranoia isn’t recorded. (So the most lucrative treasures are missing)</p>
+<p>Let’s simulate some data for our pirate treasure example. We can then use this to show how we might solve these different ways.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Loading tidyverse package</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># setting seed for reproducibility</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">322</span> <span class="co"># arbitrarily picked using runif(1, min = 100, max = 500)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pirate Data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_id =</span> <span class="dv">1</span><span class="sc">:</span>n, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">treasure_value =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">1000</span>, <span class="at">max =</span> <span class="dv">5000</span>), </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">haunted_island =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_superstition =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># MCAR: Randomly select 50 observations</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>mcar_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df), <span class="dv">50</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mcar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mcar[mcar_indices] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># MAR: Depends on the value of another variable</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>is_mar <span class="ot">&lt;-</span> df<span class="sc">$</span>haunted_island <span class="sc">&amp;</span> df<span class="sc">$</span>pirate_superstition</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mar[is_mar] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># MNAR: Higher value, higher chance of being NA</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mnar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>mnar_prob <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value <span class="sc">/</span> <span class="fu">max</span>(df<span class="sc">$</span>treasure_value)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mnar[<span class="fu">runif</span>(<span class="fu">nrow</span>(df)) <span class="sc">&lt;</span> mnar_prob] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df) <span class="co"># Viewing the data </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  pirate_id treasure_value haunted_island pirate_superstition
+1         1       2150.310              0                   0
+2         2       4153.221              1                   1
+3         3       2635.908              0                   1
+4         4       4532.070              0                   0
+5         5       4761.869              1                   0
+6         6       1182.226              0                   1
+  treasure_value_mcar treasure_value_mar treasure_value_mnar
+1            2150.310           2150.310                  NA
+2            4153.221                 NA                  NA
+3            2635.908           2635.908                  NA
+4                  NA           4532.070                  NA
+5            4761.869           4761.869            4761.869
+6            1182.226           1182.226            1182.226</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function for Selecting Appropriate Data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df_missing <span class="ot">&lt;-</span> <span class="cf">function</span>(type){</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(type <span class="sc">==</span> <span class="st">"mcar"</span>){</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        treasure_value_mcar</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">"mar"</span>){</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        treasure_value_mar</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">"mnar"</span>){</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        treasure_value_mnar</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span>{</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Error: Please select one of the types of missing data mechanisms (MCAR, MAR, MNAR)"</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 <section id="sowhat-do-we-do" class="level1">
 <h1>So…what do we do?</h1>
-<p>Once we know, or think we know, what type of missing data mechanism we have we need to figure out how to deal with this! This post will go over five methods, although there a LOT more than that. These are just some common ones that I see/have come across in my field. Each section will cover: overview of what the method is, assumptions (what’s required of the method), when to use it and then an example in R.</p>
+<p>Once we know, or make an assumption about, what type of missing data mechanism we have we need to figure out how to deal with this! This post will go over five methods, although there a LOT more than that. These are just some common ones that I see/have come across in my field (clinical epidemiology/biostatistics). Each section will cover what the method is, when to use it, an example and some considerations. Let’s get started!</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -289,109 +378,9 @@ An Introduction to Methods for Missingness
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This is meant to be an introduction to some of these methods. A few of them shouldn’t have much additional detail to learn about that, such as last observation carried forward or complete cases. However others, such as multiple imputation, there is a litany of information about them. For example, there are entire textbooks on multiple imputation.</p>
-<p>The goal of this post is more to be an introduction to missingness, and help identify some potential scenarios to use the different methods while avoiding pitfalls.</p>
+<p>This is meant to be an introduction to some of these methods. A few of them shouldn’t have much additional detail to learn about (i.e., complete cases) however others, such as multiple imputation, have a litany of information about them. For example, there are entire textbooks on multiple imputation.</p>
+<p>The goal of this post is more to be an introduction to missingness, and help identify some potential scenarios to use the different methods while avoiding potential pitfalls.</p>
 </div>
-</div>
-</section>
-<section id="pirate-treasure-example" class="level1">
-<h1>Pirate Treasure Example</h1>
-<p>Let’s simulate some data for our pirate treasure example. We’ll assume that</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate a dataset</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># for reproducibility</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">322</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Pirate Data</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_id =</span> <span class="dv">1</span><span class="sc">:</span>n, </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">treasure_value =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">1000</span>, <span class="at">max =</span> <span class="dv">5000</span>), </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">haunted_island =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_superstition =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># MCAR</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Randomly select 50 observations</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>mcar_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df), <span class="dv">50</span>) <span class="co"># randomly select 20 indices</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mcar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mcar[mcar_indices] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># set these values to NA</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># MAR (depends on the value of another variable)</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>is_mar <span class="ot">&lt;-</span> df<span class="sc">$</span>haunted_island <span class="sc">&amp;</span> df<span class="sc">$</span>pirate_superstition <span class="sc">&gt;</span> <span class="fl">0.5</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mar[is_mar] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># MNAR Variable </span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mnar <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>mnar_prob <span class="ot">&lt;-</span> df<span class="sc">$</span>treasure_value <span class="sc">/</span> <span class="fu">max</span>(df<span class="sc">$</span>treasure_value) <span class="co"># higher value, higher chance of being NA</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treasure_value_mnar[<span class="fu">runif</span>(<span class="fu">nrow</span>(df)) <span class="sc">&lt;</span> mnar_prob] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># View the data</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>  pirate_id treasure_value haunted_island pirate_superstition
-1         1       2150.310              0                   0
-2         2       4153.221              1                   1
-3         3       2635.908              0                   1
-4         4       4532.070              0                   0
-5         5       4761.869              1                   0
-6         6       1182.226              0                   1
-  treasure_value_mcar treasure_value_mar treasure_value_mnar
-1            2150.310           2150.310                  NA
-2            4153.221                 NA                  NA
-3            2635.908           2635.908                  NA
-4                  NA           4532.070                  NA
-5            4761.869           4761.869            4761.869
-6            1182.226           1182.226            1182.226</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Writing a Function for Selecting Appropriate Data </span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df_missing <span class="ot">&lt;-</span> <span class="cf">function</span>(type){</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(type <span class="sc">==</span> <span class="st">"mcar"</span>){</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        treasure_value_mcar</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">"mar"</span>){</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        df <span class="sc">|&gt;</span> </span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        treasure_value_mar</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">"mnar"</span>){</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        df <span class="sc">|&gt;</span> </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        pirate_id, </span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        treasure_value, </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        haunted_island, </span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        pirate_superstition,</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        treasure_value_mar</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span>{</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Error please select one of the types of missing data mechnanism (MCAR, MAR, MNAR)"</span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 </section>
 <section id="complete-cases-exclude-all-missing" class="level1">
@@ -402,22 +391,19 @@ An Introduction to Methods for Missingness
 </section>
 <section id="when-to-use" class="level2">
 <h2 class="anchored" data-anchor-id="when-to-use">When to Use</h2>
-<p>Complete case analysis can be valid when only the outcome variable is incomplete and we assume MAR <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>, however when we are dealing with covariates there are several disadvantages to this approach.</p>
-<p>Unless the data are MAR, the estimated stats and regression coefficients may be biased <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. Even if the data are MCAR, by reducing the sample size, we are reducing the precision (i.e., confidence intervals will be wider). Another problem is that by using</p>
+<p>Complete case analysis can be valid if we assume that the data are MAR <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. It also depends on how much missing data we have, and the corresponding reduction in sample size. If the missing data is small, for example less than 5%, this is a different situation than if there is 30% missingness.</p>
 </section>
 <section id="example" class="level2">
 <h2 class="anchored" data-anchor-id="example">Example</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note to self: maybe this should be MCAR? </span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df.mar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mar"</span>) <span class="co"># selecting mar data</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df.mar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mar"</span>) </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> df.mar <span class="sc">|&gt;</span> </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df.mar<span class="sc">$</span>treasure_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> df.mar <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df.mar<span class="sc">$</span>treasure_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2995.293</code></pre>
@@ -430,14 +416,11 @@ An Introduction to Methods for Missingness
 <pre><code>[1] 3017.684</code></pre>
 </div>
 </div>
-<p>We can see in this example, that removing all the missing values results in a difference of values. If you compare the datasets then you’ll see the differences and the flaws in this. Futhermore, this can drastically reduce your dataset if you only keep the observations that has a value for every value (as a function of the number of variables in your dataset).</p>
 </section>
 <section id="considerations" class="level2">
 <h2 class="anchored" data-anchor-id="considerations">Considerations</h2>
-<p>Complete case analysis can be convenient from a data quality point of view, however it can cause some issues. For example, is the missing data are MCAR the analysis will have reduced precision due to the reduced sample size but the observed data will not be biased <span class="citation" data-cites="jakobsen2017">(<a href="#ref-jakobsen2017" role="doc-biblioref">Jakobsen et al. 2017</a>)</span>. If the missing data are not MCAR, the estimate of the effect may be biased <span class="citation" data-cites="jakobsen2017">(<a href="#ref-jakobsen2017" role="doc-biblioref">Jakobsen et al. 2017</a>)</span>.</p>
-<p>It’s also important to consider which patients are being removed and how many. Is this now the same target population that it was originally? Imagine if ended up removing 25% of our sample! How would that affect our generalizability?<br>
-<br>
-Complete cases can be used in the right context (i.e., if &lt;5% of sample is missing and data is MCAR [RYAN ADD REF]) however it requires some careful thought.</p>
+<p>Complete case analysis can be convenient from a data quality point of view, however it can cause some issues. By not imputing any values, we are only using the “observed” values. This might seem beneficial but it can cause problems. Firstly, the estimated statistics and regression coefficients may be biased unless the data is MAR <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. Secondly, there will be reduced precision (aka wider confidence intervals) because there is a reduction in sample size.</p>
+<p>It’s also important to consider which patients are being removed and how many. Is this now the same target population that it was originally? Imagine if we ended up removing 25% of our sample! How would that affect our generalizability? This might change our target population.</p>
 </section>
 </section>
 <section id="last-observation-carried-forward" class="level1">
@@ -448,7 +431,7 @@ Complete cases can be used in the right context (i.e., if &lt;5% of sample is mi
 </section>
 <section id="when-to-use-1" class="level2">
 <h2 class="anchored" data-anchor-id="when-to-use-1">When to Use</h2>
-<p>LOCF assumes that the data is MCAR (REF?). If the data are MCAR, the absence of data is unrelated to the study question or the values of the missing data themselves. It can be quite useful when it is plausible, for example when we need to carry through the value of sex (male/female).</p>
+<p>LOCF is used when there is longitudinal data, and it is assumed that it’s plausible. For example, if we need to carry through the value of sex (male/female). If there is missingness for this data but it is available at a previous encounter, then we can assume it’s the same.</p>
 </section>
 <section id="example-1" class="level2">
 <h2 class="anchored" data-anchor-id="example-1">Example</h2>
@@ -457,58 +440,89 @@ Complete cases can be used in the right context (i.e., if &lt;5% of sample is mi
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we need to have multiple measurements per pirate</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># FROM CHATGPT</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>n_pirates <span class="ot">&lt;-</span> <span class="dv">10</span>   <span class="co"># Number of unique pirates</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>n_measurements <span class="ot">&lt;-</span> <span class="dv">5</span>  <span class="co"># Number of measurements per pirate</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the data frame</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>df.locf <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_id =</span> <span class="dv">1</span><span class="sc">:</span>n_pirates,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">measurement_id =</span> <span class="dv">1</span><span class="sc">:</span>n_measurements</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasure_value =</span> <span class="fu">runif</span>(<span class="at">n =</span> n_pirates <span class="sc">*</span> n_measurements, <span class="at">min =</span> <span class="dv">1000</span>, <span class="at">max =</span> <span class="dv">5000</span>),</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">haunted_island =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n_pirates <span class="sc">*</span> n_measurements, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pirate_superstition =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n_pirates <span class="sc">*</span> n_measurements, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>n_pirates <span class="ot">&lt;-</span> <span class="dv">10</span>   <span class="co"># Number of unique pirates</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>n_measurements <span class="ot">&lt;-</span> <span class="dv">5</span>  <span class="co"># Number of measurements per pirate</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the data frame</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>df.locf <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pirate_id =</span> <span class="dv">1</span><span class="sc">:</span>n_pirates,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">measurement_id =</span> <span class="dv">1</span><span class="sc">:</span>n_measurements</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasure_value =</span> <span class="fu">runif</span>(<span class="at">n =</span> n_pirates <span class="sc">*</span> n_measurements, <span class="at">min =</span> <span class="dv">1000</span>, <span class="at">max =</span> <span class="dv">5000</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">haunted_island =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n_pirates <span class="sc">*</span> n_measurements, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pirate_superstition =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n_pirates <span class="sc">*</span> n_measurements, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># View the dataframe</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.locf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>mcar_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df.locf), <span class="dv">15</span>) <span class="co"># randomly select 15 indices</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>df.locf<span class="sc">$</span>treasure_value_mcar <span class="ot">&lt;-</span> df.locf<span class="sc">$</span>treasure_value</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>df.locf<span class="sc">$</span>treasure_value_mcar[mcar_indices] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># set these values to</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co"># View the dataframe</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>df.locf <span class="sc">%&gt;%</span> <span class="fu">select</span>(pirate_id, measurement_id, treasure_value_mcar) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(pirate_id, measurement_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>  pirate_id measurement_id treasure_value haunted_island pirate_superstition
-1         1              1       3342.268              0                   0
-2         2              1       1595.112              1                   0
-3         3              1       1716.238              0                   0
-4         4              1       2356.886              1                   1
-5         5              1       1735.608              1                   0
-6         6              1       2622.166              0                   1</code></pre>
+<pre><code>   pirate_id measurement_id treasure_value_mcar
+1          1              1                  NA
+2          1              2            4811.364
+3          1              3            4478.129
+4          1              4            2864.015
+5          1              5            4792.268
+6          2              1                  NA
+7          2              2                  NA
+8          2              3            1243.352
+9          2              4                  NA
+10         2              5            1344.689
+11         3              1            1716.238
+12         3              2            3449.500
+13         3              3            1939.598
+14         3              4            1948.792
+15         3              5                  NA
+16         4              1            2356.886
+17         4              2            2854.295
+18         4              3            4972.062
+19         4              4            1932.959
+20         4              5            3889.595
+21         5              1                  NA
+22         5              2            2418.918
+23         5              3            3712.791
+24         5              4            1922.614
+25         5              5            4688.018
+26         6              1            2622.166
+27         6              2            4529.692
+28         6              3                  NA
+29         6              4            1246.905
+30         6              5            3455.364
+31         7              1            3454.238
+32         7              2                  NA
+33         7              3            2509.240
+34         7              4            2988.474
+35         7              5            1643.866
+36         8              1                  NA
+37         8              2                  NA
+38         8              3            2844.736
+39         8              4                  NA
+40         8              5            1731.763
+41         9              1            4294.102
+42         9              2                  NA
+43         9              3                  NA
+44         9              4            4032.742
+45         9              5            3920.734
+46        10              1            2495.928
+47        10              2            1860.267
+48        10              3                  NA
+49        10              4                  NA
+50        10              5            3358.103</code></pre>
 </div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # MY CODE</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># df.mcar &lt;- df_missing(type = "mcar")</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # RYAN: NEED to ADD MORE ROWS, multiple per pirate_id</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># df.locf &lt;- df.mcar %&gt;% </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(pirate_id) %&gt;% </span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   dplyr::mutate(</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     treasure_value = ifelse(is.na(treasure_value_mcar), lag(treasure_value_mcar), treasure_value_mcar)</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 </section>
 <section id="considerations-1" class="level2">
 <h2 class="anchored" data-anchor-id="considerations-1">Considerations</h2>
-<p>The plausibility of LOCF needs to be considered. For example, if we are studying pirates and have two categories: monsters vs humans, we can safely assume that the monster will still be a monster. An example where this might be a problem is a lab value. Is a lab value that is 30 days prior okay? What about 60, 90 or 400?</p>
-<p>Other assumptions include:</p>
-<ul>
-<li><p>No dropout</p></li>
-<li><p>Stability of the condition over time</p></li>
-</ul>
+<p>The plausibility of LOCF needs to be considered. For example, if we are studying monsters and human, we can safely assume that the monster will still be a monster. Would this be true for the number of planets that a monster has been too? What about a lab value? Is a lab value stable at 30 days? What about 60, 90 or 400? This becomes a balance between what’s clinical plausible and the reduction in sample size (if a shorter time window, might be more plausible but the last value might be further away than that).</p>
 </section>
 </section>
 <section id="mean-value-imputation" class="level1">
@@ -519,126 +533,116 @@ Complete cases can be used in the right context (i.e., if &lt;5% of sample is mi
 </section>
 <section id="when-to-use-2" class="level2">
 <h2 class="anchored" data-anchor-id="when-to-use-2">When to Use</h2>
-<p>You probably guessed this already, but we can use it when we have a mean! So this can be used for any variable that has a mean (typically a continuous variable).</p>
+<p>You probably guessed this already, but we can use it when we have a mean! So this can be used for any variable that has a mean (typically a continuous variable). If the data are MCAR then the effect should be unbiased <span class="citation" data-cites="dziura2013">(<a href="#ref-dziura2013" role="doc-biblioref">Dziura et al. 2013</a>)</span>.</p>
 </section>
 <section id="example-2" class="level2">
 <h2 class="anchored" data-anchor-id="example-2">Example</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mcar"</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df.mcar<span class="sc">$</span>treasure_value_mcar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2967.92</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df.mean.imputation <span class="ot">&lt;-</span> df.mcar <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_treasure_value =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(treasure_value_mcar) <span class="sc">~</span> <span class="fu">mean</span>(df.mcar<span class="sc">$</span>treasure_value_mcar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(treasure_value_mcar) <span class="sc">~</span> treasure_value_mcar</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mcar"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df.mean.imputation <span class="ot">&lt;-</span> df.mcar <span class="sc">%&gt;%</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_treasure_value =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(treasure_value_mcar) <span class="sc">~</span> <span class="fu">mean</span>(df.mcar<span class="sc">$</span>treasure_value_mcar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(treasure_value_mcar) <span class="sc">~</span> treasure_value_mcar</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 <section id="considerations-2" class="level2">
 <h2 class="anchored" data-anchor-id="considerations-2">Considerations</h2>
-<p>This method is easy to implement and quick but there are some things we need to consider.</p>
-<p>Mean value imputation is just what it sounds like. You replace the missing values with the mean. Now, this fairly straightforward but there are some assumptions that we need to consider. This method will give unbiased effects when the data is MCAR. It will lead to a decrease in the variability of the effect estimate though <span class="citation" data-cites="dziura2013">Austin et al. (<a href="#ref-austin2021missing" role="doc-biblioref">2021</a>)</span>. It also ignores relationships with other variables, which may be the case <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. It can be quite useful but needs to be used in the right circumstances.</p>
+<p>This method is easy to implement and quick but there are some things we need to consider. First, the effect should be unbiased however the standard errors aren’t necessarily. This is due to this method artificially reducing the variation in the data set <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. It also ignores relationships with other variables which be might be true, but the plausibility of this needs to be considered <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. These imputed values end up being treated as equal to the values that aren’t missing <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>, which may be incorrect since we know the observed values were recorded and not imputed.</p>
 </section>
 </section>
 <section id="condition-mean-imputation-aka-using-regression" class="level1">
 <h1>Condition mean Imputation (aka using Regression)</h1>
 <section id="what-is-it-3" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-it-3">What is it?</h2>
-<p>Conditional mean imputation is very similar to mean imputation but instead of using the mean, we’ll use the conditional mean. How do we know the conditional mean? It’s basically the result from our regression.<br>
-<br>
-Basically, you fit a regression model and then use this to predict what the value would be. A perk of this method is that you can fit a regression model including the variables that are associated with other variables.</p>
+<p>Conditional mean imputation is very similar to mean imputation but instead of using the mean, we’ll use the conditional mean. How do we know the conditional mean? By predicting the result based on a model that we’ve fit to the data that we <em>do</em> have.</p>
 </section>
 <section id="when-to-use-3" class="level2">
 <h2 class="anchored" data-anchor-id="when-to-use-3">When to Use</h2>
-<p>We can use this in similar scenarios to the mean value imputation.</p>
+<p>We can use this in similar scenarios to the mean value imputation. When the data is MCAR or MAR the effects are expected to be unbiased <span class="citation" data-cites="dziura2013">(<a href="#ref-dziura2013" role="doc-biblioref">Dziura et al. 2013</a>)</span>. This method can incorporate relationships with other variables, which is an advantage over mean value imputation.</p>
 </section>
 <section id="example-3" class="level2">
 <h2 class="anchored" data-anchor-id="example-3">Example</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df.mar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mar"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>mar.regress <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  treasure_value_mar <span class="sc">~</span> haunted_island <span class="sc">+</span> pirate_superstition, </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df.mar</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>treasure_value_imputed <span class="ot">=</span> <span class="fu">predict</span>(mar.regress)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>regress.imputed <span class="ot">&lt;-</span> df.mar <span class="sc">%&gt;%</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasure_value_imputed =</span> <span class="fu">case_when</span>(</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(treasure_value_mar) <span class="sc">~</span> <span class="fu">predict</span>(mar.regress, <span class="at">newdata =</span> df.mar, <span class="at">type =</span> <span class="st">"response"</span>),</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> treasure_value_mar</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(regress.imputed<span class="sc">$</span>treasure_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.mar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mar"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>mar.regress <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  treasure_value_mar <span class="sc">~</span> haunted_island <span class="sc">+</span> pirate_superstition, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df.mar</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>treasure_value_imputed <span class="ot">=</span> <span class="fu">predict</span>(mar.regress)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>regress.imputed <span class="ot">&lt;-</span> df.mar <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasure_value_imputed =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(treasure_value_mar) <span class="sc">~</span> <span class="fu">predict</span>(mar.regress, <span class="at">newdata =</span> df.mar, <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> treasure_value_mar</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(regress.imputed<span class="sc">$</span>treasure_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2995.293</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>var.og <span class="ot">=</span> <span class="fu">sd</span>(regress.imputed<span class="sc">$</span>treasure_value)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(regress.imputed<span class="sc">$</span>treasure_value_imputed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>var.og <span class="ot">=</span> <span class="fu">sd</span>(regress.imputed<span class="sc">$</span>treasure_value)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(regress.imputed<span class="sc">$</span>treasure_value_imputed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3046.162</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>var.imputed <span class="ot">=</span> <span class="fu">sd</span>(regress.imputed<span class="sc">$</span>treasure_value_imputed)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(regress.imputed<span class="sc">$</span>treasure_value_mar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>var.imputed <span class="ot">=</span> <span class="fu">sd</span>(regress.imputed<span class="sc">$</span>treasure_value_imputed)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(regress.imputed<span class="sc">$</span>treasure_value_mar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3017.684</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(regress.imputed<span class="sc">$</span>treasure_value_mar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(regress.imputed<span class="sc">$</span>treasure_value_mar, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1111.26</code></pre>
 </div>
 </div>
-<p>As you can see, we are artificially reducing the variability in the variable. For example, 1121.7043222 is the original standard deviation, where as now the standard deviation is 962.1382697</p>
 </section>
 <section id="considerations-3" class="level2">
 <h2 class="anchored" data-anchor-id="considerations-3">Considerations</h2>
-<p>“Conditional mean imputation” is similar to mean imputation however, a regression model is used to impute a single value for each missing value <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. This will give an unbiased effect estimate when the missing data are MCAR or MAR <span class="citation" data-cites="dziura2013">(<a href="#ref-dziura2013" role="doc-biblioref">Dziura et al. 2013</a>)</span>.</p>
+<p>This method can artificially amplify the multivariate relationship in the data <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. For example, if we assume that age is related to our covariate then we end up imputing based on the values of age (which may not be the case). These imputed values end up being treated as equal to the values that aren’t missing <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>, which may be incorrect since we know the observed values were recorded and not imputed.</p>
 </section>
 </section>
 <section id="multiple-imputation" class="level1">
 <h1>Multiple Imputation</h1>
 <section id="what-is-it-4" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-it-4">What is it?</h2>
-<p>Multiple imputation (MI) imputes multiple values for each missing value. It picks a value from a list of options, the distribution, and selects a value to be imputed. This results in multiple complete data sets where the missing value has been filled in with plausible values <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. Each of these data sets is used to conduct the analysis, for example fitting a generalized linear model, then the results are pooled. For our case, we’ll focus on the method known as multivariate imputation by chained equations (MICE). For more detail about it, I highly recommend <span class="citation" data-cites="austin2021missing">Austin et al. (<a href="#ref-austin2021missing" role="doc-biblioref">2021</a>)</span>.</p>
+<p>Multiple imputation (MI) imputes a value for each missing value. It picks a value from a list of options, aka the distribution, and imputes it. This creates one data set. This is then done again, and again until there are multiple complete datasets where the missing value has been filled in using plausible values <span class="citation" data-cites="austin2021missing">(<a href="#ref-austin2021missing" role="doc-biblioref">Austin et al. 2021</a>)</span>. Each of these data sets is used to conduct the analysis, for example fitting a generalized linear model, then the results are pooled. For our case, we’ll focus on the method known as multivariate imputation by chained equations (MICE). For more detail about it, I highly recommend <span class="citation" data-cites="austin2021missing">Austin et al. (<a href="#ref-austin2021missing" role="doc-biblioref">2021</a>)</span>.</p>
 </section>
 <section id="when-to-use-4" class="level2">
 <h2 class="anchored" data-anchor-id="when-to-use-4">When to Use</h2>
+<p>MI, based on <span class="citation" data-cites="austin2021missing">Austin et al. (<a href="#ref-austin2021missing" role="doc-biblioref">2021</a>)</span>, can be used when the data are assumed to be MCAR or MAR. The methods can be modified if the data is thought to be MNAR <span class="citation" data-cites="van2018flexible">(<a href="#ref-van2018flexible" role="doc-biblioref">Van Buuren 2018</a>)</span>. This method can be used when it’s assumed that all the plausible values have been captured for the variable of interest.</p>
 </section>
 <section id="example-4" class="level2">
 <h2 class="anchored" data-anchor-id="example-4">Example</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice) <span class="co"># package used for multiple imputation using chained equations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice) <span class="co"># package used for multiple imputation using chained equations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'mice' was built under R version 4.3.2</code></pre>
@@ -659,10 +663,11 @@ Attaching package: 'mice'</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mcar"</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform MICE imputation</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>mice_mod <span class="ot">&lt;-</span> <span class="fu">mice</span>(df.mcar, <span class="at">m=</span><span class="dv">5</span>, <span class="at">maxit=</span><span class="dv">50</span>, <span class="at">meth=</span><span class="st">'pmm'</span>, <span class="at">seed=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mcar"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing the imputation</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>mice_mod <span class="ot">&lt;-</span> <span class="fu">mice</span>(df.mcar, <span class="at">m=</span><span class="dv">5</span>, <span class="at">maxit=</span><span class="dv">50</span>, <span class="at">meth=</span><span class="st">'pmm'</span>, <span class="at">seed=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -923,30 +928,31 @@ Attaching package: 'mice'</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a GLM to each imputed dataset</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>glm_models <span class="ot">&lt;-</span> <span class="fu">with</span>(mice_mod, <span class="fu">glm</span>(treasure_value_mcar <span class="sc">~</span> haunted_island <span class="sc">+</span> pirate_superstition, <span class="at">family =</span> <span class="fu">gaussian</span>()))</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pool the results of the GLM models</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>pooled_results <span class="ot">&lt;-</span> <span class="fu">pool</span>(glm_models)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the pooled results</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(pooled_results) <span class="sc">|&gt;</span> </span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting a GLM to each imputed dataset. For this case, imagine that haunted_island </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is the outcome </span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>glm_models <span class="ot">&lt;-</span> <span class="fu">with</span>(mice_mod, <span class="fu">glm</span>(haunted_island <span class="sc">~</span> treasure_value_mcar <span class="sc">+</span> pirate_superstition, <span class="at">family =</span> <span class="fu">binomial</span>()))</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Pooling the results together </span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>pooled_results <span class="ot">&lt;-</span> <span class="fu">pool</span>(glm_models)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the pooled results</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(pooled_results) <span class="sc">|&gt;</span> </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>                 term    estimate std.error
-1         (Intercept) 2982.709636  116.2663
-2      haunted_island  -40.054068  133.7189
-3 pirate_superstition    9.296319  133.6610</code></pre>
+<pre><code>                 term      estimate   std.error
+1         (Intercept)  1.283701e-01 0.370735275
+2 treasure_value_mcar -3.340088e-05 0.000110922
+3 pirate_superstition -1.764281e-01 0.242919776</code></pre>
 </div>
 </div>
 </section>
 <section id="considerations-4" class="level2">
 <h2 class="anchored" data-anchor-id="considerations-4">Considerations</h2>
 <p>There are some considerations for using this. We need to decide if we think all the plausible values have been captured. MI only pulls from the existing values. So for example, if we have red, blue, yellow and green marbles in our population but only blue and green in our sample then red and yellow won’t be imputed.</p>
-<p>We also need to decide how large the number of imputed data sets are. There are many different ways to ascertain this but White et al.&nbsp;(ref from austin) suggested that as a rule of thumb it should be at least as large as the percentage of subjects with missing data. So if missingness is 22%, then we need at least 22 data sets.</p>
+<p>We also need to decide how large the number of imputed data sets are. There are many different ways to ascertain this. <span class="citation" data-cites="white2011multiple">White, Royston, and Wood (<a href="#ref-white2011multiple" role="doc-biblioref">2011</a>)</span> suggested that as a rule of thumb it should be at least as large as the percentage of subjects with missing data. So if missingness is 22%, then we need at least 22 data sets.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -966,12 +972,12 @@ MI is broad, this is an introduction
 <h1>Summary of Methods</h1>
 <p>These are a few of the missing data methods that you may come across, however there is a VAST number of methods for missing data. The key takeaway should be to consider these, regardless of the method:</p>
 <ul>
-<li><p>What kind of assumptions does it make? (i.e., MCAR, MNAR, MAR)</p></li>
+<li><p>What kind of assumptions are required? (i.e., MCAR, MNAR, MAR)</p></li>
 <li><p>What are the tradeoffs? For example, increase in data quality but decreased in precision and generalizibility? Or increase in precision but decrease in replicability?</p></li>
 <li><p>Practically speaking: is this the right use case for the audience? For example, a regulatory body may have different wants than an eighth grader wanting her help with analyzing her missing pets data.</p></li>
 </ul>
-<p>This was just an introduction but there are a ton of great resources on each of these methods. There are also a bunch of other methods that are great to learn too (I’m currently still learning some of them so perhaps it will be a source of future posts!). This includes: K-Nearest Neighbour Matching, Predictive Mean Matching, Random Forest imputation and much more!</p>
-<p>Hope this blog post was useful as an introduction to five methods to start, but this is only the beginning! Happy missing data exploring!</p>
+<p>This was just an introduction but there are a ton of great resources on each of these methods! There are also a bunch of other methods that are great to learn too (I’m currently still learning some of them so perhaps it will be a source of future posts!). This includes: K-Nearest Neighbour Matching, Predictive Mean Matching, Random Forest imputation and much more!</p>
+<p>Hopefully this blog post was useful as an introduction to five methods to start, but this is only the beginning! Happy missing data exploring!</p>
 
 
 
@@ -984,8 +990,11 @@ Austin, Peter C, Ian R White, Douglas S Lee, and Stef van Buuren. 2021. <span>�
 <div id="ref-dziura2013" class="csl-entry" role="listitem">
 Dziura, James D, Lori A Post, Qing Zhao, Zhixuan Fu, and Peter Peduzzi. 2013. <span>“Strategies for Dealing with Missing Data in Clinical Trials: From Design to Analysis.”</span> <em>The Yale Journal of Biology and Medicine</em> 86 (3): 343.
 </div>
-<div id="ref-jakobsen2017" class="csl-entry" role="listitem">
-Jakobsen, Janus Christian, Christian Gluud, Jørn Wetterslev, and Per Winkel. 2017. <span>“When and How Should Multiple Imputation Be Used for Handling Missing Data in Randomised Clinical Trials–a Practical Guide with Flowcharts.”</span> <em>BMC Medical Research Methodology</em> 17 (1): 1–10.
+<div id="ref-van2018flexible" class="csl-entry" role="listitem">
+Van Buuren, Stef. 2018. <em>Flexible Imputation of Missing Data</em>. CRC press.
+</div>
+<div id="ref-white2011multiple" class="csl-entry" role="listitem">
+White, Ian R, Patrick Royston, and Angela M Wood. 2011. <span>“Multiple Imputation Using Chained Equations: Issues and Guidance for Practice.”</span> <em>Statistics in Medicine</em> 30 (4): 377–99.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

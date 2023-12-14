@@ -5,7 +5,6 @@ author: "Ryan Batten"
 date: "2023-11-26"
 categories: [Missing Data, MCAR, MAR, MNAR]
 bibliography: missing-data.bib
-draft: true
 format: 
   html:
     code-fold: true
@@ -13,7 +12,7 @@ format:
 
 # Missing Data
 
-Missing data are unavoidable when dealing data in general, but even more so with real-world data. So it's important to have a plan on what to do! To make valid causal inferences, we need to have a solution but what options do we have? A BUNCH! This post will focus on introducing five common methods:
+Missing data are unavoidable when dealing with data, especially with real-world data. So it's important to have a plan on what to do with missing data! To make valid causal inferences, we need to have a solution but what options do we have? A BUNCH! This post will focus on introducing five common methods:
 
 -   Complete Case
 
@@ -25,13 +24,13 @@ Missing data are unavoidable when dealing data in general, but even more so with
 
 -   Multiple Imputation
 
-Before we dive into these exciting methods, first we need to go over the different types of missing data mechanisms. Arguably the most important aspect of dealing with missing data is figuring this part out.
+Before we dive into these, first we need to go over the different types of missing data mechanisms. Arguably the most important aspect of dealing with missing data is figuring this part out.
 
 # Missing Data Mechanisms
 
-"How did this data end up becoming missing?" is essentially what we are asking. Was this just random? Or is there a reason? Data can go missing for a variety of reasons. A patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order to name just a few.
+"How did this data end up becoming missing?" is basically what we are trying to figure out. Was this just random? Or is there a reason? Data can go missing for a variety of reasons. A patient refusing to respond to a certain question, being lost to follow-up, investigator error or certain tests not being order to name just a few.
 
-Typically missing data are organized into three types of missing data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR) [@austin2021missing] . Let's break down each one a little further.
+Typically missing data are grouped into three types of missing data mechanisms: missing completely at random (MCAR), missing at random (MAR) and missing not a random (MNAR) [@austin2021missing] . Let's break down each one a little further.
 
 ## Missing Completely at Random (MCAR)
 
@@ -43,13 +42,13 @@ Let's use an example. Imagine that we are taking a survey of a class of kinderga
 
 Data are "missing at random" if the probability of a variable being missing, after accounting for **all** the observed variables is independent from the unobserved data [@austin2021missing]. So basically it can depend on the observed variables but has nothing to do with the unobserved variables.
 
-Using our same example, imagine that kids who prefer mint or vanilla, decide to skip school and go to the beach.
+Using our same example, imagine that kids who prefer mint or vanilla, decide to skip school and go to the beach. On those days when the teacher does the survey, the missing responses are more likely to be from kids who prefer those flavors. This would be MAR because it's dependent on the fact that these kids are more likely to be absent when it's hot.
 
 ## Missing Not at Random (MNAR)
 
-Data are considered to be "missing not at random" if, they are neither MCAR or MAR. But that's not super helpful, let's try again. Data are MNAR if the probability of being missing, even after accounting for all the observevd variables, is based on the value of the missing variable [@austin2021missing].
+Data are considered to be "missing not at random" if, they are neither MCAR or MAR. But that's not super helpful, let's try again. Data are MNAR if the probability of being missing, even after accounting for all the observed variables, is based on the value of the missing variable [@austin2021missing].
 
-An example of MNAR wou
+Using our example again, imagine that some kids like a rare flavor like blueberry-cucumber. These kids are afraid that others might find it strange so whenever the survey is handed out they don't submit their surveys. This would be MNAR because it's directly related to the data itself.
 
 ::: callout-note
 ## MAR vs MNAR
@@ -57,48 +56,27 @@ An example of MNAR wou
 Unfortunately, there is no way to test for MAR vs MNAR, so this needs to be based on expert knowledge [@austin2021missing].
 :::
 
-## Pirate Treasure?
+# Pirate Treasure?
 
-Imagine that we have a collection of pirate treasure maps. The missing data mechanisms could be thought of like this:\
+In order to illustrate how these data may look, we need to simulate some data! Imagine that we have a collection of pirate treasure maps. The missing data mechanisms could be thought of like this:\
 \
 **MCAR**: Some maps are missing because they were randomly lost during a storm at sea
 
 **MAR**: Maps are missing for treasures buried in a haunted island because superstitious pirates (whose superstitions are recorded) avoid those places.\
 \
-**MNAR**: Maps are missing for the most valuabel treasures because the pirates who buried them never shared the locations, fearing theft, and their level of paranoia isn't recorded. (So the most lucrative treasures are missing)
+**MNAR**: Maps are missing for the most valuable treasures because the pirates who buried them never shared the locations, fearing theft, and their level of paranoia isn't recorded. (So the most lucrative treasures are missing)
 
-# So...what do we do?
-
-Once we know, or think we know, what type of missing data mechanism we have we need to figure out how to deal with this! This post will go over five methods, although there a LOT more than that. These are just some common ones that I see/have come across in my field. Each section will cover: overview of what the method is, assumptions (what's required of the method), when to use it and then an example in R.
-
-::: callout-warning
-## Covariates vs Outcomes
-
-This post focuses on imputation for covariates, rather than outcomes. The methods are the same, but the plausibility may be different for an outcome variable. Furthermore, it depends on the audience. For example, certain regulatory bodies may prefer several scenarios such as best-case and worst-case imputation.
-:::
-
-::: callout-important
-## An Introduction to Methods for Missingness
-
-This is meant to be an introduction to some of these methods. A few of them shouldn't have much additional detail to learn about that, such as last observation carried forward or complete cases. However others, such as multiple imputation, there is a litany of information about them. For example, there are entire textbooks on multiple imputation.
-
-The goal of this post is more to be an introduction to missingness, and help identify some potential scenarios to use the different methods while avoiding pitfalls.
-:::
-
-# Pirate Treasure Example
-
-Let's simulate some data for our pirate treasure example. We'll assume that
+Let's simulate some data for our pirate treasure example. We can then use this to show how we might solve these different ways.
 
 ```{r pirates_example, message = FALSE}
-library(tidyverse)
 
-# Simulate a dataset
-set.seed(123) # for reproducibility
+library(tidyverse) # Loading tidyverse package
 
-n = 322
+set.seed(123) # setting seed for reproducibility
+
+n = 322 # arbitrarily picked using runif(1, min = 100, max = 500)
 
 # Pirate Data
-
 df <- data.frame(
   pirate_id = 1:n, 
   treasure_value = runif(n = n, min = 1000, max = 5000), 
@@ -106,31 +84,24 @@ df <- data.frame(
   pirate_superstition = rbinom(n = n, size = 1, prob = 0.5)
 ) 
 
-# MCAR
-
-# Randomly select 50 observations
-
-mcar_indices <- sample(1:nrow(df), 50) # randomly select 20 indices
+# MCAR: Randomly select 50 observations
+mcar_indices <- sample(1:nrow(df), 50)
 df$treasure_value_mcar <- df$treasure_value
-df$treasure_value_mcar[mcar_indices] <- NA # set these values to NA
+df$treasure_value_mcar[mcar_indices] <- NA
 
-
-
-# MAR (depends on the value of another variable)
+# MAR: Depends on the value of another variable
 df$treasure_value_mar <- df$treasure_value
-is_mar <- df$haunted_island & df$pirate_superstition > 0.5
+is_mar <- df$haunted_island & df$pirate_superstition
 df$treasure_value_mar[is_mar] <- NA
 
-# MNAR Variable 
+# MNAR: Higher value, higher chance of being NA
 df$treasure_value_mnar <- df$treasure_value
-mnar_prob <- df$treasure_value / max(df$treasure_value) # higher value, higher chance of being NA
+mnar_prob <- df$treasure_value / max(df$treasure_value)
 df$treasure_value_mnar[runif(nrow(df)) < mnar_prob] <- NA
 
-# View the data
-head(df)
+head(df) # Viewing the data 
 
-# Writing a Function for Selecting Appropriate Data 
-
+# Function for Selecting Appropriate Data
 df_missing <- function(type){
   if(type == "mcar"){
     df |> 
@@ -142,7 +113,7 @@ df_missing <- function(type){
         treasure_value_mcar
       )
   } else if (type == "mar"){
-        df |> 
+    df |> 
       dplyr::select(
         pirate_id, 
         treasure_value, 
@@ -151,20 +122,39 @@ df_missing <- function(type){
         treasure_value_mar
       )
   } else if (type == "mnar"){
-        df |> 
+    df |> 
       dplyr::select(
         pirate_id, 
         treasure_value, 
         haunted_island, 
         pirate_superstition,
-        treasure_value_mar
+        treasure_value_mnar
       )
   } else{
-    "Error please select one of the types of missing data mechnanism (MCAR, MAR, MNAR)"
+    stop("Error: Please select one of the types of missing data mechanisms (MCAR, MAR, MNAR)")
   }
 }
 
+
 ```
+
+# So...what do we do?
+
+Once we know, or make an assumption about, what type of missing data mechanism we have we need to figure out how to deal with this! This post will go over five methods, although there a LOT more than that. These are just some common ones that I see/have come across in my field (clinical epidemiology/biostatistics). Each section will cover what the method is, when to use it, an example and some considerations. Let's get started!
+
+::: callout-warning
+## Covariates vs Outcomes
+
+This post focuses on imputation for covariates, rather than outcomes. The methods are the same, but the plausibility may be different for an outcome variable. Furthermore, it depends on the audience. For example, certain regulatory bodies may prefer several scenarios such as best-case and worst-case imputation.
+:::
+
+::: callout-important
+## An Introduction to Methods for Missingness
+
+This is meant to be an introduction to some of these methods. A few of them shouldn't have much additional detail to learn about (i.e., complete cases) however others, such as multiple imputation, have a litany of information about them. For example, there are entire textbooks on multiple imputation.
+
+The goal of this post is more to be an introduction to missingness, and help identify some potential scenarios to use the different methods while avoiding potential pitfalls.
+:::
 
 # Complete Cases (Exclude All Missing)
 
@@ -174,17 +164,13 @@ df_missing <- function(type){
 
 ## When to Use
 
-Complete case analysis can be valid when only the outcome variable is incomplete and we assume MAR [@austin2021missing], however when we are dealing with covariates there are several disadvantages to this approach.
-
-Unless the data are MAR, the estimated stats and regression coefficients may be biased [@austin2021missing]. Even if the data are MCAR, by reducing the sample size, we are reducing the precision (i.e., confidence intervals will be wider). Another problem is that by using
+Complete case analysis can be valid if we assume that the data are MAR [@austin2021missing]. It also depends on how much missing data we have, and the corresponding reduction in sample size. If the missing data is small, for example less than 5%, this is a different situation than if there is 30% missingness.
 
 ## Example
 
 ```{r complete_cases}
 
-# Note to self: maybe this should be MCAR? 
-
-df.mar <- df_missing(type = "mar") 
+df.mar <- df_missing(type = "mar") # selecting mar data
 
 cc <- df.mar |> 
   drop_na()
@@ -193,15 +179,11 @@ mean(df.mar$treasure_value)
 mean(cc$treasure_value_mar)
 ```
 
-We can see in this example, that removing all the missing values results in a difference of values. If you compare the datasets then you'll see the differences and the flaws in this. Futhermore, this can drastically reduce your dataset if you only keep the observations that has a value for every value (as a function of the number of variables in your dataset).
-
 ## Considerations
 
-Complete case analysis can be convenient from a data quality point of view, however it can cause some issues. For example, is the missing data are MCAR the analysis will have reduced precision due to the reduced sample size but the observed data will not be biased [@jakobsen2017]. If the missing data are not MCAR, the estimate of the effect may be biased [@jakobsen2017].
+Complete case analysis can be convenient from a data quality point of view, however it can cause some issues. By not imputing any values, we are only using the "observed" values. This might seem beneficial but it can cause problems. Firstly, the estimated statistics and regression coefficients may be biased unless the data is MAR [@austin2021missing]. Secondly, there will be reduced precision (aka wider confidence intervals) because there is a reduction in sample size.
 
-It's also important to consider which patients are being removed and how many. Is this now the same target population that it was originally? Imagine if ended up removing 25% of our sample! How would that affect our generalizability?\
-\
-Complete cases can be used in the right context (i.e., if \<5% of sample is missing and data is MCAR \[RYAN ADD REF\]) however it requires some careful thought.
+It's also important to consider which patients are being removed and how many. Is this now the same target population that it was originally? Imagine if we ended up removing 25% of our sample! How would that affect our generalizability? This might change our target population.
 
 # Last Observation Carried Forward
 
@@ -211,15 +193,13 @@ Last observation carried forward (LOCF) is very much what it sounds like. We tak
 
 ## When to Use
 
-LOCF assumes that the data is MCAR (REF?). If the data are MCAR, the absence of data is unrelated to the study question or the values of the missing data themselves. It can be quite useful when it is plausible, for example when we need to carry through the value of sex (male/female).
+LOCF is used when there is longitudinal data, and it is assumed that it's plausible. For example, if we need to carry through the value of sex (male/female). If there is missingness for this data but it is available at a previous encounter, then we can assume it's the same.
 
 ## Example
 
 ```{r locf}
 
 # Here we need to have multiple measurements per pirate
-
-# FROM CHATGPT
 
 n_pirates <- 10   # Number of unique pirates
 n_measurements <- 5  # Number of measurements per pirate
@@ -235,32 +215,24 @@ df.locf <- expand.grid(
     pirate_superstition = rbinom(n = n_pirates * n_measurements, size = 1, prob = 0.5)
   )
 
+
+
+mcar_indices <- sample(1:nrow(df.locf), 15) # randomly select 15 indices
+df.locf$treasure_value_mcar <- df.locf$treasure_value
+df.locf$treasure_value_mcar[mcar_indices] <- NA # set these values to
+
 # View the dataframe
-head(df.locf)
+
+df.locf %>% select(pirate_id, measurement_id, treasure_value_mcar) %>% 
+  arrange(pirate_id, measurement_id)
 
 
-# # MY CODE
-# 
-# df.mcar <- df_missing(type = "mcar")
-# 
-# # RYAN: NEED to ADD MORE ROWS, multiple per pirate_id
-# 
-# df.locf <- df.mcar %>% 
-#   group_by(pirate_id) %>% 
-#   dplyr::mutate(
-#     treasure_value = ifelse(is.na(treasure_value_mcar), lag(treasure_value_mcar), treasure_value_mcar)
-#   )
+
 ```
 
 ## Considerations
 
-The plausibility of LOCF needs to be considered. For example, if we are studying pirates and have two categories: monsters vs humans, we can safely assume that the monster will still be a monster. An example where this might be a problem is a lab value. Is a lab value that is 30 days prior okay? What about 60, 90 or 400?
-
-Other assumptions include:
-
--   No dropout
-
--   Stability of the condition over time
+The plausibility of LOCF needs to be considered. For example, if we are studying monsters and human, we can safely assume that the monster will still be a monster. Would this be true for the number of planets that a monster has been too? What about a lab value? Is a lab value stable at 30 days? What about 60, 90 or 400? This becomes a balance between what's clinical plausible and the reduction in sample size (if a shorter time window, might be more plausible but the last value might be further away than that).
 
 # Mean Value Imputation
 
@@ -270,15 +242,13 @@ Mean value imputation takes the mean of the values that we *do* have and uses th
 
 ## When to Use
 
-You probably guessed this already, but we can use it when we have a mean! So this can be used for any variable that has a mean (typically a continuous variable).
+You probably guessed this already, but we can use it when we have a mean! So this can be used for any variable that has a mean (typically a continuous variable). If the data are MCAR then the effect should be unbiased [@dziura2013].
 
 ## Example
 
 ```{r mean_value}
 
 df.mcar <- df_missing(type = "mcar")
-
-mean(df.mcar$treasure_value_mcar, na.rm = TRUE)
 
 df.mean.imputation <- df.mcar %>% 
   dplyr::mutate(
@@ -287,25 +257,22 @@ df.mean.imputation <- df.mcar %>%
       !is.na(treasure_value_mcar) ~ treasure_value_mcar
     )
   )
+
 ```
 
 ## Considerations
 
-This method is easy to implement and quick but there are some things we need to consider.
-
-Mean value imputation is just what it sounds like. You replace the missing values with the mean. Now, this fairly straightforward but there are some assumptions that we need to consider. This method will give unbiased effects when the data is MCAR. It will lead to a decrease in the variability of the effect estimate though [@dziura2013, @austin2021missing]. It also ignores relationships with other variables, which may be the case [@austin2021missing]. It can be quite useful but needs to be used in the right circumstances.
+This method is easy to implement and quick but there are some things we need to consider. First, the effect should be unbiased however the standard errors aren't necessarily. This is due to this method artificially reducing the variation in the data set [@austin2021missing]. It also ignores relationships with other variables which be might be true, but the plausibility of this needs to be considered [@austin2021missing]. These imputed values end up being treated as equal to the values that aren't missing [@austin2021missing], which may be incorrect since we know the observed values were recorded and not imputed.
 
 # Condition mean Imputation (aka using Regression)
 
 ## What is it?
 
-Conditional mean imputation is very similar to mean imputation but instead of using the mean, we'll use the conditional mean. How do we know the conditional mean? It's basically the result from our regression.\
-\
-Basically, you fit a regression model and then use this to predict what the value would be. A perk of this method is that you can fit a regression model including the variables that are associated with other variables.
+Conditional mean imputation is very similar to mean imputation but instead of using the mean, we'll use the conditional mean. How do we know the conditional mean? By predicting the result based on a model that we've fit to the data that we *do* have.
 
 ## When to Use
 
-We can use this in similar scenarios to the mean value imputation.
+We can use this in similar scenarios to the mean value imputation. When the data is MCAR or MAR the effects are expected to be unbiased [@dziura2013]. This method can incorporate relationships with other variables, which is an advantage over mean value imputation.
 
 ## Example
 
@@ -341,19 +308,19 @@ sd(regress.imputed$treasure_value_mar, na.rm = TRUE)
 
 ```
 
-As you can see, we are artificially reducing the variability in the variable. For example, `r var.og` is the original standard deviation, where as now the standard deviation is `r var.imputed`
-
 ## Considerations
 
-"Conditional mean imputation" is similar to mean imputation however, a regression model is used to impute a single value for each missing value [@austin2021missing]. This will give an unbiased effect estimate when the missing data are MCAR or MAR [@dziura2013].
+This method can artificially amplify the multivariate relationship in the data [@austin2021missing]. For example, if we assume that age is related to our covariate then we end up imputing based on the values of age (which may not be the case). These imputed values end up being treated as equal to the values that aren't missing [@austin2021missing], which may be incorrect since we know the observed values were recorded and not imputed.
 
 # Multiple Imputation
 
 ## What is it?
 
-Multiple imputation (MI) imputes multiple values for each missing value. It picks a value from a list of options, the distribution, and selects a value to be imputed. This results in multiple complete data sets where the missing value has been filled in with plausible values [@austin2021missing]. Each of these data sets is used to conduct the analysis, for example fitting a generalized linear model, then the results are pooled. For our case, we'll focus on the method known as multivariate imputation by chained equations (MICE). For more detail about it, I highly recommend @austin2021missing.
+Multiple imputation (MI) imputes a value for each missing value. It picks a value from a list of options, aka the distribution, and imputes it. This creates one data set. This is then done again, and again until there are multiple complete datasets where the missing value has been filled in using plausible values [@austin2021missing]. Each of these data sets is used to conduct the analysis, for example fitting a generalized linear model, then the results are pooled. For our case, we'll focus on the method known as multivariate imputation by chained equations (MICE). For more detail about it, I highly recommend @austin2021missing.
 
 ## When to Use
+
+MI, based on @austin2021missing, can be used when the data are assumed to be MCAR or MAR. The methods can be modified if the data is thought to be MNAR [@van2018flexible]. This method can be used when it's assumed that all the plausible values have been captured for the variable of interest.
 
 ## Example
 
@@ -363,21 +330,22 @@ library(mice) # package used for multiple imputation using chained equations
 
 df.mcar <- df_missing(type = "mcar")
 
-# Perform MICE imputation
+# Performing the imputation
+
 mice_mod <- mice(df.mcar, m=5, maxit=50, meth='pmm', seed=500)
 
-# Fit a GLM to each imputed dataset
-glm_models <- with(mice_mod, glm(treasure_value_mcar ~ haunted_island + pirate_superstition, family = gaussian()))
+# Fitting a GLM to each imputed dataset. For this case, imagine that haunted_island 
+# is the outcome 
 
-# Pool the results of the GLM models
+glm_models <- with(mice_mod, glm(haunted_island ~ treasure_value_mcar + pirate_superstition, family = binomial()))
+
+# Pooling the results together 
+
 pooled_results <- pool(glm_models)
-
-
 
 # Print the pooled results
 broom::tidy(pooled_results) |> 
   select(term, estimate, std.error)
-
 
 
 ```
@@ -386,7 +354,7 @@ broom::tidy(pooled_results) |>
 
 There are some considerations for using this. We need to decide if we think all the plausible values have been captured. MI only pulls from the existing values. So for example, if we have red, blue, yellow and green marbles in our population but only blue and green in our sample then red and yellow won't be imputed.
 
-We also need to decide how large the number of imputed data sets are. There are many different ways to ascertain this but White et al. (ref from austin) suggested that as a rule of thumb it should be at least as large as the percentage of subjects with missing data. So if missingness is 22%, then we need at least 22 data sets.
+We also need to decide how large the number of imputed data sets are. There are many different ways to ascertain this. @white2011multiple suggested that as a rule of thumb it should be at least as large as the percentage of subjects with missing data. So if missingness is 22%, then we need at least 22 data sets.
 
 ::: callout-note
 ## MI is broad, this is an introduction
@@ -398,12 +366,12 @@ Multiple imputation is one of those methods that has an extensive amount of lite
 
 These are a few of the missing data methods that you may come across, however there is a VAST number of methods for missing data. The key takeaway should be to consider these, regardless of the method:
 
--   What kind of assumptions does it make? (i.e., MCAR, MNAR, MAR)
+-   What kind of assumptions are required? (i.e., MCAR, MNAR, MAR)
 
 -   What are the tradeoffs? For example, increase in data quality but decreased in precision and generalizibility? Or increase in precision but decrease in replicability?
 
 -   Practically speaking: is this the right use case for the audience? For example, a regulatory body may have different wants than an eighth grader wanting her help with analyzing her missing pets data.
 
-This was just an introduction but there are a ton of great resources on each of these methods. There are also a bunch of other methods that are great to learn too (I'm currently still learning some of them so perhaps it will be a source of future posts!). This includes: K-Nearest Neighbour Matching, Predictive Mean Matching, Random Forest imputation and much more!
+This was just an introduction but there are a ton of great resources on each of these methods! There are also a bunch of other methods that are great to learn too (I'm currently still learning some of them so perhaps it will be a source of future posts!). This includes: K-Nearest Neighbour Matching, Predictive Mean Matching, Random Forest imputation and much more!
 
-Hope this blog post was useful as an introduction to five methods to start, but this is only the beginning! Happy missing data exploring!
+Hopefully this blog post was useful as an introduction to five methods to start, but this is only the beginning! Happy missing data exploring!
