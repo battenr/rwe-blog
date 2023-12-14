@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.361">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -110,14 +110,15 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
 
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -203,7 +204,59 @@ div.csl-indent {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#missing-data" id="toc-missing-data" class="nav-link active" data-scroll-target="#missing-data">Missing Data</a></li>
+  <li><a href="#missing-data-mechanisms" id="toc-missing-data-mechanisms" class="nav-link" data-scroll-target="#missing-data-mechanisms">Missing Data Mechanisms</a>
+  <ul>
+  <li><a href="#missing-completely-at-random-mcar" id="toc-missing-completely-at-random-mcar" class="nav-link" data-scroll-target="#missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</a></li>
+  <li><a href="#missing-at-random-mar" id="toc-missing-at-random-mar" class="nav-link" data-scroll-target="#missing-at-random-mar">Missing at Random (MAR)</a></li>
+  <li><a href="#missing-not-at-random-mnar" id="toc-missing-not-at-random-mnar" class="nav-link" data-scroll-target="#missing-not-at-random-mnar">Missing Not at Random (MNAR)</a></li>
+  </ul></li>
+  <li><a href="#pirate-treasure" id="toc-pirate-treasure" class="nav-link" data-scroll-target="#pirate-treasure">Pirate Treasure?</a></li>
+  <li><a href="#sowhat-do-we-do" id="toc-sowhat-do-we-do" class="nav-link" data-scroll-target="#sowhat-do-we-do">So…what do we do?</a></li>
+  <li><a href="#complete-cases-exclude-all-missing" id="toc-complete-cases-exclude-all-missing" class="nav-link" data-scroll-target="#complete-cases-exclude-all-missing">Complete Cases (Exclude All Missing)</a>
+  <ul>
+  <li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it">What is it?</a></li>
+  <li><a href="#when-to-use" id="toc-when-to-use" class="nav-link" data-scroll-target="#when-to-use">When to Use</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#considerations" id="toc-considerations" class="nav-link" data-scroll-target="#considerations">Considerations</a></li>
+  </ul></li>
+  <li><a href="#last-observation-carried-forward" id="toc-last-observation-carried-forward" class="nav-link" data-scroll-target="#last-observation-carried-forward">Last Observation Carried Forward</a>
+  <ul>
+  <li><a href="#what-is-it-1" id="toc-what-is-it-1" class="nav-link" data-scroll-target="#what-is-it-1">What is it?</a></li>
+  <li><a href="#when-to-use-1" id="toc-when-to-use-1" class="nav-link" data-scroll-target="#when-to-use-1">When to Use</a></li>
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1">Example</a></li>
+  <li><a href="#considerations-1" id="toc-considerations-1" class="nav-link" data-scroll-target="#considerations-1">Considerations</a></li>
+  </ul></li>
+  <li><a href="#mean-value-imputation" id="toc-mean-value-imputation" class="nav-link" data-scroll-target="#mean-value-imputation">Mean Value Imputation</a>
+  <ul>
+  <li><a href="#what-is-it-2" id="toc-what-is-it-2" class="nav-link" data-scroll-target="#what-is-it-2">What is it?</a></li>
+  <li><a href="#when-to-use-2" id="toc-when-to-use-2" class="nav-link" data-scroll-target="#when-to-use-2">When to Use</a></li>
+  <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2">Example</a></li>
+  <li><a href="#considerations-2" id="toc-considerations-2" class="nav-link" data-scroll-target="#considerations-2">Considerations</a></li>
+  </ul></li>
+  <li><a href="#condition-mean-imputation-aka-using-regression" id="toc-condition-mean-imputation-aka-using-regression" class="nav-link" data-scroll-target="#condition-mean-imputation-aka-using-regression">Condition mean Imputation (aka using Regression)</a>
+  <ul>
+  <li><a href="#what-is-it-3" id="toc-what-is-it-3" class="nav-link" data-scroll-target="#what-is-it-3">What is it?</a></li>
+  <li><a href="#when-to-use-3" id="toc-when-to-use-3" class="nav-link" data-scroll-target="#when-to-use-3">When to Use</a></li>
+  <li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3">Example</a></li>
+  <li><a href="#considerations-3" id="toc-considerations-3" class="nav-link" data-scroll-target="#considerations-3">Considerations</a></li>
+  </ul></li>
+  <li><a href="#multiple-imputation" id="toc-multiple-imputation" class="nav-link" data-scroll-target="#multiple-imputation">Multiple Imputation</a>
+  <ul>
+  <li><a href="#what-is-it-4" id="toc-what-is-it-4" class="nav-link" data-scroll-target="#what-is-it-4">What is it?</a></li>
+  <li><a href="#when-to-use-4" id="toc-when-to-use-4" class="nav-link" data-scroll-target="#when-to-use-4">When to Use</a></li>
+  <li><a href="#example-4" id="toc-example-4" class="nav-link" data-scroll-target="#example-4">Example</a></li>
+  <li><a href="#considerations-4" id="toc-considerations-4" class="nav-link" data-scroll-target="#considerations-4">Considerations</a></li>
+  </ul></li>
+  <li><a href="#summary-of-methods" id="toc-summary-of-methods" class="nav-link" data-scroll-target="#summary-of-methods">Summary of Methods</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -645,9 +698,6 @@ An Introduction to Methods for Missingness
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice) <span class="co"># package used for multiple imputation using chained equations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'mice' was built under R version 4.3.2</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'mice'</code></pre>
 </div>
@@ -663,11 +713,11 @@ Attaching package: 'mice'</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mcar"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing the imputation</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>mice_mod <span class="ot">&lt;-</span> <span class="fu">mice</span>(df.mcar, <span class="at">m=</span><span class="dv">5</span>, <span class="at">maxit=</span><span class="dv">50</span>, <span class="at">meth=</span><span class="st">'pmm'</span>, <span class="at">seed=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df.mcar <span class="ot">&lt;-</span> <span class="fu">df_missing</span>(<span class="at">type =</span> <span class="st">"mcar"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing the imputation</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>mice_mod <span class="ot">&lt;-</span> <span class="fu">mice</span>(df.mcar, <span class="at">m=</span><span class="dv">5</span>, <span class="at">maxit=</span><span class="dv">50</span>, <span class="at">meth=</span><span class="st">'pmm'</span>, <span class="at">seed=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -928,18 +978,18 @@ Attaching package: 'mice'</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting a GLM to each imputed dataset. For this case, imagine that haunted_island </span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is the outcome </span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>glm_models <span class="ot">&lt;-</span> <span class="fu">with</span>(mice_mod, <span class="fu">glm</span>(haunted_island <span class="sc">~</span> treasure_value_mcar <span class="sc">+</span> pirate_superstition, <span class="at">family =</span> <span class="fu">binomial</span>()))</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Pooling the results together </span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>pooled_results <span class="ot">&lt;-</span> <span class="fu">pool</span>(glm_models)</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the pooled results</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(pooled_results) <span class="sc">|&gt;</span> </span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting a GLM to each imputed dataset. For this case, imagine that haunted_island </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is the outcome </span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>glm_models <span class="ot">&lt;-</span> <span class="fu">with</span>(mice_mod, <span class="fu">glm</span>(haunted_island <span class="sc">~</span> treasure_value_mcar <span class="sc">+</span> pirate_superstition, <span class="at">family =</span> <span class="fu">binomial</span>()))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Pooling the results together </span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>pooled_results <span class="ot">&lt;-</span> <span class="fu">pool</span>(glm_models)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the pooled results</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(pooled_results) <span class="sc">|&gt;</span> </span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 term      estimate   std.error
