@@ -1,0 +1,110 @@
+---
+title: "Emulating a Target Trial" # November Post 
+subtitle: "Lessons Learned" # Titles are placeholders
+author: "Ryan Batten"
+date: "2023-12-28"
+categories: [Target Trial, Lessons Learned]
+bibliography: tt-lessons.bib
+#image : tt-lessons.jpeg
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+# What is a Target Trial and Why Emulate One?
+
+A target trial is the
+
+# How Do We Emulate One?
+
+# Lessons Learned
+
+I've been involved with several projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial. There are some key aspects/lessons that I've become aware of while working. To keep it somewhat organized, I'll lay it out as follows:
+
+-   Inclusion/Exclusion Criteria
+
+-   Choosing an Index Date
+
+-   Missing Data
+
+-   Causal Estimands
+
+-   Data Quality
+
+-   Data Sources
+
+# Inclusion/Exclusion Criteria
+
+Inclusion/exclusion criteria, or sometimes referred to as eligibility criteria, seem fairly straightforward on the surface. For me, this was due to the fact that for my MSc there was a large focus on randomized controlled trials (RCTs), where you have a little more flexibility over I/E criteria. By flexibility, I mean all the variables are available (or you can get them for example lab tests) and at that specific time. For real-world data...not so much.
+
+## Picking Most Important
+
+Unfortunately, with RWD we can't always apply every criterion. A useful resource is (REF RYAN, I THINK SPFID? Or whatever the one is that ranks the criteria).
+
+This leads to ranking which is the most important.
+
+## How Can We Alter Criteria?
+
+Certain criteria we can apply but they need to be altered slightly. This often requires input from an expert (i.e., a clinican). For example, the ideal criteria might be to take a lab value the day before randomization but using RWD the day before is most likely unrealisitic. So what is realisitc? 14 days? A week? A month?\
+
+The goal in this case is to make it plausible while also not comprising the validity of the study.
+
+# Index Dates
+
+## Choosing an Index Date
+
+Choosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment (check with Hernan, etc all). But what if there are multiple options?
+
+## Decision Paralysis?
+
+One study that I worked on, we had to choose what to do when there were several possibilities. In this case, it can be tricky to select an index date.
+
+(RYAN INSERT REF BY HATSWELL)
+
+# Missing Data
+
+## Need a Plan
+
+Working with real-world data, you will need a plan for missing data. Regardless of how high quality the data is you will need a plan. Personally, I tend to seperate these into two main categories then three within that. The two main categories are: outcome and covariates. The reason
+
+Part of what can make this challenging (not just for emulating a target trial but missing data in general, including trials) is that you don't see the data a priori. So this is mostly educated guesses based on similiar data or similar experience.\
+
+## Missing Data Mechanism for Each Variable
+
+The missing data mechanism can be different for each variable. This was something that I hadn't thought about before working on a project where the team specified a different missing data mechanism (MCAR, MAR, MNAR) for each variable. To me, this became a fantastic approach because a "one-size approach fits all" mentality is dangerous to apply to all variables.
+
+## Covariates vs Outcomes 
+
+Missing data, in my opinion, should be stratified by covariates and outcomes. This can further be broken down by missing data mechanism but these two groups are a good place to start. Why? Regulatory bodies can have certain guidances to follow for each of these. For example, imputing best/worst
+
+# Causal Estimands
+
+-   ATE, ATT, ATU, ATO
+
+-   Important for conclusions/refining research question
+
+-   Almost important/guides statistical method
+
+-   Even more important for observational studies (RCTs do ATE by default)
+
+# Data Quality
+
+-   Quality over quantity
+
+-   "Quality" should include ability to answer research question/emulate the target trial
+
+# Data Sources
+
+For a trial, we typically just have one data source however when using real-world data to derive causal inferences we have several options. A key
+
+-   EHR, Claims, Registry, Wearables
+
+-   Different data for different purpose
+
+-   Making sure it can answer the question of interest
+
+## 
