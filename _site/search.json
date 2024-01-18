@@ -32,7 +32,7 @@
     "href": "index.html",
     "title": "Causally Curious in the Real World",
     "section": "",
-    "text": "Missing Data\n\n\nThe Where’s Waldo of Causal Inference\n\n\n\n\nMissing Data\n\n\nMCAR\n\n\nMAR\n\n\nMNAR\n\n\n\n\n\n\n\n\n\n\n\nNov 26, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nResampling Magic\n\n\nDemystifying Bootstrapping\n\n\n\n\nResampling\n\n\nBootstrapping\n\n\nVariance Estimation\n\n\n\n\n\n\n\n\n\n\n\nOct 30, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nMastering Causal Inference Through Make-Believe\n\n\nSimulating Data in R\n\n\n\n\nSimulating Data\n\n\n\n\n\n\n\n\n\n\n\nSep 30, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nHot Diggity DAG\n\n\nAn Introduction to DAGs\n\n\n\n\nDAGs\n\n\nCausal Diagrams\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nWho are we talking about?\n\n\nThe Role of Causal Estimands\n\n\n\n\nEstimands\n\n\nATE\n\n\nATT\n\n\nATU\n\n\nATO\n\n\n\n\n\n\n\n\n\n\n\nJul 1, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nBeyond the Odds\n\n\nUnravelling the Enigma of Non-Collapsibility\n\n\n\n\nOR\n\n\nCollapsibility\n\n\n\n\n\n\n\n\n\n\n\nJun 9, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nStandardize Your Way to Causal Inference\n\n\nStandardization and the Parametric G-Formula\n\n\n\n\nStandardization\n\n\nParametric G-Formula\n\n\n\n\n\n\n\n\n\n\n\nMay 25, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nGeneralized Linear Models\n\n\n\n\n\n\n\nGLM\n\n\nRegression\n\n\n\n\n\n\n\n\n\n\n\nSep 12, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nInverse Probability Weighting\n\n\n\n\n\n\n\nIPW\n\n\nIPTW\n\n\n\n\n\n\n\n\n\n\n\nAug 21, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nMarginal vs Conditional Effects\n\n\n\n\n\n\n\nMarginal\n\n\nConditional\n\n\n\n\n\n\n\n\n\n\n\nAug 13, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nReal-World Evidence: What’s all the hype?\n\n\n\n\n\n\n\nRWE\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 10, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nP-Values and Power: Please Explain\n\n\n\n\n\n\n\nP-Values\n\n\nHypothesis Tests\n\n\n\n\n\n\n\n\n\n\n\nAug 8, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nIntro to Causal Inference\n\n\n\n\n\n\n\nCausal Inference\n\n\nRCT\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nOR/RR/HR: What’s the Difference?\n\n\n\n\n\n\n\nOR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
+    "text": "Emulating a Target Trial\n\n\nLessons Learned\n\n\n\n\nTarget Trial\n\n\nLessons Learned\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nMissing Data\n\n\nThe Where’s Waldo of Causal Inference\n\n\n\n\nMissing Data\n\n\nMCAR\n\n\nMAR\n\n\nMNAR\n\n\n\n\n\n\n\n\n\n\n\nNov 26, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nResampling Magic\n\n\nDemystifying Bootstrapping\n\n\n\n\nResampling\n\n\nBootstrapping\n\n\nVariance Estimation\n\n\n\n\n\n\n\n\n\n\n\nOct 30, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nMastering Causal Inference Through Make-Believe\n\n\nSimulating Data in R\n\n\n\n\nSimulating Data\n\n\n\n\n\n\n\n\n\n\n\nSep 30, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nHot Diggity DAG\n\n\nAn Introduction to DAGs\n\n\n\n\nDAGs\n\n\nCausal Diagrams\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nWho are we talking about?\n\n\nThe Role of Causal Estimands\n\n\n\n\nEstimands\n\n\nATE\n\n\nATT\n\n\nATU\n\n\nATO\n\n\n\n\n\n\n\n\n\n\n\nJul 1, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nBeyond the Odds\n\n\nUnravelling the Enigma of Non-Collapsibility\n\n\n\n\nOR\n\n\nCollapsibility\n\n\n\n\n\n\n\n\n\n\n\nJun 9, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nStandardize Your Way to Causal Inference\n\n\nStandardization and the Parametric G-Formula\n\n\n\n\nStandardization\n\n\nParametric G-Formula\n\n\n\n\n\n\n\n\n\n\n\nMay 25, 2023\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nGeneralized Linear Models\n\n\n\n\n\n\n\nGLM\n\n\nRegression\n\n\n\n\n\n\n\n\n\n\n\nSep 12, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nInverse Probability Weighting\n\n\n\n\n\n\n\nIPW\n\n\nIPTW\n\n\n\n\n\n\n\n\n\n\n\nAug 21, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nMarginal vs Conditional Effects\n\n\n\n\n\n\n\nMarginal\n\n\nConditional\n\n\n\n\n\n\n\n\n\n\n\nAug 13, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nReal-World Evidence: What’s all the hype?\n\n\n\n\n\n\n\nRWE\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 10, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nP-Values and Power: Please Explain\n\n\n\n\n\n\n\nP-Values\n\n\nHypothesis Tests\n\n\n\n\n\n\n\n\n\n\n\nAug 8, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nIntro to Causal Inference\n\n\n\n\n\n\n\nCausal Inference\n\n\nRCT\n\n\nObservational Data\n\n\n\n\n\n\n\n\n\n\n\nAug 3, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nOR/RR/HR: What’s the Difference?\n\n\n\n\n\n\n\nOR\n\n\nRR\n\n\nHR\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2022\n\n\nRyan Batten\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\n\nJul 27, 2022\n\n\nRyan Batten\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/causal-estimands/causal_estimands.html",
@@ -866,5 +866,61 @@
     "title": "Missing Data",
     "section": "Considerations",
     "text": "Considerations\nThere are some considerations for using this. We need to decide if we think all the plausible values have been captured. MI only pulls from the existing values. So for example, if we have red, blue, yellow and green marbles in our population but only blue and green in our sample then red and yellow won’t be imputed.\nWe also need to decide how large the number of imputed data sets are. There are many different ways to ascertain this. White, Royston, and Wood (2011) suggested that as a rule of thumb it should be at least as large as the percentage of subjects with missing data. So if missingness is 22%, then we need at least 22 data sets.\n\n\n\n\n\n\nMI is broad, this is an introduction\n\n\n\nMultiple imputation is one of those methods that has an extensive amount of literature on it. This was meant to be an introduction but there are full textbooks that focus on the topic."
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html",
+    "title": "Emulating a Target Trial",
+    "section": "",
+    "text": "A target trial is the trial that we’d like under ideal circumstances (REF?). Emulating a target trial, involves trying to mimic one the best you can given the limitations that you have. For example, you can’t randomize patients that are in an observational study. For a brief overview of it, I’d recommend reading the work by Hernan & Robins or Fu (2023)\nThe reason for doing this, emulating a target trial, is that you can prevent a lot of biases that are put into the study by not following good study design principles. For more details I’d highly recommend Hernán et al. (2016)."
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#picking-most-important",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#picking-most-important",
+    "title": "Emulating a Target Trial",
+    "section": "Picking Most Important",
+    "text": "Picking Most Important\nUnfortunately, with RWD we can’t always apply every criterion. A useful resource is (REF RYAN, I THINK SPFID? Or whatever the one is that ranks the criteria).\nThis leads to ranking which is the most important."
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#how-can-we-alter-criteria",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#how-can-we-alter-criteria",
+    "title": "Emulating a Target Trial",
+    "section": "How Can We Alter Criteria?",
+    "text": "How Can We Alter Criteria?\nCertain criteria we can apply but they need to be altered slightly. This often requires input from an expert (i.e., a clinican). For example, the ideal criteria might be to take a lab value the day before randomization but using RWD the day before is most likely unrealisitic. So what is realisitc? 14 days? A week? A month?\n\nThe goal in this case is to make it plausible while also not comprising the validity of the study."
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#choosing-an-index-date",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#choosing-an-index-date",
+    "title": "Emulating a Target Trial",
+    "section": "Choosing an Index Date",
+    "text": "Choosing an Index Date\nChoosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment (check with Hernan, etc all). But what if there are multiple options?"
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#decision-paralysis",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#decision-paralysis",
+    "title": "Emulating a Target Trial",
+    "section": "Decision Paralysis?",
+    "text": "Decision Paralysis?\nOne study that I worked on, we had to choose what to do when there were several possibilities. In this case, it can be tricky to select an index date.\n(RYAN INSERT REF BY HATSWELL)"
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#need-a-plan",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#need-a-plan",
+    "title": "Emulating a Target Trial",
+    "section": "Need a Plan",
+    "text": "Need a Plan\nWorking with real-world data, you will need a plan for missing data. Regardless of how high quality the data is you will need a plan. Personally, I tend to seperate these into two main categories then three within that. The two main categories are: outcome and covariates. The reason\nPart of what can make this challenging (not just for emulating a target trial but missing data in general, including trials) is that you don’t see the data a priori. So this is mostly educated guesses based on similiar data or similar experience."
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#missing-data-mechanism-for-each-variable",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#missing-data-mechanism-for-each-variable",
+    "title": "Emulating a Target Trial",
+    "section": "Missing Data Mechanism for Each Variable",
+    "text": "Missing Data Mechanism for Each Variable\nThe missing data mechanism can be different for each variable. This was something that I hadn’t thought about before working on a project where the team specified a different missing data mechanism (MCAR, MAR, MNAR) for each variable. To me, this became a fantastic approach because a “one-size approach fits all” mentality is dangerous to apply to all variables."
+  },
+  {
+    "objectID": "posts/target-trial-lessons/target_trial_lessons.html#covariates-vs-outcomes",
+    "href": "posts/target-trial-lessons/target_trial_lessons.html#covariates-vs-outcomes",
+    "title": "Emulating a Target Trial",
+    "section": "Covariates vs Outcomes",
+    "text": "Covariates vs Outcomes\nMissing data, in my opinion, should be stratified by covariates and outcomes. This can further be broken down by missing data mechanism but these two groups are a good place to start. Why? Regulatory bodies can have certain guidances to follow for each of these. For example, imputing best/worst"
   }
 ]

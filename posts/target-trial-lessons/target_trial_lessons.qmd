@@ -15,15 +15,15 @@ format:
     code-fold: true
 ---
 
-# What is a Target Trial and Why Emulate One?
+# What is a Target Trial, Why Emulate One?
 
-A target trial is the
+A target trial is the trial that we'd like under ideal circumstances (REF?). Emulating a target trial, involves trying to mimic one the best you can given the limitations that you have. For example, you can't randomize patients that are in an observational study. For a brief overview of it, I'd recommend reading the work by Hernan & Robins or @fu2023target
 
-# How Do We Emulate One?
+The reason for doing this, emulating a target trial, is that you can prevent a lot of biases that are put into the study by not following good study design principles. For more details I'd highly recommend @hernan2016specifying.
 
 # Lessons Learned
 
-I've been involved with several projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial. There are some key aspects/lessons that I've become aware of while working. To keep it somewhat organized, I'll lay it out as follows:
+I've been involved with several projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some key aspects/lessons that I've learned while working on projects emulating a target trial. To keep it somewhat organized, I'll group them into "buckets":
 
 -   Inclusion/Exclusion Criteria
 
@@ -77,11 +77,13 @@ Part of what can make this challenging (not just for emulating a target trial bu
 
 The missing data mechanism can be different for each variable. This was something that I hadn't thought about before working on a project where the team specified a different missing data mechanism (MCAR, MAR, MNAR) for each variable. To me, this became a fantastic approach because a "one-size approach fits all" mentality is dangerous to apply to all variables.
 
-## Covariates vs Outcomes 
+## Covariates vs Outcomes
 
 Missing data, in my opinion, should be stratified by covariates and outcomes. This can further be broken down by missing data mechanism but these two groups are a good place to start. Why? Regulatory bodies can have certain guidances to follow for each of these. For example, imputing best/worst
 
 # Causal Estimands
+
+Estimands are often used in clinical trials, ICH E9 (R1)
 
 -   ATE, ATT, ATU, ATO
 

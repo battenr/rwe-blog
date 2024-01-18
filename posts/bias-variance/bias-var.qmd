@@ -2,7 +2,7 @@
 title: "The Great Balancing Act" # Future Post
 subtitle: "Bias-Variance Tradeoff"
 author: "Ryan Batten"
-date: "2023-08-01"
+date: "2024-01-23"
 #categories: [Resampling, Bootstrapping, Jackknifing]
 # bibliography:  bootstrap.bib
 draft: true
@@ -13,4 +13,26 @@ format:
 
 ## What exactly *is* the bias-variance tradeoff?
 
-Before we get into the bias-variance tradeoff, we need to talk about the two concepts of bias and variance. These
+Before we get into the bias-variance tradeoff, we need to talk about the two concepts of bias and variance. These get talked about a lot but I was confused about them at first. Let's start with bias
+
+# What are bias and variance? 
+
+## Bias
+
+Let's start
+
+\[INSERT the definition\]
+
+## Variance
+
+So variance, at least to me, was a little easier to understand from taking a few statistics courses. Variance I like to think of as *variability*.
+
+# So why are they related? 
+
+Here I'm going to include a picture. To me, a visual is the best thing. Bias and variance have to inherently related if we look at the picture, this makes sense! Why? If something is more spread out (aka more variance) then you are going to have more dots that are close to the "truth". Similarly, the less spread out they are (we know they aren't going to all be correct) the more bias (more points away from the "truth").
+
+# Why does it matter for causal inference? 
+
+-   Estimating SEs
+
+-   Methods like PS matching (setting the caliper, ref Austin 2011).
