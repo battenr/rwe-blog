@@ -17,55 +17,57 @@ format:
 
 # What is a Target Trial, Why Emulate One?
 
-A target trial is the trial that we'd like under ideal circumstances (REF?). Emulating a target trial, involves trying to mimic one the best you can given the limitations that you have. For example, you can't randomize patients that are in an observational study. For a brief overview of it, I'd recommend reading the work by Hernan & Robins or @fu2023target
+A target trial is the trial that we'd like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given the constraints (i.e., ethics, data availability, etc). For example, the target trial may be randomizing patients but we can't randomize patients that are in an observational study. For a brief overview of it, I'd recommend reading @hernan2016using or @fu2023target.
 
-The reason for doing this, emulating a target trial, is that you can prevent a lot of biases that are put into the study by not following good study design principles. For more details I'd highly recommend @hernan2016specifying.
+Targe trial emulation has drastically improved the quality of studies using observational data in recent years. It can prevent a lot of biases that are "self-inflicted" such as immortal time bias [@hernan2016specifying]. Although the concept may seem simple at first (or so I thought), in practice there are some issues that can arise. This post focuses on my personal experience with emulating target trials and what I've learned.
 
 # Lessons Learned
 
-I've been involved with several projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some key aspects/lessons that I've learned while working on projects emulating a target trial. To keep it somewhat organized, I'll group them into "buckets":
+I've been involved with a few projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some key aspects/lessons that I've learned while working on projects emulating a target trial. To keep it somewhat organized, I'll group them (in no particular order):
 
 -   Inclusion/Exclusion Criteria
 
--   Choosing an Index Date
-
--   Missing Data
-
--   Causal Estimands
+-   Data Sources
 
 -   Data Quality
 
--   Data Sources
+-   Missing Data
+
+-   Choosing an Index Date
+
+-   Causal Estimands
 
 # Inclusion/Exclusion Criteria
 
-Inclusion/exclusion criteria, or sometimes referred to as eligibility criteria, seem fairly straightforward on the surface. For me, this was due to the fact that for my MSc there was a large focus on randomized controlled trials (RCTs), where you have a little more flexibility over I/E criteria. By flexibility, I mean all the variables are available (or you can get them for example lab tests) and at that specific time. For real-world data...not so much.
+Inclusion/exclusion criteria, or sometimes referred to as eligibility criteria, are need to ensure that we are including patients needed to answer our question. I/E criteria are used in RCTs, but there is more flexibility than when using real-world data. For example, lab test 1 to be measured within 30 days of starting the patient on treatment. Real-world data might not have a lab test measured within 30 days.
 
-## Picking Most Important
+With this in mind there are a few important things I've learned to consider about the I/E criteria when emulating a target trial with RWD.
 
-Unfortunately, with RWD we can't always apply every criterion. A useful resource is (REF RYAN, I THINK SPFID? Or whatever the one is that ranks the criteria).
+## Applying Every I/E Criteria is Unlikely
 
-This leads to ranking which is the most important.
+The goal is to apply all I/E criteria that is specified in the target trial protocol. Unfortunately, this is unlikely to be the case. What can further complicate it, is that different data sources may have different variables which will allow for differing I/E criteria to be applied.
+
+An approach that I found useful was the one outlined in @gatto2022structured. This helps rank which criteria are most important so be applied to allow for a better decision.
 
 ## How Can We Alter Criteria?
 
-Certain criteria we can apply but they need to be altered slightly. This often requires input from an expert (i.e., a clinican). For example, the ideal criteria might be to take a lab value the day before randomization but using RWD the day before is most likely unrealisitic. So what is realisitc? 14 days? A week? A month?\
+Certain criteria we can apply but they may need to be altered slightly. This often requires input from an expert (i.e., a clinician). For example, the ideal criteria might be to take a lab value the day before randomization but this isn't available in the RWD. So what's a reasonable alternative? 14 days? A week? A month?
 
-The goal in this case is to make it plausible while also not comprising the validity of the study.
+The goal is to operationalize the criteria to be as similar as the ideal criteria while not sacrificing the validity of the study.
 
 # Index Dates
 
-## Choosing an Index Date
+Choosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment or whatever will align with our target trial....but what if there are multiple options?
 
-Choosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment (check with Hernan, etc all). But what if there are multiple options?
+## Too many options!
 
-## Decision Paralysis?
-
-One study that I worked on, we had to choose what to do when there were several possibilities. In this case, it can be tricky to select an index date.
-
-(RYAN INSERT REF BY HATSWELL)
+Certain studies can result in there being multiple possible index dates. Prior to coming across this issue, I had naively assumed there'd only be one index date. This becomes problematic. Do we pick the first index date? The last? Randomly close our eyes and pick one while hoping for the best?\
+\
+Like much of science the answer is "it depends". Part of the reason is that it depends on the outcome. If it's a time-to-event outcome, choosing the first or last index date could impact the results. My approach now when I come across this problem is to simulate the scenario, similar to @hatswell2022approaches.
 
 # Missing Data
+
+If you're working with real-world data, there will 100% be missing data.
 
 ## Need a Plan
 
