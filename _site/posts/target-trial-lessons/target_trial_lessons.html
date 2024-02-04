@@ -177,13 +177,12 @@ div.csl-indent {
   <li><a href="#lessons-learned" id="toc-lessons-learned" class="nav-link" data-scroll-target="#lessons-learned">Lessons Learned</a></li>
   <li><a href="#inclusionexclusion-criteria" id="toc-inclusionexclusion-criteria" class="nav-link" data-scroll-target="#inclusionexclusion-criteria">Inclusion/Exclusion Criteria</a>
   <ul>
-  <li><a href="#picking-most-important" id="toc-picking-most-important" class="nav-link" data-scroll-target="#picking-most-important">Picking Most Important</a></li>
+  <li><a href="#applying-every-ie-criteria-is-unlikely" id="toc-applying-every-ie-criteria-is-unlikely" class="nav-link" data-scroll-target="#applying-every-ie-criteria-is-unlikely">Applying Every I/E Criteria is Unlikely</a></li>
   <li><a href="#how-can-we-alter-criteria" id="toc-how-can-we-alter-criteria" class="nav-link" data-scroll-target="#how-can-we-alter-criteria">How Can We Alter Criteria?</a></li>
   </ul></li>
   <li><a href="#index-dates" id="toc-index-dates" class="nav-link" data-scroll-target="#index-dates">Index Dates</a>
   <ul>
-  <li><a href="#choosing-an-index-date" id="toc-choosing-an-index-date" class="nav-link" data-scroll-target="#choosing-an-index-date">Choosing an Index Date</a></li>
-  <li><a href="#decision-paralysis" id="toc-decision-paralysis" class="nav-link" data-scroll-target="#decision-paralysis">Decision Paralysis?</a></li>
+  <li><a href="#too-many-options" id="toc-too-many-options" class="nav-link" data-scroll-target="#too-many-options">Too many options!</a></li>
   </ul></li>
   <li><a href="#missing-data" id="toc-missing-data" class="nav-link" data-scroll-target="#missing-data">Missing Data</a>
   <ul>
@@ -208,50 +207,49 @@ div.csl-indent {
 
 <section id="what-is-a-target-trial-why-emulate-one" class="level1">
 <h1>What is a Target Trial, Why Emulate One?</h1>
-<p>A target trial is the trial that we’d like under ideal circumstances (REF?). Emulating a target trial, involves trying to mimic one the best you can given the limitations that you have. For example, you can’t randomize patients that are in an observational study. For a brief overview of it, I’d recommend reading the work by Hernan &amp; Robins or <span class="citation" data-cites="fu2023target">Fu (<a href="#ref-fu2023target" role="doc-biblioref">2023</a>)</span></p>
-<p>The reason for doing this, emulating a target trial, is that you can prevent a lot of biases that are put into the study by not following good study design principles. For more details I’d highly recommend <span class="citation" data-cites="hernan2016specifying">Hernán et al. (<a href="#ref-hernan2016specifying" role="doc-biblioref">2016</a>)</span>.</p>
+<p>A target trial is the trial that we’d like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given the constraints (i.e., ethics, data availability, etc). For example, the target trial may be randomizing patients but we can’t randomize patients that are in an observational study. For a brief overview of it, I’d recommend reading <span class="citation" data-cites="hernan2016using">Hernán and Robins (<a href="#ref-hernan2016using" role="doc-biblioref">2016</a>)</span> or <span class="citation" data-cites="fu2023target">Fu (<a href="#ref-fu2023target" role="doc-biblioref">2023</a>)</span>.</p>
+<p>Targe trial emulation has drastically improved the quality of studies using observational data in recent years. It can prevent a lot of biases that are “self-inflicted” such as immortal time bias <span class="citation" data-cites="hernan2016specifying">(<a href="#ref-hernan2016specifying" role="doc-biblioref">Hernán et al. 2016</a>)</span>. Although the concept may seem simple at first (or so I thought), in practice there are some issues that can arise. This post focuses on my personal experience with emulating target trials and what I’ve learned.</p>
 </section>
 <section id="lessons-learned" class="level1">
 <h1>Lessons Learned</h1>
-<p>I’ve been involved with several projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some key aspects/lessons that I’ve learned while working on projects emulating a target trial. To keep it somewhat organized, I’ll group them into “buckets”:</p>
+<p>I’ve been involved with a few projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some key aspects/lessons that I’ve learned while working on projects emulating a target trial. To keep it somewhat organized, I’ll group them (in no particular order):</p>
 <ul>
 <li><p>Inclusion/Exclusion Criteria</p></li>
-<li><p>Choosing an Index Date</p></li>
-<li><p>Missing Data</p></li>
-<li><p>Causal Estimands</p></li>
-<li><p>Data Quality</p></li>
 <li><p>Data Sources</p></li>
+<li><p>Data Quality</p></li>
+<li><p>Missing Data</p></li>
+<li><p>Choosing an Index Date</p></li>
+<li><p>Causal Estimands</p></li>
 </ul>
 </section>
 <section id="inclusionexclusion-criteria" class="level1">
 <h1>Inclusion/Exclusion Criteria</h1>
-<p>Inclusion/exclusion criteria, or sometimes referred to as eligibility criteria, seem fairly straightforward on the surface. For me, this was due to the fact that for my MSc there was a large focus on randomized controlled trials (RCTs), where you have a little more flexibility over I/E criteria. By flexibility, I mean all the variables are available (or you can get them for example lab tests) and at that specific time. For real-world data…not so much.</p>
-<section id="picking-most-important" class="level2">
-<h2 class="anchored" data-anchor-id="picking-most-important">Picking Most Important</h2>
-<p>Unfortunately, with RWD we can’t always apply every criterion. A useful resource is (REF RYAN, I THINK SPFID? Or whatever the one is that ranks the criteria).</p>
-<p>This leads to ranking which is the most important.</p>
+<p>Inclusion/exclusion criteria, or sometimes referred to as eligibility criteria, are need to ensure that we are including patients needed to answer our question. I/E criteria are used in RCTs, but there is more flexibility than when using real-world data. For example, lab test 1 to be measured within 30 days of starting the patient on treatment. Real-world data might not have a lab test measured within 30 days.</p>
+<p>With this in mind there are a few important things I’ve learned to consider about the I/E criteria when emulating a target trial with RWD.</p>
+<section id="applying-every-ie-criteria-is-unlikely" class="level2">
+<h2 class="anchored" data-anchor-id="applying-every-ie-criteria-is-unlikely">Applying Every I/E Criteria is Unlikely</h2>
+<p>The goal is to apply all I/E criteria that is specified in the target trial protocol. Unfortunately, this is unlikely to be the case. What can further complicate it, is that different data sources may have different variables which will allow for differing I/E criteria to be applied.</p>
+<p>An approach that I found useful was the one outlined in <span class="citation" data-cites="gatto2022structured">Gatto et al. (<a href="#ref-gatto2022structured" role="doc-biblioref">2022</a>)</span>. This helps rank which criteria are most important so be applied to allow for a better decision.</p>
 </section>
 <section id="how-can-we-alter-criteria" class="level2">
 <h2 class="anchored" data-anchor-id="how-can-we-alter-criteria">How Can We Alter Criteria?</h2>
-<p>Certain criteria we can apply but they need to be altered slightly. This often requires input from an expert (i.e., a clinican). For example, the ideal criteria might be to take a lab value the day before randomization but using RWD the day before is most likely unrealisitic. So what is realisitc? 14 days? A week? A month?<br>
-</p>
-<p>The goal in this case is to make it plausible while also not comprising the validity of the study.</p>
+<p>Certain criteria we can apply but they may need to be altered slightly. This often requires input from an expert (i.e., a clinician). For example, the ideal criteria might be to take a lab value the day before randomization but this isn’t available in the RWD. So what’s a reasonable alternative? 14 days? A week? A month?</p>
+<p>The goal is to operationalize the criteria to be as similar as the ideal criteria while not sacrificing the validity of the study.</p>
 </section>
 </section>
 <section id="index-dates" class="level1">
 <h1>Index Dates</h1>
-<section id="choosing-an-index-date" class="level2">
-<h2 class="anchored" data-anchor-id="choosing-an-index-date">Choosing an Index Date</h2>
-<p>Choosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment (check with Hernan, etc all). But what if there are multiple options?</p>
-</section>
-<section id="decision-paralysis" class="level2">
-<h2 class="anchored" data-anchor-id="decision-paralysis">Decision Paralysis?</h2>
-<p>One study that I worked on, we had to choose what to do when there were several possibilities. In this case, it can be tricky to select an index date.</p>
-<p>(RYAN INSERT REF BY HATSWELL)</p>
+<p>Choosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment or whatever will align with our target trial….but what if there are multiple options?</p>
+<section id="too-many-options" class="level2">
+<h2 class="anchored" data-anchor-id="too-many-options">Too many options!</h2>
+<p>Certain studies can result in there being multiple possible index dates. Prior to coming across this issue, I had naively assumed there’d only be one index date. This becomes problematic. Do we pick the first index date? The last? Randomly close our eyes and pick one while hoping for the best?<br>
+<br>
+Like much of science the answer is “it depends”. Part of the reason is that it depends on the outcome. If it’s a time-to-event outcome, choosing the first or last index date could impact the results. My approach now when I come across this problem is to simulate the scenario, similar to <span class="citation" data-cites="hatswell2022approaches">Hatswell et al. (<a href="#ref-hatswell2022approaches" role="doc-biblioref">2022</a>)</span>.</p>
 </section>
 </section>
 <section id="missing-data" class="level1">
 <h1>Missing Data</h1>
+<p>If you’re working with real-world data, there will 100% be missing data.</p>
 <section id="need-a-plan" class="level2">
 <h2 class="anchored" data-anchor-id="need-a-plan">Need a Plan</h2>
 <p>Working with real-world data, you will need a plan for missing data. Regardless of how high quality the data is you will need a plan. Personally, I tend to seperate these into two main categories then three within that. The two main categories are: outcome and covariates. The reason</p>
@@ -303,6 +301,15 @@ div.csl-indent {
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-fu2023target" class="csl-entry" role="listitem">
 Fu, Edouard L. 2023. <span>“Target Trial Emulation to Improve Causal Inference from Observational Data: What, Why, and How?”</span> <em>Journal of the American Society of Nephrology</em> 34 (8): 1305–14.
+</div>
+<div id="ref-gatto2022structured" class="csl-entry" role="listitem">
+Gatto, Nicolle M, Ulka B Campbell, Emily Rubinstein, Ashley Jaksa, Pattra Mattox, Jingping Mo, and Robert F Reynolds. 2022. <span>“The Structured Process to Identify Fit-for-Purpose Data: A Data Feasibility Assessment Framework.”</span> <em>Clinical Pharmacology &amp; Therapeutics</em> 111 (1): 122–34.
+</div>
+<div id="ref-hatswell2022approaches" class="csl-entry" role="listitem">
+Hatswell, Anthony J, Kevin Deighton, Julia Thornton Snider, M Alan Brookhart, Imi Faghmous, and Anik R Patel. 2022. <span>“Approaches to Selecting <span>‘Time Zero’</span> in External Control Arms with Multiple Potential Entry Points: A Simulation Study of 8 Approaches.”</span> <em>Medical Decision Making</em> 42 (7): 893–905.
+</div>
+<div id="ref-hernan2016using" class="csl-entry" role="listitem">
+Hernán, Miguel A, and James M Robins. 2016. <span>“Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available.”</span> <em>American Journal of Epidemiology</em> 183 (8): 758–64.
 </div>
 <div id="ref-hernan2016specifying" class="csl-entry" role="listitem">
 Hernán, Miguel A, Brian C Sauer, Sonia Hernández-Dı́az, Robert Platt, and Ian Shrier. 2016. <span>“Specifying a Target Trial Prevents Immortal Time Bias and Other Self-Inflicted Injuries in Observational Analyses.”</span> <em>Journal of Clinical Epidemiology</em> 79: 70–75.

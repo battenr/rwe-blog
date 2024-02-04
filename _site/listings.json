@@ -2,7 +2,6 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/target-trial-lessons/target_trial_lessons.html",
       "/posts/missing-data/missing_data.html",
       "/posts/bootstrap/bootstrapping.html",
       "/posts/simulating-data/sim_data.html",

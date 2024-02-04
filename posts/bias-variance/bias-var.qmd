@@ -15,7 +15,7 @@ format:
 
 Before we get into the bias-variance tradeoff, we need to talk about the two concepts of bias and variance. These get talked about a lot but I was confused about them at first. Let's start with bias
 
-# What are bias and variance? 
+# What are bias and variance?
 
 ## Bias
 
@@ -27,11 +27,11 @@ Let's start
 
 So variance, at least to me, was a little easier to understand from taking a few statistics courses. Variance I like to think of as *variability*.
 
-# So why are they related? 
+# So why are they related?
 
 Here I'm going to include a picture. To me, a visual is the best thing. Bias and variance have to inherently related if we look at the picture, this makes sense! Why? If something is more spread out (aka more variance) then you are going to have more dots that are close to the "truth". Similarly, the less spread out they are (we know they aren't going to all be correct) the more bias (more points away from the "truth").
 
-# Why does it matter for causal inference? 
+# Why does it matter for causal inference?
 
 -   Estimating SEs
 
