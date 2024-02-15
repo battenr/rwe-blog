@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2023-12-28">
+<meta name="dcterms.date" content="2024-02-15">
 
 <title>Blog Posts - Emulating a Target Trial</title>
 <style>
@@ -157,7 +157,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">December 28, 2023</p>
+        <p class="date">February 15, 2024</p>
       </div>
     </div>
     
@@ -177,22 +177,21 @@ div.csl-indent {
   <li><a href="#lessons-learned" id="toc-lessons-learned" class="nav-link" data-scroll-target="#lessons-learned">Lessons Learned</a></li>
   <li><a href="#inclusionexclusion-criteria" id="toc-inclusionexclusion-criteria" class="nav-link" data-scroll-target="#inclusionexclusion-criteria">Inclusion/Exclusion Criteria</a>
   <ul>
-  <li><a href="#applying-every-ie-criteria-is-unlikely" id="toc-applying-every-ie-criteria-is-unlikely" class="nav-link" data-scroll-target="#applying-every-ie-criteria-is-unlikely">Applying Every I/E Criteria is Unlikely</a></li>
+  <li><a href="#applying-all-ie-criteria-is-unlikely" id="toc-applying-all-ie-criteria-is-unlikely" class="nav-link" data-scroll-target="#applying-all-ie-criteria-is-unlikely">Applying All I/E Criteria is Unlikely</a></li>
   <li><a href="#how-can-we-alter-criteria" id="toc-how-can-we-alter-criteria" class="nav-link" data-scroll-target="#how-can-we-alter-criteria">How Can We Alter Criteria?</a></li>
+  </ul></li>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#missing-data" id="toc-missing-data" class="nav-link" data-scroll-target="#missing-data">Missing Data</a>
+  <ul>
+  <li><a href="#need-a-plan" id="toc-need-a-plan" class="nav-link" data-scroll-target="#need-a-plan">Need a Plan</a></li>
+  <li><a href="#missing-data-mechanism-for-each-variable" id="toc-missing-data-mechanism-for-each-variable" class="nav-link" data-scroll-target="#missing-data-mechanism-for-each-variable">Missing Data Mechanism for Each Variable</a></li>
   </ul></li>
   <li><a href="#index-dates" id="toc-index-dates" class="nav-link" data-scroll-target="#index-dates">Index Dates</a>
   <ul>
   <li><a href="#too-many-options" id="toc-too-many-options" class="nav-link" data-scroll-target="#too-many-options">Too many options!</a></li>
   </ul></li>
-  <li><a href="#missing-data" id="toc-missing-data" class="nav-link" data-scroll-target="#missing-data">Missing Data</a>
-  <ul>
-  <li><a href="#need-a-plan" id="toc-need-a-plan" class="nav-link" data-scroll-target="#need-a-plan">Need a Plan</a></li>
-  <li><a href="#missing-data-mechanism-for-each-variable" id="toc-missing-data-mechanism-for-each-variable" class="nav-link" data-scroll-target="#missing-data-mechanism-for-each-variable">Missing Data Mechanism for Each Variable</a></li>
-  <li><a href="#covariates-vs-outcomes" id="toc-covariates-vs-outcomes" class="nav-link" data-scroll-target="#covariates-vs-outcomes">Covariates vs Outcomes</a></li>
-  </ul></li>
   <li><a href="#causal-estimands" id="toc-causal-estimands" class="nav-link" data-scroll-target="#causal-estimands">Causal Estimands</a></li>
-  <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">Data Quality</a></li>
-  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a>
+  <li><a href="#simulating-situations" id="toc-simulating-situations" class="nav-link" data-scroll-target="#simulating-situations">Simulating Situations!</a>
   <ul>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   </ul></li>
@@ -207,89 +206,71 @@ div.csl-indent {
 
 <section id="what-is-a-target-trial-why-emulate-one" class="level1">
 <h1>What is a Target Trial, Why Emulate One?</h1>
-<p>A target trial is the trial that we’d like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given the constraints (i.e., ethics, data availability, etc). For example, the target trial may be randomizing patients but we can’t randomize patients that are in an observational study. For a brief overview of it, I’d recommend reading <span class="citation" data-cites="hernan2016using">Hernán and Robins (<a href="#ref-hernan2016using" role="doc-biblioref">2016</a>)</span> or <span class="citation" data-cites="fu2023target">Fu (<a href="#ref-fu2023target" role="doc-biblioref">2023</a>)</span>.</p>
-<p>Targe trial emulation has drastically improved the quality of studies using observational data in recent years. It can prevent a lot of biases that are “self-inflicted” such as immortal time bias <span class="citation" data-cites="hernan2016specifying">(<a href="#ref-hernan2016specifying" role="doc-biblioref">Hernán et al. 2016</a>)</span>. Although the concept may seem simple at first (or so I thought), in practice there are some issues that can arise. This post focuses on my personal experience with emulating target trials and what I’ve learned.</p>
+<p>A target trial is the trial that we’d like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given the constraints (i.e., ethics, data availability, etc). For example, the target trial may be randomizing patients but we can’t randomize patients that are in an observational study. For a brief overview of emulating a target trial, I’d recommend reading <span class="citation" data-cites="hernan2016using">Hernán and Robins (<a href="#ref-hernan2016using" role="doc-biblioref">2016</a>)</span> or <span class="citation" data-cites="fu2023target">Fu (<a href="#ref-fu2023target" role="doc-biblioref">2023</a>)</span>.</p>
+<p>Target trial emulation has drastically improved the quality of studies using observational data in recent years. It can prevent a lot of biases that are “self-inflicted” such as immortal time bias <span class="citation" data-cites="hernan2016specifying">(<a href="#ref-hernan2016specifying" role="doc-biblioref">Hernán et al. 2016</a>)</span>. Although the concept may seem simple at first (or so I thought), in practice there are some challenges that can arise. This post focuses on my personal experience with emulating target trials and what I’ve learned.</p>
 </section>
 <section id="lessons-learned" class="level1">
 <h1>Lessons Learned</h1>
-<p>I’ve been involved with a few projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some key aspects/lessons that I’ve learned while working on projects emulating a target trial. To keep it somewhat organized, I’ll group them (in no particular order):</p>
+<p>I’ve been involved with a few projects where the goal is to emulate a target trial. Part of my PhD project, currently underway, is to emulate a target trial using electronic health records. There are some lessons that I’ve learned along the way. To keep it somewhat organized, I’ll group them into categories:</p>
 <ul>
 <li><p>Inclusion/Exclusion Criteria</p></li>
 <li><p>Data Sources</p></li>
-<li><p>Data Quality</p></li>
 <li><p>Missing Data</p></li>
-<li><p>Choosing an Index Date</p></li>
+<li><p>Index Dates</p></li>
 <li><p>Causal Estimands</p></li>
 </ul>
 </section>
 <section id="inclusionexclusion-criteria" class="level1">
 <h1>Inclusion/Exclusion Criteria</h1>
-<p>Inclusion/exclusion criteria, or sometimes referred to as eligibility criteria, are need to ensure that we are including patients needed to answer our question. I/E criteria are used in RCTs, but there is more flexibility than when using real-world data. For example, lab test 1 to be measured within 30 days of starting the patient on treatment. Real-world data might not have a lab test measured within 30 days.</p>
-<p>With this in mind there are a few important things I’ve learned to consider about the I/E criteria when emulating a target trial with RWD.</p>
-<section id="applying-every-ie-criteria-is-unlikely" class="level2">
-<h2 class="anchored" data-anchor-id="applying-every-ie-criteria-is-unlikely">Applying Every I/E Criteria is Unlikely</h2>
-<p>The goal is to apply all I/E criteria that is specified in the target trial protocol. Unfortunately, this is unlikely to be the case. What can further complicate it, is that different data sources may have different variables which will allow for differing I/E criteria to be applied.</p>
-<p>An approach that I found useful was the one outlined in <span class="citation" data-cites="gatto2022structured">Gatto et al. (<a href="#ref-gatto2022structured" role="doc-biblioref">2022</a>)</span>. This helps rank which criteria are most important so be applied to allow for a better decision.</p>
+<p>Inclusion/exclusion (I/E) criteria, sometimes referred to as eligibility criteria, are required for a few reasons including including patients needed to answer the research question and for internal validity. A difference between applying I/E criteria in a randomized controlled trial (RCT) and using real-world data (RWD) is the flexibility.</p>
+<section id="applying-all-ie-criteria-is-unlikely" class="level2">
+<h2 class="anchored" data-anchor-id="applying-all-ie-criteria-is-unlikely">Applying All I/E Criteria is Unlikely</h2>
+<p>For the target trial, <strong>all</strong> I/E criteria would be applied. Unfortunately, this is unlikely to be the case for emulating a target trial. What can further complicate it, is that different data sources may have different variables which will allow for different criteria to be applied. This can make it tricky to decide what to do.</p>
+<p>An approach that I find useful, is the one outlined in <span class="citation" data-cites="gatto2022structured">Gatto et al. (<a href="#ref-gatto2022structured" role="doc-biblioref">2022</a>)</span>. This helps rank which criteria are most important so be applied to allow for a better decision. It also helps decide what are the minimum criteria (i.e., non-negotiable) required to answer the research question.</p>
 </section>
 <section id="how-can-we-alter-criteria" class="level2">
 <h2 class="anchored" data-anchor-id="how-can-we-alter-criteria">How Can We Alter Criteria?</h2>
-<p>Certain criteria we can apply but they may need to be altered slightly. This often requires input from an expert (i.e., a clinician). For example, the ideal criteria might be to take a lab value the day before randomization but this isn’t available in the RWD. So what’s a reasonable alternative? 14 days? A week? A month?</p>
-<p>The goal is to operationalize the criteria to be as similar as the ideal criteria while not sacrificing the validity of the study.</p>
+<p>The data has already been collected for RWD which is a limitation. For example, a lab test might measured within 30 days prior to starting treatment. For real-world data, the lab test might not be measured within 30 days.</p>
+<p>This doesn’t mean that we can’t apply the criteria, it just requires some modification. This often requires input from an expert (i.e., a clinician). For example, the ideal criteria might be to take a lab value the day before randomization but this isn’t available in the RWD. So what’s a reasonable alternative? 14 days? A week? A month?</p>
+<p>The goal is to modify the criteria to be as similar as the ideal criteria while not sacrificing the validity of the study.</p>
+</section>
+</section>
+<section id="data-sources" class="level1">
+<h1>Data Sources</h1>
+<p>A large part of emulating a target trial is deciding which data source to use. There are several factors to consider including the data quality, rate of missingness, variables captured and more. The most important component is “can this answer the research question?”. There is a wide variety of great sources of data including claims data, electronic health records, registry data and wearables (i.e., trackers, etc).</p>
+<p>There’s limitations/tradeoffs for each of them. For example, claims data will have information about costs but electronic health records and registry data won’t. However, both of these will typically have more detail than claims (i.e., lab tests, physician notes, etc). An article that helped me when considering multiple data sources is <span class="citation" data-cites="gatto2022structured">Gatto et al. (<a href="#ref-gatto2022structured" role="doc-biblioref">2022</a>)</span>.</p>
+</section>
+<section id="missing-data" class="level1">
+<h1>Missing Data</h1>
+<p>If you’re working with real-world data, there will 100% be missing data. Having a plan for how to address this helps. My overall takeaway for missing data is to start with “how did this data become missing?”</p>
+<section id="need-a-plan" class="level2">
+<h2 class="anchored" data-anchor-id="need-a-plan">Need a Plan</h2>
+<p>Working with real-world data, you will need a plan for missing data. Regardless of how high quality the data is you will need a plan. Personally, I tend to separate these into two main categories. The two main categories are: covariates and outcomes. The reason for this is the method used to solve these can differ.</p>
+<p>Part of what can make this challenging (not just for emulating a target trial but missing data in general, including trials) is that you don’t see the data <em>a priori.</em> However, the rate of missingness can be guessed reasonably, and the assumed missing data mechanism.</p>
+</section>
+<section id="missing-data-mechanism-for-each-variable" class="level2">
+<h2 class="anchored" data-anchor-id="missing-data-mechanism-for-each-variable">Missing Data Mechanism for Each Variable</h2>
+<p>The missing data mechanism can be different for each variable. This was something that I hadn’t thought about before working on a project where the team specified a different missing data mechanism (MCAR, MAR, MNAR) for each variable. To me, this became a fantastic approach because a “one-size approach fits all” mentality is dangerous if applying to all variables. Not every variable is missing due to the same reason.</p>
 </section>
 </section>
 <section id="index-dates" class="level1">
 <h1>Index Dates</h1>
-<p>Choosing an index date can be fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment or whatever will align with our target trial….but what if there are multiple options?</p>
+<p>Choosing an index date, the time point that we start measuring follow-up from, can seem fairly straightforward. Based on emulating a trial, if the goal is to estimate the per-protocol effects, then we can select the index date as 1 day after receiving treatment or whatever will align with our target trial….but what if there are multiple options?</p>
 <section id="too-many-options" class="level2">
 <h2 class="anchored" data-anchor-id="too-many-options">Too many options!</h2>
-<p>Certain studies can result in there being multiple possible index dates. Prior to coming across this issue, I had naively assumed there’d only be one index date. This becomes problematic. Do we pick the first index date? The last? Randomly close our eyes and pick one while hoping for the best?<br>
+<p>Depending on the disease area, it’s possible that there are multiple possible index dates. Prior to coming across this issue, I had naively assumed there’d only be one index date. This becomes problematic. Do we pick the first index date? The last? Randomly close our eyes and pick one while hoping for the best?<br>
 <br>
 Like much of science the answer is “it depends”. Part of the reason is that it depends on the outcome. If it’s a time-to-event outcome, choosing the first or last index date could impact the results. My approach now when I come across this problem is to simulate the scenario, similar to <span class="citation" data-cites="hatswell2022approaches">Hatswell et al. (<a href="#ref-hatswell2022approaches" role="doc-biblioref">2022</a>)</span>.</p>
 </section>
 </section>
-<section id="missing-data" class="level1">
-<h1>Missing Data</h1>
-<p>If you’re working with real-world data, there will 100% be missing data.</p>
-<section id="need-a-plan" class="level2">
-<h2 class="anchored" data-anchor-id="need-a-plan">Need a Plan</h2>
-<p>Working with real-world data, you will need a plan for missing data. Regardless of how high quality the data is you will need a plan. Personally, I tend to seperate these into two main categories then three within that. The two main categories are: outcome and covariates. The reason</p>
-<p>Part of what can make this challenging (not just for emulating a target trial but missing data in general, including trials) is that you don’t see the data a priori. So this is mostly educated guesses based on similiar data or similar experience.<br>
-</p>
-</section>
-<section id="missing-data-mechanism-for-each-variable" class="level2">
-<h2 class="anchored" data-anchor-id="missing-data-mechanism-for-each-variable">Missing Data Mechanism for Each Variable</h2>
-<p>The missing data mechanism can be different for each variable. This was something that I hadn’t thought about before working on a project where the team specified a different missing data mechanism (MCAR, MAR, MNAR) for each variable. To me, this became a fantastic approach because a “one-size approach fits all” mentality is dangerous to apply to all variables.</p>
-</section>
-<section id="covariates-vs-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="covariates-vs-outcomes">Covariates vs Outcomes</h2>
-<p>Missing data, in my opinion, should be stratified by covariates and outcomes. This can further be broken down by missing data mechanism but these two groups are a good place to start. Why? Regulatory bodies can have certain guidances to follow for each of these. For example, imputing best/worst</p>
-</section>
-</section>
 <section id="causal-estimands" class="level1">
 <h1>Causal Estimands</h1>
-<p>Estimands are often used in clinical trials, ICH E9 (R1)</p>
-<ul>
-<li><p>ATE, ATT, ATU, ATO</p></li>
-<li><p>Important for conclusions/refining research question</p></li>
-<li><p>Almost important/guides statistical method</p></li>
-<li><p>Even more important for observational studies (RCTs do ATE by default)</p></li>
-</ul>
+<p>Causal estimands differ from the estimands referred to in a clinical trial setting (the ICH E9 (R1) addendum estimands). Learning about these causal estimands helped tremendously when trying to determine what type of method to use for controlling for confounding and for guiding the research question. These estimands are: the average treatment effect (ATE), the average treatment effect in the treated (ATT), the average treated effect in the untreated (ATU) and the average treatment effect in the overlap (ATO).</p>
+<p>If you are not familiar with causal estimands, like I wasn’t, I highly recommend <span class="citation" data-cites="greifer2023choosing">Greifer and Stuart (<a href="#ref-greifer2023choosing" role="doc-biblioref">2023</a>)</span>.</p>
 </section>
-<section id="data-quality" class="level1">
-<h1>Data Quality</h1>
-<ul>
-<li><p>Quality over quantity</p></li>
-<li><p>“Quality” should include ability to answer research question/emulate the target trial</p></li>
-</ul>
-</section>
-<section id="data-sources" class="level1">
-<h1>Data Sources</h1>
-<p>For a trial, we typically just have one data source however when using real-world data to derive causal inferences we have several options. A key</p>
-<ul>
-<li><p>EHR, Claims, Registry, Wearables</p></li>
-<li><p>Different data for different purpose</p></li>
-<li><p>Making sure it can answer the question of interest</p></li>
-</ul>
+<section id="simulating-situations" class="level1">
+<h1>Simulating Situations!</h1>
+<p>One of the biggest lessons for me, was learning to simulate data. This can help when there isn’t necessarily a consensus on a method or a solution to the problem that you’re currently facing. I would recommend learning how to simulate data to be able to answer questions that may arise when working on emulating a target trial.</p>
 <section id="section" class="level2">
 
 
@@ -304,6 +285,9 @@ Fu, Edouard L. 2023. <span>“Target Trial Emulation to Improve Causal Inference
 </div>
 <div id="ref-gatto2022structured" class="csl-entry" role="listitem">
 Gatto, Nicolle M, Ulka B Campbell, Emily Rubinstein, Ashley Jaksa, Pattra Mattox, Jingping Mo, and Robert F Reynolds. 2022. <span>“The Structured Process to Identify Fit-for-Purpose Data: A Data Feasibility Assessment Framework.”</span> <em>Clinical Pharmacology &amp; Therapeutics</em> 111 (1): 122–34.
+</div>
+<div id="ref-greifer2023choosing" class="csl-entry" role="listitem">
+Greifer, N, and EA Stuart. 2023. <span>“Choosing the Causal Estimand for Propensity Score Analysis of Observational Studies.”</span> <em>arXiv Preprint arXiv:2106.10577</em>.
 </div>
 <div id="ref-hatswell2022approaches" class="csl-entry" role="listitem">
 Hatswell, Anthony J, Kevin Deighton, Julia Thornton Snider, M Alan Brookhart, Imi Faghmous, and Anik R Patel. 2022. <span>“Approaches to Selecting <span>‘Time Zero’</span> in External Control Arms with Multiple Potential Entry Points: A Simulation Study of 8 Approaches.”</span> <em>Medical Decision Making</em> 42 (7): 893–905.
