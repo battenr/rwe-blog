@@ -15,7 +15,7 @@ format:
     code-fold: true
 ---
 
-# What is a Target Trial, Why Emulate One?
+# What is a Target Trial? Why Emulate One?
 
 A target trial is the trial that we'd like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given the constraints (i.e., ethics, data availability, etc). For example, the target trial may be randomizing patients but we can't randomize patients that are in an observational study. For a brief overview of emulating a target trial, I'd recommend reading @hernan2016using or @fu2023target.
 
@@ -53,7 +53,7 @@ This doesn't mean that we can't apply the criteria, it just requires some modifi
 
 The goal is to modify the criteria to be as similar as the ideal criteria while not sacrificing the validity of the study.
 
-# Data Sources 
+# Data Sources
 
 A large part of emulating a target trial is deciding which data source to use. There are several factors to consider including the data quality, rate of missingness, variables captured and more. The most important component is "can this answer the research question?". There is a wide variety of great sources of data including claims data, electronic health records, registry data and wearables (i.e., trackers, etc).
 
@@ -89,7 +89,7 @@ Causal estimands differ from the estimands referred to in a clinical trial setti
 
 If you are not familiar with causal estimands, like I wasn't, I highly recommend @greifer2023choosing.
 
-# Simulating Situations! 
+# Simulating Situations!
 
 One of the biggest lessons for me, was learning to simulate data. This can help when there isn't necessarily a consensus on a method or a solution to the problem that you're currently facing. I would recommend learning how to simulate data to be able to answer questions that may arise when working on emulating a target trial.
 
