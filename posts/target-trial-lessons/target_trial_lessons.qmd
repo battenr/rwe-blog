@@ -6,7 +6,6 @@ date: "2024-02-15"
 categories: [Target Trial, Lessons Learned]
 bibliography: tt-lessons.bib
 image : tt-lessons.jpeg
-draft: true
 format: 
   html:
     toc: true
