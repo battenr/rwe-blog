@@ -6,8 +6,8 @@ website:
     right:
       - text: "About Me"
         href: about.qmd
-      - text: "Consulting"
-        href: consulting.qmd
+      #- text: "Consulting"
+      #  href: consulting.qmd
       # - text: "Newsletter"
       #   href: newsletter.qmd
       - icon: linkedin
