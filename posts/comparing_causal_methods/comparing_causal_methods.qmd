@@ -340,18 +340,18 @@ ipw_emp_se <- sqrt((1/(1000-1))*sum(ipw_se_result$squared_diff))
 
 # Calculating these metrics using Morris et al. (2019). 
 
-increase_precision <- round(100*((ipw_emp_se/psm_emp_se)^2 - 1 ),2) # Increase in precision for IPTW vs PSM
+increase_precision <- round(100*(psm_emp_se/ipw_emp_se)^2 - 1, 2)# Increase in precision for IPTW vs PSM
 
 corr = cor(ipw_result$theta_hat, psm_result$theta_hat) # correlation between the two 
 
-ratio <- ipw_emp_se/psm_emp_se
+ratio <- psm_emp_se/ipw_emp_se # IPTW vs PSM (so PSM / IPTW based on Morris et al. 2019)
 
 se_increase_precision <- round(200*(ratio^2)*sqrt((1-(corr^2))/(1000-1)), 2)
 ```
 
-Now we have some results! The MSE for PSM is `r paste0(round(psm_mse,2), " (", round(psm_mse_se,2), ")")` and `r paste0(round(ipw_mse,2), " (", round(ipw_mse_se,5), ")")` for IPTW. The increase in precision is `r paste0(increase_precision, " (", se_increase_precision, ")")`. We need to unpack these results since there are a few things to keep in mind.
+Now we have some results! The MSE for PSM is `r paste0(round(psm_mse,2), " (", round(psm_mse_se,2), ")")` and `r paste0(round(ipw_mse,2), " (", round(ipw_mse_se,5), ")")` for IPTW. The increase in precision (for IPTW vs PSM) is `r paste0(increase_precision, " (", se_increase_precision, ")")`. We need to unpack these results since there are a few things to keep in mind.
 
-Firstly, we didn't assess the balance. The whole point of using these methods is to ensure exchangeability. When comparing two methods, we should also compare how the balance between the methods looks. Does one method result in better balance or no? This can be done graphically and/or using love plots (recommend the cobalt package for this). Secondly, the same size was 500. Perhaps, more importantly, is the number of patients getting matched. Do we have enough controls for our treatment? What if we didn't? What if we did? Thirdly, there were only two confounders. How would the results change if we included more? A last point (to not bore you to death): we included the two variables we know were confounders. What would happen if we left one out? (aka if the model was misspecified?).
+Firstly, we didn't assess the balance. The whole point of using these methods is to ensure exchangeability. When comparing two methods, we should also compare how the balance between the methods looks. Does one method result in better balance or no? This can be done graphically and/or using love plots (recommend the cobalt package for this). Secondly, the sample size was 500. Perhaps, more importantly, is the number of patients getting matched. Do we have enough controls for our treatment? What if we didn't? What if we did? Thirdly, there were only two confounders. How would the results change if we included more? Another point is that the precision is based on the empirical SE. In practice we'd use some other way to estimate variance (i.e, bootstrapping). A last point (to not bore you to death): we included the two variables we know were confounders. What would happen if we left one out? (aka if the model was misspecified?).
 
 When comparing results it's important to not just look numerically. There are other limitations of that may not be as easy to quantify. For example, PSM only keeps patients with a match. Would we be sure that these patients match our inclusion/exclusion criteria? Or is it a subset of these criteria? Or is selection bias being induced? We need to incorporate these pieces when comparing methods.
 
