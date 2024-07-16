@@ -13,7 +13,7 @@ format:
 
 # Why Compare?
 
-There are a ton of causal methods that are available and only increasing. To name a few: matching, inverse probability of treatment weighting, regression, machine learning methods, parametric g-formula, marginal structural models and many many more. This can make it tricky to figure out which to use. By comparing these quantitatively it can provide some additional evidence for choosing between methods for certain scenarios.
+There are a ton of causal methods that are available and it's only increasing. To name a few: matching, inverse probability of treatment weighting, regression, machine learning methods, parametric g-formula, marginal structural models and many many more. This can make it tricky to figure out which to use. By comparing these quantitatively it can provide some additional evidence for choosing between methods for certain scenarios.
 
 ::: callout-note
 ## Side Note
