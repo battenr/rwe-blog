@@ -1,0 +1,94 @@
+---
+title: "Interaction (Effect Modification)"
+author: "Ryan Batten"
+date: "2024-06-21"
+categories: [Interaction, Effect Modification]
+#image: "iptw.jpeg"
+#bibliography: interaction.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+## Interaction? Interact with What?
+
+Interaction is when two or more variables interact to result in an effect that is different than them by themselves.
+
+::: callout-note
+## More Than One Group
+
+For the purposes of this post, the focus will be on two groups but that doesn't have to be the case. You could have interaction with a variable with four categories or between two continuous variables. It's also possible to have interaction between more than two groups (i.e., X1\*X2\*X3).
+
+However for this post, we'll just focus on an example with a binary treatment and binary interaction term.
+:::
+
+## Isn't this just mediation?
+
+No! It's important to separate mediation and interaction. These are two distinct different concepts. The easiest way to show this is to draw a directed acyclic graph (DAG).
+
+```{r}
+library(tidyverse)
+library(ggdag)
+theme_set(theme_dag())
+
+coffee_dag <- ggdag::dagify(
+  alert ~ m,
+  m ~ coffee,
+  exposure = "coffee",
+  outcome = "alert",
+  labels = c(
+    coffee = "Coffee",
+    m = "Energy", 
+    alert = "Alertness"
+  )
+)
+
+ggdag::ggdag(coffee_dag, text = FALSE, use_labels = "label")
+```
+
+Energy is on the causal pathway between alertness and coffee. One of my favorite ways to think of causal association is like water flowing in a pipe (credit to Judea Pearl for this Pearl of an analogy). Now, the association between coffee and alertness flows through energy.
+
+Interaction is different. Two, or more, variables *interact* with one another. For example, say that coffee has a different effect on men versus women. In men, it causes an increased alertness of 10 compared to 50 in women. This means that there is an interaction between sex and coffee when we're examining the effect on alertness.
+
+::: callout-note
+## DAGs for Interaction
+
+As a side note, DAGs are not the best way to show interaction/effect modification. In fact, sometimes this is listed as a limitation of DAGs.
+:::
+
+Great, so now we know what interaction is...but how do we tell if it's occurring?
+
+## How do we tell if there's interaction?
+
+There are two main methods to detect if there is interaction \[reference beyond the basics, epi\]
+
+There's two main ways that we
+
+### Homogeneity of Effects
+
+If there is no interaction then there will be
+
+### Joint vs Expected Effects
+
+::: callout-caution
+## Non-Collapsibility
+
+It's important here to discuss non-collapsiblility. Certain measures are affected by this. Briefly, it's basically when the marginal and conditional effects don't line up.
+:::
+
+## Types of Interaction
+
+-   Qualitative
+
+-   Quantitative
+
+-   Additive
+
+-   Multiplicative
+
+# 
+
+## Why do we care?
+
+There are a couple of reasons that we care. Firstly, it's not appropriate to present a result that's an overall effect if there is a such a large difference. For example, imagine if there an effect in men that is OR = 4.5. Similarly, there is an effect in women however it's OR = 1.5. Is it really okay to share an overall result of 2.5? Or is it more accurate to share the results per group?

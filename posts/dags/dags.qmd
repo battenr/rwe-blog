@@ -194,7 +194,7 @@ ggdag::ggdag(coffee_dag,
 
 In this DAG, we see deep breathing is actually a surrogate for a variable that has a causal effect. Deep breathing is a *surrogate effect modifier* whereas stress is a *causal effect modifier*. Both of these are often indistinguishable in practice, so the concept of effect modification encompasses both [@hernanwhatif, pp. 81].
 
-## What's Next? 
+## What's Next?
 
 Now you've grasped the basics of DAGs! You can use these to help answer all your causally related questions! Personally, I mostly use them for variable selection. It's extremely helpful in analyses for real-world data when deciding which variables require adjustment. Hope you had as much fun reading it as I did writing it!
 

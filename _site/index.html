@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -56,8 +62,10 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script>
@@ -93,15 +101,42 @@ ul.task-list li input[type="checkbox"] {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Blog Posts</span>
     </a>
@@ -113,28 +148,28 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About Me</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/rwe-ryan" rel="" target=""><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/rwe-ryan"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/rwe_ryan" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/rwe_ryan"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/battenr" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/battenr"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -147,7 +182,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page-left">
 
       
     
@@ -171,21 +206,22 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Target Trial,Lessons Learned" data-listing-date-sort="1707969600000" data-listing-file-modified-sort="1710231399909" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="0" data-categories="Target Trial,Lessons Learned" data-listing-date-sort="1707969600000" data-listing-file-modified-sort="1717958978068" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1143">
 <div class="thumbnail">
-<p><a href="./posts/target-trial-lessons/target_trial_lessons.html"> <img src="./posts/target-trial-lessons/tt-lessons.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external"></a></p><a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external">
+<p><img src="./posts/target-trial-lessons/tt-lessons.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/target-trial-lessons/target_trial_lessons.html">
 <h3 class="no-anchor listing-title">
-Emulating a Target Trial
+<a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external">Emulating a Target Trial</a>
 </h3>
 <div class="listing-subtitle">
-Lessons Learned
+<a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external">Lessons Learned</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Target Trial'); return false;">
 Target Trial
@@ -194,14 +230,12 @@ Target Trial
 Lessons Learned
 </div>
 </div>
-<a href="./posts/target-trial-lessons/target_trial_lessons.html">
 <div class="listing-description">
-A target trial is the trial that we’d like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given…<span class="citation" data-cites="hernan2016using"></span><span class="citation" data-cites="fu2023target"></span>
+<a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external">A target trial is the trial that we’d like to conduct under ideal circumstances. Emulating a target trial consists of trying to mimic this trial as much as possible given…<span class="citation" data-cites="hernan2016using"></span><span class="citation" data-cites="fu2023target"></span></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/target-trial-lessons/target_trial_lessons.html">
+<a href="./posts/target-trial-lessons/target_trial_lessons.html" class="no-external">
 <div class="listing-date">
 Feb 15, 2024
 </div>
@@ -211,19 +245,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="Missing Data,MCAR,MAR,MNAR" data-listing-date-sort="1700971200000" data-listing-file-modified-sort="1710231399892" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15">
+<div class="quarto-post image-right" data-index="1" data-categories="Missing Data,MCAR,MAR,MNAR" data-listing-date-sort="1700971200000" data-listing-file-modified-sort="1717958978064" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2866">
 <div class="thumbnail">
-<p><a href="./posts/missing-data/missing_data.html"> <img src="./posts/missing-data/missing-data.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/missing-data/missing_data.html" class="no-external"></a></p><a href="./posts/missing-data/missing_data.html" class="no-external">
+<p><img src="./posts/missing-data/missing-data.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/missing-data/missing_data.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/missing-data/missing_data.html">
 <h3 class="no-anchor listing-title">
-Missing Data
+<a href="./posts/missing-data/missing_data.html" class="no-external">Missing Data</a>
 </h3>
 <div class="listing-subtitle">
-The Where’s Waldo of Causal Inference
+<a href="./posts/missing-data/missing_data.html" class="no-external">The Where’s Waldo of Causal Inference</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Missing Data'); return false;">
 Missing Data
@@ -238,14 +272,12 @@ MAR
 MNAR
 </div>
 </div>
-<a href="./posts/missing-data/missing_data.html">
 <div class="listing-description">
-Missing data are unavoidable when dealing with data, especially with real-world data. So it’s important to have a plan on what to…
+<a href="./posts/missing-data/missing_data.html" class="no-external">Missing data are unavoidable when dealing with data, especially with real-world data. So it’s important to have a plan on what to do with missing data! To make valid causal…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/missing-data/missing_data.html">
+<a href="./posts/missing-data/missing_data.html" class="no-external">
 <div class="listing-date">
 Nov 26, 2023
 </div>
@@ -255,19 +287,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="Resampling,Bootstrapping,Variance Estimation" data-listing-date-sort="1698634800000" data-listing-file-modified-sort="1710231399862" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9">
+<div class="quarto-post image-right" data-index="2" data-categories="Resampling,Bootstrapping,Variance Estimation" data-listing-date-sort="1698634800000" data-listing-file-modified-sort="1717958978057" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1774">
 <div class="thumbnail">
-<p><a href="./posts/bootstrap/bootstrapping.html"> <img src="./posts/bootstrap/bootstraps.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/bootstrap/bootstrapping.html" class="no-external"></a></p><a href="./posts/bootstrap/bootstrapping.html" class="no-external">
+<p><img src="./posts/bootstrap/bootstraps.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/bootstrap/bootstrapping.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/bootstrap/bootstrapping.html">
 <h3 class="no-anchor listing-title">
-Resampling Magic
+<a href="./posts/bootstrap/bootstrapping.html" class="no-external">Resampling Magic</a>
 </h3>
 <div class="listing-subtitle">
-Demystifying Bootstrapping
+<a href="./posts/bootstrap/bootstrapping.html" class="no-external">Demystifying Bootstrapping</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Resampling'); return false;">
 Resampling
@@ -279,14 +311,12 @@ Bootstrapping
 Variance Estimation
 </div>
 </div>
-<a href="./posts/bootstrap/bootstrapping.html">
 <div class="listing-description">
-A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this. Sometimes deriving this can be…
+<a href="./posts/bootstrap/bootstrapping.html" class="no-external">A key part of any analysis is to determine the uncertainty associated with an estimate. Typically we use confidence intervals to show this. Sometimes deriving this can be…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/bootstrap/bootstrapping.html">
+<a href="./posts/bootstrap/bootstrapping.html" class="no-external">
 <div class="listing-date">
 Oct 30, 2023
 </div>
@@ -296,32 +326,30 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="Simulating Data" data-listing-date-sort="1696042800000" data-listing-file-modified-sort="1710231399901" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14">
+<div class="quarto-post image-right" data-index="3" data-categories="Simulating Data" data-listing-date-sort="1696042800000" data-listing-file-modified-sort="1717958978067" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2699">
 <div class="thumbnail">
-<p><a href="./posts/simulating-data/sim_data.html"> <img src="./posts/simulating-data/sim_data.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/simulating-data/sim_data.html" class="no-external"></a></p><a href="./posts/simulating-data/sim_data.html" class="no-external">
+<p><img src="./posts/simulating-data/sim_data.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/simulating-data/sim_data.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/simulating-data/sim_data.html">
 <h3 class="no-anchor listing-title">
-Mastering Causal Inference Through Make-Believe
+<a href="./posts/simulating-data/sim_data.html" class="no-external">Mastering Causal Inference Through Make-Believe</a>
 </h3>
 <div class="listing-subtitle">
-Simulating Data in R
+<a href="./posts/simulating-data/sim_data.html" class="no-external">Simulating Data in R</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Simulating Data'); return false;">
 Simulating Data
 </div>
 </div>
-<a href="./posts/simulating-data/sim_data.html">
 <div class="listing-description">
-Simulating data is something that…
+<a href="./posts/simulating-data/sim_data.html" class="no-external">Simulating data is something that I’ve learned since graduating from my masters. It’s helped me tremendously with comparing methods and proving concepts to me. It’s also…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/simulating-data/sim_data.html">
+<a href="./posts/simulating-data/sim_data.html" class="no-external">
 <div class="listing-date">
 Sep 30, 2023
 </div>
@@ -331,19 +359,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="DAGs,Causal Diagrams" data-listing-date-sort="1691031600000" data-listing-file-modified-sort="1710231399871" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9">
+<div class="quarto-post image-right" data-index="4" data-categories="DAGs,Causal Diagrams" data-listing-date-sort="1691031600000" data-listing-file-modified-sort="1718212678675" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1672">
 <div class="thumbnail">
-<p><a href="./posts/dags/dags.html"> <img src="./posts/dags/dags.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/dags/dags.html" class="no-external"></a></p><a href="./posts/dags/dags.html" class="no-external">
+<p><img src="./posts/dags/dags.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/dags/dags.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/dags/dags.html">
 <h3 class="no-anchor listing-title">
-Hot Diggity DAG
+<a href="./posts/dags/dags.html" class="no-external">Hot Diggity DAG</a>
 </h3>
 <div class="listing-subtitle">
-An Introduction to DAGs
+<a href="./posts/dags/dags.html" class="no-external">An Introduction to DAGs</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('DAGs'); return false;">
 DAGs
@@ -352,14 +380,12 @@ DAGs
 Causal Diagrams
 </div>
 </div>
-<a href="./posts/dags/dags.html">
 <div class="listing-description">
-Yes..well no…well kinda. DAG in this case, stands for Directed Acyclic Graph.…<br><br><br><br>
+<a href="./posts/dags/dags.html" class="no-external">Yes..well no…well kinda. DAG in this case, stands for Directed Acyclic Graph. It’s a graph that is directed and acyclic…alright that’s not much of an explanation. Let’s try…<br><br><br><br></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/dags/dags.html">
+<a href="./posts/dags/dags.html" class="no-external">
 <div class="listing-date">
 Aug 3, 2023
 </div>
@@ -369,19 +395,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="Estimands,ATE,ATT,ATU,ATO" data-listing-date-sort="1688180400000" data-listing-file-modified-sort="1710231399862" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14">
+<div class="quarto-post image-right" data-index="5" data-categories="Estimands,ATE,ATT,ATU,ATO" data-listing-date-sort="1688180400000" data-listing-file-modified-sort="1717958978058" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2752">
 <div class="thumbnail">
-<p><a href="./posts/causal-estimands/causal_estimands.html"> <img src="./posts/causal-estimands/height_dag.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/causal-estimands/causal_estimands.html" class="no-external"></a></p><a href="./posts/causal-estimands/causal_estimands.html" class="no-external">
+<p><img src="./posts/causal-estimands/height_dag.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/causal-estimands/causal_estimands.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/causal-estimands/causal_estimands.html">
 <h3 class="no-anchor listing-title">
-Who are we talking about?
+<a href="./posts/causal-estimands/causal_estimands.html" class="no-external">Who are we talking about?</a>
 </h3>
 <div class="listing-subtitle">
-The Role of Causal Estimands
+<a href="./posts/causal-estimands/causal_estimands.html" class="no-external">The Role of Causal Estimands</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Estimands'); return false;">
 Estimands
@@ -399,14 +425,12 @@ ATU
 ATO
 </div>
 </div>
-<a href="./posts/causal-estimands/causal_estimands.html">
 <div class="listing-description">
-A key part of any research question is to figure out who our <em>target population</em> is. These are the people we want to study. For example, is it 85 year olds who play american football? Is it children between 5-11 years of age using the swings at the…
+<a href="./posts/causal-estimands/causal_estimands.html" class="no-external">A key part of any research question is to figure out who our <em>target population</em> is. These are the people we want to study. For example, is it 85 year olds who play american…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/causal-estimands/causal_estimands.html">
+<a href="./posts/causal-estimands/causal_estimands.html" class="no-external">
 <div class="listing-date">
 Jul 1, 2023
 </div>
@@ -416,19 +440,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="OR,Collapsibility" data-listing-date-sort="1686279600000" data-listing-file-modified-sort="1710231399868" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
+<div class="quarto-post image-right" data-index="6" data-categories="OR,Collapsibility" data-listing-date-sort="1686279600000" data-listing-file-modified-sort="1717958978059" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1268">
 <div class="thumbnail">
-<p><a href="./posts/collapsible-effect-measure/collapsible_effects.html"> <img src="./posts/collapsible-effect-measure/accordion.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external"></a></p><a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external">
+<p><img src="./posts/collapsible-effect-measure/accordion.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/collapsible-effect-measure/collapsible_effects.html">
 <h3 class="no-anchor listing-title">
-Beyond the Odds
+<a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external">Beyond the Odds</a>
 </h3>
 <div class="listing-subtitle">
-Unravelling the Enigma of Non-Collapsibility
+<a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external">Unravelling the Enigma of Non-Collapsibility</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('OR'); return false;">
 OR
@@ -437,14 +461,12 @@ OR
 Collapsibility
 </div>
 </div>
-<a href="./posts/collapsible-effect-measure/collapsible_effects.html">
 <div class="listing-description">
-Epidemiologists and clinical researchers use different metrics to quantify the relationship between the exposure and outcome. Commonly used measures include the risk ratio…<span class="citation" data-cites="doi2022"></span>
+<a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external">Epidemiologists and clinical researchers use different metrics to quantify the relationship between the exposure and outcome. Commonly used measures include the risk ratio…<span class="citation" data-cites="doi2022"></span></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/collapsible-effect-measure/collapsible_effects.html">
+<a href="./posts/collapsible-effect-measure/collapsible_effects.html" class="no-external">
 <div class="listing-date">
 Jun 9, 2023
 </div>
@@ -454,19 +476,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="Standardization,Parametric G-Formula" data-listing-date-sort="1684983600000" data-listing-file-modified-sort="1710231399901" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14">
+<div class="quarto-post image-right" data-index="7" data-categories="Standardization,Parametric G-Formula" data-listing-date-sort="1684983600000" data-listing-file-modified-sort="1717958978067" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2741">
 <div class="thumbnail">
-<p><a href="./posts/standardization/standardization.html"> <img src="./posts/standardization/standards.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/standardization/standardization.html" class="no-external"></a></p><a href="./posts/standardization/standardization.html" class="no-external">
+<p><img src="./posts/standardization/standards.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/standardization/standardization.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/standardization/standardization.html">
 <h3 class="no-anchor listing-title">
-Standardize Your Way to Causal Inference
+<a href="./posts/standardization/standardization.html" class="no-external">Standardize Your Way to Causal Inference</a>
 </h3>
 <div class="listing-subtitle">
-Standardization and the Parametric G-Formula
+<a href="./posts/standardization/standardization.html" class="no-external">Standardization and the Parametric G-Formula</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Standardization'); return false;">
 Standardization
@@ -475,14 +497,12 @@ Standardization
 Parametric G-Formula
 </div>
 </div>
-<a href="./posts/standardization/standardization.html">
 <div class="listing-description">
-Imagine that a teacher wants to know if giving a lesson about growing plants causes plants to grow longer. They decide to use two groups of peoples: kids (group A) and their…<br><br><br><br>
+<a href="./posts/standardization/standardization.html" class="no-external">Imagine that a teacher wants to know if giving a lesson about growing plants causes plants to grow longer. They decide to use two groups of peoples: kids (group A) and their…<br><br><br><br></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/standardization/standardization.html">
+<a href="./posts/standardization/standardization.html" class="no-external">
 <div class="listing-date">
 May 25, 2023
 </div>
@@ -492,19 +512,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="GLM,Regression" data-listing-date-sort="1662951600000" data-listing-file-modified-sort="1710231399876" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18">
+<div class="quarto-post image-right" data-index="8" data-categories="GLM,Regression" data-listing-date-sort="1662951600000" data-listing-file-modified-sort="1717958978061" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3536">
 <div class="thumbnail">
-<p><a href="./posts/glm/glm.html"> <img src="./posts/glm/balloons-by-age.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/glm/glm.html" class="no-external"></a></p><a href="./posts/glm/glm.html" class="no-external">
+<p><img src="./posts/glm/balloons-by-age.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/glm/glm.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/glm/glm.html">
 <h3 class="no-anchor listing-title">
-Generalized Linear Models
+<a href="./posts/glm/glm.html" class="no-external">Generalized Linear Models</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/glm/glm.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('GLM'); return false;">
 GLM
@@ -513,14 +533,12 @@ GLM
 Regression
 </div>
 </div>
-<a href="./posts/glm/glm.html">
 <div class="listing-description">
-Regression is a commonly used tool in inferential statistics to build a model to make inferences about a super-population. Before we start however, I’d like to highlight…
+<a href="./posts/glm/glm.html" class="no-external">Regression is a commonly used tool in inferential statistics to build a model to make inferences about a super-population. Before we start however, I’d like to highlight…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/glm/glm.html">
+<a href="./posts/glm/glm.html" class="no-external">
 <div class="listing-date">
 Sep 12, 2022
 </div>
@@ -530,19 +548,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="IPW,IPTW" data-listing-date-sort="1661050800000" data-listing-file-modified-sort="1710231399884" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22">
+<div class="quarto-post image-right" data-index="9" data-categories="IPW,IPTW" data-listing-date-sort="1661050800000" data-listing-file-modified-sort="1717958978063" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4388">
 <div class="thumbnail">
-<p><a href="./posts/ip-weighting/ip_weighting.html"> <img src="./posts/ip-weighting/iptw.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/ip-weighting/ip_weighting.html" class="no-external"></a></p><a href="./posts/ip-weighting/ip_weighting.html" class="no-external">
+<p><img src="./posts/ip-weighting/iptw.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/ip-weighting/ip_weighting.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/ip-weighting/ip_weighting.html">
 <h3 class="no-anchor listing-title">
-Inverse Probability Weighting
+<a href="./posts/ip-weighting/ip_weighting.html" class="no-external">Inverse Probability Weighting</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/ip-weighting/ip_weighting.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('IPW'); return false;">
 IPW
@@ -551,14 +569,12 @@ IPW
 IPTW
 </div>
 </div>
-<a href="./posts/ip-weighting/ip_weighting.html">
 <div class="listing-description">
-Re-weighting in this context has nothing to…<strong><em></em></strong><strong><em></em></strong>
+<a href="./posts/ip-weighting/ip_weighting.html" class="no-external">Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for confounding to ensure exchangeability. This method…<strong><em></em></strong><strong><em></em></strong></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/ip-weighting/ip_weighting.html">
+<a href="./posts/ip-weighting/ip_weighting.html" class="no-external">
 <div class="listing-date">
 Aug 21, 2022
 </div>
@@ -568,19 +584,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-categories="Marginal,Conditional" data-listing-date-sort="1660359600000" data-listing-file-modified-sort="1710231399884" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="10" data-categories="Marginal,Conditional" data-listing-date-sort="1660359600000" data-listing-file-modified-sort="1717958978064" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="941">
 <div class="thumbnail">
-<p><a href="./posts/marginal-conditional/marginal_conditional.html"> <img src="./posts/marginal-conditional/marginal-vs-conditional.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external"></a></p><a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external">
+<p><img src="./posts/marginal-conditional/marginal-vs-conditional.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/marginal-conditional/marginal_conditional.html">
 <h3 class="no-anchor listing-title">
-Marginal vs Conditional Effects
+<a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external">Marginal vs Conditional Effects</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Marginal'); return false;">
 Marginal
@@ -589,14 +605,12 @@ Marginal
 Conditional
 </div>
 </div>
-<a href="./posts/marginal-conditional/marginal_conditional.html">
 <div class="listing-description">
-This post is going to be about marginal compared…
+<a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external">This post is going to be about marginal compared to conditional effects. First, we need to understand what in the world these terms even mean. To do that, can you guess what…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/marginal-conditional/marginal_conditional.html">
+<a href="./posts/marginal-conditional/marginal_conditional.html" class="no-external">
 <div class="listing-date">
 Aug 13, 2022
 </div>
@@ -606,19 +620,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="RWE,Observational Data" data-listing-date-sort="1660100400000" data-listing-file-modified-sort="1710231399901" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="11" data-categories="RWE,Observational Data" data-listing-date-sort="1660100400000" data-listing-file-modified-sort="1717958978067" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="614">
 <div class="thumbnail">
-<p><a href="./posts/rwe-whats-the-hype/rwe_intro.html"> <img src="./posts/rwe-whats-the-hype/rwd-to-rwe.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external"></a></p><a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external">
+<p><img src="./posts/rwe-whats-the-hype/rwd-to-rwe.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/rwe-whats-the-hype/rwe_intro.html">
 <h3 class="no-anchor listing-title">
-Real-World Evidence: What’s all the hype?
+<a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external">Real-World Evidence: What’s all the hype?</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('RWE'); return false;">
 RWE
@@ -627,14 +641,12 @@ RWE
 Observational Data
 </div>
 </div>
-<a href="./posts/rwe-whats-the-hype/rwe_intro.html">
 <div class="listing-description">
-You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential for answering important research questions, however…<span class="citation" data-cites="FDA-RWE"></span>
+<a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external">You may have seen real-world evidence (RWE) being used increasingly in research settings. It has tremendous potential for answering important research questions, however…<span class="citation" data-cites="FDA-RWE"></span></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/rwe-whats-the-hype/rwe_intro.html">
+<a href="./posts/rwe-whats-the-hype/rwe_intro.html" class="no-external">
 <div class="listing-date">
 Aug 10, 2022
 </div>
@@ -644,19 +656,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-categories="P-Values,Hypothesis Tests" data-listing-date-sort="1659927600000" data-listing-file-modified-sort="1710231399892" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11">
+<div class="quarto-post image-right" data-index="12" data-categories="P-Values,Hypothesis Tests" data-listing-date-sort="1659927600000" data-listing-file-modified-sort="1717958978065" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2044">
 <div class="thumbnail">
-<p><a href="./posts/p-value-power/p-value-power.html"> <img src="./posts/p-value-power/p-value.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/p-value-power/p-value-power.html" class="no-external"></a></p><a href="./posts/p-value-power/p-value-power.html" class="no-external">
+<p><img src="./posts/p-value-power/p-value.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/p-value-power/p-value-power.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/p-value-power/p-value-power.html">
 <h3 class="no-anchor listing-title">
-P-Values and Power: Please Explain
+<a href="./posts/p-value-power/p-value-power.html" class="no-external">P-Values and Power: Please Explain</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/p-value-power/p-value-power.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('P-Values'); return false;">
 P-Values
@@ -665,14 +677,12 @@ P-Values
 Hypothesis Tests
 </div>
 </div>
-<a href="./posts/p-value-power/p-value-power.html">
 <div class="listing-description">
-P-values are a term commonly heard in scientific literature, however often…
+<a href="./posts/p-value-power/p-value-power.html" class="no-external">P-values are a term commonly heard in scientific literature, however often they are misconstrued, misunderstood or misinterpreted. The p in p-value stands for probability…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/p-value-power/p-value-power.html">
+<a href="./posts/p-value-power/p-value-power.html" class="no-external">
 <div class="listing-date">
 Aug 8, 2022
 </div>
@@ -682,19 +692,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="13" data-categories="Causal Inference,RCT,Observational Data" data-listing-date-sort="1659495600000" data-listing-file-modified-sort="1710231399868" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
+<div class="quarto-post image-right" data-index="13" data-categories="Causal Inference,RCT,Observational Data" data-listing-date-sort="1659495600000" data-listing-file-modified-sort="1717958978059" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1930">
 <div class="thumbnail">
-<p><a href="./posts/causal_inference_intro/causal_inference.html"> <img src="./posts/causal_inference_intro/cause-and-effect.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/causal_inference_intro/causal_inference.html" class="no-external"></a></p><a href="./posts/causal_inference_intro/causal_inference.html" class="no-external">
+<p><img src="./posts/causal_inference_intro/cause-and-effect.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/causal_inference_intro/causal_inference.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/causal_inference_intro/causal_inference.html">
 <h3 class="no-anchor listing-title">
-Intro to Causal Inference
+<a href="./posts/causal_inference_intro/causal_inference.html" class="no-external">Intro to Causal Inference</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/causal_inference_intro/causal_inference.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Causal Inference'); return false;">
 Causal Inference
@@ -706,14 +716,12 @@ RCT
 Observational Data
 </div>
 </div>
-<a href="./posts/causal_inference_intro/causal_inference.html">
 <div class="listing-description">
-I was first introduced to causal inference by <span class="citation" data-cites="RN509">Hernan and Robins (2021)</span>, in the summer of 2021 prior to…<br><br><span class="citation" data-cites="RN816"></span>
+<a href="./posts/causal_inference_intro/causal_inference.html" class="no-external">I was first introduced to causal inference by <span class="citation" data-cites="RN509">Hernan and Robins (2021)</span>, in the summer of 2021 prior to starting my PhD. This book was tremendous and changed my thinking…<br><br><span class="citation" data-cites="RN816"></span></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/causal_inference_intro/causal_inference.html">
+<a href="./posts/causal_inference_intro/causal_inference.html" class="no-external">
 <div class="listing-date">
 Aug 3, 2022
 </div>
@@ -723,19 +731,19 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-categories="OR,RR,HR" data-listing-date-sort="1659236400000" data-listing-file-modified-sort="1710231399892" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="14" data-categories="OR,RR,HR" data-listing-date-sort="1659236400000" data-listing-file-modified-sort="1717958978065" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="976">
 <div class="thumbnail">
-<p><a href="./posts/or_rr_hr/or_rr_hr.html"> <img src="./posts/or_rr_hr/confused.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external"></a></p><a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external">
+<p><img src="./posts/or_rr_hr/confused.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/or_rr_hr/or_rr_hr.html">
 <h3 class="no-anchor listing-title">
-OR/RR/HR: What’s the Difference?
+<a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external">OR/RR/HR: What’s the Difference?</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('OR'); return false;">
 OR
@@ -747,14 +755,12 @@ RR
 HR
 </div>
 </div>
-<a href="./posts/or_rr_hr/or_rr_hr.html">
 <div class="listing-description">
-Let’s start with probability because that’s probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that…<br><br>
+<a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external">Let’s start with probability because that’s probably a good place to start. Probability is basically how likely something is to occur. For example, what are the chances that…<br><br></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/or_rr_hr/or_rr_hr.html">
+<a href="./posts/or_rr_hr/or_rr_hr.html" class="no-external">
 <div class="listing-date">
 Jul 31, 2022
 </div>
@@ -764,25 +770,25 @@ Ryan Batten
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-listing-date-sort="1658890800000" data-listing-file-modified-sort="1710231399909" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="15" data-listing-date-sort="1658890800000" data-listing-file-modified-sort="1717958978069" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="117">
 <div class="thumbnail">
-<p><a href="./posts/welcome/welcome.html"> <img src="./posts/welcome/blogging.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/welcome/welcome.html" class="no-external"></a></p><a href="./posts/welcome/welcome.html" class="no-external">
+<p><img src="./posts/welcome/blogging.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/welcome/welcome.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/welcome/welcome.html">
 <h3 class="no-anchor listing-title">
-Welcome To My Blog
+<a href="./posts/welcome/welcome.html" class="no-external">Welcome To My Blog</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/welcome/welcome.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-This is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to…
+<a href="./posts/welcome/welcome.html" class="no-external">This is my first post in this blog! The aim of this blog is to describe methods related to real-world evidence, causal inference and statistical fun. My goal for this is to…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/welcome/welcome.html">
+<a href="./posts/welcome/welcome.html" class="no-external">
 <div class="listing-date">
 Jul 27, 2022
 </div>
@@ -876,10 +882,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -889,8 +912,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -902,7 +934,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -946,6 +1101,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -971,6 +1127,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1031,6 +1213,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
