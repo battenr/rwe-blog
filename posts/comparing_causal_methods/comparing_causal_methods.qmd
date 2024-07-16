@@ -4,9 +4,8 @@ subtitle: "Unless it's comparing causal methods!"
 author: "Ryan Batten"
 date: "2024-07-16"
 categories: [Simulation, Causal Methods]
-#image: "cc_methods.jpeg"
+image: "monsters_icecream.png"
 bibliography: cc_methods.bib
-draft: true
 format: 
   html:
     code-fold: true
@@ -44,7 +43,7 @@ Wait, we need a research question! The fun part is we get to decide what we want
 
 -   Exercise (hours per day)
 
-```{r, message = FALSE}
+```{r dag, message = FALSE}
 library(tidyverse) # ol faithful 
 library(ggdag) # used for the DAG 
 
@@ -72,7 +71,7 @@ ggdag::ggdag(dag, text = FALSE, use_labels = "label") # actually showing the DAG
 
 Great now we have our DAG! Now let's see what we have to adjust for. Luckily we can use the handy dandy ggdag package! Or if you don't use R, there's an online tool dagitty. Either way, let's have a look.
 
-```{r, message = FALSE}
+```{r variables_adjust, message = FALSE}
 
 ggdag::ggdag_adjustment_set(dag)
 ```
@@ -94,7 +93,7 @@ Individual treatment effects are the ultimate goal but it is very difficult to d
 For this let's use the ATT. In the real-world, we'd put thought into which estimand we want to estimate and not just pick one willy nilly. A great resource for this is @greifer2021choosing.
 
 ::: callout-important
-## Not all estimands are applicable for all methods 
+## Not all estimands are applicable for all methods
 
 It's very important to consider this when comparing different methods. A great example of this is comparing propensity score matching (PSM) and inverse probability of treatment weighting (IPTW). PSM can only estimate the ATT because we're matching treated patients to those that are untreated. This results in a sample that looks similar to the treated patients.
 
@@ -125,72 +124,87 @@ Alright, let's put it all together with some simulation! We're going to use the 
 
 ## Simulating Data
 
-Time to simulate some data! We'll use our handy dandy DAG from before to guide us on this.
+Time to simulate some data! We'll use our handy dandy DAG from before to guide us on this. Personally, before continuing with running it multiple times, I like to do a test run. First I simulate some data to play around with the proportions. For example, what kind of coefficients do we need to get the desired ratio (roughly) of treated versus controls, etc.
 
-```{r}
+```{r test}
 
+set.seed(456) # setting seed for reproducibility
 
-
-# arbitrary sample size. This can sometimes be altered as well, if we want to compare the difference in methods as a function of sample size. For example, maybe we want to see if PSM and IPTW become the same (or simliar enough) as sample size increases
+# Picking an arbitrary sample size. This can sometimes be altered as well, if we want to compare the difference in methods as a function of sample size. For example, maybe we want to see if PSM and IPTW become the same (or simliar enough) as sample size increases
 
 n = 500 # arbitrary 
-theta = 3 # this is what the actual effect is (we'll use this later)
+theta = 3 # this is what the actual effect is (we'll use this later for some of the metrics)
 
 df = data.frame(
   sunshine = rnorm(n = n, mean = 10, sd = 2),
   exercise = rnorm(n = n, mean = 1, sd = 0.25)
 ) %>% 
   dplyr::mutate(
-    time_with_friends = 2 + 1.5*sunshine, # assume total hours per week 
+    time_with_friends = 2 + 1.5*sunshine, 
     ice_cream = rbinom(n = n, size = 1, prob = 0.01 + 0.0167*sunshine + 0.2*exercise),
     happiness = theta*ice_cream + 2*sunshine + 1.5*time_with_friends + 2.5*exercise
   ) 
 
 ```
 
-Alright now let's test fitting a version for each method. Personally, I do this first before getting into repeating it. This is just to make sure nothing is a miss
+Alright now let's test fitting a version for each method. Personally, I do this first before getting into repeating it. This is just to make sure nothing is a miss with the models and fit.
 
-```{r}
+```{r test_ps}
 
-library(WeightIt)
-library(MatchIt)
-library(broom)
+# Note: these results are muted here, but suggest using broom::tidy to check the outputs. 
 
-matched <- MatchIt::matchit(ice_cream ~ sunshine, 
+# Packages
+
+library(WeightIt) # we'll use this for IPTW
+library(MatchIt) # we'll use this for PSM 
+
+# Testing Matching the data 
+
+matched <- MatchIt::matchit(ice_cream ~ sunshine + exercise, 
                  data = df, 
                  method = "nearest", 
                  estimand = "ATT")
 
+# Outcome Model 
+
 mod <- stats::glm(
   happiness ~ ice_cream, 
-  data = match.data(matched)
+  data = match.data(matched) # using the matched data 
 )
 
-broom::tidy(mod)
+# IPTW Model 
 
-
-ipw <- WeightIt::weightit(ice_cream ~ sunshine, 
+ipw <- WeightIt::weightit(ice_cream ~ sunshine + exercise, 
                           data = df,
                           method = "glm", 
-                          estimand = "ATT")
+                          estimand = "ATT") # by default the estimand will be ATE
+
+# Outcome model with iptw
 
 mod_ipw <- stats::glm(
   happiness ~ ice_cream, 
   data = df,
-  weights = ipw$weights
+  weights = ipw$weights # weights from PSM 
 )
 
 ```
 
-## Repeat, Repeat, Repeat
+## Repeat, Repeat, Repeat...Then Repeat Again!
 
-Repeating for each of these. First calculating the results for IPTW, then for PSM
+Now that we have a sample, we can make these into functions and simulate. For the purposes of this post we'll just select 1000 for the number of times we'll repeat the process. In practice, choosing the number of times that we actually want to do this is more nuanced. Any guesses what reference I'll suggest? Yup! @morris2019using
 
-```{r}
+Now let's repeat for each of these. First, for PSM then for IPTW.
+
+```{r psm}
+
+library(broom) # we'll need this one for cleaning the model output 
 
 # PSM
 
-simulate_psm <- function(n, theta) {
+# Creating a function that simulates data, then matches the treated (aka those that had ice cream) to the controls (those that did not). 
+
+simulate_psm <- function(n, 
+                         theta) { # theta is the "true" effect
   df = data.frame(
     sunshine = rnorm(n = n, mean = 10, sd = 2),
     exercise = rnorm(n = n, mean = 1, sd = 0.25)
@@ -201,13 +215,19 @@ simulate_psm <- function(n, theta) {
     happiness = theta*ice_cream + 2*sunshine + 1.5*time_with_friends + 2.5*exercise
   ) 
   
+  # Matching data
+  
   psm <- MatchIt::matchit(ice_cream ~ sunshine + exercise, 
                  data = df, 
                  method = "nearest", 
                  estimand = "ATT")
   
+  # Fitting an outcome model 
+  
   outcome_model <- glm(happiness ~ ice_cream, 
                        data = match.data(psm))
+  
+  # Extracting only the term that we care about 
   
   estimate <- broom::tidy(outcome_model) %>% 
     dplyr::filter(term == "ice_cream") %>% 
@@ -216,14 +236,20 @@ simulate_psm <- function(n, theta) {
   return(estimate)
 }
 
+# Repeat!
 
+# Repeating 1000 times. Arbitrarly choosing a sample size of 500 and "true" effect of 3
 
 psm_output <- replicate(1000, simulate_psm(500, 3), simplify = FALSE) 
+
+# Reformatting 
 
 psm_output <- do.call(rbind, psm_output) %>%  # reformatting 
   as.data.frame()
 
-psm_output$theta_hat <- psm_output$V1 
+psm_output$theta_hat <- psm_output$V1 # renaming the variable
+
+# Calculating some things that will be needed later. Namely, the error and squared error. The formula for these (and the metrics used later on) are in Morris et al. (2019)
 
 psm_result <- psm_output %>% 
   mutate(
@@ -231,22 +257,27 @@ psm_result <- psm_output %>%
     squared_error = error^2
   )
 
-avg_theta = mean(psm_result$theta_hat)
-mse = (1/1000)*sum(psm_result$squared_error)
+avg_theta = mean(psm_result$theta_hat) # calculating the average of the estimated effect
+psm_mse = (1/1000)*sum(psm_result$squared_error) # calculating the mean squared error
+
+# Calculating the empirical standard error
 
 psm_se_result = psm_result %>% 
   mutate(
-    se_mse = mse,
+    se_mse_num = (squared_error - psm_mse)^2,
     squared_diff = (theta_hat - avg_theta)^2
   )
 
+psm_mse_se <- sqrt(sum(psm_se_result$se_mse_num) / (1000*(1000-1)))
+
 psm_emp_se <- sqrt((1/(1000-1))*sum(psm_se_result$squared_diff))
-
-
-
 ```
 
-```{r}
+Great! PSM is all done. Now let's do the same thing for IPTW.
+
+```{r iptw}
+
+# Doing the same as above for PSM. Rather to the above code chunk for comments on the process
 
 simulate_ipw <- function(n, theta) {
   df = data.frame(
@@ -254,7 +285,7 @@ simulate_ipw <- function(n, theta) {
     exercise = rnorm(n = n, mean = 1, sd = 0.25)
 ) %>% 
   dplyr::mutate(
-    time_with_friends = 2 + 1.5*sunshine, # assume total hours per week 
+    time_with_friends = 2 + 1.5*sunshine, 
     ice_cream = rbinom(n = n, size = 1, prob = 0.01 + 0.0167*sunshine + 0.2*exercise),
     happiness = theta*ice_cream + 2*sunshine + 1.5*time_with_friends + 2.5*exercise
   ) 
@@ -291,47 +322,49 @@ ipw_result <- ipw_output %>%
   )
 
 avg_theta = mean(ipw_result$theta_hat)
-mse = (1/1000)*sum(ipw_result$squared_error)
+ipw_mse = (1/1000)*sum(ipw_result$squared_error)
 
 ipw_se_result = ipw_result %>% 
   mutate(
-    se_mse = mse,
+    se_mse_num = (squared_error - ipw_mse)^2,
     squared_diff = (theta_hat - avg_theta)^2
   )
+
+ipw_mse_se <- sqrt(sum(ipw_se_result$se_mse_num) / (1000*(1000-1)))
 
 ipw_emp_se <- sqrt((1/(1000-1))*sum(ipw_se_result$squared_diff))
 
 ```
 
-```{r}
+```{r metrics}
+
+# Calculating these metrics using Morris et al. (2019). 
 
 increase_precision <- round(100*((ipw_emp_se/psm_emp_se)^2 - 1 ),2) # Increase in precision for IPTW vs PSM
 
-corr = cor(ipw_result$theta_hat, psm_result$theta_hat)
+corr = cor(ipw_result$theta_hat, psm_result$theta_hat) # correlation between the two 
 
 ratio <- ipw_emp_se/psm_emp_se
 
 se_increase_precision <- round(200*(ratio^2)*sqrt((1-(corr^2))/(1000-1)), 2)
-
-
 ```
 
-Now we have some results! The MSE for PSM is `r round(psm_emp_se,2)` and `r round(ipw_emp_se,2)`for IPTW. The increase in precision is `r paste0(increase_precision, " (", se_increase_precision, ")")`. We need to unpack these results since there are a few things to keep in mind.
+Now we have some results! The MSE for PSM is `r paste0(round(psm_mse,2), " (", round(psm_mse_se,2), ")")` and `r paste0(round(ipw_mse,2), " (", round(ipw_mse_se,5), ")")` for IPTW. The increase in precision is `r paste0(increase_precision, " (", se_increase_precision, ")")`. We need to unpack these results since there are a few things to keep in mind.
 
-Firstly, we didn't assess the balance. When comparing two methods, we should also compare how the balance between the methods looks. Does one method result in better balance or no? This can be done graphically and/or using love plots (recommend the cobalt package for this). Secondly, the same size was 500. Perhaps, more importantly, is the number of patients getting matched. Do we have enough controls for our treatment? What if we didn't, what if we did? Thirdly, there were only two confounders. How would the results change if we included more?
+Firstly, we didn't assess the balance. The whole point of using these methods is to ensure exchangeability. When comparing two methods, we should also compare how the balance between the methods looks. Does one method result in better balance or no? This can be done graphically and/or using love plots (recommend the cobalt package for this). Secondly, the same size was 500. Perhaps, more importantly, is the number of patients getting matched. Do we have enough controls for our treatment? What if we didn't? What if we did? Thirdly, there were only two confounders. How would the results change if we included more? A last point (to not bore you to death): we included the two variables we know were confounders. What would happen if we left one out? (aka if the model was misspecified?).
 
-When comparing results it's important to not just look numerically. There are scientific limitations of certain methods. For example, PSM only keeps patients with a match. Would we be sure that these patients match our inclusion/exclusion criteria? Or is selection bias being induced? We need to incorporate these pieces when comparing methods.
+When comparing results it's important to not just look numerically. There are other limitations of that may not be as easy to quantify. For example, PSM only keeps patients with a match. Would we be sure that these patients match our inclusion/exclusion criteria? Or is it a subset of these criteria? Or is selection bias being induced? We need to incorporate these pieces when comparing methods.
 
 This isn't to say that the above is necessarily wrong. It's just important to consider the limitations of what we did do. As put in @morris2019using, starting simple is the best and I agree. We can now build on this!
 
 ::: callout-caution
 ## Metrics That Rely on Standard Error
 
-We should use caution when using using metrics relying on standard error. For PS-based methods, we need to use appropriate variance estimators. This can make it tricky when using certain metrics. Imagine we are comparing IPTW and PSM based on power for nominal coverage. Both of these need SE. If we're using robust variance estimation (HC0) for PSM and M-estimation for IPTW, are these really comparing IPTW vs PSM? Or would the different variance estimation techniques have something to do with the differences? It's important to consider these differences.
+We should use caution when using using metrics relying on standard error. For PS-based methods, we need to use appropriate variance estimators. This can make it tricky when using certain metrics. Imagine we are comparing IPTW and PSM based on power for nominal coverage. Both of these need SE. If we're using robust variance estimation (HC0) for PSM and M-estimation for IPTW, are these really comparing IPTW vs PSM? Or would the different variance estimation techniques have something to do with the differences? It's important to consider this.
 :::
 
 # Why Bother?
 
-At this point, you may be thinking "why both to do this? This is a lot of work when I can just say one over the other". The answer is two-fold. Firstly, it's not always clear what the best approach is. It can depend on the setting and outcome (continuous, binary, time-to-event). It's helpful to quantify this when discussing with a team. Secondly, when we compare methods it's helpful to know "how much". One method may have higher precision but how much is "higher". Using different metrics also helps to figure out what should be more emphasized (i.e., precision vs bias, etc).
+At this point, you may be thinking "why both doing this? This is a lot of work when I can just say one over the other". The answer is two-fold. Firstly, it's not always clear what the best approach is. It can depend on the setting and outcome (continuous, binary, time-to-event). It's helpful to quantify this when discussing with a team. Secondly, when we compare methods it's helpful to know "how much". One method may have higher precision but how much is "higher". Using different metrics also helps to figure out what should be more emphasized (i.e., precision vs bias, etc).
 
-For me, learning how to simulate data and do these types of comparisons has helped tremendously. Not only in making decisions, but also in understanding methods. Hope you found this post helpful! Happy causal method comparing!
+Using this approach, based on real world data, can partially help making a decision. I've learnt a lot from using this approach and continue to use it when comparing new methods. Two recent examples are looking into TMLE, BART and energy balancing. Hope you find this approach useful too!

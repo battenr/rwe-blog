@@ -216,7 +216,7 @@ div.csl-indent {
 
 <section id="why-compare" class="level1">
 <h1>Why Compare?</h1>
-<p>There are a ton of causal methods that are available and only increasing. To name a few: matching, inverse probability of treatment weighting, regression, machine learning methods, parametric g-formula, marginal structural model and many many more. This can make it tricky to figure out which to use. By comparing these quantitatively it can provide some additional evidence for choosing between methods for certain scenarios.</p>
+<p>There are a ton of causal methods that are available and only increasing. To name a few: matching, inverse probability of treatment weighting, regression, machine learning methods, parametric g-formula, marginal structural models and many many more. This can make it tricky to figure out which to use. By comparing these quantitatively it can provide some additional evidence for choosing between methods for certain scenarios.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -227,7 +227,7 @@ Side Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This post will cover the basics of how to compare different methods used for causal inference. I can’t recommend <span class="citation" data-cites="morris2019using">Morris, White, and Crowther (<a href="#ref-morris2019using" role="doc-biblioref">2019</a>)</span> enough. It was extremely helpful when I was first looking into doing this and continues to be helpful. As a result, you’ll see this article reference throughout this post. A big thank you to Anthony Hatswell for the recommendation!</p>
+<p>This post will cover the basics of how to compare different methods used for causal inference. I can’t recommend <span class="citation" data-cites="morris2019using">Morris, White, and Crowther (<a href="#ref-morris2019using" role="doc-biblioref">2019</a>)</span> enough. It was extremely helpful when I was first learning how to do this and I continue to use it. As a result, you’ll see this article reference throughout this post. A big thank you to Anthony Hatswell for the recommendation!</p>
 </div>
 </div>
 </section>
@@ -243,51 +243,54 @@ Familiar with DAGs?
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If you are new to causal inference, I recommend you check out [insert refs] to learn more about directed acyclic graphs (DAGs). For the purposes of this post, you can continue reading! Just know that this DAG guides which variables we want to adjust for (and which ones we don’t) to best mitigate certain types of bias.</p>
+<p>If you are new to causal inference, I recommend you check out <span class="citation" data-cites="rohrer2018thinking">(<a href="#ref-rohrer2018thinking" role="doc-biblioref">Rohrer 2018</a>)</span> or the ggdag R package to learn more about directed acyclic graphs (DAGs). For the purposes of this post, you can continue reading! Just know that this DAG guides which variables we want to adjust for (and which ones we don’t) to best mitigate certain types of bias.</p>
 </div>
 </div>
-<p>First things first. We need to draw a directed acyclic graph (DAG). This will be needed to determine which variables to adjust for, which ones not to and more. Alright, let’s get started.</p>
-<p>First we need a research question! The fun part is we get to decide what we want to look at! For this we’ll look at the effect of ice cream on happiness level. We’ll assume that happiness is a continuous measure (since whether someone is happy or not isn’t really binary). We also get to decide what kind of variables we want to include! Let’s go with:</p>
+<p>First things first. We need to draw a directed acyclic graph (DAG). This will be needed to determine which variables to adjust for, which ones not to and more. Alright, let’s get started!</p>
+<p>Wait, we need a research question! The fun part is we get to decide what we want to look at! For this post, we’ll look at the effect of ice cream on happiness level. We’ll assume that happiness is a continuous measure (since whether someone is happy or not isn’t really binary). We also get to decide what kind of variables we want to include! Let’s go with:</p>
 <ul>
 <li><p>Ice Cream (the exposure)</p></li>
 <li><p>Happiness (the outcome)</p></li>
-<li><p>Sunshine</p></li>
-<li><p>Friends (Time with friends)</p></li>
+<li><p>Sunshine (hours per day)</p></li>
+<li><p>Time with Friends (hours per week)</p></li>
+<li><p>Exercise (hours per day)</p></li>
 </ul>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># ol faithful </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag) <span class="co"># used for the DAG </span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>())</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_dag</span>()) <span class="co"># setting the theme of the DAG </span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  happiness <span class="sc">~</span> ice_cream <span class="sc">+</span> sunshine <span class="sc">+</span> time_with_friends <span class="sc">+</span> exercise, </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  time_with_friends <span class="sc">~</span> sunshine, </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"ice_cream"</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"happiness"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> <span class="st">"Happiness"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="st">"Ice Cream"</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">sunshine =</span> <span class="st">"Sunshine"</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="st">"Time with Friends"</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">exercise =</span> <span class="st">"Exercise"</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag</span>(dag, <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Actually creating the DAG. Adding labels so we know the name of each variable. </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> ggdag<span class="sc">::</span><span class="fu">dagify</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  happiness <span class="sc">~</span> ice_cream <span class="sc">+</span> sunshine <span class="sc">+</span> time_with_friends <span class="sc">+</span> exercise, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  time_with_friends <span class="sc">~</span> sunshine, </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">"ice_cream"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"happiness"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> <span class="st">"Happiness"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="st">"Ice Cream"</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">sunshine =</span> <span class="st">"Sunshine"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="st">"Time with Friends"</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">exercise =</span> <span class="st">"Exercise"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>ggdag<span class="sc">::</span><span class="fu">ggdag</span>(dag, <span class="at">text =</span> <span class="cn">FALSE</span>, <span class="at">use_labels =</span> <span class="st">"label"</span>) <span class="co"># actually showing the DAG</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comparing_causal_methods_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="comparing_causal_methods_files/figure-html/dag-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Great now we have our DAG! Now let’s see what we have to adjust for</p>
+<p>Great now we have our DAG! Now let’s see what we have to adjust for. Luckily we can use the handy dandy ggdag package! Or if you don’t use R, there’s an online tool dagitty. Either way, let’s have a look.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -296,15 +299,15 @@ Familiar with DAGs?
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comparing_causal_methods_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="comparing_causal_methods_files/figure-html/variables_adjust-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Great! So now we know that we need to adjust for sunshine. Now we need to think about what exactly we want to estimate.</p>
+<p>Perfect! Looks like we have to adjust for sunshine and exercise. The next step is to think about what exactly we want to estimate.</p>
 </section>
-<section id="causal-estimand" class="level1">
-<h1>Causal Estimand?</h1>
+<section id="why-causal-estimandwhy" class="level1">
+<h1>Why Causal Estimand…Why?</h1>
 <p>Individual treatment effects are the ultimate goal but it is very difficult to determine them (at least at the time of this post). Instead, we use an average of the effects. The question becomes the average of who? The overall sample? People who are like those who received the treatment? Choosing this is an important step because it guides who we make inferences about. Quickly, there are basically four different options:</p>
 <ul>
 <li><p>Average treatment effect (ATE)</p></li>
@@ -312,27 +315,26 @@ Familiar with DAGs?
 <li><p>Average treatment effect in the untreated (ATU)</p></li>
 <li><p>Average treatment effect in the overlap (ATO) (aka for those patients that we don’t don’t know</p></li>
 </ul>
-<p>For this let’s use the ATT. In the real-world, we’d put thought into which estimand we want to estimate and not just pick one willy nilly.</p>
+<p>For this let’s use the ATT. In the real-world, we’d put thought into which estimand we want to estimate and not just pick one willy nilly. A great resource for this is <span class="citation" data-cites="greifer2021choosing">Greifer and Stuart (<a href="#ref-greifer2021choosing" role="doc-biblioref">2021</a>)</span>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Not all methods can estimate all estimands
+Not all estimands are applicable for all methods
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>It’s very important to consider this when comparing different methods. A great example of this is comparing propensity score matching (PSM) and inverse probability of treatment weighting (IPTW). PSM can only estimate the ATT because we’re matching treated patients to those that are untreated. This results in a sample that looks similar to the treated patients.</p>
-<p>Now if we were to compare this with IPTW (using the default setting in some packages), we could estimate the ATE. Comparing this result with PSM is problematic. Why? Because they’re estimating different things!<br>
-<br>
-For IPTW you can estimate any of the four causal estimands. This isn’t true for all methods.</p>
+<p>If we were to compare this with IPTW (using the default setting in some packages), we could accidentally end up estimating the ATE. Comparing this result with PSM is problematic. Why? Because they’re estimating different things!</p>
+<p>Not all is lost, with IPTW you can estimate any of the four causal estimands. This isn’t true for all methods, so we need to make sure it’s the same causal estimand.</p>
 </div>
 </div>
 </section>
 <section id="better-scientifically" class="level1">
 <h1>“Better” Scientifically</h1>
-<p>Great, so we’re ready to compare! Right? Not quite to the data just yet (but soon!). We need to decide how exactly we’re going to quantify the difference. This essentially comes down to the research question we’re asking. Do we want to know if one approach results in a model with a better fit? Or do we want to know which model has lower variance? Maybe we want to know which one has a higher power. For this example, we’ll use the mean-squared error and relative percent increase in precision.</p>
+<p>Great, so we’re ready to compare! Right?! GIMME SOME DATA! Not quite yet but almost there! We need to decide how exactly we’re going to quantify the difference. This essentially comes down to the research question we’re asking. Do we want to know if one approach results in a model with a better fit? Or do we want to know which model has lower variance? Maybe we want to know which one has a higher power. For this example, we’ll use the mean squared error (MSE) and relative percent increase in precision.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -343,215 +345,246 @@ Choosing Measure
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I highly, HIGHLY recommend the article by <span class="citation" data-cites="morris2019using">Morris, White, and Crowther (<a href="#ref-morris2019using" role="doc-biblioref">2019</a>)</span> for more about choices in comparing methods, considerations. It’s my personal go-to when I’m doing anything involving simulation.</p>
+<p>I highly, HIGHLY recommend the article by <span class="citation" data-cites="morris2019using">Morris, White, and Crowther (<a href="#ref-morris2019using" role="doc-biblioref">2019</a>)</span> for more about choices in comparing methods. It’s my personal go-to when I’m doing anything involving simulation.</p>
 </div>
 </div>
 </section>
-<section id="methods" class="level1">
-<h1>Methods</h1>
-<p>Methods, methods, methods! Which methods do we want to compare? Now in reality, these don’t usually happen sequentially. There may be two methods that you want to compare, so you then work backwards to draw a DAG a made-up situation (or one based on a real causal hypothesis). Regardless, it’s important to know what two methods you are using and how they differ in how they work.</p>
-<p>For example, using inverse probability of treatment weighting and the parametric g-formula it would be great to compare them. Both can estimate the average treatment effect, but they do so differently. IPTW models the treatment whereas the parametric g-formula uses the outcome model. It would expected that these wouldn’t give the exact same result. Although they could still be compared since they should be similar. Essentially, it’s important to know how the methods may differ and what would be expected vs unexpected.</p>
+<section id="methods-methods-methods" class="level1">
+<h1>Methods, Methods, Methods!</h1>
+<p>Methods, methods, methods! Unlike Beetlejuice, saying it three times won’t make a method appear. So we need to pick the two methods that we want to compare. Now in reality, these don’t usually happen sequentially. There may be two methods that you want to compare, so you then work backwards to draw a DAG a made-up situation (or one based on a real causal hypothesis). Regardless, it’s important to know what two methods you are using and how they differ in how they work.</p>
+<p>For example, it could be helpful to compare inverse probability of treatment weighting and the parametric g-formula. Both can estimate the average treatment effect, but they do so differently. IPTW models the treatment whereas the parametric g-formula models the outcome. It would be expected that these wouldn’t give the exact same result. Although they could still be compared since they should be similar. Essentially, it’s important to know how the methods may differ and what would be expected versus unexpected.</p>
 </section>
-<section id="example" class="level1">
-<h1>Example</h1>
+<section id="finally-an-example-with-data" class="level1">
+<h1>Finally an Example! With Data!</h1>
 <p>Alright, let’s put it all together with some simulation! We’re going to use the DAG from before to compare IPTW and PSM.</p>
 <section id="simulating-data" class="level2">
 <h2 class="anchored" data-anchor-id="simulating-data">Simulating Data</h2>
-<p>Time to simulate some data! We’ll use our handy dandy DAG from before to guide us on this</p>
+<p>Time to simulate some data! We’ll use our handy dandy DAG from before to guide us on this. Personally, before continuing with running it multiple times, I like to do a test run. First I simulate some data to play around with the proportions. For example, what kind of coefficients do we need to get the desired ratio (roughly) of treated versus controls, etc.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># arbitrary sample size. This can sometimes be altered as well, if we want to compare the difference in methods as a function of sample size. For example, maybe we want to see if PSM and IPTW become the same (or simliar enough) as sample size increases</span></span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>) <span class="co"># setting seed for reproducibility</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">500</span> <span class="co"># arbitrary </span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="dv">3</span> <span class="co"># this is what the actual effect is (we'll use this later)</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sunshine =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">exercise =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>sunshine, <span class="co"># assume total hours per week </span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.0167</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>exercise),</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> theta<span class="sc">*</span>ice_cream <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>time_with_friends <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>exercise</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Picking an arbitrary sample size. This can sometimes be altered as well, if we want to compare the difference in methods as a function of sample size. For example, maybe we want to see if PSM and IPTW become the same (or simliar enough) as sample size increases</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">500</span> <span class="co"># arbitrary </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="dv">3</span> <span class="co"># this is what the actual effect is (we'll use this later for some of the metrics)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sunshine =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">exercise =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>sunshine, </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.0167</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>exercise),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> theta<span class="sc">*</span>ice_cream <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>time_with_friends <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>exercise</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Alright now let’s test fitting a version for each method. Personally, I do this first before getting into repeating it. This is just to make sure nothing is a miss</p>
+<p>Alright now let’s test fitting a version for each method. Personally, I do this first before getting into repeating it. This is just to make sure nothing is a miss with the models and fit.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WeightIt)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: these results are muted here, but suggest using broom::tidy to check the outputs. </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>matched <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(ice_cream <span class="sc">~</span> sunshine, </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df, </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"nearest"</span>, </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATT"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WeightIt) <span class="co"># we'll use this for IPTW</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt) <span class="co"># we'll use this for PSM </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing Matching the data </span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  happiness <span class="sc">~</span> ice_cream, </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">match.data</span>(matched)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>matched <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"nearest"</span>, </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATT"</span>)</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 5
-  term        estimate std.error statistic   p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 (Intercept)    48.3      0.598     80.7  6.66e-237
-2 ice_cream       3.32     0.846      3.92 1.04e-  4</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ipw <span class="ot">&lt;-</span> WeightIt<span class="sc">::</span><span class="fu">weightit</span>(ice_cream <span class="sc">~</span> sunshine, </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> df,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">method =</span> <span class="st">"glm"</span>, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">estimand =</span> <span class="st">"ATT"</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>mod_ipw <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  happiness <span class="sc">~</span> ice_cream, </span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> ipw<span class="sc">$</span>weights</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome Model </span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  happiness <span class="sc">~</span> ice_cream, </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">match.data</span>(matched) <span class="co"># using the matched data </span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># IPTW Model </span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>ipw <span class="ot">&lt;-</span> WeightIt<span class="sc">::</span><span class="fu">weightit</span>(ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> df,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                          <span class="at">method =</span> <span class="st">"glm"</span>, </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                          <span class="at">estimand =</span> <span class="st">"ATT"</span>) <span class="co"># by default the estimand will be ATE</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome model with iptw</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>mod_ipw <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">glm</span>(</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  happiness <span class="sc">~</span> ice_cream, </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> ipw<span class="sc">$</span>weights <span class="co"># weights from PSM </span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="repeat-repeat-repeat" class="level2">
-<h2 class="anchored" data-anchor-id="repeat-repeat-repeat">Repeat, Repeat, Repeat</h2>
-<p>Repeating for each of these. First calculating the results for IPTW, then for PSM</p>
+<section id="repeat-repeat-repeatthen-repeat-again" class="level2">
+<h2 class="anchored" data-anchor-id="repeat-repeat-repeatthen-repeat-again">Repeat, Repeat, Repeat…Then Repeat Again!</h2>
+<p>Now that we have a sample, we can make these into functions and simulate. For the purposes of this post we’ll just select 1000 for the number of times we’ll repeat the process. In practice, choosing the number of times that we actually want to do this is more nuanced. Any guesses what reference I’ll suggest? Yup! <span class="citation" data-cites="morris2019using">Morris, White, and Crowther (<a href="#ref-morris2019using" role="doc-biblioref">2019</a>)</span></p>
+<p>Now let’s repeat for each of these. First, for PSM then for IPTW.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PSM</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom) <span class="co"># we'll need this one for cleaning the model output </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># PSM</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a function that simulates data, then matches the treated (aka those that had ice cream) to the controls (those that did not). </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>simulate_psm <span class="ot">&lt;-</span> <span class="cf">function</span>(n, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                         theta) { <span class="co"># theta is the "true" effect</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sunshine =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">exercise =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>sunshine, <span class="co"># assume total hours per week </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.0167</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>exercise),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> theta<span class="sc">*</span>ice_cream <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>time_with_friends <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>exercise</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Matching data</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  psm <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df, </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"nearest"</span>, </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATT"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fitting an outcome model </span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  outcome_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(happiness <span class="sc">~</span> ice_cream, </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> <span class="fu">match.data</span>(psm))</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extracting only the term that we care about </span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(outcome_model) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"ice_cream"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(estimate)</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(estimate)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeat!</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeating 1000 times. Arbitrarly choosing a sample size of 500 and "true" effect of 3</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>psm_output <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">simulate_psm</span>(<span class="dv">500</span>, <span class="dv">3</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Reformatting </span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>psm_output <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, psm_output) <span class="sc">%&gt;%</span>  <span class="co"># reformatting </span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>psm_output<span class="sc">$</span>theta_hat <span class="ot">&lt;-</span> psm_output<span class="sc">$</span>V1 <span class="co"># renaming the variable</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculating some things that will be needed later. Namely, the error and squared error. The formula for these (and the metrics used later on) are in Morris et al. (2019)</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>psm_result <span class="ot">&lt;-</span> psm_output <span class="sc">%&gt;%</span> </span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> theta_hat <span class="sc">-</span> theta,</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_error =</span> error<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>avg_theta <span class="ot">=</span> <span class="fu">mean</span>(psm_result<span class="sc">$</span>theta_hat) <span class="co"># calculating the average of the estimated effect</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>psm_mse <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>)<span class="sc">*</span><span class="fu">sum</span>(psm_result<span class="sc">$</span>squared_error) <span class="co"># calculating the mean squared error</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculating the empirical standard error</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>psm_se_result <span class="ot">=</span> psm_result <span class="sc">%&gt;%</span> </span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">se_mse_num =</span> (squared_error <span class="sc">-</span> psm_mse)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_diff =</span> (theta_hat <span class="sc">-</span> avg_theta)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>psm_mse_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(psm_se_result<span class="sc">$</span>se_mse_num) <span class="sc">/</span> (<span class="dv">1000</span><span class="sc">*</span>(<span class="dv">1000-1</span>)))</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>psm_emp_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1000-1</span>))<span class="sc">*</span><span class="fu">sum</span>(psm_se_result<span class="sc">$</span>squared_diff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Great! PSM is all done. Now let’s do the same thing for IPTW.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Doing the same as above for PSM. Rather to the above code chunk for comments on the process</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>simulate_ipw <span class="ot">&lt;-</span> <span class="cf">function</span>(n, theta) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sunshine =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">exercise =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>sunshine, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.0167</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>exercise),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> theta<span class="sc">*</span>ice_cream <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>time_with_friends <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>exercise</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  ipw <span class="ot">&lt;-</span> WeightIt<span class="sc">::</span><span class="fu">weightit</span>(ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df, </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATT"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"glm"</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  outcome_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(happiness <span class="sc">~</span> ice_cream, </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> df, </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>                       <span class="at">weights =</span> ipw<span class="sc">$</span>weights)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(outcome_model) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"ice_cream"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(estimate)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(estimate)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>ipw_output <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">simulate_ipw</span>(<span class="dv">500</span>, <span class="dv">3</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>ipw_output <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ipw_output) <span class="sc">%&gt;%</span>  <span class="co"># reformatting </span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>ipw_output<span class="sc">$</span>theta_hat <span class="ot">&lt;-</span> ipw_output<span class="sc">$</span>V1 </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>ipw_result <span class="ot">&lt;-</span> ipw_output <span class="sc">%&gt;%</span> </span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> theta_hat <span class="sc">-</span> theta,</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_error =</span> error<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>avg_theta <span class="ot">=</span> <span class="fu">mean</span>(ipw_result<span class="sc">$</span>theta_hat)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>ipw_mse <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>)<span class="sc">*</span><span class="fu">sum</span>(ipw_result<span class="sc">$</span>squared_error)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>ipw_se_result <span class="ot">=</span> ipw_result <span class="sc">%&gt;%</span> </span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">se_mse_num =</span> (squared_error <span class="sc">-</span> ipw_mse)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_diff =</span> (theta_hat <span class="sc">-</span> avg_theta)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>ipw_mse_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(ipw_se_result<span class="sc">$</span>se_mse_num) <span class="sc">/</span> (<span class="dv">1000</span><span class="sc">*</span>(<span class="dv">1000-1</span>)))</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>ipw_emp_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1000-1</span>))<span class="sc">*</span><span class="fu">sum</span>(ipw_se_result<span class="sc">$</span>squared_diff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculating these metrics using Morris et al. (2019). </span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>simulate_psm <span class="ot">&lt;-</span> <span class="cf">function</span>(n, theta) {</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sunshine =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">exercise =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>sunshine, <span class="co"># assume total hours per week </span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.0167</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>exercise),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> theta<span class="sc">*</span>ice_cream <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>time_with_friends <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>exercise</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  psm <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df, </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"nearest"</span>, </span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATT"</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  outcome_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(happiness <span class="sc">~</span> ice_cream, </span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> <span class="fu">match.data</span>(psm))</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(outcome_model) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"ice_cream"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(estimate)</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(estimate)</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>psm_output <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">simulate_psm</span>(<span class="dv">500</span>, <span class="dv">3</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>psm_output <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, psm_output) <span class="sc">%&gt;%</span>  <span class="co"># reformatting </span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>psm_output<span class="sc">$</span>theta_hat <span class="ot">&lt;-</span> psm_output<span class="sc">$</span>V1 </span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>psm_result <span class="ot">&lt;-</span> psm_output <span class="sc">%&gt;%</span> </span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> theta_hat <span class="sc">-</span> theta,</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_error =</span> error<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>avg_theta <span class="ot">=</span> <span class="fu">mean</span>(psm_result<span class="sc">$</span>theta_hat)</span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>mse <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>)<span class="sc">*</span><span class="fu">sum</span>(psm_result<span class="sc">$</span>squared_error)</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>psm_se_result <span class="ot">=</span> psm_result <span class="sc">%&gt;%</span> </span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">se_mse =</span> mse,</span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_diff =</span> (theta_hat <span class="sc">-</span> avg_theta)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>psm_emp_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1000-1</span>))<span class="sc">*</span><span class="fu">sum</span>(psm_se_result<span class="sc">$</span>squared_diff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>increase_precision <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>((ipw_emp_se<span class="sc">/</span>psm_emp_se)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span> ),<span class="dv">2</span>) <span class="co"># Increase in precision for IPTW vs PSM</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>corr <span class="ot">=</span> <span class="fu">cor</span>(ipw_result<span class="sc">$</span>theta_hat, psm_result<span class="sc">$</span>theta_hat) <span class="co"># correlation between the two </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> ipw_emp_se<span class="sc">/</span>psm_emp_se</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>se_increase_precision <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">200</span><span class="sc">*</span>(ratio<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">-</span>(corr<span class="sc">^</span><span class="dv">2</span>))<span class="sc">/</span>(<span class="dv">1000-1</span>)), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>simulate_ipw <span class="ot">&lt;-</span> <span class="cf">function</span>(n, theta) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sunshine =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">exercise =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_with_friends =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>sunshine, <span class="co"># assume total hours per week </span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ice_cream =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.0167</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>exercise),</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">happiness =</span> theta<span class="sc">*</span>ice_cream <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>sunshine <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>time_with_friends <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>exercise</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  ipw <span class="ot">&lt;-</span> WeightIt<span class="sc">::</span><span class="fu">weightit</span>(ice_cream <span class="sc">~</span> sunshine <span class="sc">+</span> exercise, </span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> df, </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATT"</span>,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"glm"</span>)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  outcome_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(happiness <span class="sc">~</span> ice_cream, </span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> df, </span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                       <span class="at">weights =</span> ipw<span class="sc">$</span>weights)</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(outcome_model) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"ice_cream"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(estimate)</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(estimate)</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>ipw_output <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">simulate_ipw</span>(<span class="dv">500</span>, <span class="dv">3</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>ipw_output <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ipw_output) <span class="sc">%&gt;%</span>  <span class="co"># reformatting </span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>ipw_output<span class="sc">$</span>theta_hat <span class="ot">&lt;-</span> ipw_output<span class="sc">$</span>V1 </span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>ipw_result <span class="ot">&lt;-</span> ipw_output <span class="sc">%&gt;%</span> </span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> theta_hat <span class="sc">-</span> theta,</span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_error =</span> error<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>avg_theta <span class="ot">=</span> <span class="fu">mean</span>(ipw_result<span class="sc">$</span>theta_hat)</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>mse <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>)<span class="sc">*</span><span class="fu">sum</span>(ipw_result<span class="sc">$</span>squared_error)</span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>ipw_se_result <span class="ot">=</span> ipw_result <span class="sc">%&gt;%</span> </span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">se_mse =</span> mse,</span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">squared_diff =</span> (theta_hat <span class="sc">-</span> avg_theta)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>ipw_emp_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1000-1</span>))<span class="sc">*</span><span class="fu">sum</span>(ipw_se_result<span class="sc">$</span>squared_diff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>increase_precision <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>((ipw_emp_se<span class="sc">/</span>psm_emp_se)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span> ),<span class="dv">2</span>) <span class="co"># Increase in precision for IPTW vs PSM</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>corr <span class="ot">=</span> <span class="fu">cor</span>(ipw_result<span class="sc">$</span>theta_hat, psm_result<span class="sc">$</span>theta_hat)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> ipw_emp_se<span class="sc">/</span>psm_emp_se</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>se_increase_precision <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">200</span><span class="sc">*</span>(ratio<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">-</span>(corr<span class="sc">^</span><span class="dv">2</span>))<span class="sc">/</span>(<span class="dv">1000-1</span>)), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Now we have some results! The MSE for PSM is 0.34 and 0.1for IPTW. The increase in precision is -90.24 (0.62). We need to unpack these results since there are a few things to keep in mind.</p>
-<p>Firstly, we didn’t assess the balance. When comparing two methods, we should also compare how the balance between the methods looks. Does one method result in better balance or no? This can be done graphically and/or using love plots (recommend the cobalt package for this). Secondly, the same size was 500. Perhaps, more importantly, is the number of patients getting matched. Do we have enough controls for our treatment? What if we didn’t, what if we did? Thirdly, there were only two confounders. How would the results change if we included more?</p>
-<p>When comparing results it’s important to not just look numerically. There are scientific limitations of certain methods. For example, PSM only keeps patients with a match. Would we be sure that these patients match our inclusion/exclusion criteria? Or is selection bias being induced? We need to incorporate these pieces when comparing methods.</p>
+<p>Now we have some results! The MSE for PSM is 0.14 (0.01) and 0.01 (0.00075) for IPTW. The increase in precision is -88.52 (0.73). We need to unpack these results since there are a few things to keep in mind.</p>
+<p>Firstly, we didn’t assess the balance. The whole point of using these methods is to ensure exchangeability. When comparing two methods, we should also compare how the balance between the methods looks. Does one method result in better balance or no? This can be done graphically and/or using love plots (recommend the cobalt package for this). Secondly, the same size was 500. Perhaps, more importantly, is the number of patients getting matched. Do we have enough controls for our treatment? What if we didn’t? What if we did? Thirdly, there were only two confounders. How would the results change if we included more? A last point (to not bore you to death): we included the two variables we know were confounders. What would happen if we left one out? (aka if the model was misspecified?).</p>
+<p>When comparing results it’s important to not just look numerically. There are other limitations of that may not be as easy to quantify. For example, PSM only keeps patients with a match. Would we be sure that these patients match our inclusion/exclusion criteria? Or is it a subset of these criteria? Or is selection bias being induced? We need to incorporate these pieces when comparing methods.</p>
 <p>This isn’t to say that the above is necessarily wrong. It’s just important to consider the limitations of what we did do. As put in <span class="citation" data-cites="morris2019using">Morris, White, and Crowther (<a href="#ref-morris2019using" role="doc-biblioref">2019</a>)</span>, starting simple is the best and I agree. We can now build on this!</p>
 <div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -563,23 +596,29 @@ Metrics That Rely on Standard Error
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We should use caution when using using metrics relying on standard error. For PS-based methods, we need to use appropriate variance estimators. This can make it tricky when using certain metrics. Imagine we are comparing IPTW and PSM based on power for nominal coverage. Both of these need SE. If we’re using robust variance estimation (HC0) for PSM and M-estimation for IPTW, are these really comparing IPTW vs PSM? Or would the different variance estimation techniques have something to do with the differences? It’s important to consider these differences.</p>
+<p>We should use caution when using using metrics relying on standard error. For PS-based methods, we need to use appropriate variance estimators. This can make it tricky when using certain metrics. Imagine we are comparing IPTW and PSM based on power for nominal coverage. Both of these need SE. If we’re using robust variance estimation (HC0) for PSM and M-estimation for IPTW, are these really comparing IPTW vs PSM? Or would the different variance estimation techniques have something to do with the differences? It’s important to consider this.</p>
 </div>
 </div>
 </section>
 </section>
 <section id="why-bother" class="level1">
 <h1>Why Bother?</h1>
-<p>At this point, you may be thinking “why both to do this? This is a lot of work when I can just say one over the other”. The answer is two-fold. Firstly, it’s not always clear what the best approach is. It can depend on the setting and outcome (continuous, binary, time-to-event). It’s helpful to quantify this when discussing with a team. Secondly, when we compare methods it’s helpful to know “how much”. One method may have higher precision but how much is “higher”. Using different metrics also helps to figure out what should be more emphasized (i.e., precision vs bias, etc).</p>
-<p>For me, learning how to simulate data and do these types of comparisons has helped tremendously. Not only in making decisions, but also in understanding methods. Hope you found this post helpful! Happy causal method comparing!</p>
+<p>At this point, you may be thinking “why both doing this? This is a lot of work when I can just say one over the other”. The answer is two-fold. Firstly, it’s not always clear what the best approach is. It can depend on the setting and outcome (continuous, binary, time-to-event). It’s helpful to quantify this when discussing with a team. Secondly, when we compare methods it’s helpful to know “how much”. One method may have higher precision but how much is “higher”. Using different metrics also helps to figure out what should be more emphasized (i.e., precision vs bias, etc).</p>
+<p>Using this approach, based on real world data, can partially help making a decision. I’ve learnt a lot from using this approach and continue to use it when comparing new methods. Two recent examples are looking into TMLE, BART and energy balancing. Hope you find this approach useful too!</p>
 
 
 
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-greifer2021choosing" class="csl-entry" role="listitem">
+Greifer, Noah, and Elizabeth A Stuart. 2021. <span>“Choosing the Causal Estimand for Propensity Score Analysis of Observational Studies.”</span> <em>arXiv Preprint arXiv:2106.10577</em>.
+</div>
 <div id="ref-morris2019using" class="csl-entry" role="listitem">
 Morris, Tim P, Ian R White, and Michael J Crowther. 2019. <span>“Using Simulation Studies to Evaluate Statistical Methods.”</span> <em>Statistics in Medicine</em> 38 (11): 2074–2102.
+</div>
+<div id="ref-rohrer2018thinking" class="csl-entry" role="listitem">
+Rohrer, Julia M. 2018. <span>“Thinking Clearly about Correlations and Causation: Graphical Causal Models for Observational Data.”</span> <em>Advances in Methods and Practices in Psychological Science</em> 1 (1): 27–42.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
