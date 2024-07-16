@@ -1,6 +1,6 @@
 ---
 title: "Comparison: The Thief of Joy"
-subtitle: "Unless it's comparing causal methods!"
+subtitle: "Unless it's Comparing Causal Methods!"
 author: "Ryan Batten"
 date: "2024-07-16"
 categories: [Simulation, Causal Methods]
