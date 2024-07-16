@@ -73,7 +73,7 @@ Great now we have our DAG! Now let's see what we have to adjust for. Luckily we 
 
 ```{r variables_adjust, message = FALSE}
 
-ggdag::ggdag_adjustment_set(dag)
+ggdag::ggdag_adjustment_set(dag, text = FALSE, use_labels = "label")
 ```
 
 Perfect! Looks like we have to adjust for sunshine and exercise. The next step is to think about what exactly we want to estimate.
