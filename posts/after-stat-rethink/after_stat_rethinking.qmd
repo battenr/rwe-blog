@@ -1,0 +1,142 @@
+---
+title: "Misconceptions About Bayesian Statistics" 
+subtitle: "After Reading Statistical Rethinking"
+author: "Ryan Batten"
+date: "2024-12-23"
+categories: [Bayes, Bayesian Statistics]
+#image : "height_dag.png"
+#bibliography: estimands.bib
+draft: true
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: right
+    toc-depth: 4
+    code-fold: true
+---
+
+## Why This Post? Why Now? 
+
+Recently (as in a week ago), I finished reading Statistical Rethinking by Richard McElreath. I had come across the book several times on social media and recommendations by colleagues/friends. I decided to dive into it finally.
+
+## Prior Thinking
+
+My background was in frequentist statistics. I had been adjacent to Bayesian methods but never used them. There were several misconceptions that I had about Bayesian stats before diving into it. My goal with this post is to try to explain why some of the things I had previously thought (you may too) are incorrect or perhaps only slightly too.
+
+Let's dive in!
+
+## Priors Can Lead to "Guiding" the Analysis
+
+Truth: If not enough data you'll just get the priors back.
+
+At the essence of Bayesian statistics is being able to show the full degree of uncertainty. This is done through Bayes' Theorem:
+
+P(A\|B) = P(B\|A) \* P (B) / P(A)
+
+Basically this means that we have some priors, then we want to incorporate with the data to get a posterior.
+
+The tricky part becomes "How do I choose a prior?". I used to think that priors could be selected to be intentionally misleading/get the answer you want. The truth is that is true for basically any of science.
+
+With science, we make assumptions. Priors are just an assumption (or an educated guess). Is that guess correct? Maybe. Maybe not. The bonus is being upfront about it allows us to have those debates and conversations. This is akin to drawing a directed acylic graph. Is a DAG correct? Maybe. Maybe not. But by being transparent about our assumptions it helps those conversations.
+
+## The Prior Will Take Over! 
+
+Truth: the data has a lot to say about that.
+
+Here's the thing: that can happen sometimes. The best way to tell is to plot your prior, fit your model, include the data and look at the posterior. If the data is the same as your prior...you need to collect some more data.
+
+## Priors Alter the Data! 
+
+Truth: Not accurate
+
+The priors are for the parameters and intercepts. These aren't changing the data.
+
+For example, take y = mx + b
+
+y and x are from the data. We're estimating m and b. So this is where the priors go.
+
+## The Prior Has to Be the Same for All Variables
+
+Truth: They don't
+
+A cool thing about priors is you can set different ones for different variables. So why does this matter? Well, the treatment effect that we think is possible may be different than what we think the possible effect of
+
+## The Credible Interval is Just a Way to Avoid the P-Value
+
+At this point you might be thinking "Oh dear god, god, dear god, noooooooo!" \[Ryan insert gif of Michael Scott\]
+
+Truth: It could be used for this purpose but not for the reason you think.
+
+This is no different from any other method. A credible interval could be used to avoid a p-value however, that would require a few things. If it were being used solely for that purpose, there would be some potential "signs".
+
+The whole concept is to highlight the uncertainty. To me, dwindling this down to a simple interval doesn't really do the Bayes approach justice. However it does make it more interpretable than a confidence interval.
+
+Additionally, if we wanted to calculate a version of the p-value we still could with the distribution (although it would kinda defeat the purpose of Bayesian methods \[that is narrowing the uncertainty down to a single point estimate\[):
+
+P(Data \| Null True) = P(Null True \| Data) \* P(Data) / P (Null True)
+
+## They Give the Same (or Similar) Answer as Frequentist Methods
+
+Truth: It depends.
+
+Both approaches certainly can give similar methods however there's a few key differences:
+
+1.  The priors - A frequentist approach starts with the effect being able to be anywhere between - infinity and + infinity. Obviously there are some problems with this approach
+2.  The flexibility
+
+The second bullet point is where I think there is a lot to be gained. From using this approach
+
+## My Computer Will Explode if I Try to Use MCMC
+
+Okay, that's a little overzealous.
+
+Truth: Computing can be problematic with Bayesian methods but in today's world it's really not so bad.
+
+As a side note: there is some truth to the extra computation. However, one of the best ways to work around this is to be smart with how many times you're running the model
+
+-   Think before running it
+
+-   Do a test run first (limit the resources, like the chain, etc)
+
+## Need to Fully Understand The Algorithm Before Using
+
+Truth: You need to understand it, but the basics will do.
+
+At first, I thought that I needed to completely understand the algorithm. As in understanding the underlying programming to build a sampler.
+
+While this would be helpful, there are limitations to everyone's knowledge. This is the equivalent of saying to apply generalized linear models (GLMs), you need to understand the equations underlying the model with matrices.
+
+## Bayesian Methods Are Overly Complicated 
+
+Truth: Yes, but no more than any other method.
+
+Every method is complicated when you first learn it. The key is to start with the basics.
+
+The method that you find easy? That method is complicated to someone else.
+
+## Bayesian Methods are Vastly Different from Frequentists
+
+Truth: both use likelihoods
+
+## The Diagnostics are Complicated
+
+Truth: some, others not so much
+
+Its fairly simple really.
+
+-   Check the pp_check() which looks at the posterior
+
+-   Predictive prior check
+
+-   Traceplots
+
+-   Trankplots
+
+## Bonus!
+
+A bonus if you can set a prior, and check model first. THEN you can incorporate your data
+
+## Key Takeaways
+
+## 
