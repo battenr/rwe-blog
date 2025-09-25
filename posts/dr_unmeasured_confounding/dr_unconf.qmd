@@ -13,9 +13,7 @@ format:
 
 ## Power of Two
 
-Doubly robust methods can be very useful for causal inference. Why?
-
-They combine two models: one for the outcome, and one for the treatment. This creates a model that is *doubly* **robust**. The question is....robust to what?
+Doubly robust methods can be very useful for causal inference. Why? They combine two models: one for the outcome, and one for the treatment. This creates a model that is *doubly* **robust**. The question is....robust to what?
 
 ## Model Misspecification
 
