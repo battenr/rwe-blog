@@ -326,7 +326,7 @@ Interesting! So we can see from above that if we use a doubly robust method, the
 
 For this example, we will include only one confounder for each model. For the propensity score model, we'll include z1. For the outcome model, we'll include z2. How does this look?
 
-```{r imperfect_world, cache = TRUE}
+```{r imperfect_world, cache = TRUE, message=FALSE, warning = FALSE}
 
 # IPW ----
 
