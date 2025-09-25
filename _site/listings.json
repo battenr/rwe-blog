@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/dr_unmeasured_confounding/dr_unconf.html",
       "/posts/comparing_causal_methods/comparing_causal_methods.html",
       "/posts/target-trial-lessons/target_trial_lessons.html",
       "/posts/missing-data/missing_data.html",

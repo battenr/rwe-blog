@@ -2,10 +2,9 @@
 title: "Double Trouble" # October Post
 subtitle: "Doubly Robust Methods For Unmeasured Confounding"
 author: "Ryan Batten"
-date: "2025-10-01"
-image: dr.png
-draft: true 
-categories: [Resampling, Bootstrapping, Variance Estimation]
+date: "2025-09-25"
+image: dr_unmeasured.png
+categories: [Doubly Robust Methods, Confounding]
 bibliography: dr_unconf.bib
 format: 
   html:
@@ -20,7 +19,7 @@ They combine two models: one for the outcome, and one for the treatment. This cr
 
 ## Model Misspecification
 
-Every model ever made is misspecified. Why? Because it's not exact, it's an approximation of the real world. This is problematic because it can lead to bias.How much bias depends on how much the model is misspecified. If close enough, there is minimal bias. If grossly misspecified, a lot more bias.
+Every model ever made is misspecified. Why? Because it's not exact, it's an approximation of the real world. This can lead to bias. How much bias depends on how much the model is misspecified. If close enough, there is minimal bias. If grossly misspecified, a lot more bias.
 
 Doubly robust methods can be quite helpful with this. If either of the two models is correctly specified (or close), then our bias will be less than either model alone.
 
@@ -30,9 +29,9 @@ This begs the question....what else can we use doubly robust methods for?
 
 The villain to every observational study ever conducted. The ever lurking....unmeasured confounding.
 
-There are several ways we can mitigate this villain's powers. The most obvious tool is randomization, however in observational research we can't do that. We can use sensitivity analyses to see how it would impact us.
+There are several ways we can mitigate this villain's powers. The most obvious tool is randomization, however in observational research we can't do that. One option is to use sensitivity analyses to better understand how it would impact us.
 
-But....what about doubly robust methods? Would these be powerful enough to pushback against our villain?
+However....what about doubly robust methods? Would these be powerful enough to mitigate our villian's powers?
 
 Let's find out!
 
@@ -60,19 +59,22 @@ Methods we'll explore:
 
 -   Generalized linear model (outcome model only)
 
--   Doubly robust: using both IP weighting, and those covariates in the model
+-   Doubly robust: using the same covariates in both the propensity score model and the outcome model
 
 ```{r setup, message=FALSE, warning = FALSE}
 
-# Title: This code is the setup that we will use later. It include the libraries and 
-# any functions that we may need 
+# Title: Setup 
 
+# Description: This code is the setup for what we will be using later. It includes the libraries and any functions that we may need. 
 
 library(tidyverse) # ol' faithful
 library(WeightIt) # for IP weighting
 library(kableExtra) # for formatting table output
+library(ggdag) # for drawing a DAG 
 
 #... Functions ----
+
+# We will use this function to simulate data 
 
 sim_data <- function(n = 250, # sample size 
                      beta_trt = 1.5, # treatment effect
@@ -94,10 +96,10 @@ sim_data <- function(n = 250, # sample size
   # Creating the Dataframe
   
   df <- data.frame(
-    z1 = rnorm(n = n, mean = z1_mean, sd = z1_sd), 
-    z2 = rbinom(n = n, size = z2_size, prob = z2_prob),
-    u1 = rnorm(n = n, mean = u1_mean, sd = u1_sd),
-    u2 = rnorm(n = n, mean = u2_mean, sd = u2_sd)
+    z1 = rnorm(n = n, mean = z1_mean, sd = z1_sd), # measured continuous confounder
+    z2 = rbinom(n = n, size = z2_size, prob = z2_prob), # measured binary confounder
+    u1 = rnorm(n = n, mean = u1_mean, sd = u1_sd), # unmeasured confounder 
+    u2 = rnorm(n = n, mean = u2_mean, sd = u2_sd) # unmeasured confounder 
   ) %>% 
     dplyr::mutate(
       beta_trt = 1.5, 
@@ -114,15 +116,32 @@ sim_data <- function(n = 250, # sample size
 
 ```
 
+And of course, we need a directed acyclic graph (DAG)!
+
+```{r}
+
+theme_set(theme_dag())
+
+dag_example <- ggdag::dagify(
+  x ~ z1 + z2 + u1 + u2, 
+  y ~ z1 + z2 + u1 + u2 + x, 
+  exposure = "x",
+  outcome = "y"
+)
+
+ggdag::ggdag(dag_example, layout = "nicely")
+
+```
+
 ## Perfectly Imperfect
 
-For our first scenario, let's assume that we perfectly specify both models. To be exact, I mean we include the measured confounders that we do have (z1 & z2). This model will technically still be incorrect because there is unmeasured confounding.
+For our first scenario, let's assume that we perfectly specify both models based on the data we have. We will include both of the measured confounders (z1 & z2), in each model. However, the model will still be imperfect since there is unmeasured confounding.
 
 How does it look for each method?
 
 ```{r perfect_world, cache = TRUE, warning = FALSE}
 
-# IPW ----
+# Inverse Probability Weighting (IPW) ----
 
 ipw <- function(sample.size){
   
@@ -142,7 +161,7 @@ ipw <- function(sample.size){
   
   # Fitting outcome model 
   
-  mod <- glm_weightit(y ~ x, # note: not doubly robust for this example
+  mod <- glm_weightit(y ~ x, # note: not doubly robust, so only including exposure variable
                       family = gaussian(link = "identity"), 
                       data = df,
                       weights = ps.mod$weights)
@@ -295,7 +314,7 @@ results <- data.frame(
   `Bias` = c(ipw.bias, outmod.bias, dr.bias), 
   se_of_bias = c(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)
 ) %>% 
-  rename(`SE of Bias` = se_of_bias)
+  rename(`Monte Carlo SE of Bias` = se_of_bias)
 
 knitr::kable(results) %>% 
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
@@ -303,11 +322,11 @@ knitr::kable(results) %>%
 
 ```
 
-From the above, we can see that if we use a doubly robust method there is some benefit although the amount could be limited. This begs another question....what if we misspecify both models? (i.e., only include one of the two confounders)
+Interesting! So we can see from above that if we use a doubly robust method, there is some benefit although it might be minimal. This begs another question, what if we misspecify both models? Would a doubly robust method be better there?
 
 ## Imperfect Model in an Imperfect World
 
-For this example, we will include only one confounder for each model. For the propensity score model, we'll include z1. For the outcome model, we'll include z2. We will
+For this example, we will include only one confounder for each model. For the propensity score model, we'll include z1. For the outcome model, we'll include z2. How does this look?
 
 ```{r imperfect_world, cache = TRUE}
 
@@ -490,13 +509,18 @@ knitr::kable(results) %>%
 
 ```
 
+The doubly robust method is actually **MORE** misspecified 😲. Now, you may be thinking "duh, both models are misspecified". This is true, but both were technically misspecified in the previous example (since unmeasured confounding wasn't included). What would happen if we applied the same methodology, but in an example where there is only measured confounding?
+
 ## Measured Confounding
 
-At this point you may be thinking, but "duh' both models are misspecified. Of course this won't work. Well, let's take a look at if there is only measured confounding
+Let's use the same approach as before where both the propensity score and outcome model are missing a measured covariate, with a twist: this time no unmeasured confounding.
 
 ```{r measured_confound, cache = TRUE}
 
-#... Functions ----
+# Function for simulating data ----
+
+# This function is the same as what we've been using previously with one crucial point: 
+# There is no unmeasured confounding.
 
 sim_data <- function(n = 250, # sample size 
                      beta_trt = 1.5, # treatment effect
@@ -525,18 +549,15 @@ sim_data <- function(n = 250, # sample size
   ) %>% 
     dplyr::mutate(
       beta_trt = 1.5, 
-      prob = plogis(z1_on_x*z1 + z2_on_x*z2), 
+      prob = plogis(z1_on_x*z1 + z2_on_x*z2), # removed u1 & u2
       x = rbinom(n = n, size = 1, prob = prob), 
-      #y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + u1_on_y*u1 + u2_on_y*u2 + rnorm(n = n, mean = 0, sd = 1)
-      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1)
+      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1) # removed u1 & u2
     )
   
   # Return the dataframe
   
   return(df)
 }
-
-
 
 
 # IPW ----
@@ -718,11 +739,11 @@ knitr::kable(results) %>%
 
 ```
 
-So this begs the question.....what's going on?
+Huh? Doubly robust DOES help in this case! So what in tarnation is going on?!
 
-## Bias....Bias....MORE BIAS!
+## Bias....Bias....And....MORE BIAS!
 
-As you can see, now we have several situations that we can draw from. So let's dive in.
+At this point, we have three different scenarios we can use to try and piece together an explanation. Let's dive in.
 
 First, the bias of a doubly robust method is the product of the bias from each model [@funk2011doubly]:
 
@@ -730,18 +751,24 @@ $$
 Bias_{Doubly\ Robust\ Method} = Bias_{Treatment \ Model}*Bias_{Outcome \ Model}
 $$
 
-This means that if *either* of the models are correctly specified, then we're good to go! However, if both models are misspecified....we've got issues. So what does this have to do with confounding? I'm glad you asked.
+This means that if *either* of the models are correctly specified, then we're good to go! However, if both models are misspecified....we've got issues. The problem is it depends on the *degree* of bias of each model.
 
-## Dissecting Our Results
+So what does this have to do with confounding? I'm glad you asked.
 
-Confounding causes bias. It doesn't matter if it's measured or unmeasured. If we're trying to fit a model and there is unmeasured confounding, we could have some problems.
+Confounding causes bias. It doesn't matter if it's measured or unmeasured. If we're trying to fit a model and there is unmeasured confounding, we could have some problems. Even if we correctly model the measured confounding there is bias from unmeasured confounding. How much depends on the quantity and magnitude of confounders.
+
+This bias could be magnified in a doubly robust method, if both models have a large amount of bias.
+
+So what do we with this information?
 
 ## What's Next?
 
-This was an introductory thought. I'd be curious to hear your opinion as well!
+Consider if there is unmeasured confounding in your study, and if you are confident in the model being correctly specified. If we have the measured confounding model correctly, based on our examples, there seems to be minimal benefit but not much of a detriment.
 
-To me, a takeaway would be to consider if there is unmeasured confounding in your study, and how much there is. Additionally, how well you think you can specify either model.
+However, if you believe the model isn't correct, or there is a large amount of unmeasured confounding it's worth considering if a doubly robust method is appropriate.
 
-This example shows that unmeasured confounding can complicate things. Doubly robust methods reduce bias due to model misspecification, however not for unmeasured confounding. If you think there's a lot of unmeasured confounding, it may be beneficial to consider other methods.
+This is intended to be an introductory post. The specifics of your analysis may differ.
+
+I'd love to hear your thoughts on doubly robust methods for unmeasured confounding! Hope this post gave you something to consider going forward.
 
 ## 
