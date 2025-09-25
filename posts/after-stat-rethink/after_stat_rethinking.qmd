@@ -1,12 +1,14 @@
 ---
-title: "Misconceptions About Bayesian Statistics" 
+title: "My Misconceptions About Bayesian Statistics" 
 subtitle: "After Reading Statistical Rethinking"
 author: "Ryan Batten"
-date: "2024-12-23"
+date: "2025-01-06"
 categories: [Bayes, Bayesian Statistics]
 #image : "height_dag.png"
 #bibliography: estimands.bib
 draft: true
+execute: 
+  cache: true
 format: 
   html:
     toc: true
@@ -16,9 +18,11 @@ format:
     code-fold: true
 ---
 
-## Why This Post? Why Now? 
+## Why This Post? Why Now?
 
-Recently (as in a week ago), I finished reading Statistical Rethinking by Richard McElreath. I had come across the book several times on social media and recommendations by colleagues/friends. I decided to dive into it finally.
+Recently, end of 2024, I finished reading Statistical Rethinking by Richard McElreath. I had come across the book several times on social media and recommendations by colleagues/friends. I decided to dive into it finally.
+
+Before reading this, I had limited knowledge about Bayesian methods. The goal of this post is to explain what some of these prior misconceptions were, and why they're misguided. Hopefully you find this useful,
 
 ## Prior Thinking
 
@@ -40,13 +44,13 @@ The tricky part becomes "How do I choose a prior?". I used to think that priors 
 
 With science, we make assumptions. Priors are just an assumption (or an educated guess). Is that guess correct? Maybe. Maybe not. The bonus is being upfront about it allows us to have those debates and conversations. This is akin to drawing a directed acylic graph. Is a DAG correct? Maybe. Maybe not. But by being transparent about our assumptions it helps those conversations.
 
-## The Prior Will Take Over! 
+## The Prior Will Take Over!
 
 Truth: the data has a lot to say about that.
 
 Here's the thing: that can happen sometimes. The best way to tell is to plot your prior, fit your model, include the data and look at the posterior. If the data is the same as your prior...you need to collect some more data.
 
-## Priors Alter the Data! 
+## Priors Alter the Data!
 
 Truth: Not accurate
 
@@ -107,7 +111,7 @@ At first, I thought that I needed to completely understand the algorithm. As in 
 
 While this would be helpful, there are limitations to everyone's knowledge. This is the equivalent of saying to apply generalized linear models (GLMs), you need to understand the equations underlying the model with matrices.
 
-## Bayesian Methods Are Overly Complicated 
+## Bayesian Methods Are Overly Complicated
 
 Truth: Yes, but no more than any other method.
 

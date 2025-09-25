@@ -1,7 +1,7 @@
 ---
 title: "Inverse Probability of Censoring Weights"
 author: "Ryan Batten"
-date: "2022-08-30"
+date: "2025-08-30"
 categories: [IPW, IPCW]
 image: "ipcw.jpeg"
 bibliography: ipcw.bib
@@ -10,6 +10,52 @@ format:
     code-fold: true
 draft: true
 ---
+
+## Why Censoring is Problematic
+
+Censoring is when we don't get to continue to follow a patient. The reason this is important is we still have valuable information. From the time we started following them, until we couldn't anymore. So what do we do?
+
+## Common Approaches
+
+There are some popular approaches for censoring that can be quite useful. This includes Kaplain-Meier curves, Cox proportional hazard models and others....however, there is a problem.
+
+The problem? Censoring is assumed to be independent. This can be true!
+
+Yet it can also not be true. What if patients that were more sick stopped early? What if those that didn't like the group they were assigned, stopped taking coffee prematurely?
+
+Note: this issue isn't only for observational studies. Think about an randomized controlled trial (RCT). Patients are randomized to a group. Are these groups still exchangeable after some follow-up time? Perhaps....perhaps not.
+
+# How it Works
+
+Similar to IPTW!
+
+If you are similar
+
+## Great....but can we use it with other stuff?
+
+Yup! We can use it with IPTW. How?
+
+Let's take a step back.
+
+What is IPTW? The inverse *probability* of treatment weighting.
+
+What is IPCW? The inverse p*robability* of censoring weighting.
+
+The key in both is probability.
+
+If we put on our probability hat, whats the probability of treatment **and** censoring?
+
+We'd multiply them!
+
+So that's what we do with IPTW and IPCW too. Multiply them!
+
+## Now what about variance?
+
+Well, this gets a little more tricky. We can't use the original variance estimator, because \[insert reason why\]
+
+instead we need to do this:
+
+\[insert options, I think bootstrapping, etc but double check)
 
 ## Re-weighting? Like a scale?
 

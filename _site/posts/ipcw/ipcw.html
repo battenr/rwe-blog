@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ryan Batten">
-<meta name="dcterms.date" content="2022-08-30">
+<meta name="dcterms.date" content="2025-08-30">
 
 <title>Blog Posts - Inverse Probability of Censoring Weights</title>
 <style>
@@ -223,7 +223,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 30, 2022</p>
+        <p class="date">August 30, 2025</p>
       </div>
     </div>
     
@@ -242,6 +242,38 @@ window.Quarto = {
 
 
 
+<section id="why-censoring-is-problematic" class="level2">
+<h2 class="anchored" data-anchor-id="why-censoring-is-problematic">Why Censoring is Problematic</h2>
+<p>Censoring is when we don’t get to continue to follow a patient. The reason this is important is we still have valuable information. From the time we started following them, until we couldn’t anymore. So what do we do?</p>
+</section>
+<section id="common-approaches" class="level2">
+<h2 class="anchored" data-anchor-id="common-approaches">Common Approaches</h2>
+<p>There are some popular approaches for censoring that can be quite useful. This includes Kaplain-Meier curves, Cox proportional hazard models and others….however, there is a problem.</p>
+<p>The problem? Censoring is assumed to be independent. This can be true!</p>
+<p>Yet it can also not be true. What if patients that were more sick stopped early? What if those that didn’t like the group they were assigned, stopped taking coffee prematurely?</p>
+<p>Note: this issue isn’t only for observational studies. Think about an randomized controlled trial (RCT). Patients are randomized to a group. Are these groups still exchangeable after some follow-up time? Perhaps….perhaps not.</p>
+</section>
+<section id="how-it-works" class="level1">
+<h1>How it Works</h1>
+<p>Similar to IPTW!</p>
+<p>If you are similar</p>
+<section id="great.but-can-we-use-it-with-other-stuff" class="level2">
+<h2 class="anchored" data-anchor-id="great.but-can-we-use-it-with-other-stuff">Great….but can we use it with other stuff?</h2>
+<p>Yup! We can use it with IPTW. How?</p>
+<p>Let’s take a step back.</p>
+<p>What is IPTW? The inverse <em>probability</em> of treatment weighting.</p>
+<p>What is IPCW? The inverse p<em>robability</em> of censoring weighting.</p>
+<p>The key in both is probability.</p>
+<p>If we put on our probability hat, whats the probability of treatment <strong>and</strong> censoring?</p>
+<p>We’d multiply them!</p>
+<p>So that’s what we do with IPTW and IPCW too. Multiply them!</p>
+</section>
+<section id="now-what-about-variance" class="level2">
+<h2 class="anchored" data-anchor-id="now-what-about-variance">Now what about variance?</h2>
+<p>Well, this gets a little more tricky. We can’t use the original variance estimator, because [insert reason why]</p>
+<p>instead we need to do this:</p>
+<p>[insert options, I think bootstrapping, etc but double check)</p>
+</section>
 <section id="re-weighting-like-a-scale" class="level2">
 <h2 class="anchored" data-anchor-id="re-weighting-like-a-scale">Re-weighting? Like a scale?</h2>
 <p>Re-weighting in this context has nothing to do with weight. Instead it is a statistical method that is used to adjust for confounding to ensure exchangeability. This method can be helpful for answering questions about the <strong><em>marginal</em></strong> or <strong><em>conditional</em></strong> causal effect.</p>
@@ -349,8 +381,8 @@ Table&nbsp;1: Trampoline Jumpers vs Chair Sitters
 <table class="caption-top table">
 <colgroup>
 <col style="width: 51%">
-<col style="width: 19%">
-<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -804,6 +836,7 @@ Note
 
 
 
+</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">

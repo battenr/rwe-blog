@@ -1,0 +1,747 @@
+---
+title: "Double Trouble" # October Post
+subtitle: "Doubly Robust Methods For Unmeasured Confounding"
+author: "Ryan Batten"
+date: "2025-10-01"
+image: dr.png
+draft: true 
+categories: [Resampling, Bootstrapping, Variance Estimation]
+bibliography: dr_unconf.bib
+format: 
+  html:
+    code-fold: true
+---
+
+## Power of Two
+
+Doubly robust methods can be very useful for causal inference. Why?
+
+They combine two models: one for the outcome, and one for the treatment. This creates a model that is *doubly* **robust**. The question is....robust to what?
+
+## Model Misspecification
+
+Every model ever made is misspecified. Why? Because it's not exact, it's an approximation of the real world. This is problematic because it can lead to bias.How much bias depends on how much the model is misspecified. If close enough, there is minimal bias. If grossly misspecified, a lot more bias.
+
+Doubly robust methods can be quite helpful with this. If either of the two models is correctly specified (or close), then our bias will be less than either model alone.
+
+This begs the question....what else can we use doubly robust methods for?
+
+## Unmeasured Confounding
+
+The villain to every observational study ever conducted. The ever lurking....unmeasured confounding.
+
+There are several ways we can mitigate this villain's powers. The most obvious tool is randomization, however in observational research we can't do that. We can use sensitivity analyses to see how it would impact us.
+
+But....what about doubly robust methods? Would these be powerful enough to pushback against our villain?
+
+Let's find out!
+
+## Enter the Simulation
+
+To see whether this hair-brained scheme could work, we'll simulate some data. Let's lay out some ground rules for our simulation:
+
+-   Going to run it 1000 times (chosen due to run time/don't want our laptops to implode)
+
+-   Sample size of 250 (arbitrary)
+
+-   Two measured confounders (one continuous, one binary)
+
+-   Two unmeasured confounders (both continuous)
+
+-   Binary treatment
+
+-   Continuous outcome
+
+-   Target estimand will be the average treatment effect (ATE)
+
+Methods we'll explore:
+
+-   Individual probability weighting only
+
+-   Generalized linear model (outcome model only)
+
+-   Doubly robust: using both IP weighting, and those covariates in the model
+
+```{r setup, message=FALSE, warning = FALSE}
+
+# Title: This code is the setup that we will use later. It include the libraries and 
+# any functions that we may need 
+
+
+library(tidyverse) # ol' faithful
+library(WeightIt) # for IP weighting
+library(kableExtra) # for formatting table output
+
+#... Functions ----
+
+sim_data <- function(n = 250, # sample size 
+                     beta_trt = 1.5, # treatment effect
+                     # Parameters for Z1 
+                     z1_mean = 5, z1_sd = 1, 
+                     # Parameters for Z2
+                     z2_size = 1, z2_prob = 0.5, 
+                     # Parameters for U1
+                     u1_mean = 10, u1_sd = 3,
+                     u2_mean = 2, u2_sd = 0.5,
+                     # Confounder - Effect on X
+                     z1_on_x = 0.05, z2_on_x = 0.5, 
+                     u1_on_x = 0.08, u2_on_x = 0.8, 
+                     # Confounder - Effect on Y
+                     z1_on_y = 0.5, z2_on_y = 0.7,
+                     u1_on_y = 0.4, u2_on_y = 2
+){
+  
+  # Creating the Dataframe
+  
+  df <- data.frame(
+    z1 = rnorm(n = n, mean = z1_mean, sd = z1_sd), 
+    z2 = rbinom(n = n, size = z2_size, prob = z2_prob),
+    u1 = rnorm(n = n, mean = u1_mean, sd = u1_sd),
+    u2 = rnorm(n = n, mean = u2_mean, sd = u2_sd)
+  ) %>% 
+    dplyr::mutate(
+      beta_trt = 1.5, 
+      prob = plogis(u1_on_x*u1 - u2_on_x*u2 + z1_on_x*z1 + z2_on_x*z2), 
+      x = rbinom(n = n, size = 1, prob = prob), 
+      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + u1_on_y*u1 + u2_on_y*u2 + rnorm(n = n, mean = 0, sd = 1)
+      #y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1)
+    )
+  
+  # Return the dataframe
+  
+  return(df)
+}
+
+```
+
+## Perfectly Imperfect
+
+For our first scenario, let's assume that we perfectly specify both models. To be exact, I mean we include the measured confounders that we do have (z1 & z2). This model will technically still be incorrect because there is unmeasured confounding.
+
+How does it look for each method?
+
+```{r perfect_world, cache = TRUE, warning = FALSE}
+
+# IPW ----
+
+ipw <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting PS model - estimating the average treatment effect and stabilizing the weights
+  
+  ps.mod <- WeightIt::weightit(x ~ z1 + z2, 
+                               data = df, 
+                               method = "glm", 
+                               estimand = "ATE", 
+                               stabilize = TRUE)
+  
+  # Fitting outcome model 
+  
+  mod <- glm_weightit(y ~ x, # note: not doubly robust for this example
+                      family = gaussian(link = "identity"), 
+                      data = df,
+                      weights = ps.mod$weights)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, ipw(sample.size = 250), simplify = FALSE)
+
+df.out.ipw <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+ipw.bias <- mean(df.out.ipw$bias_for_one) # bias  
+ipw.se.of.bias <- sqrt(sum(df.out.ipw$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+# Outcome Model ----
+
+out_mod <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting outcome model 
+  
+  mod <- glm(y ~ x + z1 + z2, # note: not doubly robust for this example
+             family = gaussian(link = "identity"), 
+             data = df)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, out_mod(sample.size = 250), simplify = FALSE)
+
+df.out.outmod <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+outmod.bias <- mean(df.out.outmod$bias_for_one) # bias  
+outmod.se.of.bias <- sqrt(sum(df.out.outmod$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+# Doubly Robust ----
+
+dr <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting PS model - estimating the average treatment effect and stabilizing the weights
+  
+  ps.mod <- WeightIt::weightit(x ~ z1 + z2, 
+                               data = df, 
+                               method = "glm", 
+                               estimand = "ATE", 
+                               stabilize = TRUE)
+  
+  # Fitting outcome model 
+  
+  mod <- glm_weightit(y ~ x + z1 + z2, # note: not doubly robust for this example
+                      family = gaussian(link = "identity"), 
+                      data = df,
+                      weights = ps.mod$weights)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, dr(sample.size = 250), simplify = FALSE)
+
+df.out.dr <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+dr.bias <- mean(df.out.dr$bias_for_one) # bias  
+dr.se.of.bias <- sqrt(sum(df.out.dr$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+
+# Results ----
+
+results <- data.frame(
+  `Method` = c("IPW", "Outcome Model", "Doubly Robust"), 
+  `Bias` = c(ipw.bias, outmod.bias, dr.bias), 
+  se_of_bias = c(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)
+) %>% 
+  rename(`SE of Bias` = se_of_bias)
+
+knitr::kable(results) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+
+```
+
+From the above, we can see that if we use a doubly robust method there is some benefit although the amount could be limited. This begs another question....what if we misspecify both models? (i.e., only include one of the two confounders)
+
+## Imperfect Model in an Imperfect World
+
+For this example, we will include only one confounder for each model. For the propensity score model, we'll include z1. For the outcome model, we'll include z2. We will
+
+```{r imperfect_world, cache = TRUE}
+
+# IPW ----
+
+ipw <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting PS model - estimating the average treatment effect and stabilizing the weights
+  
+  ps.mod <- WeightIt::weightit(x ~ z1, 
+                               data = df, 
+                               method = "glm", 
+                               estimand = "ATE", 
+                               stabilize = TRUE)
+  
+  # Fitting outcome model 
+  
+  mod <- glm_weightit(y ~ x, # note: not doubly robust for this example
+                      family = gaussian(link = "identity"), 
+                      data = df,
+                      weights = ps.mod$weights)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, ipw(sample.size = 250), simplify = FALSE)
+
+df.out.ipw <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+ipw.bias <- mean(df.out.ipw$bias_for_one) # bias  
+ipw.se.of.bias <- sqrt(sum(df.out.ipw$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+# Outcome Model ----
+
+out_mod <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting outcome model 
+  
+  mod <- glm(y ~ x + z2, # note: not doubly robust for this example
+             family = gaussian(link = "identity"), 
+             data = df)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, out_mod(sample.size = 250), simplify = FALSE)
+
+df.out.outmod <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+outmod.bias <- mean(df.out.outmod$bias_for_one) # bias  
+outmod.se.of.bias <- sqrt(sum(df.out.outmod$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+# Doubly Robust ----
+
+dr <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting PS model - estimating the average treatment effect and stabilizing the weights
+  
+  ps.mod <- WeightIt::weightit(x ~ z1, 
+                               data = df, 
+                               method = "glm", 
+                               estimand = "ATE", 
+                               stabilize = TRUE)
+  
+  # Fitting outcome model 
+  
+  mod <- glm_weightit(y ~ x + z2, # note: not doubly robust for this example
+                      family = gaussian(link = "identity"), 
+                      data = df,
+                      weights = ps.mod$weights)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, dr(sample.size = 250), simplify = FALSE)
+
+df.out.dr <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+dr.bias <- mean(df.out.dr$bias_for_one) # bias  
+dr.se.of.bias <- sqrt(sum(df.out.dr$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+
+# Results ----
+
+results <- data.frame(
+  method = c("IPW", "Outcome Model", "Doubly Robust"), 
+  bias = c(ipw.bias, outmod.bias, dr.bias), 
+  se_of_bias = c(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)
+)
+
+knitr::kable(results) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+```
+
+## Measured Confounding
+
+At this point you may be thinking, but "duh' both models are misspecified. Of course this won't work. Well, let's take a look at if there is only measured confounding
+
+```{r measured_confound, cache = TRUE}
+
+#... Functions ----
+
+sim_data <- function(n = 250, # sample size 
+                     beta_trt = 1.5, # treatment effect
+                     # Parameters for Z1 
+                     z1_mean = 5, z1_sd = 1, 
+                     # Parameters for Z2
+                     z2_size = 1, z2_prob = 0.5, 
+                     # Parameters for U1
+                     u1_mean = 10, u1_sd = 3,
+                     u2_mean = 2, u2_sd = 0.5,
+                     # Confounder - Effect on X
+                     z1_on_x = 0.05, z2_on_x = 0.5, 
+                     u1_on_x = 0.08, u2_on_x = 0.8, 
+                     # Confounder - Effect on Y
+                     z1_on_y = 0.5, z2_on_y = 0.7,
+                     u1_on_y = 0.4, u2_on_y = 2
+){
+  
+  # Creating the Dataframe
+  
+  df <- data.frame(
+    z1 = rnorm(n = n, mean = z1_mean, sd = z1_sd), 
+    z2 = rbinom(n = n, size = z2_size, prob = z2_prob)
+    #u1 = rnorm(n = n, mean = u1_mean, sd = u1_sd),
+    #u2 = rnorm(n = n, mean = u2_mean, sd = u2_sd)
+  ) %>% 
+    dplyr::mutate(
+      beta_trt = 1.5, 
+      prob = plogis(z1_on_x*z1 + z2_on_x*z2), 
+      x = rbinom(n = n, size = 1, prob = prob), 
+      #y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + u1_on_y*u1 + u2_on_y*u2 + rnorm(n = n, mean = 0, sd = 1)
+      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1)
+    )
+  
+  # Return the dataframe
+  
+  return(df)
+}
+
+
+
+
+# IPW ----
+
+ipw <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting PS model - estimating the average treatment effect and stabilizing the weights
+  
+  ps.mod <- WeightIt::weightit(x ~ z1, 
+                               data = df, 
+                               method = "glm", 
+                               estimand = "ATE", 
+                               stabilize = TRUE)
+  
+  # Fitting outcome model 
+  
+  mod <- glm_weightit(y ~ x, # note: not doubly robust for this example
+                      family = gaussian(link = "identity"), 
+                      data = df,
+                      weights = ps.mod$weights)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, ipw(sample.size = 250), simplify = FALSE)
+
+df.out.ipw <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+ipw.bias <- mean(df.out.ipw$bias_for_one) # bias  
+ipw.se.of.bias <- sqrt(sum(df.out.ipw$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+# Outcome Model ----
+
+out_mod <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting outcome model 
+  
+  mod <- glm(y ~ x + z2, # note: not doubly robust for this example
+             family = gaussian(link = "identity"), 
+             data = df)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, out_mod(sample.size = 250), simplify = FALSE)
+
+df.out.outmod <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+outmod.bias <- mean(df.out.outmod$bias_for_one) # bias  
+outmod.se.of.bias <- sqrt(sum(df.out.outmod$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+# Doubly Robust ----
+
+dr <- function(sample.size){
+  
+  trt_effect <- 1.5 # same as in sim_data() function 
+  
+  # Simulating data
+  
+  df <- sim_data()
+  
+  # Fitting PS model - estimating the average treatment effect and stabilizing the weights
+  
+  ps.mod <- WeightIt::weightit(x ~ z1, 
+                               data = df, 
+                               method = "glm", 
+                               estimand = "ATE", 
+                               stabilize = TRUE)
+  
+  # Fitting outcome model 
+  
+  mod <- glm_weightit(y ~ x + z2, # note: not doubly robust for this example
+                      family = gaussian(link = "identity"), 
+                      data = df,
+                      weights = ps.mod$weights)
+  
+  estimate <- broom::tidy(mod)$estimate[2] # this is the estimate
+  
+  bias_for_one = estimate - trt_effect # comparing the estimate to the "true" effect 
+  
+  df_bias = data.frame(
+    bias_for_one,
+    estimate # need for estimating relative precision later 
+  )
+  
+  return(df_bias)
+  
+}
+
+# Repeating 1000 times using a sample size of 250
+
+output_list <- replicate(1000, dr(sample.size = 250), simplify = FALSE)
+
+df.out.dr <- do.call(rbind, output_list) %>% # reformatting
+  
+  # Adding a new column that will be used to estimate the Monte Carlo SE of the estimate
+  mutate(
+    squared = (bias_for_one - mean(bias_for_one))^2,
+    residuals_squared = (estimate - mean(estimate))^2
+  )
+
+
+# Calculating the mean bias and Monte Carlo SE of estimate
+
+# See Morris et al. (2019) for details on calculating these
+
+dr.bias <- mean(df.out.dr$bias_for_one) # bias  
+dr.se.of.bias <- sqrt(sum(df.out.dr$squared)*(1 / (1000*999))) # Monte Carlo SE of bias (1000 is number of simulations, 999 is n - 1)
+
+
+# Results ----
+
+results <- data.frame(
+  method = c("IPW", "Outcome Model", "Doubly Robust"), 
+  bias = c(ipw.bias, outmod.bias, dr.bias), 
+  se_of_bias = c(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)
+)
+
+knitr::kable(results) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+
+```
+
+So this begs the question.....what's going on?
+
+## Bias....Bias....MORE BIAS!
+
+As you can see, now we have several situations that we can draw from. So let's dive in.
+
+First, the bias of a doubly robust method is the product of the bias from each model [@funk2011doubly]:
+
+$$
+Bias_{Doubly\ Robust\ Method} = Bias_{Treatment \ Model}*Bias_{Outcome \ Model}
+$$
+
+This means that if *either* of the models are correctly specified, then we're good to go! However, if both models are misspecified....we've got issues. So what does this have to do with confounding? I'm glad you asked.
+
+## Dissecting Our Results
+
+Confounding causes bias. It doesn't matter if it's measured or unmeasured. If we're trying to fit a model and there is unmeasured confounding, we could have some problems.
+
+## What's Next?
+
+This was an introductory thought. I'd be curious to hear your opinion as well!
+
+To me, a takeaway would be to consider if there is unmeasured confounding in your study, and how much there is. Additionally, how well you think you can specify either model.
+
+This example shows that unmeasured confounding can complicate things. Doubly robust methods reduce bias due to model misspecification, however not for unmeasured confounding. If you think there's a lot of unmeasured confounding, it may be beneficial to consider other methods.
+
+## 
