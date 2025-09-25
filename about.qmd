@@ -4,9 +4,6 @@ image: profile-pic.jpeg
 about:
   template: jolla
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com/rwe_ryan
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/rwe-ryan
@@ -21,10 +18,10 @@ A few different work experiences later, I've been able to apply my clinical epid
 
 # Experience
 
-I've had a lot of different jobs relevant to research and not so relevant to research. There has been a wide range of jobs, varying from working as an engineering student, to as an estimator, to at a Canadian hardware store chain. Research relevant experience? I've worked as a student, consultant, on grants, for the Public Health Agency of Canada, EVERSANA and most recently at PHASTAR. In my recent role, as a Biostatistician III I've been able to do what I love. Diving into various statistical methodologies, while working with talented people. More importantly, working with caring/nice people.
+I've had a lot of different jobs relevant to research and not so relevant to research. There has been a wide range of jobs, varying from working as an engineering student, to as an estimator, to at a Canadian hardware store chain. Research relevant experience? I've worked as a student, consultant, on grants, for the Public Health Agency of Canada, EVERSANA and most recently at PHASTAR. In my recent role, as a Senior Statistician I, I've been able to do what I love. Diving into various statistical methodologies, while working with talented people. More importantly, working with caring/nice people.
 
 # Personal
 
-Okay so you made it this far, I'm impressed! I probably wouldn't have read it this far to be honest so props to you. I LOVE statistics, figured I'd mention it again in case you didn't know that yet, but have outside work interests as well. I'm an avid sports fan. A Buffalo Sabres fan, which has been rough as of late and a Kansas City Chiefs fan (2023 Super Bowl Champs!!).
+Okay so you made it this far, I'm impressed! I probably wouldn't have read it this far to be honest so props to you. I LOVE statistics and coffee, figured I'd mention it again in case you didn't know that yet, but have outside work interests as well. I'm an avid sports fan. A Buffalo Sabres fan, which has been rough as of late and a Kansas City Chiefs fan (2023 & 2024 Super Bowl Champs!!).
 
-I am currently living in Halifax, Nova Scotia with my wife and daughter, and appreciate a good cider. While I live in Nova Scotia, I'm originally from Newfoundland (highly recommend people visit when the weather is nice, key is when).
+I currently live in Halifax, Nova Scotia with my wife and daughter, and appreciate a good cider. While I live in Nova Scotia, I'm originally from Newfoundland (highly recommend people visit when the weather is nice, key is when).

@@ -497,10 +497,11 @@ dr.se.of.bias <- sqrt(sum(df.out.dr$squared)*(1 / (1000*999))) # Monte Carlo SE 
 # Results ----
 
 results <- data.frame(
-  method = c("IPW", "Outcome Model", "Doubly Robust"), 
-  bias = c(ipw.bias, outmod.bias, dr.bias), 
+  `Method` = c("IPW", "Outcome Model", "Doubly Robust"), 
+  `Bias` = c(ipw.bias, outmod.bias, dr.bias), 
   se_of_bias = c(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)
-)
+) %>% 
+  rename(`Monte Carlo SE of Bias` = se_of_bias)
 
 knitr::kable(results) %>% 
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
@@ -727,10 +728,11 @@ dr.se.of.bias <- sqrt(sum(df.out.dr$squared)*(1 / (1000*999))) # Monte Carlo SE 
 # Results ----
 
 results <- data.frame(
-  method = c("IPW", "Outcome Model", "Doubly Robust"), 
-  bias = c(ipw.bias, outmod.bias, dr.bias), 
+  `Method` = c("IPW", "Outcome Model", "Doubly Robust"), 
+  `Bias` = c(ipw.bias, outmod.bias, dr.bias), 
   se_of_bias = c(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)
-)
+) %>% 
+  rename(`Monte Carlo SE of Bias` = se_of_bias)
 
 knitr::kable(results) %>% 
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")

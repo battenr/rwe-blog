@@ -12,8 +12,6 @@ website:
       #   href: newsletter.qmd
       - icon: linkedin
         href: https://www.linkedin.com/in/rwe-ryan
-      - icon: twitter
-        href: https://twitter.com/rwe_ryan
       - icon: github
         href: https://github.com/battenr
 

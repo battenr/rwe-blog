@@ -759,38 +759,39 @@ This warning is displayed once per session.</code></pre>
 <span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="co"># Results ----</span></span>
 <span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"IPW"</span>, <span class="st">"Outcome Model"</span>, <span class="st">"Doubly Robust"</span>), </span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>  <span class="at">bias =</span> <span class="fu">c</span>(ipw.bias, outmod.bias, dr.bias), </span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Method</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"IPW"</span>, <span class="st">"Outcome Model"</span>, <span class="st">"Doubly Robust"</span>), </span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bias</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(ipw.bias, outmod.bias, dr.bias), </span>
 <span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_of_bias =</span> <span class="fu">c</span>(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)</span>
-<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(results) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> F, <span class="at">position =</span> <span class="st">"left"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">Monte Carlo SE of Bias</span><span class="st">`</span> <span class="ot">=</span> se_of_bias)</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(results) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> F, <span class="at">position =</span> <span class="st">"left"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped caption-top table-sm small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">method</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">bias</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">se_of_bias</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Method</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Bias</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Monte Carlo SE of Bias</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">IPW</td>
-<td style="text-align: right;">-0.0257925</td>
-<td style="text-align: right;">0.0079486</td>
+<td style="text-align: right;">-0.0352957</td>
+<td style="text-align: right;">0.0076658</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Outcome Model</td>
-<td style="text-align: right;">-0.0871226</td>
-<td style="text-align: right;">0.0081363</td>
+<td style="text-align: right;">-0.0852447</td>
+<td style="text-align: right;">0.0075845</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Doubly Robust</td>
-<td style="text-align: right;">-0.1174972</td>
-<td style="text-align: right;">0.0076668</td>
+<td style="text-align: right;">-0.1120202</td>
+<td style="text-align: right;">0.0075194</td>
 </tr>
 </tbody>
 </table>
@@ -1018,38 +1019,39 @@ This warning is displayed once per session.</code></pre>
 <span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a><span class="co"># Results ----</span></span>
 <span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"IPW"</span>, <span class="st">"Outcome Model"</span>, <span class="st">"Doubly Robust"</span>), </span>
-<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a>  <span class="at">bias =</span> <span class="fu">c</span>(ipw.bias, outmod.bias, dr.bias), </span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Method</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"IPW"</span>, <span class="st">"Outcome Model"</span>, <span class="st">"Doubly Robust"</span>), </span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bias</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(ipw.bias, outmod.bias, dr.bias), </span>
 <span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a>  <span class="at">se_of_bias =</span> <span class="fu">c</span>(ipw.se.of.bias, outmod.se.of.bias, dr.se.of.bias)</span>
-<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(results) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> F, <span class="at">position =</span> <span class="st">"left"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">Monte Carlo SE of Bias</span><span class="st">`</span> <span class="ot">=</span> se_of_bias)</span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(results) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> F, <span class="at">position =</span> <span class="st">"left"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped caption-top table-sm small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">method</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">bias</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">se_of_bias</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Method</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Bias</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Monte Carlo SE of Bias</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">IPW</td>
-<td style="text-align: right;">0.0872926</td>
-<td style="text-align: right;">0.0045014</td>
+<td style="text-align: right;">0.0845856</td>
+<td style="text-align: right;">0.0043921</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Outcome Model</td>
-<td style="text-align: right;">0.0272389</td>
-<td style="text-align: right;">0.0046918</td>
+<td style="text-align: right;">0.0241229</td>
+<td style="text-align: right;">0.0046696</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Doubly Robust</td>
-<td style="text-align: right;">-0.0050662</td>
-<td style="text-align: right;">0.0043592</td>
+<td style="text-align: right;">-0.0004500</td>
+<td style="text-align: right;">0.0041988</td>
 </tr>
 </tbody>
 </table>
