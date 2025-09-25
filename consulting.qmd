@@ -6,9 +6,6 @@ about:
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/rwe-ryan
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com/rwe_ryan
 ---
 
 My goal is to ensure that the research you want to conduct provides meaningful, actionable real-world evidence while being methodologically sound. Whether it's designing a study, analyzing data, or explaining complex concepts in an easy-to-understand manner, I'm committed to delivering high-quality work that meets your specific need.
