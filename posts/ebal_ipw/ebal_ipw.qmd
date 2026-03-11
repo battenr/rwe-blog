@@ -1,0 +1,174 @@
+---
+title: "Double Trouble" # October Post
+subtitle: "Doubly Robust Methods For Unmeasured Confounding"
+author: "Ryan Batten"
+date: "2026-03-25"
+#image: dr_unmeasured.png
+categories: [Entropy Balancing, IP Weighting]
+bibliography: ebal_ipw.bib
+draft: true
+format: 
+  html:
+    code-fold: true
+---
+
+# Paralysis by Analysis: Causal Methods
+
+Causal inference using observational data can be quite useful, however we need to account for confounding. Unfortunately, we can't use randomization however there is a litany of methods to choose from. Propensity score matching (note: a variety of matching methods are available), inverse probability weighting, outcome regression, targeted machine learning estimation, augmented inverse probability weighting, doubly robust methods....the list goes on and on.
+
+A common question becomes how do we choose between methods? This post will look to compare between two methods:
+
+-   Entropy Balancing
+
+-   Inverse Probability Weighting
+
+# Weight a Minute
+
+Before we dive into these methods, we need to law some groundwork for what each are, and how they work.
+
+## Inverse Probability Weighting
+
+Inverse probability weighting is a useful tool for causal inference.
+
+## Entropy Balancing
+
+Entropy balancing works by balancing entropy between the two groups. What is entropy? Glad you asked!
+
+In statistics, entropy refers to: \[insert what entropy is\]
+
+The fact entropy balancing uses equations is a double edged sword. On the one hand
+
+# Start the Comparing!
+
+Alright, so if we're going to compare methods, there are a few ways we can do this. A fantastic resource is [@morris2019using]. For this post, we are going to compare the two methods, specifically for:
+
+1.  Balance
+
+2.  Bias
+
+3.  Precision
+
+We can define each of these as follows
+
+Alright, now we are going to enter the simulation!
+
+# Balance
+
+For valid causal inference, one of the assumptions is exchangeability. Essentially, to do this we need to use a method that will account for this. With real-world data, we don't have that. Instead, we have methods that we can use. Here we are going to inspect balance a few ways:
+
+1.  Visual
+2.  Using standardized mean differences
+3.  
+
+# Bias
+
+# Precision 
+
+# Enter the Simulation
+
+To see whether this hair-brained scheme could work, we'll simulate some data. Let's lay out some ground rules for our simulation:
+
+-   Going to run it 1000 times (chosen due to run time/don't want our laptops to implode)
+
+-   Sample size of 250 (arbitrary)
+
+-   Two measured confounders (one continuous, one binary)
+
+-   Two unmeasured confounders (both continuous)
+
+-   Binary treatment
+
+-   Continuous outcome
+
+-   Target estimand will be the average treatment effect (ATE)
+
+Methods we'll explore:
+
+-   Individual probability weighting only
+
+-   Generalized linear model (outcome model only)
+
+-   Doubly robust: using the same covariates in both the propensity score model and the outcome model
+
+```{r setup, message=FALSE, warning = FALSE}
+
+# Title: Setup 
+
+# Description: This code is the setup for what we will be using later. It includes the libraries and any functions that we may need. 
+
+library(tidyverse) # ol' faithful
+library(WeightIt) # for IP weighting
+library(kableExtra) # for formatting table output
+library(ggdag) # for drawing a DAG 
+
+#... Functions ----
+
+# We will use this function to simulate data 
+
+sim_data <- function(n = 250, # sample size 
+                     beta_trt = 1.5, # treatment effect
+                     # Parameters for Z1 
+                     z1_mean = 5, z1_sd = 1, 
+                     # Parameters for Z2
+                     z2_size = 1, z2_prob = 0.5, 
+                     # Parameters for U1
+                     u1_mean = 10, u1_sd = 3,
+                     u2_mean = 2, u2_sd = 0.5,
+                     # Confounder - Effect on X
+                     z1_on_x = 0.05, z2_on_x = 0.5, 
+                     u1_on_x = 0.08, u2_on_x = 0.8, 
+                     # Confounder - Effect on Y
+                     z1_on_y = 0.5, z2_on_y = 0.7,
+                     u1_on_y = 0.4, u2_on_y = 2
+){
+  
+  # Creating the Dataframe
+  
+  df <- data.frame(
+    z1 = rnorm(n = n, mean = z1_mean, sd = z1_sd), # measured continuous confounder
+    z2 = rbinom(n = n, size = z2_size, prob = z2_prob)# measured binary confounder
+  ) %>% 
+    dplyr::mutate(
+      beta_trt = 1.5, 
+      prob = plogis(u1_on_x*u1 - u2_on_x*u2 + z1_on_x*z1 + z2_on_x*z2), 
+      x = rbinom(n = n, size = 1, prob = prob), 
+      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + u1_on_y*u1 + u2_on_y*u2 + rnorm(n = n, mean = 0, sd = 1)
+      #y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1)
+    )
+  
+  # Return the dataframe
+  
+  return(df)
+}
+
+```
+
+And of course, we need a directed acyclic graph (DAG)!
+
+```{r}
+
+theme_set(theme_dag())
+
+dag_example <- ggdag::dagify(
+  x ~ z1 + z2 + u1 + u2, 
+  y ~ z1 + z2 + u1 + u2 + x, 
+  exposure = "x",
+  outcome = "y"
+)
+
+ggdag::ggdag(dag_example, layout = "nicely")
+
+```
+
+## Perfectly Imperfect
+
+For our first scenario, let's assume that we perfectly specify both models based on the data we have. We will include both of the measured confounders (z1 & z2), in each model. However, the model will still be imperfect since there is unmeasured confounding.
+
+How does it look for each method?
+
+```{r perfect_world, cache = TRUE, warning = FALSE}
+
+# Inverse Probability Weighting (IPW) ----
+
+
+```
