@@ -8,9 +8,7 @@ dplyr
 stringr
 forcats
 lubridate
-WeightIt
-kableExtra
 ggdag
+WeightIt
 cobalt
-patchwork
 flextable

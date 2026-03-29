@@ -2,11 +2,11 @@
 title: "Balancing the Caffeine Buzz" 
 subtitle: "Entropy Balancing and Inverse Probability Weighting"
 author: "Ryan Batten"
-date: "2027-03-30"
-#image: dr_unmeasured.png
+date: "2027-03-29"
+image: balancing.png
 categories: [Entropy Balancing, IP Weighting]
 bibliography: ebal_ipw.bib
-draft: true
+#draft: true
 format: 
   html:
     code-fold: true
@@ -14,7 +14,7 @@ format:
 
 # Paralysis by Analysis: Causal Methods
 
-Causal inference using real-world data can be quite useful, however we need to account for confounding. Unfortunately, we can't use randomization however there is a **large** number of methods we can choose from to adjust for confounding. Propensity score matching (note: a variety of matching methods are available), inverse probability weighting, outcome regression, g-computation, the parametric g-formula, targeted maximum likelihood estimation, augmented inverse probability weighting, doubly robust methods....the list goes on and on.
+Causal inference using real-world data can be quite useful, however we need to account for confounding. Unfortunately, we can't use randomization however there are a **large** number of methods we can choose from to adjust for confounding. Propensity score matching, inverse probability weighting, outcome regression, g-computation, the parametric g-formula, targeted maximum likelihood estimation, augmented inverse probability weighting, doubly robust methods....the list goes on and on.
 
 A common question becomes how do we choose between methods? This post will try to answer that for two methods, specifically:
 
@@ -34,15 +34,21 @@ Before we dive into these methods, we need to lay some groundwork for what each 
 
 ## Inverse Probability Weighting
 
-Inverse probability weighting is a useful tool for causal inference. To use this, we first have to estimate the propensity score, which is the probability of treatment given covariates [@rosenbaum1983central]. Next, we take the propensity score and put in in the denominator as:
+Inverse probability weighting is a useful tool for causal inference. To use this, we first have to estimate the propensity score, which is the probability of treatment given covariates [@rosenbaum1983central]. Next, we take the propensity score and use it to derive weights. If we are targeting the average treatment effect (ATE), the weights are :
 
 $$
 1/PS
 $$
 
-where PS is the propensity score. If we want to use stabilized weights, we can add the marginal probability (i.e., percentage of people with that treatment or control) to the numerator.
+for the treated individuals, and
 
-Inverse probability weighting can be used to estimate four different types of causal estimands: the average treatment effect (ATE), the average treatment effect in the Coffee (ATT), the average treatment effect in the untreated (ATU) and the average treatment effect in the overlap (ATO) [@greifer2021choosing,].
+$$
+1/(1-PS)
+$$
+
+for the untreated individuals, where PS is the propensity score. If we want to use stabilized weights, we can add the marginal probability to the numerator.
+
+Inverse probability weighting can be used to estimate four different types of causal estimands: the average treatment effect (ATE), the average treatment effect in the treated (ATT), the average treatment effect in the untreated (ATU) and the average treatment effect in the overlap (ATO) [@greifer2021choosing,].
 
 ## Entropy Balancing
 
@@ -56,15 +62,16 @@ If you're thinking entropy from physics (like I first did), you're on the right 
 If this sounds like it's starting to get complicated, don't worry! Moments sounds tricky, but they aren't all that scary. Think of a continuous variable from a normal (Gaussian) distribution. The first moment is the mean. The second moment is the variance. Third is skewness. Fourth is kurtosis (how much of a "peak" ) there is. That's really all you need to know for this post!
 :::
 
-So why does this matter for entropy balancing? Because you use these moments when deciding what needs to be balanced. For example, you could say balance on just the mean. Or balance on the mean and variance. Basically any combination of the moments. This is a double-edged sword, which we'll get to later.
+So why does this matter for entropy balancing? Because you use these moments when deciding what needs to be balanced. For example, you could say balance on just the mean. Or balance on the mean and variance. Basically any combination of the moments. This is a double-edged sword, which we'll get to later. Entropy balancing can target the causal estimands: ATE, ATT or ATU.
 
 # Causal Question
 
-Before any good analysis, we need to first define our causal question. For this example, we are going to ask ourselves does coffee cause happiness? Specifically, in monsters. We have two confounders: sleep and whether it is sunny outside or not.
+Before any good causal analysis, we need to first define our causal question. For this example, we are going to ask ourselves: does coffee cause happiness? Specifically, in monsters. We have two confounders: sleep and whether it is sunny outside or not.
 
 ```{r setup_plus_dag, message = FALSE}
-library(tidyverse)
-library(ggdag)
+
+library(tidyverse) # ol faithful 
+library(ggdag) # to draw the DAG 
 
 # Create the DAG object
 coffee_dag <- dagify(
@@ -100,7 +107,7 @@ Alright, so we have our question. Now to compare methods, there are a few ways w
 
     -   For balance, we are going to use both standardized mean differences and plots. Specifically, plots of the distributions of both confounders (pre-/post-weighting)
 
-        (note: entropy balancing does not estimate a propensity score so we can't check that).
+        (note: entropy balancing does not estimate a propensity score so we can't check that for entropy balancing).
 
 2.  Effective sample size
 
@@ -134,21 +141,17 @@ Methods we'll explore:
 
 ```{r setup, message=FALSE, warning = FALSE}
 
-# Title: Setup 
-
-# Description: This code is the setup for what we will be using later. It includes the libraries and any functions that we may need. 
-
 library(tidyverse) # ol' faithful (previously loaded earlier)
 library(WeightIt) # for IP weighting
 library(cobalt) # for checking balance 
-library(flextable)
+library(flextable) # for making a flexable when looking at effective sample size 
 
 # z1 - sleep
 # z2 - sunshine
 # x - coffee 
 # y - happiness 
 
-set.seed(456) # setting seed for reproducibility 
+set.seed(456) # setting seed for reproducibility for this scenario
 
 #... Functions ----
 
@@ -188,7 +191,7 @@ sim_data1 <- function(n = 250, # sample size
 
 ## Apply Each Method
 
-At this point you might be thinking "JUST GET TO IT MAN!"....alright, alright, alright. We'll apply each method. For entropy balancing, we'll balance on two moments (the mean and variance). For the inverse probability weighting, we will use stabilized weights and estimate the propensity score using logistic regression.
+At this point you might be thinking **"JUST GET TO IT MAN!"**....alright, alright, alright. We'll apply each method. For entropy balancing, we'll balance on two moments (the mean and variance). For the inverse probability weighting, we will use stabilized weights and estimate the propensity score using logistic regression.
 
 ```{r scenario_1_ebal_vs_ipw }
 
@@ -267,9 +270,7 @@ cobalt::love.plot(
   cobalt_theme
 ```
 
-As you can see, for the entropy balancing the standardized mean differences are 0! Hooray! This is by design. When we solve the equations, we solve them so that the balance is exact. This means an SMD of 0. If you were to check the variance ratios, those should be equal as well since we specified to balance on variance too.
-
-Next, let's look at some plots of the variables. SMDs are only one metric, so it's best to check plots as well.
+From the first plot, you can see that the standardized mean differences are 0 when using entropy balancing. Hooray! Balance! Rejoice! This is by design. When we solve the equations, we solve them so that the balance is exact. This means an SMD of 0. If you were to check the variance ratios, those should be equal as well since we specified to balance on variance too. Next, let's look at some plots of the variables. SMDs are only one metric, so it's best to check plots as well.
 
 ```{r ebal_plots_scenario 1, warning = FALSE, message = FALSE, cache = TRUE}
 
@@ -326,7 +327,7 @@ cobalt::bal.plot(
 
 ```
 
-"Wait a minute.....you said there'd be exact balance! There isn't exact balance for sleep!" if that was your thought process, guess what?... you're right! There *is* exact balance though, it's just on the moments we specified (i.e., mean and variance). The distributions won't fully overlap for the skewness or peak because we didn't ask it to. For sunshine, you can see there is exact balance. Now what about IP weighting?
+"Wait a minute.....you said there'd be exact balance! There isn't exact balance for sleep!"...if that was your thought process, guess what?... you're right! There *is* exact balance though, it's just on the moments we specified (i.e., mean and variance). The distributions won't fully overlap for the skewness or peak because we didn't ask it to. For sunshine, you can see there is exact balance. Now what about IP weighting?
 
 ```{r ipw_plots_scenario 1, warning = FALSE, message = FALSE, cache = TRUE, warning = FALSE}
 
@@ -384,9 +385,9 @@ cobalt::bal.plot(
 
 ```
 
-From these plots you can see there is sufficient balance, however using sunshine as an example it's not quite as balanced as entropy balancing. That is because IP weighting first estimates a propensity score, which is then used to create weights. This means there won't be *exact* balance (i.e., SMD of 0). We should check the plot for the propensity score when using IP weighting for balance. This we should expect to be sufficient balance.
+From these plots you can see there is sufficient balance, however using sunshine as an example it's not quite as balanced as entropy balancing. That is because IP weighting first estimates a propensity score, which is then used to create weights. This means there won't be *exact* balance (i.e., SMD of 0). We should check the plot for the propensity score when using IP weighting for balance. We should expect there to be sufficient overlap for the propensity score, after all this is what we're trying to balance between the groups.
 
-```{r ipw_plot_ps_scenario1, message = FALSE}
+```{r ipw_plot_ps_scenario1, message = FALSE, warning = FALSE}
 
 # ── IP Weighting: Propensity Score ──────────────────────────────────────────────────
 
@@ -407,9 +408,9 @@ cobalt::bal.plot(
     name   = "Group"
   ) +
   labs(
-    title    = "IP Weighting — Sleep (Z1)",
-    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
-    x        = "Sleep (hours)",
+    title    = "IP Weighting — Propensity Score",
+    subtitle = "Density of Propensity Score: Unadjusted vs. IPW Adjusted",
+    x        = "Propensity Score",
     y        = "Density"
   ) +
   cobalt_theme
@@ -443,11 +444,12 @@ So originally, the sample was 250 but it's barely dropped! So that must mean tha
 
 # Scenario 2 - Unequal SDs
 
-If you look back to the first scenario at z1, you'll see that both groups are drawn from the same normal distribution. This makes the differences not that big to begin with which leads to not a big difference in pre-/post-adjusting for z1. However, sometimes this isn't the case. For example, imagine you are comparing coffee versus no coffee in two groups with a real-world dataset. You look at the descriptive statistics for sleep and notice that standard deviation is noticeably different in one group compared to the other. In this situation, what would happen?
+If you look back to the first scenario at z1, you'll see that both groups are drawn from the same normal distribution. This makes the differences not that big to begin with which leads to not a big difference in pre-/post-adjusting for z1. However, sometimes this isn't the case. For example, imagine you are comparing coffee versus no coffee in two groups with a real-world dataset. You look at the descriptive statistics for sleep and notice that standard deviation is substantially different between the groups. In this situation, what would happen?
 
-Let's find out!
+Let's find out! Back to our simulation machine
 
-```{r}
+```{r scenario2_data_sim}
+
 
 set.seed(123) # for reproducibility
 
@@ -456,9 +458,8 @@ set.seed(123) # for reproducibility
 
 # Note: n = 125 because that's half of 250 
 
-
-z1_group1 <- rnorm(n = 125, mean = 5, sd = 1)
-z1_group2 <- rnorm(n = 125, mean = 5, sd = 3)
+z1_group1 <- rnorm(n = 125, mean = 2, sd = 1)
+z1_group2 <- rnorm(n = 125, mean = 6, sd = 3)
 
 # Combine these groups 
 
@@ -470,7 +471,7 @@ z2 <- rbinom(n = 250, size = 1, prob = 0.3)
 
 # Simulating data for coffee (x) 
 
-x <- rbinom(n = 250, size = 1, prob = plogis(0.5*z1 + 0.5*z2))
+x <- rbinom(n = 250, size = 1, prob = plogis(0.25*z1 + 0.5*z2))
 
 # Simulating data for happiness 
 
@@ -488,13 +489,13 @@ scenario2 <- data.frame(z1, z2, x, y)
 
 Now we are going to do the same thing as before. We are going to estimate weights using both entropy balancing and IP weighting.
 
-```{r}
+```{r ebal_ipw_scenario2}
 
 ebal2 <- WeightIt::weightit(x ~ z1 + z2, 
                            data = scenario2, 
                            method = "ebal", 
                           # using two moments for z1 and one for z2
-                           moments = c(z1 = 1, z2 = 1), 
+                           moments = c(z1 = 2, z2 = 1), 
                            estimand = "ATE"
                            )
 
@@ -502,7 +503,6 @@ ipw2 <- WeightIt::weightit(x ~ z1 + z2,
                            data = scenario2, 
                            method = "glm", 
                           stabilize = TRUE,
-                          # using two moments for z1 and one for z2
                            estimand = "ATE"
                            )
 
@@ -516,7 +516,7 @@ Alright, let's check out how the balance looks!
 
 First, we'll start by looking at a love plot for each method.
 
-```{r}
+```{r love_plots_scenario2}
 
 # ── Shared cobalt theme settings ──────────────────────────────────────────────
 
@@ -543,7 +543,7 @@ cobalt::love.plot(
   shapes      = c("circle", "diamond"),
   title       = "Entropy Balancing — Covariate Balance",
   subtitle    = "Standardised Mean Differences (ATE)",
-  sample.names = c("Unadjusted", "Entropy Balanced")
+  sample.names = c("Unweighted", "Weighted (Entropy Balancing)")
 ) +
   cobalt_theme
 
@@ -558,14 +558,14 @@ cobalt::love.plot(
   shapes       = c("circle", "diamond"),
   title        = "Inverse Probability Weighting — Covariate Balance",
   subtitle     = "Standardised Mean Differences (ATE)",
-  sample.names = c("Unadjusted", "IPW Adjusted")
+  sample.names = c("Unweighted", "Weighted (IP Weights)")
 ) +
   cobalt_theme
 ```
 
 At this point, you might be thinking "In this situation, looks like both work great. Entropy balancing is better!" Well, let's look at the plots for overlap and see how we feel.
 
-```{r}
+```{r ebal_scenario2_bal_plot, message = FALSE, warning = FALSE}
 
 cobalt::bal.plot(
   ebal2,
@@ -624,8 +624,7 @@ If you look at the plots, specifically at the mean and spread of the data you'll
 
 Now, let's see how IP weighting does!
 
-```{r}
-
+```{r ipw_scenario2_bal_plot, warning = FALSE, message = FALSE}
 
 # ── IP Weighting: Z1 (Sleep) ──────────────────────────────────────────────────
 
@@ -704,9 +703,9 @@ cobalt::bal.plot(
     name   = "Group"
   ) +
   labs(
-    title    = "IP Weighting — Sleep (Z1)",
-    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
-    x        = "Sleep (hours)",
+    title    = "IP Weighting — Propensity Score",
+    subtitle = "Density of Propensity Score: Unadjusted vs. IPW Adjusted",
+    x        = "Propensity Score",
     y        = "Density"
   ) +
   cobalt_theme
@@ -716,7 +715,7 @@ cobalt::bal.plot(
 
 ## Effective Sample Size
 
-Alright, so balance looks good for entropy balancing! Can we just go ahead and use entropy balancing all the time? The answer is....yes....no....maybe. There's another metric: effective sample size.
+Alright, so balance looks good for entropy balancing! Can we just go ahead and use entropy balancing all the time? The answer is....yes....no....maybe? There's another metric we need to check: effective sample size.
 
 ```{r ess scenario 2}
 
@@ -748,38 +747,56 @@ scenario2 %>%
   as_flextable()
 ```
 
-The reason the effective sample size drops so much is that variance is the second moment, aka it's squared. This means there is more emphasis put on the variance. Likewise, if we tried to include the third or fourth moments those would be to the power of 3 and 4, respectively.
+Specifically, look at the means and standard deviations. Now, imagine if the difference was one group having a value of 10 and the other having a standard deviation of 2. This would create quite a drop in effective sample size.
+
+The reason for this is how entropy balancing works. Using the second moment in the equation, it has to solve the squared version. This means there more emphasis put on the variance. Likewise, if we tried to include the third or fourth moments those would be to the power of 3 and 4, respectively.
 
 So....is all hope lost for entropy balancing? Not quite!
 
 # When to Use What
 
-Like any method, both IP weighting and entropy balancing have benefits and drawbacks. There are few things to keep in mind when deciding between these. For the purposes of this post, we'll specifically look at sample size, balance and similarity of moments for the variables.
+Like any method, both IP weighting and entropy balancing have benefits and drawbacks. There are a few things to keep in mind when deciding between these. For the purposes of this post, we'll specifically look at sample size, balance, similarity of moments for the variables and number of confounders.
 
-Firstly, the sample size. There is no magical number, but when there is a small sample then using a logistic regression might not be appropriate (i.e., if you have 30 patients it's probably not a good idea). A bonus of entropy balancing is it doesn't use a model, it's uses equations instead. So that's not a problem. However, we do want to watch the effective sample size for drastic reductions since that will impact precision.
+## Sample Size 
 
-Secondly, how similar the moments are between the groups. Let's use the example of sleep like we did before. If the means are similar, say 4.5 and 5.5 but the standard deviations between groups are not....then we could have a problem with entropy balancing. The higher the moment, the more "impactful" it will be on the effective sample size. Because of this, we want to be careful to not *over* specific the moments (i.e., cramming all of the possible moments to be balanced into our request).
+Firstly, the sample size. There is no magical number, but when there is a small sample then using a logistic regression might not be appropriate (i.e., if you have 30 patients it's probably not a good idea). A bonus of entropy balancing is it doesn't use a model, it uses equations instead. So that's not a problem. However, we do want to watch the effective sample size for drastic reductions since that will impact precision.
+
+## Take a Moment  
+
+Secondly, how similar the moments are between the groups that we're balancing on? Let's use the example of sleep like we did before. If the means are similar, say 4.5 and 5.5 but the standard deviations between groups are not....then we could have a problem with entropy balancing. The higher the moment, the more "impactful" it will be on the effective sample size. Because of this, we want to be careful to not *over* specific the moments (i.e., cramming all of the possible moments to be balanced into the contraints).
+
+## Balance Beam
 
 Thirdly, balance. A drawback of IP weighting is that it estimates the propensity score rather than balancing the covariates exactly. Entropy balancing does balance the covariates exactly.
+
+## Variables...Variables...and MORE variables!
+
+In this post we used two confounders. However in a real-life setting there will be most likely much more. This becomes an issue with entropy balancing because we are adding constraints that need to be met. The more constraints, the lower the sample size. Think of it like every variable you add takes away a slice of a pizza. We want to have *some* pizza left. The pizza is like sample size.
+
+## Bring it All Together 
 
 To summarize, the things you want to watch for when choosing are:
 
 -   What's the original sample size?
 
--   How much is the effective sample?
+-   How much is the effective sample size? (i.e., the reduction from the original sample size)
 
 -   If using entropy balancing, careful on the number of moments you specify
+
+-   How many variables do we need to adjust for
 
 -   Are the groups confounders pre-weighting "reasonably" similar? (i.e., not an SD of 10 vs an SD of 2)
 
 ::: callout-tip
 ## Doubly Robust Methods
 
-For this post we didn't use doubly robust methods. Those can be particularly helpful when you think there might be a lack of balance, since if either model (the outcome model or propensity score model) is adequately specified then there will be less bias.
+For this post we didn't use doubly robust methods. Those can be particularly helpful when you think there might be a lack of balance, since if either model (the outcome model or propensity score model) is adequately specified then there will be less bias. This only applies to propensity-score based methods because there is no model for entropy balancing.
 :::
 
 # Further Reading 
 
-If you're interested in learning more about entropy balancing or IP weighting, highly recommend the WeightIt package vignettes by Noah Greifer. For entropy balancing, the paper by @hainmueller2012entropy is fantastic and where it started (at least that's my understanding). Additionally, if you want to test some things yourself (i.e., bias, precision, mean squared error) between the methods @morris2019using is a great resource.
+If you're interested in learning more about entropy balancing or IP weighting, highly recommend the WeightIt package vignettes by Noah Greifer. For entropy balancing, the paper by @hainmueller2012entropy is fantastic and where entropy balancing originated. Additionally, if you want to test some things yourself (i.e., bias, precision, mean squared error) between the methods @morris2019using is a great resource.
+
+## Til Next Time
 
 Hope you enjoyed this post as much as I did writing it!
