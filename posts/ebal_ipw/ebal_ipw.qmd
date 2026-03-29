@@ -272,7 +272,7 @@ cobalt::love.plot(
 
 From the first plot, you can see that the standardized mean differences are 0 when using entropy balancing. Hooray! Balance! Rejoice! This is by design. When we solve the equations, we solve them so that the balance is exact. This means an SMD of 0. If you were to check the variance ratios, those should be equal as well since we specified to balance on variance too. Next, let's look at some plots of the variables. SMDs are only one metric, so it's best to check plots as well.
 
-```{r ebal_plots_scenario 1, warning = FALSE, message = FALSE, cache = TRUE}
+```{r ebal_plots_scenario 1, warning = FALSE, message = FALSE}
 
 # ── Entropy Balancing: Z1 (Sleep) ──────────────────────────────────────────────────
 
@@ -329,7 +329,7 @@ cobalt::bal.plot(
 
 "Wait a minute.....you said there'd be exact balance! There isn't exact balance for sleep!"...if that was your thought process, guess what?... you're right! There *is* exact balance though, it's just on the moments we specified (i.e., mean and variance). The distributions won't fully overlap for the skewness or peak because we didn't ask it to. For sunshine, you can see there is exact balance. Now what about IP weighting?
 
-```{r ipw_plots_scenario 1, warning = FALSE, message = FALSE, cache = TRUE, warning = FALSE}
+```{r ipw_plots_scenario 1, warning = FALSE, message = FALSE, warning = FALSE}
 
 # ── IP Weighting: Z1 (Sleep) ──────────────────────────────────────────────────
 
