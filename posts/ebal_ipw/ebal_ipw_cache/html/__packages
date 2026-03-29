@@ -11,3 +11,5 @@ lubridate
 WeightIt
 kableExtra
 ggdag
+cobalt
+patchwork

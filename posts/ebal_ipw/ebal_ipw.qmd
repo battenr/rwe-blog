@@ -1,8 +1,8 @@
 ---
-title: "Double Trouble" # October Post
-subtitle: "Doubly Robust Methods For Unmeasured Confounding"
+title: "Balancing the Caffeine Buzz" 
+subtitle: "Entropy Balancing and Inverse Probability Weighting"
 author: "Ryan Batten"
-date: "2026-03-25"
+date: "2027-04-07"
 #image: dr_unmeasured.png
 categories: [Entropy Balancing, IP Weighting]
 bibliography: ebal_ipw.bib
@@ -14,9 +14,9 @@ format:
 
 # Paralysis by Analysis: Causal Methods
 
-Causal inference using observational data can be quite useful, however we need to account for confounding. Unfortunately, we can't use randomization however there is a litany of methods to choose from. Propensity score matching (note: a variety of matching methods are available), inverse probability weighting, outcome regression, targeted machine learning estimation, augmented inverse probability weighting, doubly robust methods....the list goes on and on.
+Causal inference using real-world data can be quite useful, however we need to account for confounding. Unfortunately, we can't use randomization however there is a **large** number of methods we can choose from to adjust for confounding. Propensity score matching (note: a variety of matching methods are available), inverse probability weighting, outcome regression, targeted machine learning estimation, augmented inverse probability weighting, doubly robust methods....the list goes on and on.
 
-A common question becomes how do we choose between methods? This post will look to compare between two methods:
+A common question becomes how do we choose between methods? This post will try to answer that for two different methods, specifically:
 
 -   Entropy Balancing
 
@@ -24,71 +24,107 @@ A common question becomes how do we choose between methods? This post will look 
 
 # Weight a Minute
 
-Before we dive into these methods, we need to law some groundwork for what each are, and how they work.
+Before we dive into these methods, we need to lay some groundwork for what each are, and how they work.
 
 ## Inverse Probability Weighting
 
-Inverse probability weighting is a useful tool for causal inference.
+Inverse probability weighting is a useful tool for causal inference. To use this, we first have to estimate the propensity score, which is the probability of treatment given covariates [@rosenbaum1983central]. Next, we take the propensity score and put in in the denominator as:
+
+$$
+1/PS
+$$
+
+where PS is the propensity score.
+
+Inverse probability weighting can be used to estimate four different types of causal estimands: the average treatment effect (ATE), the average treatment effect in the Coffee (ATT), the average treatment effect in the unCoffee (ATU) and the average treatment effect in the overlap (ATO) [@greifer2021choosing, ].
 
 ## Entropy Balancing
 
-Entropy balancing works by balancing entropy between the two groups. What is entropy? Glad you asked!
+Entropy balancing works by balancing the groups directly using equations. I realize that definition isn't super helpful, so let's try again. What exactly is entropy? Glad you asked!
 
-In statistics, entropy refers to: \[insert what entropy is\]
+If you're thinking entropy from physics (like I first did), you're on the right track! Entropy has to do with chaos, but in statistics it's about the "chaos" from a probability distribution. When we describe a probability distribution, we can use different moments.
 
-The fact entropy balancing uses equations is a double edged sword. On the one hand
+::: callout-tip
+## Moments in Time
+
+If this sounds like it's starting to get complicated, don't worry! Moments sounds tricky, but they aren't all that scary. Think of a continuous variable from a normal (Gaussian) distribution. The first moment is the mean. The second moment is the variance. Third is skewness. Fourth is kurtosis (how much of a "peak" ) there is. That's really all you need to know for this post!
+:::
+
+So why does this matter for entropy balancing? Because you use these moments when deciding what needs to be balanced. For example, you could say balance on just the mean. Or balance on the mean and variance. Basically any combination of the moments. This is a double-edged sword, which we'll get to later.
+
+# Causal Question
+
+Before any good analysis, we need to first define our causal question. For this example, we are going to ask ourselves does coffee cause happiness? Specifically, in monsters. We have two confounders: sleep and whether it is sunny outside or not.
+
+```{r}
+library(tidyverse)
+library(ggdag)
+
+# Create the DAG object
+coffee_dag <- dagify(
+  happiness ~ coffee + sleep + sun,
+  coffee ~ sleep + sun,
+  exposure = "coffee",
+  outcome = "happiness",
+  labels = c(
+    coffee = "Coffee",
+    happiness = "Happiness",
+    sleep = "Sleep",
+    sun = "Sun"
+  )
+)
+
+# Plot the DAG
+
+ggdag(coffee_dag, text = FALSE, use_labels = "label") +
+  theme_dag() +
+  labs(title = "Causal Relationship: Coffee & Happiness",
+       subtitle = "Confounded by Sleep and Sun") + 
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"), 
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
 
 # Start the Comparing!
 
-Alright, so if we're going to compare methods, there are a few ways we can do this. A fantastic resource is [@morris2019using]. For this post, we are going to compare the two methods, specifically for:
+Alright, so we have our question. Now to compare methods, there are a few ways we can do this. For this post, we are going to compare the two methods, specifically for:
 
 1.  Balance
 
-2.  Bias
+    -   For balance, we are going to use both standardized mean differences and plots. Specifically, plots of the distributions of both confounders (pre-/post-weighting) (note: entropy balancing does not estimate a propensity score).
 
-3.  Precision
+2.  Effective sample size
 
-We can define each of these as follows
+    -   Effective sample size (ESS) is the number of individuals you would need to get the same level of precision without using weights. For example, if you're sample size is 100 before weighting but an ESS of 50, this means you would need 50 people to get the same level of precision (i.e., less precision after weighting).
 
-Alright, now we are going to enter the simulation!
+::: callout-important
+## Diagnostics for Weights
 
-# Balance
-
-For valid causal inference, one of the assumptions is exchangeability. Essentially, to do this we need to use a method that will account for this. With real-world data, we don't have that. Instead, we have methods that we can use. Here we are going to inspect balance a few ways:
-
-1.  Visual
-2.  Using standardized mean differences
-3.  
-
-# Bias
-
-# Precision 
+When using weighting methods, we should always inspect the distribution of the weights and the summary statistics. This helps check for misspecification of the propensity score model (if appropriate) and for extreme weights. For this blog post, we are not because we know it's correct (we know the two variables are being adjusted for). However in practice it's crucial to check the diagnostics for the weights.
+:::
 
 # Enter the Simulation
 
-To see whether this hair-brained scheme could work, we'll simulate some data. Let's lay out some ground rules for our simulation:
-
--   Going to run it 1000 times (chosen due to run time/don't want our laptops to implode)
+Before we begin, we need to set some ground rules for our simulation:
 
 -   Sample size of 250 (arbitrary)
 
 -   Two measured confounders (one continuous, one binary)
 
--   Two unmeasured confounders (both continuous)
-
 -   Binary treatment
 
--   Continuous outcome
+-   Continuous outcome (happiness)
 
--   Target estimand will be the average treatment effect (ATE)
+-   Target causal estimand will be the average treatment effect (ATE)
 
 Methods we'll explore:
 
--   Individual probability weighting only
+-   Inverse probability weighting, with stabilized weights
 
--   Generalized linear model (outcome model only)
+-   Entropy balancing
 
--   Doubly robust: using the same covariates in both the propensity score model and the outcome model
+Note: we will not be using doubly robust methods here.
 
 ```{r setup, message=FALSE, warning = FALSE}
 
@@ -96,30 +132,30 @@ Methods we'll explore:
 
 # Description: This code is the setup for what we will be using later. It includes the libraries and any functions that we may need. 
 
-library(tidyverse) # ol' faithful
+library(tidyverse) # ol' faithful (previously loaded earlier)
 library(WeightIt) # for IP weighting
-library(kableExtra) # for formatting table output
-library(ggdag) # for drawing a DAG 
+library(cobalt) # for checking balance 
+library(flextable)
+
+# z1 - sleep
+# z2 - sunshine
+# x - coffee 
+# y - happiness 
 
 #... Functions ----
 
 # We will use this function to simulate data 
 
-sim_data <- function(n = 250, # sample size 
+sim_data1 <- function(n = 250, # sample size 
                      beta_trt = 1.5, # treatment effect
                      # Parameters for Z1 
-                     z1_mean = 5, z1_sd = 1, 
+                     z1_mean = 5, z1_sd = 2, 
                      # Parameters for Z2
                      z2_size = 1, z2_prob = 0.5, 
-                     # Parameters for U1
-                     u1_mean = 10, u1_sd = 3,
-                     u2_mean = 2, u2_sd = 0.5,
                      # Confounder - Effect on X
-                     z1_on_x = 0.05, z2_on_x = 0.5, 
-                     u1_on_x = 0.08, u2_on_x = 0.8, 
+                     z1_on_x = 0.05, z2_on_x = 0.5,
                      # Confounder - Effect on Y
-                     z1_on_y = 0.5, z2_on_y = 0.7,
-                     u1_on_y = 0.4, u2_on_y = 2
+                     z1_on_y = 0.5, z2_on_y = 0.7
 ){
   
   # Creating the Dataframe
@@ -130,10 +166,9 @@ sim_data <- function(n = 250, # sample size
   ) %>% 
     dplyr::mutate(
       beta_trt = 1.5, 
-      prob = plogis(u1_on_x*u1 - u2_on_x*u2 + z1_on_x*z1 + z2_on_x*z2), 
+      prob = plogis(z1_on_x*z1 + z2_on_x*z2), 
       x = rbinom(n = n, size = 1, prob = prob), 
-      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + u1_on_y*u1 + u2_on_y*u2 + rnorm(n = n, mean = 0, sd = 1)
-      #y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1)
+      y = beta_trt*x + z1_on_y*z1 + z2_on_y*z2 + rnorm(n = n, mean = 0, sd = 1)
     )
   
   # Return the dataframe
@@ -143,32 +178,564 @@ sim_data <- function(n = 250, # sample size
 
 ```
 
-And of course, we need a directed acyclic graph (DAG)!
+## Apply Each Method 
+
+At this point you might be thinking "JUST GET TO IT MAN!"....alright, alright, alright. We'll apply each method. For entropy balancing, we'll balance on two moments (the mean and variance). For the inverse probability weighting, we will use stabilized weights.
+
+```{r scenario 1 - ebal vs ipw}
+
+scenario1 <- sim_data1()
+
+ebal1 <- WeightIt::weightit(x ~ z1 + z2, 
+                           data = scenario1, 
+                           method = "ebal", 
+                          # using two moments for z1 and one for z2
+                           moments = c(z1 = 2, z2 = 1), 
+                           estimand = "ATE"
+                           )
+
+ipw1 <- WeightIt::weightit(x ~ z1 + z2, 
+                           data = scenario1, 
+                           method = "glm", 
+                          stabilize = TRUE,
+                           estimand = "ATE"
+                           )
+
+```
+
+Perfect! Now we have our weights for each method. Let's check them out!
+
+## Balance 
+
+Any good causal analysis will need to have balance for the confounders. This is to ensure that exchangeability is met. So...how does balance look from both methods?
+
+Let's start with some love plots. These are plots of the standardized mean differences
+
+```{r love plots scenario 1}
+
+# ── Shared cobalt theme settings ──────────────────────────────────────────────
+
+cobalt_theme <- list(
+  theme_classic(base_size = 12),
+  theme(
+    plot.title    = element_text(face = "bold", hjust = 0.5, size = 16),
+    plot.subtitle = element_text(hjust = 0.5, colour = "grey40", size = 10),
+    panel.grid.major.x = element_line(colour = "grey90"),
+    axis.title    = element_text(size = 11),
+    legend.position = "bottom",
+    legend.title  = element_text(face = "bold"),
+    text = element_text(size = 12)
+  )
+)
+
+# ── Entropy Balancing: Love Plot ───────────────────────────────────────────────\]
+
+cobalt::love.plot(
+  ebal1,
+  continuous  = "std",
+  binary      = "std",
+  thresholds  = c(m = 0.1),
+  colours     = c("#4E79A7", "#F28E2B"),  # unadjusted, adjusted
+  shapes      = c("circle", "diamond"),
+  title       = "Entropy Balancing — Covariate Balance",
+  subtitle    = "Standardised Mean Differences (ATE)",
+  sample.names = c("Unadjusted", "Entropy Balanced")
+) +
+  cobalt_theme
+
+# ── IP Weighting: Love Plot ────────────────────────────────────────────────────
+
+cobalt::love.plot(
+  ipw1,
+  continuous   = "std",
+  binary       = "std",
+  thresholds   = c(m = 0.1),
+  colours      = c("#4E79A7", "#E15759"),  # unadjusted, adjusted
+  shapes       = c("circle", "diamond"),
+  title        = "Inverse Probability Weighting — Covariate Balance",
+  subtitle     = "Standardised Mean Differences (ATE)",
+  sample.names = c("Unadjusted", "IPW Adjusted")
+) +
+  cobalt_theme
+```
+
+As you can see, for the entropy balancing the standardized mean differences are 0! Hooray! This is by design. When we solve the equations, we solve them so that the SMDs are 0. If you were to check the variance ratios those should be equal as well.
+
+Next, let's look at some plots of the variables. SMDs are only one metric, so it's best to check plots as well.
+
+```{r ebal plots, cache = TRUE}
+
+
+# ── Entropy Balancing: Z1 (Sleep) ──────────────────────────────────────────────────
+
+cobalt::bal.plot(
+  ebal1,
+  var.name = "z1",
+  which    = "both",
+  type     = "density"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "Entropy Balancing — Sleep (Z1)",
+    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
+    x        = "Sleep (hours)",
+    y        = "Density"
+  ) +
+  cobalt_theme
+
+# ── IP Weighting: Z2 (Sunshine) ───────────────────────────────────────────────
+cobalt::bal.plot(
+  ebal1,
+  var.name = "z2",
+  which    = "both"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "Entropy Balancing — Sunshine (Z2)",
+    subtitle = "Proportion Sunny: Unadjusted vs. IPW Adjusted",
+    x        = "Sunshine (0 = No, 1 = Yes)",
+    y        = "Proportion"
+  ) +
+  cobalt_theme
+
+```
+
+"Wait a minute.....you said there'd be exact balance! There isn't exact balance for sleep!" if that was your thought process, guess what? You're right. There *is* exact balance though, it's just on the moments we specified (i.e., mean and variance). For sunshine, you can see there is exact balance. Now what about IP weighting?
+
+```{r ipw plots scenario 1, cache = TRUE, warning = FALSE}
+
+
+# ── IP Weighting: Z1 (Sleep) ──────────────────────────────────────────────────
+
+cobalt::bal.plot(
+  ipw1,
+  var.name = "z1",
+  which    = "both",
+  type     = "density"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "IP Weighting — Sleep (Z1)",
+    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
+    x        = "Sleep (hours)",
+    y        = "Density"
+  ) +
+  cobalt_theme
+
+# ── IP Weighting: Z2 (Sunshine) ───────────────────────────────────────────────
+
+cobalt::bal.plot(
+  ipw1,
+  var.name = "z2",
+  which    = "both"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "IP Weighting — Sunshine (Z2)",
+    subtitle = "Proportion Sunny: Unadjusted vs. IPW Adjusted",
+    x        = "Sunshine (0 = No, 1 = Yes)",
+    y        = "Proportion"
+  ) +
+  cobalt_theme
+
+
+```
+
+From these plots you can see there is sufficient balance, however using sunshine as an example it's not quite as balanced as entropy balancing. That is because IP weighting first estimates a propensity score, which is then used to create weights. This means there won't be *exact* balance (i.e., SMD of 0). As a side note, we should check the plot for the propensity score when using IP weighting.
 
 ```{r}
 
-theme_set(theme_dag())
 
-dag_example <- ggdag::dagify(
-  x ~ z1 + z2 + u1 + u2, 
-  y ~ z1 + z2 + u1 + u2 + x, 
-  exposure = "x",
-  outcome = "y"
+# ── IP Weighting: Z1 (Sleep) ──────────────────────────────────────────────────
+
+cobalt::bal.plot(
+  ipw1,
+  var.name = "prop.score",
+  which    = "both",
+  type     = "density"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "IP Weighting — Sleep (Z1)",
+    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
+    x        = "Sleep (hours)",
+    y        = "Density"
+  ) +
+  cobalt_theme
+
+```
+
+## Effective Sample Size 
+
+Effective sample size (ESS) is an important metric to check. This is similar to why sample size matters so much when designing a study and choosing a statistical method. The ESS affects the level of precision you can expect, which in turn will affect how wide or narrow your confidence intervals are. Let's see how these look compared to the original sample size.
+
+```{r ess scenario 1}
+
+ess_ebal1 <- WeightIt::ESS(ebal1$weights)
+
+ipw_ebal1 <- WeightIt::ESS(ipw1$weights)
+
+data.frame(
+    Method = c("Original Sample", 
+             "Effective Sample Size - Entropy Balancing",
+             "Effective Sample Size - IP Weighting"),
+  Number = c(scenario1 %>% nrow(), 
+             ess_ebal1, 
+             ipw_ebal1)
+
+  
+) %>% as_flextable()
+
+```
+
+So originally, the sample was 250 but it's barely dropped! So that must mean that entropy balancing is the most greatest, useful, amazing-est method of all time, right? Not so fast...
+
+# Scenario 2 - Unequal SDs 
+
+If you look back to the first scenario at z1, you'll see that both groups are drawn from the same normal distribution. This makes the differences not that big to begin with which leads to not a big difference in pre-/post-adjusting for z1. However, sometimes this isn't the case. For example, imagine you are comparing coffee versus no coffee in two groups with a real-world dataset. You look at the descriptive statistics for sleep and notice that standard deviation is noticeably different in one group compared to the other. In this situation, what would happen?
+
+Let's find out!
+
+```{r}
+
+sim_data2 <- function(n = 250, beta_trt = 1.5){
+  
+  df <- data.frame(
+    x = rep(c(1, 0), each = n/2),
+    z1 = ifelse(x == 1, rnorm(n = n/2, mean = 5, sd = 2), rnorm(n = n/2, mean = 5, sd = 1)), 
+    z2 = ifelse(x == 1, rbinom(n = n/2, size = 1, prob = 0.5), rbinom(n = n/2, size = 1, prob = 0.3))
+  ) %>% 
+    mutate(
+      y = beta_trt * x + 0.5 * z1 + 0.7 * z2 + rnorm(n = n, mean = 0, sd = 1)
+    )
+  
+  return(df)
+}
+
+
+```
+
+## Apply Each Method - Round 2
+
+Now we are going to do the same thing as before. We are going to estimate weights using both entropy balancing and IP weighting.
+
+```{r}
+
+scenario2 <- sim_data2()
+
+ebal2 <- WeightIt::weightit(x ~ z1 + z2, 
+                           data = scenario2, 
+                           method = "ebal", 
+                          # using two moments for z1 and one for z2
+                           moments = c(z1 = 2, z2 = 1), 
+                           estimand = "ATE"
+                           )
+
+ipw2 <- WeightIt::weightit(x ~ z1 + z2, 
+                           data = scenario2, 
+                           method = "glm", 
+                          stabilize = TRUE,
+                          # using two moments for z1 and one for z2
+                           estimand = "ATE"
+                           )
+
+
+
+```
+
+Alright, let's check out how the balance looks!
+
+## Balance 
+
+First, we'll start by looking at a love plot for each method.
+
+```{r}
+
+# ── Shared cobalt theme settings ──────────────────────────────────────────────
+
+cobalt_theme <- list(
+  theme_classic(base_size = 12),
+  theme(
+    plot.title    = element_text(face = "bold", hjust = 0.5, size = 16),
+    plot.subtitle = element_text(hjust = 0.5, colour = "grey40", size = 10),
+    panel.grid.major.x = element_line(colour = "grey90"),
+    axis.title    = element_text(size = 11),
+    legend.position = "bottom",
+    legend.title  = element_text(face = "bold"),
+    text = element_text(size = 12)
+  )
 )
 
-ggdag::ggdag(dag_example, layout = "nicely")
+# ── Entropy Balancing: Love Plot ───────────────────────────────────────────────
+cobalt::love.plot(
+  ebal2,
+  continuous  = "std",
+  binary      = "std",
+  thresholds  = c(m = 0.1),
+  colours     = c("#4E79A7", "#F28E2B"),  # unadjusted, adjusted
+  shapes      = c("circle", "diamond"),
+  title       = "Entropy Balancing — Covariate Balance",
+  subtitle    = "Standardised Mean Differences (ATE)",
+  sample.names = c("Unadjusted", "Entropy Balanced")
+) +
+  cobalt_theme
+
+# ── IP Weighting: Love Plot ────────────────────────────────────────────────────
+
+cobalt::love.plot(
+  ipw2,
+  continuous   = "std",
+  binary       = "std",
+  thresholds   = c(m = 0.1),
+  colours      = c("#4E79A7", "#E15759"),  # unadjusted, adjusted
+  shapes       = c("circle", "diamond"),
+  title        = "Inverse Probability Weighting — Covariate Balance",
+  subtitle     = "Standardised Mean Differences (ATE)",
+  sample.names = c("Unadjusted", "IPW Adjusted")
+) +
+  cobalt_theme
+```
+
+At this point, you might be thinking "In this situation, looks like both work great. Entropy balancing is better!" Well, let's look at the plots for overlap and see how we feel.
+
+```{r}
+
+cobalt::bal.plot(
+  ebal2,
+  var.name = "z1",
+  which    = "both",
+  type     = "density"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "Entropy Balancing — Sleep (Z1)",
+    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
+    x        = "Sleep (hours)",
+    y        = "Density"
+  ) +
+  cobalt_theme
+
+# ── IP Weighting: Z2 (Sunshine) ───────────────────────────────────────────────
+cobalt::bal.plot(
+  ebal2,
+  var.name = "z2",
+  which    = "both"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "Entropy Balancing — Sunshine (Z2)",
+    subtitle = "Proportion Sunny: Unadjusted vs. IPW Adjusted",
+    x        = "Sunshine (0 = No, 1 = Yes)",
+    y        = "Proportion"
+  ) +
+  cobalt_theme
+```
+
+Again, balance looks good!
+
+::: callout-note
+If you look at the plots, specifically at the mean and spread of the data you'll see that after weighting it's more. The reason there isn't perfect overlapping is because we haven't used additional moments (i.e., skewness/kurtosis), only the first two.
+:::
+
+Now, let's see how IP weighting does!
+
+```{r}
+
+
+# ── IP Weighting: Z1 (Sleep) ──────────────────────────────────────────────────
+
+cobalt::bal.plot(
+  ipw2,
+  var.name = "z1",
+  which    = "both",
+  type     = "density"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "IP Weighting — Sleep (Z1)",
+    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
+    x        = "Sleep (hours)",
+    y        = "Density"
+  ) +
+  cobalt_theme
+
+# ── IP Weighting: Z2 (Sunshine) ───────────────────────────────────────────────
+
+cobalt::bal.plot(
+  ipw2,
+  var.name = "z2",
+  which    = "both"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "IP Weighting — Sunshine (Z2)",
+    subtitle = "Proportion Sunny: Unadjusted vs. IPW Adjusted",
+    x        = "Sunshine (0 = No, 1 = Yes)",
+    y        = "Proportion"
+  ) +
+  cobalt_theme
 
 ```
 
-## Perfectly Imperfect
+What about the propensity score?
 
-For our first scenario, let's assume that we perfectly specify both models based on the data we have. We will include both of the measured confounders (z1 & z2), in each model. However, the model will still be imperfect since there is unmeasured confounding.
+```{r}
 
-How does it look for each method?
 
-```{r perfect_world, cache = TRUE, warning = FALSE}
+# ── IP Weighting: Z1 (Sleep) ──────────────────────────────────────────────────
 
-# Inverse Probability Weighting (IPW) ----
+cobalt::bal.plot(
+  ipw2,
+  var.name = "prop.score",
+  which    = "both",
+  type     = "density"
+) +
+  scale_fill_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  scale_colour_manual(
+    values = c("0" = "#4E79A7", "1" = "#E15759"),
+    labels = c("No Coffee", "Coffee"),
+    name   = "Group"
+  ) +
+  labs(
+    title    = "IP Weighting — Sleep (Z1)",
+    subtitle = "Density of Sleep Hours: Unadjusted vs. IPW Adjusted",
+    x        = "Sleep (hours)",
+    y        = "Density"
+  ) +
+  cobalt_theme
 
 
 ```
+
+If you're thinking the propensity score looks a bit odd here it does. This is because we're not modelling the probability of x on the confounder z1. Instead, we're saying "here's these two groups, with these characteristics but based on our directed acyclic graph (DAG), we know they're confounders". This is more typical to how things *actually* work in the real-world, however the propensity probably won't look like the one in our example (ours looks funny) .
+
+::: callout-caution
+## Wonky Propensity Score Plot
+
+The reason the propensity score plot
+:::
+
+## Effective Sample Size 
+
+Alright, so balance looks good for entropy balancing! Can we just go ahead and use entropy balancing all the time? The answer is....yes....no....maybe. There's another metric: effective sample size.
+
+```{r ess scenario 2}
+
+ess_ebal2 <- WeightIt::ESS(ebal2$weights)
+
+ipw_ebal2 <- WeightIt::ESS(ipw2$weights)
+
+data.frame(
+    Method = c("Original Sample", 
+             "Effective Sample Size - Entropy Balancing",
+             "Effective Sample Size - IP Weighting"),
+  Number = c(scenario2 %>% nrow(), 
+             ess_ebal2, 
+             ipw_ebal2)
+
+  
+) %>% as_flextable()
+```
+
+Effective sample size is smaller in the entropy balancing group. This means there will be less precision. It could be tempting to think it isn't that big of a deal, however.....when we simulated the data the difference
+
+# When to Use What
+
+Both methods have pros and cons.
+
+# Next Steps
+
+Both methods have
+
+-   use morris et al
+
+-   weightit
+
+-   hansmuelle
+
+# 
